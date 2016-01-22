@@ -1,0 +1,55 @@
+--- xwpe-1.5.30a/configure.in.orig	Sat Apr 25 14:17:27 1998
++++ xwpe-1.5.30a/configure.in	Sat Apr 25 14:16:50 1998
+@@ -8,6 +8,7 @@
+ AC_PREFIX_DEFAULT(/usr/local)
+ 
+ CF_ANSI_CC_CHECK
++CF_STRIP_G_OPT(CFLAGS)
+ dnl CF_GCC_WARNINGS
+ AC_C_CONST
+ 
+--- xwpe-1.5.30a/Makefile.in.orig	Thu Nov 18 21:46:01 1999
++++ xwpe-1.5.30a/Makefile.in	Thu Nov 18 21:47:58 1999
+@@ -1,6 +1,6 @@
+ #C-Compiler (gcc if exist):
+ CC=		@CC@
+-CFLAGS=		@CFLAGS@ @X_CFLAGS@
++CFLAGS=		-DXWPE_DLL @CFLAGS@ @X_CFLAGS@
+ #CFLAGS=		@CFLAGS@ @EXTRA_CFLAGS@ @X_CFLAGS@
+ 
+ #Source Directory:
+@@ -14,7 +14,7 @@
+ XWPELIBDIR=	$(LIBDIR)/xwpe
+ MANDIR=@mandir@
+ 
+-LIBS=@LIBS@
++LIBS=@LIBS@ -ldl
+ XLIBS=@X_LIBS@ @X_PRE_LIBS@ @X_EXTRA_LIBS@
+ DEFS=@DEFS@ -DLIBRARY_DIR=\"$(XWPELIBDIR)\"
+ INSTALL=	cp
+@@ -86,10 +86,10 @@
+ 		model.h progr.h unixkeys.h unixmakr.h \
+ 		Xwpe.h WeString.h WeXterm.h WeProg.h WeExpArr.h
+ 
+-xwpe:	$(OFILES) $(X_OFILES) $(T_OFILES)
+-	$(CC) $(CFLAGS) $(DEFS) $(OFILES) $(X_OFILES) $(T_OFILES) \
+-	  $(LIBS) $(XLIBS) -o xwpe
+-#	$(CC) -Wl,-E $(CFLAGS) $(DEFS) $(OFILES) $(LIBS) -o xwpe
++xwpe:	$(OFILES) $(X_OFILES) $(T_OFILES) libxwpe-x11.so libxwpe-term.so
++#	$(CC) $(CFLAGS) $(DEFS) $(OFILES) $(X_OFILES) $(T_OFILES) \
++#	  $(LIBS) $(XLIBS) -o xwpe
++	$(CC) -Wl,-E $(CFLAGS) $(DEFS) $(OFILES) $(LIBS) -o xwpe
+ 
+ libxwpe-x11.so:	$(X_OFILES)
+ 	$(CC) -shared $(X_OFILES) $(XLIBS) -o libxwpe-x11.so
+@@ -97,8 +97,8 @@
+ libxwpe-term.so:	$(T_OFILES)
+ 	$(CC) -shared $(T_OFILES) -o libxwpe-term.so
+ 
+-#$(X_OFILES) $(T_OFILES):	$(HFILES)
+-#	$(CC) -fPIC $(CFLAGS) $(DEFS) -c $(subst .o,.c,$@)
++$(X_OFILES) $(T_OFILES):	$(HFILES)
++	$(CC) -fPIC $(CFLAGS) $(DEFS) -c $(subst .o,.c,$@)
+ 
+ .c.o:	$(HFILES)
+ 	$(CC) $(CFLAGS) $(DEFS) -c $<

@@ -1,0 +1,2014 @@
+.\" t
+.\" @(#)xwpe.1	3/22/94
+.de EX		\"Begin example
+.ne 5
+.if n .sp 1
+.if t .sp .5
+.nf
+.in +.5i
+..
+.de EE
+.fi
+.in -.5i
+.if n .sp 1
+.if t .sp .5
+..
+.ta .3i .6i .9i 1.2i 1.5i 1.8i
+.TH xwpe 1.3 "Mar 22, 1994"
+.UC
+.SH NAME
+xwpe, xwe, wpe, we \- XWindow Programming Environment
+.SH SYNOPSIS
+.EX
+\fBxwpe\fP [ \fIoptionen\fP ] Datei ...
+ \fBxwe\fP [ \fIoptionen\fP ] Datei ...
+ \fBwpe\fP [ \fIoptionen\fP ] Datei ...
+  \fBwe\fP [ \fIoptionen\fP ] Datei ...
+.EE
+.SH DESCRIPTION
+\fIxwpe\fP ist die XWindow-Version des XWindow Programming Environments.
+\fIxwe\fP ist der XWindow Editor ohne die Programmierumgebung. 
+\fIwpe\fP ist die UNIX-Version der Programmierumgebung fuer 
+zeichenorientierte Terminals.
+\fIwe\fP ist der Editor ohne Programmierumgebung fuer zeichenorientierte 
+Terminals.
+
+Das XWindow Programming Environment ist eine Programmierumgebung fuer 
+UNIX - Betriebssysteme, die weitgehend der Borland C++ bzw. Turbo-
+Pascal - Entwicklungsumgebung nachgebildet ist. Sie besteht aus einem 
+Maus-unterstuetzenden, Menue-gesteuerten Editor, aus dem heraus 
+beliebige Uebersetzungs- und Bindungsprogramme sowie der Debugger 
+gestartet werden koennen.
+
+Beim Uebersetzen und Binden aufgetretene Fehler werden, soweit sie 
+vom Compiler erkannt worden sind, direkt an der entsprechenden Stelle 
+im Text angezeigt und koennen dann dort behoben werden. Es ist 
+moeglich das erzeugte ausfuehrbare Programm zu Testzwecken direkt aus 
+der Programmierumgebung zu starten. Programme, die aus mehr als einem 
+Modul (Quell-Datei) bestehen, koennen ueber die sogenannte Projekt-
+Option (siehe \fIProjekt-Datei\fP) bearbeitet werden.
+
+Fehler in uebersetzten Programmen koennen aus der Programmierumgebung 
+heraus mit Hilfe der Debug-Umgebung gesucht werden. Hiebei werden 
+Breakpoints direkt im Quelltext gesetzt oder wieder geloescht. Ein 
+Programm-Break wird an der entsprechenden Stelle im Text angezeigt. 
+Die Werte von Variablen koennen ueber die Watch-Option (siehe 
+\fIWatch-Fenster\fP) bei jedem Break ausgegeben werden. Der Stack kann 
+ausgegeben und in ihm kann ueber Funktionstasten gewandert werden
+(siehe \fIStack-Fenster\fP).
+
+Die Entwicklungsumgebung bietet eine Hilfe-Funktion, in die sowohl 
+Hilfestellungen zu der Umgebung selber, wie auch saemtliche 
+Dokumentationen zu Funktionen und Kommandos (man-pages) auf dem 
+entsprechenden Rechner integriert sind.
+
+Im Editor koennen bis zu 35 Dateien gleichzeitig ediert werden.
+Er arbeitet sowohl Maus- als auch Funktionstasten
+unterstuetzt. Alle Funktionen koennen entweder ueber Menue oder 
+direkt durch Funktionstasten ausgefuehrt werden. Er bietet eine 
+ausfuehrliche Such/Textersatz-Funktion mit der Moeglichkeit nach 
+regulaeren Ausdruecken zu suchen. Weiterhin ist ein Datei-Manager 
+integriert mit Hilfe dessen Dateienpfade als Baumstruktur dargestellt 
+und aus dieser heraus editiert, kopiert, Namen und Pfade geaendert
+oder geloescht werden koennen.
+
+Die Entwicklungsumgebung kann auf den Editor reduziert werden 
+(z.B. zur Shell-Programmierung ), in dem sie mit `xwe' aufgerufen 
+wird. Fuer nicht XWindow-Systeme ist die Programmierumgebung auch als 
+`wpe' bzw. der reine Editor als `we' verfuegbar.
+
+.SH COPYRIGHTS
+Copyright (C) 1993 Fred Kruse
+xwpe ist frei kopierbar unter den Bedingungen der 
+GNU General Public License. Es wird fuer diese Sofware keinerlei
+Garantie oder Gewaehrleistung uebernommen.
+
+.SH OPTIONS
+
+Parameter sind:
+
+.IP "\fB-so\fP"
+Fuer die Sitzung werden Standardoptionen gesetzt.
+Die Optionendatei wird nicht gelesen.
+.IP "\fB-sf\fP"
+Es werden die Standardfarben gesetzt. Alle anderen 
+Einstellungen werden der Optionendatei entnommen.
+.IP "\fB-sf\fP \fIoptionfile\fP"
+Statt der Standardoptionendatei (\fI$HOME/.wpe/wperc\fP) wird die Datei 
+'\fIoptionfile\fP' gelesen.
+.IP "\fB-r\fP"
+Bei einem Sitzungsabbruch durch ein Signal (nicht kill -9)
+werden alle internen Puffere in Dateien mit dem Postfix '.ESV'
+geschrieben. Die abgebrochene Sitzung kann dann durch Aufruf
+des Editors unter Angabe des Parameters \fB-r\fP wiederhergestellt werden.
+.IP "\fB-mb\fP"
+Die folgenden Dateien sind binaere Dateien.
+.IP "\fB-mn\fP"
+Die folgenden Dateien sind ASCII Dateien (Standardeinstellung)	
+.IP "\fB-nc\fP \fIN\fP"
+\fIN\fP ist eine ganze Zahl, die die maximale Anzahl der Spalten angibt.
+.IP "\fB-nu\fP \fIN\fP"
+\fIN\fP ist eine ganze Zahl, die die Anzahl der 
+rueckgaengigmachbaren Manipulationen angibt.
+.IP "\fB-nm\fP \fIN\fP"
+\fIN\fP ist eine ganze Zahl, die die maximale Anzahl der 
+Veraenderungen angibt, nach denen ein Autosave durchgefuehrt
+werden soll.
+.IP "\fB-k\fP \fIpassword\fP"
+Die folgende Datei soll beim lesen mit 'password' entschluesselt und beim 
+Schreiben mit '\fIpassword\fP' verschluesselt werden.
+.IP "\fB-pm\fP"
+Naechste Datei ist eine Message-Datei
+.IP "\fB-pt\fP"
+Message-Datei soll fuer 'traditional' Compiler interpretiert 
+werden (siehe \fICompiler-Optionen\fP).
+.IP "\fB-pe\fP"
+Message-Datei soll fuer 'extended' Compiler interpretiert 
+werden (siehe \fICompiler-Optionen\fP).
+
+XWindow-Parameter:
+
+.IP "\fB-display\fP \fIDisp\fP"
+Ausgabe auf Display '\fIDisp\fP'
+.IP "\fB-fn\fP \fIFontname\fP"
+.IP "\fB-font\fP \fIFontname\fP"
+Einstellung des Fonts '\fIFontname\fP'
+.IP "\fB-g\fP \fIGeometrie\fP"
+.IP "\fB-geometry\fP \fIGeometrie\fP"
+Abmessung des XWindows (z.b.: -g 80x20+4+4)
+.IP "\fB-iconic\fP"
+XWindow als Ikone oeffnen
+
+.SH INITIALISIERUNGSDATEI:
+
+xwpe kennt die Initialisierungsdatei:
+
+.EX
+    wperc
+.EE
+
+Die Datei kann systemseitig im Verzeichnispfad ../lib/wpe relativ zum
+Pfad der Programmierumgebung xwpe abgelegt sein.
+Jeder Benutzer kann aber auch seine eigene Initialisierungsdatei
+im eigenen Heimatverzeichnis (Standard: $HOME/.wpe/wperc) anlegen.
+Die Reihenfolge der Beruecksichtigung ist: Als erstes wird auf eine 
+persoenliche Initialisierungsdatei geprueft, ist eine solche nicht
+vorhanden, wird auf eine Systemdatei geprueft. Ist letztere nicht 
+vorhanden, werden festvorgegebene interne Einstellungen benutzt.
+
+Die Binaer-Datei \fIwperc\fP wird aus der Programmierumgebung heraus
+erzeugt und speichert die aktuellen Einstellungen. (siehe
+das \fIOptions-Menue\fP)
+
+
+.SH X-Resourcen:
+
+In der X-Resourcen-Datei \fI.Xdefaults\fP koennen folgende Eintraege fuer 
+X-Window Standardvoreinstellungen vorgegeben werden:
+
+.IP "\fBxwpe.font:\fP"
+Der zu benutzende Textfont (8x13, 9x15, 10x20, 8x13bold, 9x15bold, 10x20bold) 
+
+.IP "\fBxwpe.geometry:\fP"
+Die X-Window-Geometrie
+
+.IP "\fBxwpe.iconic:yes\fP"
+xwpe wird als Icon geoeffnet.
+
+.IP "\fBxwpe.color1:\fP"
+.IP "\fB...\fP"
+.IP "\fBxwpe.color16:\fP"
+xwpe beruecksichtigt 16 Farben. Diese sind in Anlehnung an die 16 PC-Farben 
+standardmaessig eingestellt und koennen hier veraendert werden.
+
+.SH ACHTUNG:
+Die Datei .wperc, die vor der Version 1.3.1 erstellt wurde, sollten geloescht 
+werden.
+
+Die Datei .xwperc, die vor der Version 1.2.1 erstellt wurde, wird nicht mehr
+beruecksichtigt und kann geloescht werden.
+
+Eventuell vorhandene Initialisierungs- und Hilfedateien im binaer Verzeichnis 
+der xwpe sollten ab Version 1.3.1 geloescht werden.
+
+.SH Das Hauptmenue:
+
+Das WE-Menue kann durch Eingabe von F10, Alt-<SP> (oder <ESC> aus dem 
+Editorenfenster) erreicht bzw. ueber <ESC> wieder verlassen 
+werden. Jedes einzelne Untermenue kann durch Eingabe von 
+Alt-<Anfangsbuchstaben> direkt aufgerufen werden.
+
+Die Untermenues sind:
+.EX
+
+Das \fISystem-Menue\fP	Environment-Verwaltung
+
+Das \fIFile-Menue\fP		Dateien-Verwaltung
+
+Das \fIEdit-Menue\fP		Edieren zwischen verschiedenen Fenstern
+
+Das \fISearch-Menue\fP	Such-Anwendungen
+
+Das \fIBlock-Menue\fP	Edieren in einem Fenster
+
+Das \fIRun-Menue\fP 		Programmierumgebung (nicht bei we oder xwe)
+
+Das \fIDebug-Menue\fP 	Debug-Umgebung (wenn installiert; 
+				nicht bei we oder xwe)
+
+Das \fIProject-Menue\fP 	Mehrdateien Projecte (nicht bei we oder xwe)
+
+Das \fIOptions-Menue\fP	Einstellungen
+
+Das \fIWindow-Menue\fP	Fenster-Verwaltung
+
+Das \fIHelp-Menue\fP		Hilfestellungen
+.EE
+
+.SH Das System-Menue (Alt-# oder Alt-<SP>):
+.EX
+
+About WE			A	Zeigt Versionsnummer und Copyright an.
+Clear Desktop		C	Schliesst alle Fenster.
+Repaint Desktop     R	Initialisiert den Schirm und baut die 
+					einzelnen Fenster neu auf.
+System Info		S	Gibt einige Informationen zur aktuellen 
+					Edit-Sitzung aus.
+Show Wastebasket	W	Inhalt des Papierkorbs im File-Manager 
+					anzeigen
+Delete Wastebasket	D	Inhalt des Papierkorbs loeschen
+.EE
+
+
+.SH Das File-Menue (Alt-F):
+.EX
+
+File-Manager	M	Holt das \fIFile-Manager\fP-Fenster  in den 
+				Vordergrund, wenn nicht vorhanden, wird 
+				es erzeugt.
+ADd F.-Mng.	D	Erzeugt neues File-Manager-Fenster
+New			N	Erstellt eine neue Datei mit Namen 'Noname'
+Save			S	Sichert die aktuell bearbeitete Datei
+Save As		A	Sichern unter anderem Namen 
+				(siehe \fIFile-Manager\fP)
+Save ALl		L	Sichert alle editierten Dateien
+Execute		E	\fIExecution-Manager\fP
+SHell		H	Aufruf der UNIX-Shell
+Find			F	Suchen nach Dateinamen (siehe \fIFind\fP)
+Grep			G	Suchen nach Zeichenketten in Dateien 
+				(siehe \fIGrep\fP)
+Print		P	Drucken der aktuellen Datei
+Quit			Q	\fIBeenden der Sitzung\fP
+.EE
+
+.SH Das Edit-Menue (Alt-E):
+.EX
+
+Cut				T	Loescht markierten Text in den Puffer
+Copy				C	Kopiert markierten Text in den Puffer
+Paste			P	Kopiert Puffer-Inhalt hinter den Cursor
+Show Clipboard		S	Zeigt den Puffer-Inhalt an.
+Delete			D	Loescht markierten Text
+Undo				U	Macht letzte Textaenderung rueckgaengig
+Redo				R	Macht letztes Undo wieder rueckgaengig
+Load XBuffer		L	Kopiert den XWindow-Buffer in den 
+					Paste-Buffer
+Write to XBuffer	W	Kopiert den Paste-Buffer in den 
+					XWindow-Buffer
+.EE
+
+.SH Das Search-Menue (Alt-S):
+.EX
+
+Find			F	Eine Zeichenkette suchen 
+				(siehe \fISuch/Textersatz-Funktion\fP)
+Replace		R	Eine Zeichenkette suchen und ersetzen
+				(siehe \fISuch/Textersatz-Funktion\fP)
+Search again	S	Wiederholtes Suchen bzw. Ersetzen
+Go to Line	G	Sprung zu einer anzugebenden Zeilenummer
+.EE
+
+.SH Das Block-Menue (Alt-B):
+.EX
+
+Begin Mark	B	Beginn eines Blocks markieren
+End Mark		E	Ende eines Blocks markieren
+Mark Line		L	Eine Zeile markieren
+Mark Whole	W	Ganzen Text markieren
+Goto Begin	G	Zum Beginn eines Blockes springen
+Goto End		N	Zum Ende eines Blockes springen
+Copy			C	Kopieren eines Blocks
+Move			M	Verschieben eines Blocks
+Delete		D	Loeschen eines Blocks
+Hide			H	Loeschen der Anfangs- und Endmarke 
+				eines Blocks
+Read			R	Einfuegen einer Datei an die Cursor-
+				Position
+Write		W	Schreiben eines Blocks in eine Datei
+Move to Right  I	Block eines halben Tabulator nach rechts 
+				verschieben
+Move to Left	T	Block eines halben Tabulator nach links
+				verschieben
+.EE
+
+Bloecke koennen markiert werden, in dem die Tastenkombinationen `^k b'
+und `^k k' verwendet werden. 
+`^k b' setzt den Block-Anfang auf die Cursor-Position.
+`^k k' setzt das Block-Ende auf die Cursor-Position.
+
+Unter XWindow koennen Bloecke auf zwei weitere Arten markiert werden:
+Bewegen des Cursors bei gedrueckter Shift-Taste makiert den vom
+Cursor beruehrten Text als Block.
+Bewgendes Maus-Cursors bei gedruecktem linken Button makiert den vom
+Maus-Cursor beruehrten Text als Block.
+
+.SH Run-Menue (Alt-R):
+.EX
+Compile			C	Uebersetzen des Programm-Codes
+					(siehe \fIProgrammierumgebung\fP)
+Make				M	Erzeugen des Executables 
+Run				R	Erzeugen und Ausfuehren des Executables 
+Install			I	Installierungsroutine 
+					(siehe \fIProjekt-Datei\fP)
+Execute make		E	Fuehrt das System-Kommando 'make' aus. 
+Next Error		N	Sprung zum naechsten Fehler
+Previous Error		P	Sprung zum vorherigen Fehler
+Show Definition	S	Sprung zur Definition eines Ausdrucks 
+					(siehe \fIC-Programmierhilfen\fP)
+Show Next Def.		X	Sprung zur naechsten Definition des 
+					gefundenen Ausdrucks 
+					(siehe \fIC-Programmierhilfen\fP)
+Matching Bracket	K	Sprung zur zugehoerigen Klammer
+					(siehe \fIC-Programmierhilfen\fP)
+Beautify			B	gleichmaessiges einruecken von Programm-
+					bloecken (siehe \fIC-Programmierhilfen\fP)
+Arguments			A	Eingabe einer Argumentenliste zur Ueber-
+					gabe an das auszufuehrende Programm
+.EE
+
+.SH Debug-Menue (Alt-D):(siehe die \fIDebug-Umgebung\fP)
+.EX
+Toggel Breakpoint	B	Setzen/Loeschen eines Breakpoints
+ReMove all Breakp.	M	Loeschen aller Breakpoints
+Make Watch		W	Setzen einer zubeobachtenden 
+					Variablen (siehe \fIWatch-Fenster\fP)
+Edit Watch		E	Edieren einer zubeob. Variablen
+Delete Watch		D	Loeschen einer zubeob. Variablen
+Remove All Watches	A	Loeschen aller zubeob. Variablen
+Show StacK		K	Stack anzeigen (siehe \fIStack-Fenster\fP)
+Step				S	Einen Programmschritt ausfuehren
+					(mit Sprung in Unterfunktionen)
+Next				N	Einen Programmschritt ausfuehren
+					(ohne Sprung in Unterfunktionen)
+Run/Continue		R	Starten/Weiterfuehren des Programms
+Quit				Q	Beenden des Debuggers
+OutPut Window		P	Anzeigen der Ausgabe
+					(nicht unter XWindow)
+.EE
+
+.SH Project-Menue (Alt-P):
+.EX
+Open Project	P	Eingabe des Namen einer \fIProjekt-Datei\fP
+				Es wird ein \fIProjekt-Fenster\fP geoeffnet
+Close Project	C	Schliessen eines Projekts. Das Project-Fenster
+				wird geschlossen und der Projektname auf leer 
+				gesetzt.
+Add Item		A	Hinzufuegen von Dateien zum geoeffneten Project.
+				Das Projekt-Fenster wird im Add-Status geoeffnet.
+Delete Item	D	Loeschen der aktuellen Datei im Projekt-Fenster
+				aus dem geoeffneten Project. Dieser Punkt wird nur
+				ausgefuehrt, wenn das Projekt-Fenster geoefnnet ist.
+Options		O	\fIProjekt-Optionen\fP
+.EE
+
+
+.SH Das Options-Menue (Alt-O):
+.EX
+Adjust Colors	A	Farbeinstellung 
+Read Colors	R	Standard Farben oder Farben aus Initiali-
+				sierungsdatei lesen
+Save Options	S	Sichern der eigenen Optionseinstellungen
+				fuer spaetere Sitzungen in einer 
+				wiederverwendbaren Options-Datei.
+Editor		E	Optionen fuer den Editor 
+				(siehe \fIEditor-Optionen\fP)
+File-Manager	F	Optionen fuer den File-Manager
+				(siehe \fIFile-Manager-Optionen\fP)
+Programming    G	Optionen fuer die Programmierumgebung: 
+				( Halt bei Fehlern/Warnungen;
+				  siehe auch \fISyntax-Unterstuetzung\fP)
+Compiler		C	Compiler-Optionen eingeben 
+				(siehe \fICompiler-Optionen\fP)
+Debugger		D	Optionen (Es koennen sowohl die Debugger gdb, 
+				sdb oder dbx gewaehlt werden, als auch die 
+				Modi Full Screen oder Normal)
+.EE
+
+.SH Das Window-Menue (Alt-W):
+.EX
+Size/Move		S	Groesse und Ort des aktuellen Fensters
+				veraendern
+Zoom			Z	Zoomen des aktuellen Fensters auf max. Grosse
+Tile			T	Fenster im Baukasten-Prinzip nebeneinander-
+				legen.
+Cascade		A	Fenster wie einzelne Blaetter kaskadenfoermig
+				uebereinanderlegen.
+Next			X	Aktuelles Fenster auf das folgende schalten.
+Close		C	Aktuelles Fenster schliessen.
+List All		L	Alle vorhandenen Fenster werden gelistet.
+				Mit <CR> oder Alt-S (Show) wird das markierte
+				Fenster in den Vordergrund geholt.
+Messages		M	Das Message-Fenster wird in den Vordergrund 
+				geholt. Ist es nicht geoeffnet, so wird dieses
+				nachgeholt.
+Project		P	Das Projekt-Fenster wird in den Vordergrund 
+				geholt. Ist es nicht geoeffnet, so wird dieses
+				nachgeholt.
+Watches		W	Das Watch-Fenster wird in den Vordergrund 
+				geholt. Ist es nicht geoeffnet, so wird dieses
+				nachgeholt.
+.EE
+
+.SH Das Help-Menue (Alt-H):
+.EX
+Editor		E	Hilfestellung zum Editor (WE)
+Function Index	I	Index aller UNIX-Funktionen 
+				(siehe \fIFunction-Index\fP)
+Function		F	Hilfestellung zu einer beliebigen UNIX-Funktion
+.EE
+
+.SH Die Funktionstasten:
+
+Konvention unter UNIX (gilt nicht fuer XWindow):
+
+\fIAlt-X\fP - Wird durch die Tastenkombination \fI<ESC> X\fP realisiert 
+(X steht hier fuer ein beliebiges druckbares Zeichen)
+
+\fIESC\fP - Wird durch die Tastenkombination \fI<ESC> <Return>\fP realisiert.   
+
+
+Fuer folgende Funktionen sind Tasten vorgesehen:
+
+.EX
+\fICursor-Bewegungen\fP
+
+\fIEdieren\fP
+
+\fILoeschen\fP
+
+\fIBlock-Kommandos\fP
+
+\fIMarker-Kommandos\fP
+
+\fISuch- und Textersatz-Kommandos\fP
+
+\fIPuffer-Kommandos\fP
+
+\fILaden und Speichern\fP
+
+\fIFenster-Kommandos\fP
+
+\fIRun-Kommandos\fP
+
+\fIKommandos der Programmierhilfe\fP
+
+\fIDebug-Kommandos\fP
+
+\fIHelp-Kommandos\fP
+
+\fISitzungbeenden\fP
+.EE
+
+.SH Cursor-Bewegungen:
+.EX
+Pfeil nach oben
+Ctrl P			bewegt Cursor nach oben
+
+Pfeil nach unten
+Ctrl N			bewegt Cursor nach unten
+
+rechter Pfeil
+Ctrl F			bewegt Cursor nach rechts
+
+linker Pfeil
+Ctrl B			bewegt Cursor nach links
+
+Ctrl rechter Pfeil
+Alt rechter Pfeil 	bewegt Cursor um ein Wort nach rechts
+
+Ctrl linker Pfeil
+Alt linker Pfeil 	bewegt Cursor um ein Wort nach links
+
+Home  oder  Ctrl A	setzt den Cursor auf den Anfang der Zeile
+
+End   oder  Ctrl E	setzt den Cursor auf das Ende der Zeile
+
+Ctrl Pfeil nach oben
+Page Up			bewegt den Cursor um ein Fenster nach oben
+
+Ctrl Pfeil nach unten
+Page Down			bewegt den Cursor um ein Fenster nach unten
+
+Ctrl Page Up
+Alt Ctrl A		bewegt den Cursor auf den Anfang der Datei
+
+Ctrl Page Down
+Alt Ctrl E		bewegt den Cursor auf das Ende der Datei
+ 
+Ctrl Home
+Alt Ctrl P		bewegt den Cursor auf den Anfang der Seite
+ 
+Ctrl End
+Alt Ctrl N		bewegt den Cursor auf das Ende der Seite
+.EE 
+
+.SH Edieren:
+.EX        
+<Return>		Spaltet die aktuelle Zeile an der Cursor-Position
+
+Ctrl H
+<Backspace>	Loescht den Character vor der Cursor-Position
+
+Ctrl D
+Del			Loescht den Character an der Cursor-Position
+
+<Tab>		Einfuegen eines Tabulators
+
+Alt-I		Umschalten vom Einfuege- in den Ueberschreibe-Modus
+Insert		und umgekehrt.
+
+Alt-J		Umschalten in Sonderzeichen-Einsetz-Modus
+.EE
+
+.SH Loeschen:
+.EX
+Ctrl T		Loescht nach rechts alle Zeichen bis zum naechsten 
+			Wortanfang
+Ctrl O T		Loescht nach links alle Zeichen bis zum naechsten 
+			Wortanfang
+Ctrl Y		Loescht die ganze Zeile
+Ctrl Z
+Ctrl O Y		Loescht alle Zeichen vom Cursor bis zum Ende der
+			Zeile
+.EE
+
+.SH Block-Kommandos:
+.EX
+Shift + Cursorbewegung 		markiert einen Block
+
+Ctrl K  B		Anfangsmarke eines Blocks setzen
+Ctrl K  K		Endmarke eines Blocks setzen
+Ctrl K  L		Die aktuelle Zeile markieren
+Ctrl K  X		Den gesamten Text markieren
+Ctrl K  A		An den Blockanfang springen
+Ctrl K  Z		Ans Blockende springen
+Ctrl K  C		Block kopieren
+Ctrl K  V		Block verschieben
+Ctrl K  Y		Block loeschen
+Ctrl K  H		Blockmarken loeschen
+Ctrl K  R		Einfuegen einer Datei an die Cursor-Position
+Ctrl K  W		Schreiben eines Blocks in ein Datei
+Ctrl K  I		Blockeinruecken
+Ctrl K  U		Blockausruecken
+.EE
+
+.SH Marker-Kommandos:
+.EX
+Ctrl K n		Setzt n-ten Marker ( n = 1 - 9 )
+Ctrl O n		Setzt Cursor auf n-ten Marker 
+.EE
+
+.SH Such- und Textersatz-Kommandos:
+.EX
+Find
+F4
+Ctrl O F		Zeichenkette suchen
+
+Alt-F4
+Ctrl O A		Zeichenkette durch eine andere Ersetzen
+
+Ctrl-F4
+Ctrl L		Wiederholt Suchen / Ersetzen
+
+Alt G		Zu einer angegebenen Zeile springen
+.EE
+
+.SH Puffer-Kommandos:
+.EX
+Cut
+Shift Del
+Ctrl X		Loescht markierten Text in den Puffer        
+
+Copy
+Shift Insert
+Ctrl C		Kopiert den markierten Text in den Puffer
+
+Paste
+Ctrl Insert
+Ctrl V		Kopiert den Puffer-Inhalt an die Cursor-Position
+
+Ctrl W		Puffer-Inhalt in eigenem Fenster anzeigen
+
+UNDO			Letztes Textveraenderndes Kommando rueckgaengig
+Ctrl U		machen
+
+REDO
+Ctrl R		Letztes Undo-Kommando rueckgaengig machen
+
+Alt Delete	Kopiert den markierten Text in den X-Puffer
+
+Alt Insert	Kopiert den X-Puffer-Inhalt an die Cursor-Position
+.EE
+
+.SH Laden und Speichern:
+.EX
+Open
+F3		Aufruf des \fIFile-Managers\fP (Laden einer Datei etc.)
+
+F2		Speichern des Inhalts einer Datei
+.EE
+        
+.SH Fenster-Kommandos:
+.EX
+Alt-Z
+F5		Zoomen des Fensters (maximale Groesse)
+
+Ctrl F5
+Alt-F2	Veraendern der Grosse und des Ortes des Fensters 
+
+F6
+Alt-N	Umschalten auf naechstes Fenster
+
+Alt-F3	Schliessen des aktuellen Fensters
+
+Shift F4	Fenster nebeneinander anordnen
+
+Shift F5	Fenster versetzt uebereinander anordnen
+.EE
+
+.SH Run-Kommandos:
+.EX
+Alt F9
+Alt C	startet den Compiler (siehe \fIProgrammierumgebung\fP)
+
+F9
+Alt M	erzeugt ein Executable 
+
+Ctrl F9
+Alt R	erzeugt ein Executable und fuehrt dieses aus.
+
+Alt L	fuehrt die Installations-Prozedur aus
+		(siehe \fIProjekt-Datei\fP)
+Alt A	fuehrt das System-Kommando 'make' aus. Eventuell 
+		aufgetretenen Fehler werden im Message-Fenster 
+		angezeigt und interpretiert (siehe \fIMessage-Fenster\fP)
+Alt V	Der Cursor wird an die stelle des vorhergehenden 
+		Fehlers gesetzt (siehe \fIMessage-Fenster\fP)
+Alt T	Der Cursor wird an die stelle des naechsten 
+		Fehlers gesetzt (siehe \fIMessage-Fenster\fP)
+.EE
+
+.SH Kommandos der Programmierhilfe:
+.EX
+Ctrl O S Sucht die Definition eines C-Ausdrucks 
+         (siehe \fIC-Programmierhilfen\fP)
+
+Ctrl O N Sucht nach weiteren Definitionen eines C-Ausdrucks 
+         (siehe \fIC-Programmierhilfen\fP)
+
+Ctrl O K Sucht die zugehoerige Klammer (siehe \fIC-Programmierhilfen\fP)
+
+Ctrl O B Verschoenert den C-Quelltext (siehe \fIC-Programmierhilfen\fP)
+.EE
+
+.SH Debug-Kommandos:
+.EX
+Ctrl F10
+Ctrl G R		startet den Debugger (siehe \fIDebug-Umgebung\fP)
+
+Ctrl F2
+Ctrl G Q		beendet die Debug-Sitzung
+
+F7			der naechste Programmschritt wird ausgefuehrt
+Ctrl G S		(mit Sprung in Funktionen)
+
+F8			der naechste Programmschritt wird ausgefuehrt
+Ctrl G N		(ohne Sprung in Funktionen)
+
+Ctrl F8
+Ctrl G B		Setzen bzw. Loeschen eines Breakpoints
+
+Ctrl G M		Loeschen aller Breakpoints
+
+Ctrl F7
+Ctrl G W		Eingabe einer zu beobachtenden Variablen
+
+Ctrl G E		Edieren einer zu beobachtenden Variablen
+			(Siehe \fIWatch-Fenster\fP)
+Ctrl G D		Loeschen einer zu beobachtenden Variablen
+			(Siehe \fIWatch-Fenster\fP)
+
+Ctrl G D		Loeschen einer zu beobachtenden Variablen
+			(Siehe \fIWatch-Fenster\fP)
+
+Ctrl F6
+Ctrl G K		Anzeigen des Stack (siehe \fIStack-Fenster\fP)
+
+Ctrl G O		Anzeigen des Ausgabe-Ausgabefesters 
+			(nicht fuer XWindow)
+.EE
+
+.SH Help-Kommandos:
+.EX
+F1			Hilfe zum Window-Programming-Environment (xwpe)
+
+Alt F1		Hilfe zu einer beliebigen UNIX-Funktions
+
+Ctrl F1		Funktions-Index
+.EE
+
+.SH Sitzungbeenden:
+.EX
+Alt-X		Beenden der WE-Sitzung (siehe weiter unten)
+.EE
+
+.SH Die Common User Access:
+
+Um eine gewisse Kompatibilitaet zu OSF-Motif bzw. MS-Windows zu
+erreichen wird ein zweite Form der Funktionstastenbelegung angeboten.
+
+Hierbei gelten folgende Ersetzungen:
+
+.EX
+Fenster:
+F6	  	->  Ctrl F6	Naechstes Fenster
+Alt F3	->  Ctrl F4	Fenster schliessen
+F5  		->  Shift F6	Zoom
+
+Suchen:
+Ctrl F4	->  F3		Nochmaliges Suchen
+F4		->  Alt F3	Suchen
+Alt F4	->  Ctrl F3	Ersetzen
+
+Dateibearbeitung:
+F3		->  F2		Aufruf des Datei-Managers
+F2		->  Alt F2	Speichern
+
+Debugger:
+Ctrl F8	->  F5		Breakpoint setzen
+Ctrl F7	->  Ctrl F5	Watch
+Ctrl F6	->  Ctrl F3	Stack aufrufen
+
+Sitzung beenden:
+Alt X	->  Alt F4	Beenden der Editoren-Sitzung
+.EE
+
+.SH Beenden der Sitzung:
+
+Wird das Kommando zum Beenden der Sitzung eingegeben werden alle 
+NICHT veraenderten Dateien kommentarlos geschlossen. 
+Fuer alle veraenderten Dateien wird nachgefragt:
+.EX
+Yes		Eingabe von Y speichert die Datei
+No		Eingabe von N schliesst die Datei ohne zu speichern
+ESC		Eingabe von <ESC> bricht das Kommando ab 
+		(die Sitzung wird wieder aufgenommen)
+.EE
+
+.SH Der Editor
+
+Der Editor ist in der Lage bis zu 35 Fenster gleichzeitig zu 
+verwalten. In jedem Editoren-Fenster kann eine Datei geladen werden.
+
+Der Editor stellt eine Reihe von Funktionen zur Verfuegung. Die 
+Funktionen koennen ueber Maus, Funktionstasten oder Menues ausgefuehrt
+werden. Funktionen sind ueber das Hinzufuegen und Loeschen einzelner 
+Zeichen hinaus in erster Linie die folgenden:
+
+Kopieren, verschieben und loeschen ganzer Textbloecke innerhalb
+einer Datei (siehe \fIBlock-Menue\fP)
+ 
+Kopieren, verschieben und loeschen ganzer Textbloecke zwischen
+verschiedenen Dateien (siehe \fIEdit-Menue\fP)
+ 
+Zeichenketten suchen und/oder ersetzen (siehe \fISearch-Menue\fP)
+
+Die Form und Lage der einzelnen Editoren-Fenster veraendern
+(siehe \fIWindow-Menue\fP)
+
+Optionen fuer den Editor werden ueber das Options-Menue eingestellt.
+
+Dateien editiert, gesichert und ganz allgemein manipuliert wird ueber
+das File-Menue
+
+.SH Die Hilfe-Funktion
+
+In einem Hilfefenster wird eine Beschreibung zu dem entsprechenden
+Punkt gegeben, aus dem heraus die Hilfe-Funktion aufgerufen wurde.
+Wurde die Hilfe-Funktion ueber Help/Editor aufgerufen, wird ein 
+Verzeichnis der Hauptpunkte ausgegeben, die als Hilfestellungen
+angeboten werden.
+
+In den meisten Dokumentationen sind hervorgehobene Schluesselworte
+vorhanden. Anklicken eines Schluesselwortes bzw. Eingabe von <CR>
+nachdem der Cursor auf das ensprechende Schluesselwort gesetzt wurde,
+ruft die Hilfe-Funktion fuer das angegebene Thema auf.
+
+Es kann zu vorher betrachtete Hilfe-Funktionspunkten zurueckgeblaettert 
+werden, indem ein die <Backspace>-Taste gedrueckt, oder
+mit der Maus auf die Ueberschrift des aktuellen Punktes geklickt
+wird.
+
+Weitere Hilfestellungen fuer Programmierer werden ueber die 
+Menuepunkte des Help-Menues gegeben.
+
+
+.SH Der File-Manager (Datei-Manager):
+
+Mit Hilfe des File-Managers koennen Dateien ediert, neue 
+Unterverzeichnisse erstellt, sowie Dateien und Verzeichnisse kopiert, 
+verschoben/umbenannt geloescht oder ihre Attribute veraendert werden.
+
+.IP "\fBAlt-N\fP"
+Sprung in Namensleiste (Die vorgegebene Zeichenkette kann
+bearbeitet werden). Es gibt drei Moeglichkeiten von Namen:
+1. Eine existierende Datei wird durch <Return> geladen.
+2. Eine nicht existierende Datei wird durch <Return>erzeugt.
+3. Eine Dateienmaske gibt an, welche Dateien unter 'Files' 
+aufgelistet werden sollen. '*' steht fuer eine beliebige
+Zeichenkette. '?' steht fuer ein beliebiges Zeichen.
+'[ ]' steht fuer ein Zeichen aus der Liste zwischen den
+eckigen Klammern. '[ - ]' steht fuer ein Zeichen aus dem
+Bereich zwischen den Zeichen vor und nach '-'. 
+steht fuer alle Zeichen ausser den in den Klammern
+angegebenen. Eingabe von Return bewirkt einen Sprung 
+nach 'Files'.
+
+.IP "\fBAlt-F\fP"
+Sprung nach 'Files'. Die einzelnen Dateien, die der unter 
+'Name' angegebenen Dateienmaske entsprechen werden 
+aufgelistet. Durch Eingabe der Cursortasten kann jeweils 
+eine Datei markiert werden. Mit <Return> oder Alt-E wird 
+diese Datei in den Editor geladen. 
+
+.IP "\fBAlt-D\fP"
+Eingabezeile fuer Inhaltsverzeichnis. Hier kann ein Inhaltsverzeichnis 
+eingegeben werden. Durch Eingabe von <Return>
+wird das Arbeitsverzeichnis direkt in das eingegebene geaendert.
+
+.IP "\fBAlt-T\fP"
+Baum des Inhaltsverzeichnisses. Durch Eingabe der 
+Cursortasten kann in dem Baum gewandert werden. <Return>
+aendert das Arbeitsverzeichnis in das markierte Verzeichnis.
+
+.IP "\fBAlt-C\fP"
+Das Arbeitsverzeichnis wird in das eingegebene bzw. markierte Verzeichnis 
+geaendert.
+
+.IP "\fBAlt-E\fP"
+Die unter 'Name' angegebene Datei bzw. die markierte Datei 
+wird in den Editor geladen.
+
+.IP "\fBAlt-P\fP"
+Die aktuelle Datei wird durch die unter 'Name' angegebene 
+Datei bzw. die markierte Datei ersetzt.
+
+.IP "\fBAlt-M\fP"
+Die markierte Datei umbenennen, oder durch die Angabe eines 
+neuen Pfades verschieben.
+
+.IP "\fBAlt-U\fP"
+Die markierte Datei duplizieren. Der Name der duplizierten 
+Datei ist der alte Dateiname ergaenzt durch die Endung .dup.
+
+.IP "\fBAlt-R\fP"
+Loeschen der markierten Datei. Die Datei wird je nach 
+Einstellung (siehe File-Manager-Optionen) in den Papierkorb 
+verschoben oder absolut von der Platte gloescht.
+
+.IP "\fBAlt-L\fP"
+Einen Link auf die markierte Datei setzen. Es wird als erstes
+versucht einen Hard-Link auf die Datei zu erstellen. Ist dies
+nicht moeglich (bei Verzeichnissen oder unterschiedlichen 
+Platten-Partitionen), wird ein Soft-Link erstellt.
+
+.IP "\fBAlt-O\fP"
+Die markierte Datei wird kopiert. Der neue Name muss angegeben werden.
+
+.IP "\fBAlt-K\fP"
+Erzeugen eines neuen Unterverzeichnisses im aktuellen
+Verzeichnis. Nach der Erzeugung ist die Anwendung im 
+Umbennenungsmodus (Alt-M) und der temporaere Name ist new.dir. 
+
+.IP "\fBAlt-A\fP"
+Setzen der Attribute fuer die markierte Datei.
+
+.IP "\fBAlt-S\fP"
+(nur fuer Save As) Die aktuelle Datei wird unter 
+dem unter 'Name' angegebenen 
+Namen bzw. unter dem markierten Namen gespeichert.
+
+.IP "\fB<ESC>\fP"
+Beenden des File-Managers.
+
+
+.SH Der Execution-Manager:
+
+Mit Hilfe des Execution-Managers koennen Dateien ausfuehrbare
+Programme und Shell-Scripts ausgefuehrt werden. Es werden nur
+ausfuehrbare Dateien unter 'Files' gelistet.
+
+.IP "\fBAlt-N\fP"
+Sprung in Namensleiste (Die vorgegebene Zeichenkette kann
+bearbeitet werden). Es gibt drei Moeglichkeiten von Namen:
+1. Eine existierende Datei wird durch <Return> geladen.
+2. Eine nicht existierende Datei wird durch <Return>erzeugt.
+3. Eine Dateienmaske gibt an, welche Dateien unter 'Files' 
+aufgelistet werden sollen. '*' steht fuer eine beliebige
+Zeichenkette. '?' steht fuer ein beliebiges Zeichen.
+'[ ]' steht fuer ein Zeichen aus der Liste zwischen den
+eckigen Klammern. '[ - ]' steht fuer ein Zeichen aus dem
+Bereich zwischen den Zeichen vor und nach '-'. 
+'[! ]' steht fuer alle Zeichen ausser den in den Klammern
+angegebenen. Eingabe von Return bewirkt einen Sprung 
+nach 'Files'.
+
+.IP "\fBAlt-F\fP"
+Sprung nach 'Files'. Die einzelnen Dateien, die der unter 
+'Name' angegebenen Dateienmaske entsprechen werden 
+aufgelistet. Durch Eingabe der Cursortasten kann jeweils 
+eine Datei markiert werden. Mit <Return> oder Alt-E wird 
+diese Datei in den Editor geladen. 
+
+.IP "\fBAlt-D\fP"
+Eingabezeile fuer Inhaltsverzeichnis. Hier kann ein Inhalts-
+verzeichnis eingegeben werden. Durch Eingabe von <Return>
+wird das Arbeitsverzeichnis direkt in das eingegebene
+geaendert.
+
+.IP "\fBAlt-T\fP"
+Baum des Inhaltsverzeichnisses. Durch Eingabe der 
+Cursortasten kann in dem Baum gewandert werden. <Return>
+aendert das Arbeitsverzeichnis in das markierte Verzeichnis.
+
+.IP "\fBAlt-C\fP"
+Das Arbeitsverzeichnis wird in das eingegebene bzw. 
+markierte Verzeichnis geaendert.
+
+.IP "\fBAlt-E\fP"
+Die unter 'Name' eingegebene Zeichenkette bzw. die markierte 
+Datei wird vom Betriebssystem ausgefuehrt.
+
+.IP "\fB<ESC>\fP"
+Beenden des Execution-Managers.
+
+
+.SH Die Programmierumgebung
+
+Das Run-Menue kann Programm-Code uebersetzen, binden und ausfuehren.
+Ist die angegebene Projekt-Datei vorhanden, wird diese bearbeitet,
+ansonsten wird die aktuelle Datei bearbeitet. Der Compiler wird in 
+Abhaengigkeit von dem Datei-Postfix ausgewaehlt. Die moeglichen 
+Compiler und die dazu gehoerigen Optionen sind unter dem Menue-Punkt 
+Run/Options (siehe \fICompiler-Optionen\fP) einstellbar.
+
+Compiliert und gebunden werden nur Dateien, die noch nicht 
+uebersetzt wurden oder seit der letzten Uebersetzung veraendert
+wurden. Fuer C-Programme gilt, dass auch alle Veraenderungen in
+eingebundenen 'include' - Dateien beruecksichtigt werden.
+
+Treten beim Uebersetzen oder Binden des Programm-Codes Fehler
+auf, werden diese aufgelistet (siehe \fIMessage-Fenster\fP), das weitere
+Uebersetzen und Binden abgebrochen und der Cursor an die vermutliche
+Fehlerstelle in der ensprechenden Datei gesetzt.
+
+
+.SH C-Programmierhilfen
+
+Nur fuer C bzw. C++ - Programmtexte werden die folgenden Programmierhilfen
+zur Verfuegung gestellt:
+
+\fISprung zur Definition eines C-Ausdrucks ( Show Definition ^O S)\fP: 
+Die Datei, in der sich die 
+Definition des Suchausdrucks befindet, wird in den Vordergrund geholt oder 
+geladen. Der Cursor der Suchausdruck wird hierbei markiert und der Cursor 
+an die entsprechende Stelle gesetzt. Es werden Struktur-, union-, class-, 
+typedef-, Preprozessor-, externe Variablen- und Funktionsdefinitionen erkannt. 
+Durchsucht wird die Datei im aktuellen Fenster 
+sowie alle Projekt-Dateien, wenn ein Projekt geoeffnet wurde. Hierbei werden
+alle ueber #include eingefuegten Dateien rekursiv durchsucht, soweit sie 
+ueber den in \fIOptionen/Programming\fP eingestellten \fISystem-Include-Path\fP
+gefunden wurden.
+
+Ist ein gesuchter Name mehrmals definiert worden (z.B. als Name einer Struktur
+und als Name einer externen Variablen) kann die naechste Definition mit 
+\fI^O N (Show next Definition)\fP gesucht werden.
+
+\fIZugehoerige Klammer (Matching Bracket ^O K)\fP: Wird dieser Menue-Punkt 
+aufgerufen, wird der
+Cursor, wenn er sich auf einer Klammer befindet auf die dazu gehoerige 
+gesetzt. Befindet sich der Cursor auf keiner Klammer wird zurueck zur 
+naechsten oeffnenden gesprungen. Es werden geschweifte {}, eckige [] und 
+runde () Klammern beruecksichtigt.
+
+\fIText verschoenern (Beautify ^O B)\fP: Wird dieser Menue-Punkt aufgerufen 
+werden die einzelnen Bloecke gleichmaessig eingerueckt. Hierbei entspricht
+der Grad der Einrueckung der Tiefe der Blockverschachtelung.
+
+.SH Die Debug-Umgebung
+
+Das Debug-Menue erlaubt das Setzen von Breakpoints direkt im 
+Programm-Text. Bei einem Programm-Stop waehrend einer Debugger-
+Sitzung, wird der aktuelle Standpunkt in der entsprechenden Datei
+angezeigt. Ist sie als Datei noch nicht im Editor geladen, wird
+dies nachgeholt. Der Cursor wird an die entsprechende Code-Stelle 
+gesetzt.
+
+Stops koennen durch Breakpoints oder durch Signale von aussen 
+erzeugt werden.
+
+Es koennen Variablen angegeben werden, deren Werte bei jedem Stop
+ausgegeben werden (siehe \fIWatch-Fenster\fP)
+
+Bei einem Stop kann die Stack-Hierarchie ausgeben und in dieser 
+gewandert werden (siehe \fIStack-Fenster\fP).
+
+
+.SH Find:
+
+Mit Hilfe der Find Option koennen Dateien in einem Verzeichnis
+(auch rekursiv) gesucht werden. 
+
+.IP "\fBAlt-L\fP"
+Dateiname oder Dateienmaske nach der gesucht werden soll.
+Die Dateienmaske hat die gleichen Eigenschaften wie die unter 
+\fIFile-Manager\fP beschriebenen
+
+.IP "\fBAlt-I\fP"
+Verzeichnis in dem nach der Datei oder Dateienmaske gesucht werden soll.
+
+.IP "\fBAlt-K\fP"
+Rekursiv. Wenn diese Option eingeschaltet ist werden auch 
+Unterverzeichnisse rekursiv durchsucht.
+
+.IP "\fBAlt-O\fP"
+Suche beginnen.
+
+.IP "\fB<ESC>\fP"
+Abbruch der Find-Anwendung.
+
+
+Die Verzeichnisse in denen entsprechende Dateien gefunden wurden 
+werden in einem \fIFind-Fenster\fP aufgelistet. 
+
+
+.SH Grep:
+
+Mit Hilfe der Grep Option koennen Zeichenketten in Dateien gesucht 
+werden. Die Dateien werden hierbei entsprechend der unter File-Manager
+beschriebenen Dateienmaske durchsucht.
+
+.IP "\fBAlt-T\fP"
+Such-Zeichenkette eingeben.
+
+.IP "\fBAlt-C\fP"
+Wenn angegeben: Gross- und Kleinschreibung wird unterschieden.
+
+.IP "\fBAlt-W\fP"
+Wenn angegeben: Nur ganze Worte werden gesucht
+
+.IP "\fBAlt-R\fP"
+Wenn angegeben: Regulaerer Ausdruck. 
+(siehe die \fISuch/Textersatz-Funktion\fP)
+
+.IP "\fBAlt-L\fP"
+Dateiname oder Dateienmaske nach der gesucht werden soll.
+Die Dateienmaske hat die gleichen Eigenschaften wie die unter 
+\fIFile-Manager\fP beschriebenen
+
+.IP "\fBAlt-I\fP"
+Verzeichnis in dem nach der Datei oder Dateienmaske gesucht werden soll.
+
+.IP "\fBAlt-K\fP"
+Rekursiv. Wenn diese Option eingeschaltet ist werden auch 
+Unterverzeichnisse rekursiv durchsucht.
+
+.IP "\fBAlt-O\fP"
+Suche beginnen.
+
+.IP "\fB<ESC>\fP"
+Abbruch der Find-Anwendung.
+
+Die Dateien in denen die angegebene Zeichenkette gefunden wurde,
+werden in einem gesonderten \fIGrep-Fenster\fP aufgelistet. 
+
+
+.SH Die Such/Textersatz-Funktion:
+
+.IP "\fBAlt-T\fP"
+Such-Zeichenkette eingeben.
+
+.IP "\fBAlt-N\fP"
+Textersatz-Zeichenkette eingeben (nur bei Replace)
+
+.IP "\fBAlt-C\fP"
+Wenn angegeben: Gross- und Kleinschreibung wird unterschieden.
+
+.IP "\fBAlt-W\fP"
+Wenn angegeben: Nur ganze Worte werden gesucht
+
+.IP "\fBAlt-R\fP"
+Wenn angegeben: Regulaerer Ausdruck. 
+Folgende Sonderzeichen werden interpretiert
+(Syntax (e)grep aehnlich): 
+
+.IP "\fB^\fP"
+Am Anfang der Such-Zeichenkette wird als Zeilenanfang interpretiert.
+
+.IP "\fB$\fP"
+Dieses Zeichen am Ende einer Such-Zeichenkette wird 
+als Zeilenende interpretiert.
+
+.IP "\fB.\fP"
+Steht fuer ein beliebiges Zeichen
+
+.IP "\fB[]\fP"
+Steht fuer jedes Zeichen innerhalb der Klammern aber kein anders
+
+.IP "\fB[^ ]\fP"
+Steht fuer kein Zeichen innerhalb der Klammern aber jedes andere
+
+.IP "\fB[ - ]\fP"
+Steht fuer einen Zeichenbereich innerhalb der Klammern aber kein anderes
+
+.IP "\fB*\fP"
+Das vorhergehende Zeichen wird n mal wiederholt (n >= 0)
+
+.IP "\fB+\fP"
+Das vorhergehende Zeichen wird n mal wiederholt (n >= 1)
+
+.IP "\fB?\fP"
+Das vorhergehende Zeichen wird 0 oder 1 mal wiederholt 
+
+.IP "\fB|\fP"
+Oder: Es wird sowohl nach der Zeichenkette vor als 
+auch nach der Zeichenkette nach dem | - Zeichen 
+gesucht.
+
+.IP "\fB\\\fP"
+Das folgende Zeichen wird nicht als Sonderzeichen interpretiert
+
+.IP "\fBAlt-P\fP"
+Wenn angegeben, wird vor jeder Ersetzung nachgefragt.(Nur bei Replace)
+Nachfragen koennen wie folgt beantwortet werden:
+.EX
+                Yes  Y  Text ersetzen
+                No   N  Text nicht ersetzen
+                <ESC>   Bricht mehrfache Suche ab
+.EE
+.IP "\fBAlt-D\fP"
+Wenn angegeben: Vorwaerts suchen         
+
+.IP "\fBAlt-B\fP"
+Wenn angegeben: Rueckwaerts suchen         
+
+.IP "\fBAlt-G\fP"
+Wenn angegeben: Ganzen Text durchsuchen
+
+.IP "\fBAlt-S\fP"
+Wenn angegeben: Nur markierten Bereich durchsuchen
+
+.IP "\fBAlt-F\fP"
+Wenn angegeben: Suche von Cursor-Position starten
+
+.IP "\fBAlt-E\fP"
+Wenn angegeben: Suche von Bereichsanfang starten
+
+.IP "\fB<RETURN>\fP"
+Einmaliges Suchen/Ersetzen beginnen
+
+.IP "\fBAlt-A\fP"
+Alle Ersetzungen bis Ende des Bereichs durchfuehren (Nur fuer Replace)
+
+.IP "\fB<ESC>\fP"
+Suchen/Ersetzen abbrechen
+
+
+.SH Function-Index:
+
+Das Programming-Environment erstellt beim Aufruf dieser Funktion
+einen Index aller vorhandenen Manual-Pages, die im Suchpfad gefunden
+wurden. Der Suchpfad muss ueber die Environment-Variable 
+MANPATH angegeben werden.
+
+Der Function-Index ist nach groben Sachgebieten geordnet, die als
+Untermenue erscheinen:
+.EX
+User Commands		Benutzer Kommandos
+System Calls		System Routinen (C - Funktionen)
+C-Lib.-Functions	C - Biliotheks - Funktionen
+Devices & Netw. I.	Geraete und Netzschnittstellen
+File Formats		Datei - Formate
+Games & Demos		Spiele und Demonstartionen
+Environments, ...	Umgebungen, Tabellen und TROFF Makros
+Maintenance Com.	Administrations Kommandos
+.EE
+
+Nach Auswahl eines Manuals wird ein Index aller dokumentierten
+Funktionen, Kommandos, etc. ausgegeben.
+Durch Auswahl eines Stichwortes (<return> oder Mausklick) wird die 
+auf dem Rechner vorhandene Dokumentation zu diesem Stichwort in einem
+Fenster ausgegeben.
+
+Die Dokumentation zu jedem dieser Stichworte kann auch direkt ueber 
+den Menue-Punkt Function in ein Editoren-Fenster geladen werden.
+
+Diese Dokumentationen sind, wie alle Hilfestellungen, read-only 
+Dateien, die mit Hilfe der Cursor-Tasten und der Such-Funktion 
+bearbeitet werden koennen.
+
+
+.SH FENSTER
+
+.SH Das Editoren-Fenster
+
+Mit Hilfe des Editoren-Fensters koennen Dateien ediert werden. 
+Hierfuer stehen die Maus (siehe \fIMaus im Editoren-Fenster\fP), 
+Funktionstasten oder die Editoren-Menues zur Verfuegung.
+
+Die wichtigsten Menues haben die folgenden Funktionen:
+
+Kopieren, verschieben und loeschen ganzer Textbloecke innerhalb
+einer Datei (siehe \fIBlock-Menue\fP)
+ 
+Kopieren, verschieben und loeschen ganzer Textbloecke zwischen
+verschiedenen Dateien (siehe \fIEdit-Menue\fP)
+ 
+Zeichenketten suchen und/oder ersetzen (siehe \fISearch-Menue\fP)
+
+Die Form und Lage der einzelnen Editoren-Fenster veraendern
+(siehe \fIWindow-Menue\fP)
+
+Optionen fuer den Editor werden ueber das \fIOptions-Menue\fP eingestellt.
+
+Dateien editiert, gesichert und ganz allgemein manipuliert wird ueber
+das \fIFile-Menue\fP
+
+
+.SH Das Find-Fenster
+
+In dem Find-Fenster werden alle Verzeichnisse aufgelistet, in denen 
+die gesuchten Dateien durch Find gefunden wurden. Durch Eingabe von 
+Alt-S oder <CR> wird ein File-Manager fuer das markierte Verzeichnis 
+aufgerufen und in ihm die gefundenen Dateien angezeigt.
+Durch Eingabe von <ESC> kann das 'Find' - Fenster wieder geloescht 
+werden.
+
+
+.SH Das Grep-Fenster
+
+In dem Grep-Fenster werden alle Dateien aufgelistet, in denen die
+Suchzeichenkette durch Grep gefunden wurde. Durch Eingabe von Alt-S
+oder <CR> wird die markierte Datei in den Editor geladen und an die 
+erste Textstelle gesprungen, die den Suchstring enthaelt.
+Durch Eingabe von <ESC> kann das Grep-Fenster wieder geloescht 
+werden.
+
+
+.SH Das Message-Fenster:
+
+Treten Fehler beim Uebersetzen oder Binden eines Programm-Codes
+auf, werden diese im Message-Fenster dokumentiert. Das Message-
+Fenster ist eine read-only Datei, die mit Hilfe der Cursor-Tasten 
+und der Such-Funktion gelesen werden kann. Ausserdem kann durch
+betaetigen der Return-Taste, zu dem in der aktuellen Zeile 
+beschriebenen Fehler gesprungen werden.
+
+Das Springen zu einem Fehler erfolgt in der Weise, dass die Datei
+in der dieser aufgetreten ist zur aktuellen Datei geschaltet wird,
+(Ist sie nicht geladen wird sie in ein neues Fenster geladen) und
+der Cursor an die von dem Compiler angegebene Stelle gesetzt wird.
+
+Es kann dann der Fehler direkt behoben werden und ein neuer 
+Uebersetzungsversuch gestartet werden.
+
+
+.SH Das Project-Fenster
+
+Im Project-Fenster werden die in der \fIProjekt-Datei\fP eingetragenen Dateien
+aufgelistet. Es wird ueber das \fIProjekt-Menue\fP oder das 
+\fIWindow-Menue\fP aufgerufen. Ueber die
+Eingabe von Alt-A (Add) oder <Ins> koennen neue Dateien zu den Projekt-
+Dateien hinzugefuegt werden. Hierzu wird der Datei-Manager aufgerufen.
+Eingabe von <CR> oder Alt-A (Add) fuegt dann die markierte Datei 
+hinzu. 
+Durch Eingabe von Alt-E (Edit) oder <CR> im Project-Fenster kann der 
+Eintrag in der Liste der Projekt-Dateien veraendert werden.
+Durch Eingabe von Alt-D (Delete) oder <Del> im Project-Fenster kann die 
+markierte Datei aus der Liste der Projekt-Dateien entfernt werden.
+Durch Eingabe von Alt-O werden die \fIProjekt-Optionen\fP aufgerufen. 
+Die Eingabe von <ESC> schliesst das Project-Fenster.
+
+
+.SH Das Variablen-Fenster
+
+Im Variablen-Fenster werden die in der Projekt-Datei definierten Variablen
+aufgelistet. Es wird ueber die Projekt-Optionen aufgerufen. Ueber die
+Eingabe von Alt-A (Add) oder <Ins> koennen neue Variablen definiert
+werden. 
+Durch Eingabe von Alt-E (Edit) oder <CR> kann die markierten
+Variable veraendert werden.
+Durch Eingabe von Alt-D (Delete) oder <Del> kann die markierte Variable aus 
+der Liste der definierten Variablen geloescht werden.
+Die Eingabe von <ESC> schliesst das Variablen-Fenster.
+
+
+.SH Das Install-Fenster
+
+Im Install-Fenster werden die in der Projekt-Datei aufgefuehrten 
+Kommandos, die beim Aufruf von Install (siehe Run-Menue) abgearbeitet
+werden sollen aufgelistet. Es wird ueber die Projekt-Optionen 
+aufgerufen. Ueber die Eingabe von Alt-A (Add) oder <Ins> koennen 
+weitere Kommandos der Liste hinzugefuegt werden. 
+Durch Eingabe von Alt-E (Edit) oder <CR> kann das markierte Kommando
+veraendert werden.
+Durch Eingabe von Alt-D (Delete) oder <Del> kann das markierte Kommando aus 
+der Liste entfernt werden.
+Die Eingabe von <ESC> schliesst das Install-Fenster.
+
+
+.SH Das Watch-Fenster:
+
+Das Watch-Fenster ist ein read-only Fenster, in dem die Werte, der
+ueber die Watch Funktionen (siehe \fIDebug-Menue\fP) angegebenen Variablen 
+ausgegeben werden.
+
+In dem Fenster kann mit Hilfe der Cursor-Tasten und der Such-Funktion
+gewandert werden. Zusaetzliche Funktionen sind (in Abhaengigkeit von
+der Cursor-Position im Watch-Fenster):
+
+.IP "\fB<Return>\fP"
+Auf eine angegebene Variable, editiert diese.
+.IP "\fB<Return>\fP"
+Am Ende der Datei, definiert eine neue Variable.
+.IP "\fB<Insert>\fP"
+Setzt eine neue Variable an die ensprechende Stelle
+.IP "\fB<Del>\fP"
+Loescht die angegebene Variable
+
+Ist eine Variable in der aktuellen Funktion nicht vorhanden wird dies
+gemeldet.
+
+
+.SH Das Stack-Fenster:
+
+Das Stack-Fenster ist ein read-only Fenster, in dem die Stack-
+Hierarchie angegeben wird.
+
+In dem Fenster kann mit Hilfe der Cursor-Tasten und der Such-Funktion
+gewandert werden. Zusaetzlich kann ueber <Return> im Stack gesprungen
+werden (Funktioniert nicht fuer den Debugger 'sdb').
+
+Der Aufruf des Stack-Fensters ist unbedingt bei einem Stop ueber ein
+Signal zu empfehlen, da in diesem Fall in die naechstliegende 
+sichtbare Funktion (also nicht System-Funktion) gesprungen wird.
+
+
+.SH Maus (nur fuer XWindow):
+
+Wenn eine Maus installiert ist, koennen alle Tasteneingaben ueber 
+diese vorgenommen werden. Diese erfolgen durch einfaches Anklicken 
+der entsprechenden Zeile bzw. des entsprechenden Kommando-Wortes.
+Ein Fenster wird geschlossen ueber das Anklicken des 'Cancel' 
+Kommandos oder durch Anklicken des 'Close-Button' am oberen linken 
+Rand des Fensters.
+
+Die \fIMaus im Editoren-Fenster\fP und die \fIMaus im File-Manager\fP haben noch
+zusaetzliche Funktionalitaet.
+
+Das Pressen des mittleren Maus-Buttons in einer zu bearbeitenden 
+Zeile bewirkt ein Kopieren des Pufferinhalts an die Maus-Cursor-
+Position (Paste).
+
+
+
+.SH Die Maus im Editoren-Fenster
+
+Wenn eine Maus installiert ist, koennen alle Tasteneingaben ueber 
+diese vorgenommen werden. Diese erfolgen durch einfaches Anklicken 
+der entsprechenden Zeile bzw. des entsprechenden Kommando-Wortes.
+
+Das Fenster wird geschlossen ueber das Anklicken des 'Close-Button' 
+am oberen linken Rand des Fensters.
+
+Ein Zoom auf das Fenster wird durchgefuehrt in dem der 'Zoom-Button'
+(-[z]-) am rechten oberen Rahmen des Fensters angeklickt wird.
+
+Das Fenster wird Verschoben durch Anklicken des oberen Rahmens und
+Verschieben der Maus bei festgehaltenem Maus-Button.
+
+Die Groesse des Fensters kann durch Anklicken einer Fensterecke und
+Verschieben der Maus bei festgehaltenem Maus-Button veraendert werden.
+
+Ein Sprung zu einer speziellen Zeilennummer kann durch Anklicken der
+Zeilennummer und Eintragen in das dann erscheinende Fenster erreicht 
+werden.
+
+Cursor-Bewegungen werden durch das Anklicken der Mausleisten bewirkt.
+Anklicken der Pfeile am oberen bzw. unteren Ende der Mausleste 
+bewirken eine Cursorbewegung um jeweils eine Zeile nach oben bzw.
+unten. Ein Anklicken der Mausleiste oberhalb bzw. unterhalb des 
+Zeigers bewirkt ein Blaettern um jeweils eine Seite nach oben bzw. 
+unten. Das Anklicken des Zeigers und Bewegung der Maus bei 
+festgehaltenem Maus-Button bewrikt ein Verschieben des Cursors
+realtiv zum Verschieben des Zeigers.
+
+.SH Innerhalb des Fensters:
+
+.SH Linker Maus-Button:
+
+Das einfache Pressen des linken Maus-Buttons innerhalb des Textes 
+bewirkt das Setzen des Cursors an die entsprechende Stelle.
+
+Wird der Maus-Button gedrueckt, waehrend der Maus-Cursor auf dem
+Text-Cursor steht, wird das entsprechende Wort makiert. Geschieht 
+letzteres innerhalb eines schon markierten Wortes, wird die ganze
+Zeile markiert.
+
+Bewegung des Maus-Cursors bei gedruecktem linken Maus-Button bewirkt
+ein Markieren des ensprechenden Textbereiches. Bei gleichzeitigem
+Druecken der Shift-Taste wird der Bereich zwischen Maus-Cursor und
+schon markierten Bereich zu letzteren hinzugefuegt.
+
+
+.SH Rechter Maus-Button:
+
+Das Pressen des rechten Maus-Buttons bewirkt das Kopieren des 
+markierten Bereichs in den Puffer (Copy). Wird gleichzeitig die
+Alt-Taste gedrueckt, wird in den X-Puffer kopiert.
+
+Bei gleichzeitig gedrueckter Shift-Taste wird der markierte Bereich
+aus dem Text geloescht und in den Puffer geschoben (Cut).
+
+
+.SH Mittlerer Maus-Button:
+
+Das Pressen des mittleren Maus-Buttons bewirkt ein Kopieren des
+Pufferinhalts an die Maus-Cursor-Position (Paste). Wird gleichzeitig die
+Alt-Taste gedrueckt, wird aus dem X-Puffer kopiert.
+
+
+.SH Die Maus im File-Manager
+
+Wenn eine Maus installiert ist, koennen alle Tasteneingaben ueber 
+diese vorgenommen werden. Diese erfolgen durch einfaches Anklicken 
+der entsprechenden Zeile bzw. des entsprechenden Kommando-Wortes.
+
+Das Fenster wird geschlossen ueber das Anklicken des 'Close-Button' 
+am oberen linken Rand des Fensters.
+
+Ein Zoom auf das Fenster wird durchgefuehrt in dem der 'Zoom-Button'
+(-[z]-) am rechten oberen Rahmen des Fensters angeklickt wird.
+
+Das Fenster wird Verschoben durch Anklicken des oberen Rahmens und
+Verschieben der Maus bei festgehaltenem Maus-Button.
+
+Die Groesse des Fensters kann durch Anklicken einer Fensterecke und
+Verschieben der Maus bei festgehaltenem Maus-Button veraendert werden.
+
+Markierungen in der 'Files'-Liste als auch im Verzeichnisbaum koennen
+durch das Anklicken der Mausleiste bewegt werden.
+Anklicken der Pfeile am oberen bzw. unteren Ende der Mausleste 
+bewirken eine Bewegung um jeweils eine Zeile nach oben bzw.
+unten. Ein Anklicken der Mausleiste oberhalb bzw. unterhalb des 
+Zeigers bewirkt ein Blaettern um jeweils eine Seite nach oben bzw. 
+unten. Das Anklicken des Zeigers und Bewegung der Maus bei 
+festgehaltenem Maus-Button bewrikt ein Verschieben der Markierung
+realtiv zum Verschieben des Zeigers.
+
+.SH Innerhalb des Fensters:
+
+.SH Linker Maus-Button:
+
+Das einfache Pressen des linken Maus-Buttons auf einen unmarkierten
+Datei- oder Verzeichnisnamen markiert diesen. Das einfache Pressen 
+auf einen  markierten Dateinamen fuehrt zum Laden der Datei in den 
+Editor. Das einfache Pressen auf einen  markierten Verzeichnisnamen 
+fuehrt zum Aendern des aktuellen Verzeichnisses auf das markierte.
+
+Pressen des linken Maus-Button auf eine markierte Datei oder 
+Verzeichnis und Bewegung des Maus-Cursors bei gedruecktem Maus-Button 
+bewirkt ein Verschieben dieser in ein anderes Verzeichnis unter der
+Vorraussetzung, dass zum Zeitpunkt des Loesens des Maus-Buttons, sich 
+der Maus-Cursor in einem anderen File-Manager-Fenster befindet. Die
+Datei oder das Verzeichnis wird dann in das aktuelleingestellte 
+Verzeichnis des letzteren File-Manager-Fenster verschoben.
+
+
+.SH Rechter Maus-Button:
+
+Das Pressen des rechten Maus-Buttons auf einen  markierten Datei-
+oder Verzeichnisnamen fuehrt zum Aufruf der Verschieben/Umbennen-
+Option des File-Managers.
+
+Pressen des rechten Maus-Button auf eine markierte Datei oder 
+Verzeichnis und Bewegung des Maus-Cursors bei gedruecktem Maus-Button 
+bewirkt das Erzeugen eines Links auf die Datei in einem anderen 
+Verzeichnis unter der Vorraussetzung, dass zum Zeitpunkt des Loesens 
+des Maus-Buttons, sich der Maus-Cursor in einem anderen File-Manager-
+Fenster befindet. Der Link auf die Datei oder das Verzeichnis wird 
+dann in das aktuell eingestellte Verzeichnis des letzteren File-
+Manager-Fensters erzeugt.
+
+
+.SH Mittlerer Maus-Button:
+
+Das Pressen des mittleren Maus-Buttons auf einen markierten Datei-
+oder Verzeichnisnamen fuehrt zur Duplizierung der Datei bzw. des
+Verzeichnisses.
+
+Pressen des mittleren Maus-Button auf eine markierte Datei oder 
+Verzeichnis und Bewegung des Maus-Cursors bei gedruecktem Maus-Button 
+bewirkt das Kopieren dieser in ein anderes Verzeichnis unter der
+Vorraussetzung, dass zum Zeitpunkt des Loesens des Maus-Buttons, sich 
+der Maus-Cursor in einem anderen File-Manager-Fenster befindet. Die
+Datei oder das Verzeichnis wird dann in das aktuell eingestellte 
+Verzeichnis des letzteren File-Manager-Fenster kopiert.
+
+
+
+.SH Optionen:
+.SH Editor-Optionen:
+
+.IP "\fBData:\fP"
+.IP "\fBAlt-A\fP"
+Wenn angegeben: Die naechsten Dateien werden als ASCII-Dateien
+eingelesen und behandelt.
+.IP "\fBAlt-B\fP"
+Wenn angegeben: Die naechsten Dateien werden als binaer 
+Dateien eingelesen und behandelt.
+
+.IP "\fBDisplay:\fP"
+.IP "\fBAlt-S\fP"
+Wenn angegeben: Es werden die Zeilenenden markiert. Ein '$' 
+steht fuer <NL> und ein '\' fuer eine NULL (naechste Zeile
+ist Anschlusszeile).
+
+.IP "\fBAutosave:\fP"
+.IP "\fBAlt-P\fP"
+Wenn angegeben: Die eingestellten Optionen werden automatisch
+beim Verlassen des Editors gesichert.
+.IP "\fBAlt-H\fP"
+Wenn angegeben: Es wird nach jeweils N textveraendernden
+Aktionen die Datei automatisch gesichert. N wird unter Max.
+Changes (siehe Alt-X) angegeben. Das Sichern der Datei 
+erfolgt in eine Datei 'Dateiname'.ASV und ueberschreibt nicht
+die Orginaldatei. Die Sicherheitskopie wird beim normalen 
+Speichern geloescht.
+
+.IP "\fBKeys (interpretation der Funktionstasten):\fP"
+.IP "\fBAlt-L\fP"
+Wenn angegeben: Es werden die bekannten xwpe Funktionstasten-
+belegungen verwendet. (Version < 1.2.0; Turbo C aehnlich)
+.IP "\fBAlt-C\fP"
+Wenn angegeben: Es werden 'Common User Access' Tasten-
+interpretationen verwendet. (MS-Windows aehnlich, aber 
+manchmal nicht so handlich).
+
+.IP "\fBAlt-M\fP"
+Maximale Anzahl der Spalten pro Zeile. Nach der entsprechen-
+den Anzahl Zeichen, wird automatisch ein Zeilenumbruch durch-
+gefuehrt.
+
+.IP "\fBAlt-T\fP"
+Interpretazion des Tabstop-Characters: Ein Tabstop wird als
+die entsprechende Anzahl Spalten interpretiert.
+
+.IP "\fBAlt-X\fP"
+Wenn Autosave/Changes eingestellt ist wird nach der entpre-
+chenden Anzahl Textveraendernder Aktionen automatische eine
+Sicherheitskopie des Textes angelegt (siehe Alt-H).
+
+.IP "\fBAlt-N\fP"
+Anzahl der Undo-Schritte, die ueber Edit/Undo rueckgaengig 
+gemacht werden koennen.
+
+
+.SH File-Manager-Optionen:
+
+.IP "\fBDirectories:\fP"
+.IP "\fBAlt-F\fP"
+Wenn angegeben: auch versteckte Dateien werden gelistet.
+.IP "\fBAlt-D\fP"
+Wenn angegeben: auch versteckte Verzeichnisse werden gelistet.
+.IP "\fBAlt-K\fP"
+Wenn angegeben: Alle Aktionen (Move, Link, Copy und Remove)
+werden rekursiv, also auch in Unterverzeichnissen ausgefuehrt.
+
+.IP "\fBSort Files By (Sortieren der Dateien nach):\fP"
+.IP "\fBAlt-N\fP"
+Name: Dateien werden alphabetisch sortiert.
+.IP "\fBAlt-I\fP"
+Time: Dateien werden nach ihrem Erzeugungsdatum sortiert.
+.IP "\fBAlt-B\fP"
+Bytes: Dateien werden nach ihrer Groesse sortiert.
+.IP "\fBAlt-R\fP"
+Reverse: Reihenfolge der Sortierung wird umgekehrt.
+
+.IP "\fBMove/Copy:\fP"
+.IP "\fBAlt-Q\fP"
+Wenn angegeben: beim Verschieben/Umbennenen wird nachgefragt,
+ob gleichnamige Dateien ueberschrieben werden sollen.
+.IP "\fBAlt-V\fP"
+Wenn angegeben: beim Verschieben/Umbennenen werden 
+gleichnamige Dateien ueberschrieben.
+.IP "\fBAlt-T\fP"
+Wenn angegeben: beim Verschieben/Umbennenen werden 
+gleichnamige Dateien nicht ueberschrieben.
+
+.IP "\fBRemove:\fP"
+.IP "\fBAlt-W\fP"
+Wenn angegeben: Dateien werden beim Loeschen in den 
+Papierkorb geschoben.
+.IP "\fBAlt-A\fP"
+Wenn angegeben: Dateien werden absolut geloescht.
+Es wird vor dem Loeschen aber nachgefragt.
+.IP "\fBAlt-M\fP"
+Wenn angegeben: Dateien werden ohne Nachfrage absolut 
+geloescht.
+
+.IP "\fBLinks on Files:\fP"
+.IP "\fBAlt-H\fP"
+Wenn angegeben: Es wird bei jedem Link versucht einen Hardlink
+auf eine Datei zu erzeugen. Ist dies nicht moeglich, wird ein
+symbolischer Link erzeugt.
+.IP "\fBAlt-S\fP"
+Wenn angegeben: Jeder Link wird als symbolischer Link erzeugt.
+
+.IP "\fBWastebasket (Papierkorb):\fP"
+.IP "\fBAlt-P\fP"
+Wenn angegeben: beim Verlassen von xwpe wird nachgefragt ob
+der Papierkorb geloescht werden soll.
+.IP "\fBAlt-E\fP"
+Wenn angegeben: der Papierkorb wird beim Verlassen von xwpe
+geloescht.
+.IP "\fBAlt-L\fP"
+Wenn angegeben: der Papierkorb wird beim Verlassen von xwpe
+nicht geloescht.
+
+
+.SH Compiler-Optionen:
+
+Beim Aufruf des Menuepunktes \fIRun/Options\fP werden, die Untermenuepunkte
+\fIAdd Compiler\fP, \fIRemove Compiler\fP und die bereits eingestellten 
+Compiler aufgelistet.
+
+Ueber den Punkt \fIAdd Compiler\fP, sowie ueber die einzelnen schon 
+eingestellten Compiler gelangt man zu dem folgenden Optionen-Menue
+
+.IP "\fBLanguage\fP"
+Unter diesem Punkt wird der Name der Programmiersprache eingegeben.
+.IP "\fBCompiler\fP"
+Hier wird der Compiler-Pfad angegeben.
+
+.IP "\fBCompiler-Options\fP"
+Hier werden die vom Compiler bei der Uebersetung zu beruecksichtigen Optionen 
+eingestellt.
+.IP "\fBLoader-Options\fP"
+Hier werden die vom Loader beim Binden zu beruecksichtigen Optionen 
+eingestellt.
+.IP "\fBExecutable-Name\fP"
+Name des auszufuehrenden Programms (Voreinstellung ist Programmname.e)
+.IP "\fBFile-Postfix\fP"
+Der File-Postfix gibt an welche Dateien mit diesem Compiler bearbeitet 
+werden sollen (Beispiel:  .c  fuer  C-Compiler).
+.IP "\fBCompiler-Style\fP"
+Gibt an wie eventuell aufgetretene Fehler interpretiert werden sollen. 
+Es gibt die beiden Moeglichkeiten '\fIGNU\fP' fuer GNU aehnliche
+Compiler und '\fIOther\fP' fuer Compiler die andere Fehlermeldungssyntax 
+verwenden. Wenn '\fIOther\fP' ausgewaehlt wurde, wird der 
+\'\fIMessage-String\fP\' (siehe unten) interpretiert, um Fehlermeldungen 
+zu erkennen.
+.IP "\fBOK\fP"
+Veraenderungen werden uebernommen.
+.IP "\fBCANCEL\fP"
+Verlassendes Menues ohne Veraenderungen.
+
+
+Mit \fIAdd Compiler\fP wird ein neuer Compiler zu den vorhandenen hinzu-
+gefuegt. 
+
+Ueber den Aufruf eines vorhandenen Compilers koennen dessen
+Optionen veraendert werden.
+
+\fIRemove Compiler\fP mit dieser Option kann ein vorhandener Compiler
+wieder aus der Liste geloescht werden.
+
+
+.SH Projekt-Optionen:
+
+.IP "\fBCompiler\fP"
+Hier wird der Compiler-Pfad angegeben.
+
+.IP "\fBCompiler-Options\fP"
+Hier werden die vom Compiler bei der  Uebersetung zu beruecksichtigen 
+Optionen eingestellt.
+.IP "\fBLoader-Options\fP"
+Hier werden die vom Loader beim Binden
+zu beruecksichtigen Optionen eingestellt.
+.IP "\fBExecutable-Name\fP"
+Name des auszufuehrenden Programms (Voreinstellung ist a.out)
+.IP "\fBStore Objects in Library\fP"
+Wird hier ein Bibliotheksname angegeben, werden die erzeugten Objektdateien 
+in dieser abgelegt. Die Bibliothek wird beim Binden dann mit beruecksichtigt.
+.IP "\fBCompiler-Style\fP"
+Gibt an wie eventuell aufgetretene Fehler interpretiert werden sollen. 
+Es gibt die beiden Moeglichkeiten '\fIGNU\fP' fuer GNU aehnliche
+Compiler und '\fIOther\fP' fuer Compiler die andere Fehlermeldingssyntax 
+verwenden. Wenn '\fIOther\fP' ausgewaehlt wurde, wird der 
+\'\fIMessage-String\fP\' (siehe unten) interpretiert, um Fehlermeldungen 
+zu erkennen.
+.IP "\fBVariablen ...\fP"
+Die Variablen des Projekts werden in einem gesonderten \fIVariablen-Fenster\fP
+aufgelistet. Es koennen sowohl Variablen geloescht als 
+auch neue hinzugefuegt werden.
+.IP "\fBInstall ...\fP"
+Die Anweisungen, die beim Aufruf der Install-Anwendung abgearbeitet werden 
+sollen, werden in einem gesonderten \fIInstall-Fenster\fP aufgelistet. Es 
+koennen sowohl Anweisungen geloescht als auch neue hinzugefuegt werden.
+.IP "\fBSave\fP"
+Veraenderungen werden in der angegebenen \fIProjekt-Datei\fP gespeichert.
+.IP "\fBSave As\fP"
+Veraenderungen werden unter neuem Namen gespeichert.
+.IP "\fBCANCEL\fP"
+Verlassendes Menues ohne Veraenderungen.
+
+
+.SH Der Message-String:
+Der '\fIMessage-String\fP' wird zur Interpretation der Compiler-Ausgabe
+verwendet, wenn der '\fICompiler-Style\fP' '\fIOther\fP' eingeschaltet
+ist. Der 'Message-String' muss normalerweise an den verwendeten Compiler 
+angepasst werden. Er wird mit der Compiler-Ausgabe wie folgt verglichen:
+
+\'*\' steht fuer eine beliebige Zeichenkette. \'\?\' steht fuer ein 
+beliebiges Zeichen. '[ ]' steht fuer ein Zeichen aus der Liste zwischen 
+den eckigen Klammern. (Es gilt die gleiche Syntax wie beim File-Manager.)
+
+${FILE} wirkt wie '*', aber die Zeichen werden als Name der Datei, in der
+der Fehler aufgetreten ist gespeichert. 
+${LINE[+-N]} wirkt wie '*', aber die Zeichen werden als Zeilennummer
+interpretiert. Es kann eine Zahl N addiert oder subtrahiert werden.
+${FILE} und ${LINE} muessen in dem Message-String angegeben werden.
+Kann eine Compiler-Ausgabezeile so interpretiert werden, dass ein gueltiger
+Dateiname und eine gueltige Zeilennummer erhalten werden, wird diese als
+Fehlerausgabe gewertet.
+
+Optional ist die Interpretation der Spaltenangabe. Hier gibt es mehrere 
+Moeglichkeiten: ${COLUMN[+-N]} - die Zeichenkette ${COLUMN} wird als Zahl
+interpretiert.
+${COLUMN=BEFORE[+-N]} - die Zeichenkette ${COLUMN} wird als Suchausdruck 
+interpretiert und die Spalte ist die vor dem gefundenen Ausdruck.
+${COLUMN=AFTER[+-N]} - die Zeichenkette ${COLUMN} wird als Suchausdruck 
+interpretiert und die Spalte ist die hinter dem gefundenen Ausdruck.
+In allen drei Faellen kann eine Zahl N addiert oder subtrhiert werden.
+
+Erstrecken sich Fehlerangaben ueber mehrere Zeilen (z.B. Sun-Pascal: pc)
+kann dies dadurch beruecksichtigt werden, dass im Message-String 
+CR's (^M) angegeben werden, mit Hilfe derer die Interpretation auf mehrere
+Zeilen aufgeteilt werden kann. Fuer diese Faelle gibt es die 
+Vergleichszeichenkette ${CMPSTR}, mit Hilfe derer die Angabe 
+${COLUMN=PREVIOUS?STR[+-N]} in der folgenden Zeile ausgewertet werden 
+kann. STR ist eine Suchzeichenkette, die mit ${CMPSTR} verglichen wird.
+
+Warnungen: Warnungen werden durch Vergleich mit einer Zeichenkette STR
+wie folgt erkannt: ${?N:STR} - N kann eine Zahl oder ein '*' sein. Ist
+N eine Zahl gibt sie die Spalte an, an der die Warnung beginnen soll. 
+Ist ein '*' angegeben, kann STR irgendwo im Text auftreten. Es koennen
+beliebig viele Warnumgszeichenketten angegeben werden. 
+
+.EX
+
+Beispiele: 
+
+gcc: ${?*:warning:}${FILE}:${LINE}:* before `${COLUMN=BEFORE}'
+
+cc(Sun): ${?*:warning:}"${FILE}", line ${LINE}:* at or \\
+					near * "${COLUMN=AFTER}"
+
+cc(HP): ${?*:warning:}cc: "${FILE}", line ${LINE}:* at or \\
+					near * "${COLUMN=AFTER}"
+
+pc(Sun): ${?0:e}${?0:w}${?0:s}*:*:* * ${FILE}:^M^M* ${LINE}  \\
+				${CMPTXT}^M*-------${COLUMN=PREVIOUS?^}
+
+.EE
+
+.SH Projekt-Datei:
+
+Mit Hilfe der Projekt-Datei koennen Programme, die aus mehreren
+Modulen bestehen interaktiv bearbeitet werden. Die Projekt-Datei
+kann ueber den Menue-Punkt Run/Options/Project-Options (siehe
+Projekt-Optionen) erstellt werden oder aber direkt ediert werden.
+Die Syntax der Projekt-Datei ist kompatibel zu der von Makefiles.
+(dies gilt ab der Version 1.1.0 und ist nicht kompatibel zu 
+ frueheren Versionen).
+F
+uer die Projekt-Datei sind nur Variablen-Definitionen und die 
+Definition des 'install' - Targets von Bedeutung.
+Syntax fuer Variablen-Defintionen ist:
+.EX
+Variablenname = Zeichenkette
+.EE
+Auf diese Weise koennen beliebige Variablen definiert werden. Die
+Variablen werden ueber $(Variablenname) in der Reihenfolge ausgewertet,
+dass erst nach einer Umgebungsvariable dieses Namens gesucht wird.
+Ist diese nicht vorhanden, wird nach einer Definition in der Projekt-
+Datei gesucht. Ist diese auch nicht vorhanden, wird eine leere
+Zeichenkette fuer  $(Variablenname) eingesetzt.
+
+Folgende Variablen haben feste Bedeutungen:
+
+.IP "\fBFILES\fP"
+Eine beliebige Anzahl zu uebersetzender Programm-Code Module, die zu 
+einem Executable zusammengebunden werden sollen.
+.IP "\fBCMP\fP"
+Compiler-Pfad
+.IP "\fBCMPFLAGS\fP"
+Compiler-Optionen
+.IP "\fBCMPSWTCH\fP"
+Fehlerinterpretation (Voreinstellung ist '\fIGNU\fP', es kann 
+'\fItraditional\fP' oder '\fIextended\fP' angegeben werden.)
+.IP "\fBLDFLAGS\fP"
+Loader-Optionen
+.IP "\fBEXENAME\fP"
+Name des Executables (Voreinstellung ist a.out)
+.IP "\fBLIBNAME\fP"
+Name der Bibliothek. Wenn angegeben, werden die Objektdateien in der 
+Bibliothek gespeichert und diese beim Binden des Programms beruecksichtigt.
+
+Aus einem Makefile kann also einfach eine Projekt-Datei gemacht 
+werden, in dem am Ende z.B. die folgenden Zeilen eingefuegt werden
+(fuer C) :
+.EX
+FILES=$(CFILES)
+CMP=$(CC)
+LDFLAGS=$(LIBFLAGS)
+EXENAME='Targetname'
+.EE
+
+Beim Aufruf der Compile- bzw. Make-Anwendung:
+
+Die Dateien werden nach einander in der angegebenen Reihenfolge
+bearbeitet. Wenn eine Datei seit der letzten Uebersetzung veraendert
+wurde, wird diese neu uebersetzt. Tritt ein Fehler auf, wird die 
+Bearbeitung der Projekt-Datei abgebrochen und eine Fehlerausgabe
+durchgefuehrt (siehe \fIMessage-Fenster\fP).
+
+Ist kein Fehler aufgetreten, werden alle Objektdateien unter 
+Beruecksichtigung der Loader-Optionen zu einem Executable mit dem
+unter name: angegebenen Namen zusammengebunden.
+
+
+In der Projekt-Datei kann ein 'install'-Target angegeben werden.
+Dieses beginnt mit
+.EX
+install:
+.EE
+In der gleichen Zeile eventuell folgende Abhaengigkeiten wie in einem
+Makefile werden ignoriert. Die Abhaengigkeiten der install-Anwendung
+sind stattdessen durch die oben beschriebene Variable FILES gegeben.
+Nach diesem Targetnamen werden alle folgenden Zeilen die mit einem
+<TAB> beginnen als UNIX-Kommandos interpretiert und ausgefuehrt.
+Hiebei wird die Auswertung eventuell auftretender Variablen berueck-
+sichtigt:
+.EX
+<TAB> Kommando1
+<TAB> Kommando2
+.EE
+koennen alle UNIX-Kommandos benutzt werden (das Kommando 'cd' bleibt 
+ohne Wirkung).
+Das Install-Target wird ueber den Menuepunkt Run/Install (oder Alt-L)
+ausgefuehrt (siehe \fIRun-Menue\fP).
+
+
+.SH Syntax-Unterstuetzung:
+
+xwpe bietet eine Syntax-Unterstuetzung, die darin besteht, dass die
+Schluesselworte und Operatoren einer Sprache unterschieden werden von
+den Konstanten, den Preprozessor-Anweisungen und dem Rest des Textes.
+Voreingestellt ist die Unterstuetzung 
+der Programmiersprachen C, C++, FORTRAN. Durch die Initialisierungsdatei
+.EX
+    we_synt_defs
+.EE
+koennen aber weitere Sprachen hinzugefuegt bzw. die voreingestellten
+ueberschrieben werden. Die zu benutzende Sprache wird anhand der Dateiendung
+festgestellt. Die Datei we_synt_defs ist eine ASCII-Datei und kann 
+im Verzeichnis ../lib/wpe relativ zum Verzeichnis der xwpe oder im 
+persoenlichen Heimatverzeichnis unter .wpe abgelegt 
+werden. Sie muss fuer jede Sprache wie folgt aufgebaut sein:
+.EX
+"Zeichenkette: Endung des Dateinamen" 
+"Integer: Anzahl der Schluesselworte" 
+"Zeichenketten: Schluesselworte"
+"Integer: Anzahl der Mehrzeichen-Operatoren" 
+"Zeichenketten: Mehrzeichenoperatoren"
+"Zeichenkette: Alle Einzeichen-Operatoren"
+"Zeichenkette: Beginn-Kommentar"
+"Zeichenkette: Ende-Kommentar"
+"Zeichenkette: Beginn-Kommentar bis zum Ende der Zeile"
+"Zeichenkette: alle Zeichen fuer Spaltenabhaengigen Kommentar"
+"Zeichenkette: speziellen Einzelzeichen"
+"Integer: Spalte fuer Kommentar
+		(-1 kein spaltenabhaengiger Kommentar)"
+"Integer: Spalte fuer Anschlusszeile
+          (-1 keine spaltenabhaengige Anschlusszeile)"
+"Integer: Spalte Kommentar bis zum Ende 
+          (1000 kein spaltenabhaengiger Kommentar)"
+.EE
+Die Zeichenketten und Integer muessen durch Blanks oder CR getrennt werden.
+Die Zeichenketten aus Einzeichenoperatoren und Zeichen fuer Spaltenabhaengige
+Kommentare duerfen keine Leerzeichen enthalten. Alle Zeichenketten fuer
+Kommentare koennen durch NULL auf 'nicht vorhanden' gesetzt werden.
+Die Anzahl-Integer duerfen auf 0 gesetzt werden, wenn keine Schluesselworte
+bzw. Mehrzeichen Operatoren existieren.
+Die Zeichenkette 'spezielle Zeichen' setzt sich wie folgt zusammen:
+.EX
+Zeichen fuer String-Konstante
+Zeichen fuer Character-Konstante
+Zeichen fuer Preprozessor-Anweisung
+Zeichen fuer naechstes Zeichen uninterpretiert
+Zeichen fuer naechste Zeile ist Anschlusszeile 
+	   (wenn am Ende der Zeile)
+Zeichen (zur Zeit keine Bedeutung)
+Zeichen fuer naechste Zeile ist Anschlusszeile 
+        (an beliebiger Stelle)
+Zeichen (wenn nicht leer wird Gross/Kleinschreibung 
+         bei Schluesselworten nicht unterschieden.)
+.EE
+Ein Leerzeichen innerhalb dieser Zeichenkette steht fuer das Fehlen des 
+entsprechenden Zeichens.
+
+Beispiele:
+.EX
+ .c
+ 33
+ NULL auto break case char const continue default do double
+ else enum extern float for goto if int long register
+ return short signed sizeof static struct switch
+ typedef union unsigned void volatile while
+ 0
+ ()[]{}<>+-/*%=|&!.?:,; /* */ NULL NULL "'#\\     -1 -1 1000
+
+ .f
+ 64
+ ACCESS ASSIGN BACKSPACE BLANK BLOCKDATA CALL CHARACTER 
+ CLOSE COMMON COMPLEX CONTINUE DATA DIMENSION DIRECT DO 
+ DOUBLE PRECISION ELSE END ENDFILE ENTRY EQUIVALENCE ERR 
+ EXIST EXTERNAL FILE FMT FORM FORMAT FORMATTED FUNCTION 
+ GOTO IF IMPLICIT INQUIRE INTEGER INTRINSIC IOSTAT LOGICAL 
+ NAME NAMED NEXTREC NUMBER OPEN OPENED PARAMETER PAUSE 
+ PRINT PROGRAM READ REAL REC RECL RETURN REWIND SAVE 
+ SEQUENTIAL STATUS STOP SUBROUTINE TO UNFORMATED UNIT WRITE
+ 13
+ .AND. .EQ. .EQV. .FALSE. .GE. .GT. .LE. .LT. .NE. .NEQV.
+ .NOT. .OR. .TRUE.
+ ()+-/*=$.:, NULL NULL ! C* '      1  0 5 72
+
+.EE
+
+
+
+.SH Installations-Hinweise:
+
+Das XWindow Programming Environment ist als eine System V kompatible 
+Anwendung geschrieben, die fuer den UNIX - Teil mit der Curses-Library 
+unter Benutzung der Terminfo-Terminal-Informationen arbeitet. Sollte 
+keine Terminfo-Informationen auf dem ensprechenden System zur 
+Verfuegung stehen, kann ueber die Definition der Pre-Prozessor-
+Variablen TERMCAP, bei der Installation, ersatzweise die Verwendung 
+von termcap-Informationen vorgegeben werden. Fuer Systeme wie 
+Sunos 4, die System V Erweiterungen in zusaetzlichen Pfaden abgelegt 
+haben, muessen diese in die ensprechenden Include- und Library-Pfade 
+eingebunden werden.
+
+Fuer den XWindow-Teil wird die X-Library ab X11R3 vorausgesetzt. Die 
+ensprechenden Pfade muesssen ebenfalls eingebunden werden. Ein 
+wichtiger Punkt ist, dass die ALT-Taste unter XWindow als mod4  
+interpretiert wird (wie unter Sun ueblich). gegeben falls muss diese 
+Taste mit 
+xmodmap -e "add mod4 = Alt_L"
+dem XWindow-System hinzugefuegt werden.
+
+Um die Hilfestellung 'Function-Index' benutzen zu koennen muss eine 
+Umgebungsvariable MANPATH gesetzt sein, die die Pfade zu allen 
+gewuenschten Dokumentationen enthaelt.
+
+Bei einigen Rechnern (z.B.: S400) muessen fuer den XWindow Teil auch 
+Netz-Bibliotheken beim Binden beruecksichtigt werden.
+
+
+
+
+
+

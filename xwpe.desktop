@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Xwpe
+Comment=Xwpe Integrated Development Environment
+Exec=xwpe
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Categories=Application;IDE;Development;

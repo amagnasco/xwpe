@@ -1,0 +1,292 @@
+Notes for Hackers
+     Conditional compilation can quickly destroy the readability of source
+code.  Non-ANSI C conditional compilation have been removed for the sake of
+clarity.  We are sorry if this causes problems for anyone.  In the future
+xwpe alpha may begin to use POSIX functions in preference to others as
+well.
+     All support for dos has been removed.  It has not worked in the
+last official release and there is not really a need for it.  No one is
+actively working on the djgpp port which also didn't work in the last Fred
+Kruse release.  The djgpp defines are slowly being removed since no support
+is likely in the near future.
+
+German Documentation
+     All German documentation has been moved to the old directory as no one
+has updated it since 1.4.2.
+
+
+Known Bugs
+
+* Debugging leaks memory (actually location of the leak unknown).
+* Documentation hasn't been updated.
+* Compilers are assumed to have a -c and -o option.
+* 'make install' installs x versions even if not compiled in.
+* Adding items when no project is open has odd behavior.
+* Changing the maximum column and using cut & paste can crash xwpe.
+* Clicking "edit" in the project menu when not on a file it loads a file
+     with a name of " ".
+* Esc key requires 3 presses to do the regular escape function under Linux
+     console (and perhaps other terminal types).
+* No error for disk full.
+* Check headers doesn't correctly handle comments and "ifndef" protection.
+* Debugger assumes the program starts in "main".
+* Certain file names like 'Messages' aren't handled properly.
+* Cursor keys don't work in xterms or telnet sessions.
+
+
+Changes
+
+1.5.30a
+* Some additional comments
+* Fedora core 4 compile fix
+
+1.5.29a
+* Fixed regression of XLookupString.
+
+1.5.28a
+* Corrected e_quit to properly quit the debugger.
+* Corrected function help bug.
+* Changed X11 colors to correspond to curses order.
+* Disabled different pointers under X11 and add file manager menu item.
+* Added Paulo César Pereira de Andrade's partial i18n patch.
+
+1.5.27a
+* More modifications from Roman Levenstein.  Not enabled by default; use
+     -DNCURSES.
+* Fixed bzipped man pages.
+* Added Arjan van Dijk's XLookupString bug fix.
+* Fixed some syntax coloring problems.
+* Use mkdtemp if available.
+* Changed compiler message strings to use "\n" instead of putting in a
+     return character directly.
+* Added Harry Berman's minor memory bug fixes.
+
+1.5.26a
+* Spent more time fixing path limits.
+* Fixed blank project executable bug.
+* Fixed "../" bug introduced in 1.5.25a.
+* Autosaves no longer create backup files.
+* Apply Martin's translations.  No more german comments.
+
+1.5.25a
+* Fixed copy and paste bug.
+* Removed some of the path and file name limits.
+* Fixed seg fault when no X paste information.
+
+1.5.24a
+* Fix for using gdb with ncurses 5.
+* Changed to use _POSIX_PATH_MAX instead of 80 in some case.  Needs work.
+* Fixed options saving so that it doesn't save colors incorrectly.
+* Cleanup use of dtmd variable.
+* Fixed the loading and saving of MSDOS text files (no conversion to Unix
+     format yet).
+
+1.5.23a
+* Added another zoom fix by Mark Spieth
+* XSelection was added to 1.5.22a but forgot to get mentioned in the
+     CHANGELOG.
+* Added Fritz's Y2K patch.
+* Converted info reader to use zlib.  Zlib may be required in the future.
+* Allow tempnam() to create the temporary directory name if available.
+     This function may also be required in future releases.
+
+1.5.22a
+* Made the makefile once again check for existence of directories
+     because SCO's mkdir -p spits out an error.
+* Changed keyboard commands back to Turbo C bindings.  (Previous
+     information was wrong.)
+* Added Guido Draheim's patch to optionally use ~ for backup files.
+* Did away with the NEWSTYLE colors.  (Still need to make the colors more
+     pleasant for NEWSTYLE.  Ideally I like to be able to choose new or
+     original style at the command line.)
+* Added Martin's patch for max column problems.
+
+1.5.21a
+* Added Mark Spieth's patch to fix some zoom stuff and remove the file
+     handle leak.
+* Added Matej Vela's patches to the makefile and fix for e_mk_info_path.
+* Fixed the bug in running the debugger and executable.
+* Heavily modified Brian's path to make projects store relative paths.
+* Modified compile, make, and run keyboard commands to Turbo C bindings.
+* Added part of Brian White's SCO man page fix.
+
+1.5.20a
+* Fixed until end of line comment to allow for characters beginning with
+     alphanumeric characters.
+* Fixed bugs in search and replace.
+* Fixed stop on error bug when compiling.
+* Heavily modified German Garcia's patch for multiple extensions for a
+     compiler.
+* Fixed delete redo bug.
+
+1.5.19a
+* Fix for mouse resize window/zoom bug based on Pedro's patch.
+* Made the print command an editor option.
+* Fixed gpm bug with a modification of Sebastiano's patch.
+* Modified Mark Spieth's patch for new titling method.  (Editor option to
+     use the old style.)
+* Added Mark's patch to read xwperc from local directory if it exists.
+
+1.5.18a
+* Pedro's fix for Option->Editor bug
+* Checks file system for the ability to do autosave/emergency save files.
+* Supports multiple extensions per language syntax.
+* More of Pedro's file-manager massage.
+* Added Alexander's change case dialog.
+* Hopefully fixed all AIX and OSF compile problems.
+
+1.5.17a
+* Fixed X windows argument bug.
+* Now defaults to 8x13 font when non-fixed width used.
+* Incorporated Pedro's memory bug fixes and menue code cleanup.
+* Also incorporated Pedro's file-manager cleanup.
+
+1.5.16a
+* Fixed configure script bug.
+
+1.5.15a
+* Changed xwpe to compile X11 and term code into shared libraries.  However
+     the configure script has yet to be changed to build it.
+* Fixed a leaky file descriptor and memory bug in we_debug.c code.
+* Added Brian's patch for inserting selected text into search and replace
+     dialogs.
+* Incorporated Roman's goto cursor and finish function debugger features.
+     (Only gdb support.)
+
+1.5.14a
+* Changed local variable reg to regz because some systems defined this to
+     register.
+* Added private colormap option.
+* Fixed slackware compile problem.
+* Partially fixed the maximum column and cut & paste problem.
+
+1.5.13a
+* Added Alex Buell's patch for the new glibc.
+* Removed support for editing binary files.
+* Added Brian's patch to Search and Replace.
+* Added Martin Zampach's patch to adjust breakpoints when new lines added and
+     to load/save the breakpoints/watches with the project.
+* Started incorporating Roman Levenstein's changes.  POSIX regular
+     expressions for matching and replacing.  Ctrl-F1 now looks up the
+     current function.
+
+1.5.12a
+* Added Brian's patch to only allow a file to be loaded once in an earlier
+     version but forgot to record it.  This version includes some fixes
+     to that since it wasn't working.
+* Added Yarick Rastrigin's tab patch.  Doesn't allow tabbing through
+     buttons but a welcome improvement (particularly for the replace dialog).
+* Incorporated some of James M.'s man page update.
+
+1.5.11a
+* Added Brian O'Donnell's changes to projects.  Includes loading projects
+     from file manager and the "edit" now loads the file for editing.
+* Chaged xwperc into a text file.  Removed ability to load only color info.
+* Some DJGPP ifdefs have been removed since it seems unlikely xwpe will
+     support DJGPP in the near future.
+
+1.5.10a
+* Fixed long filenames from crashing xwpe when the window is shrunk.
+* Added Duane Penzien's wastebasket delete bug fix.  Should probably display
+     some message when this occurs.  It currently does nothing.
+* Added Anthony Barbachan's patch for newer terminfo.
+* Repaint the desktop no longer resizes all windows.
+
+1.5.9a
+* Fixed compilation problem on older curses systems.
+* Added Brian O'Donnell's save patch.  When a file is modified an asterisk
+     now appears near the bottom left.  The asterisk disappears when the file
+     is saved instead of poping up a message box.
+
+1.5.8a
+* Fixed gzipped man page bug.
+* Directory can no longer be loaded as files but it doesn't display an error
+     message.
+* Incorporated Sebastiano Suraci's Linux and gpm patch.  (Mostly)
+* Xterm define and uninitialized strings fixed by Mark Loftis.
+* Some spelling fixes.
+* Lots of formating changes.
+* German comments converted to English thanks to Ronald Holzloehner.
+
+1.5.7a
+* Fixed watch window segmentation fault problem.
+* Fixed NO_XWINDOWS compilation.
+* Fixed autosave bug.
+* Fixed configure script.
+* Incorporated Stefan Hille's remaining changes.
+
+1.5.6a
+* New configure script.  aclocal.m4 is taken from lynx 2.8.1 dev 4.
+* Fixed remove bug (working mouse cursor stayed after removing file).
+* Fixed some cut and paste bugs.
+* Fixed no windows zoom bug.
+* Fixed up prototypes in edit.h and progr.h.
+* Incorporated some of Alexander Neundorf's changes.
+* Incorporated Kenn Flynn's file manager patch.
+* Incorporated Alexei Pavlov's changes to autoindenting.
+
+1.5.5a
+* Added Mark Loftis's changes to scrolling functionality.
+* Incorporated more changes from Stefan Hille.
+* Removed some warnings.
+
+1.5.4a
+* Changed naming from ALPHA-x to 1.5.xa.  The change from 1.4 to 1.5a does
+     not represent a great change in functionality instead marks the change
+     of maintainers
+* Removed all remenents of dos support.
+* Added some changes from Stefan Hille such as messages.h.
+* Changed handling of expose event under X Window so that it only redraws
+     part of the screen.
+* Added Java syntax to the syntax definition file.
+* Deciphered purpose of the help.key (formally we_help_str) file.  This file
+     gives the section of help that should be loaded while xwpe is in
+     different states.  Each line corresponds to a mode.  The modes are as
+     follows:
+       1  - Standard file                14 - Project menu
+       2  - Watch window                 15 - Option menu
+       3  - Stack window                 16 - Window menu
+       4  - Message window               17 - Help menu
+       5  - Most file-manager windows    18 - Function-Index window
+       6  - Execute file-manager window  19 - Grep window
+       7  - System (#) menu              20 - Find window
+       8  - File menu                    21 - Project window
+       9  - Edit menu                    22 - Variables window
+       10 - Search menu                  23 - Install window
+       11 - Block menu                   24 - Windows window
+       12 - Run menu                     25 - Top menu bar
+       13 - Debug menu                   26 - Help window
+
+ALPHA-3
+* Fixed bug in WeExpArr.c
+* Fixed debugging problem found by Oliver Wilson.
+* Several other minor cleanups throughout the code.
+* Some documentation fixes as well.
+* Removed support for encrypted files (if enough people request it, the
+     encrypted file support could be added again but for the time being we
+     feel this is not needed in a development environment).
+
+ALPHA-2
+* Fixed bug in syntax highlighting for FORTRAN.
+* Lots of old code that had been commented out were removed.
+* Some functions from we_progn.c have been renamed and moved to WeSyntax.c
+* Renamed all configuration files.
+* Changed format of syntax_def (formerly we_synt_def).  This will almost
+     certainly change again since the current format is difficult to use.
+* Documentation plan:
+     1) INSTALL - all compiling instructions and installation needs (not
+          started)
+     2) README - simply states what the program does (not started)
+     3) xwpe.1 - describes configuration files and command line options
+          (mostly done)
+     4) help.xwpe - on-line documentation describing all use (command line
+           options updated but not configuration files and anything else)
+
+ALPHA-1
+* All patches were applied except the gpm patch.
+* SWAP and NOWEUNDO have been removed since they don't work.
+* Some other defines have been removed as well.
+* Some functions from we_hfkt.c have been renamed and moved to WeString.c
+* Some functions from we_xterm.c have been renamed and moved to WeXterm.c
+* Modified X resources a lot making the documentation incorrect.
+

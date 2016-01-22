@@ -1,0 +1,38 @@
+This is the file INSTALL for the xwpe distribution, version 1.5.11a.
+
+IMPORTANT NOTE:  The configuration file format has changed since version
+1.5.10a.  Old configuration files will not work.
+
+To compile this package:
+
+1.  Configure the package for your system.  In the directory that this
+file is in, type `./configure'.  If you're using `csh' on an old
+version of System V, you might need to type `sh configure' instead to
+prevent `csh' from trying to execute `configure' itself.
+
+The `configure' shell script attempts to guess correct values for
+various system-dependent variables used during compilation, and
+creates the Makefile. It also creates a file `config.status'
+that you can run in the future to recreate the current configuration.
+
+Running `configure' takes a minute or two.  While it is running, it
+prints some messages that tell what it is doing.
+
+By default, xwpe files will be installed in the /usr/local directories.
+You can specify an installation prefix other than /usr/local by giving
+`configure' the option `--prefix=PATH'.
+
+If you need to do unusual things to compile the package, we encourage
+you to figure out how `configure' could check whether to do them, and
+mail diffs or instructions to the address given in the README so we
+can include them in the next release.
+
+2.  Type `make' to compile the package.
+
+3.  Type `make install' to install programs, data files, and
+documentation. (For german-speaking people: Type `make install_german'
+to install programs, data files and german documentation)
+
+4.  You can remove the program binaries and object files from the
+source directory by typing `make clean'.
+

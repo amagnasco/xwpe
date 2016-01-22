@@ -1,0 +1,82 @@
+AC_INIT(Xwpe.h)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_GCC_TRADITIONAL
+AC_PROG_CC_C_O
+
+AC_PREFIX_DEFAULT(/usr/local)
+
+CF_ANSI_CC_CHECK
+dnl CF_GCC_WARNINGS
+AC_C_CONST
+
+AC_CHECK_LIB(ncurses, main,
+ LIBS="${LIBS} -lncurses"
+ CURSES="yes"
+ AC_CHECK_LIB(mytinfo, main, LIBS="${LIBS} -lmytinfo"),
+ AC_CHECK_LIB(curses, main,
+  LIBS="${LIBS} -lcurses"
+  CURSES="yes",
+  AC_DEFINE(TERMCAP)
+  AC_CHECK_LIB(termlib, main)
+  AC_CHECK_LIB(termcap, main)
+ )
+)
+
+AC_CHECK_LIB(gpm, main)
+AC_CHECK_LIB(z, main)
+
+AC_PROG_LN_S
+AC_CHECK_FUNC(symlink, , AC_DEFINE(NOSYMLINKS))
+AC_CHECK_FUNC(tparm, , AC_DEFINE(NOTPARM))
+AC_CHECK_FUNCS(mkdtemp)
+if test -n "${HAVE_MKDTEMP}"; then
+  AC_CHECK_FUNCS(tempnam)
+fi
+AC_PROG_RANLIB
+if test "${RANLIB}" = 'ranlib'; then
+ AC_DEFINE(RANDLIB)
+fi
+
+AC_CHECK_PROG(XDB, xdb, xdb)
+if test "${XDB}" = 'xdb'; then
+ AC_DEFINE(XDB)
+fi
+
+AC_CHECK_FUNC(strstr, , AC_DEFINE(NOSTRSTR))
+AC_CHECK_PROG(PRNTCMD, lpr, lpr)
+if test -z "${PRNTCMD}"; then
+ AC_CHECK_PROG(PRNTCMD, lp, lp)
+fi
+if test -n "${PRNTCMD}"; then
+ AC_DEFINE_UNQUOTED(PRNTCMD, "$PRNTCMD")
+else
+ AC_DEFINE(PRNTCMD, "")
+fi
+
+AC_PATH_XTRA
+if test -n "${no_x}"; then
+ AC_DEFINE(NO_XWINDOWS)
+else
+ X_EXTRA_LIBS="${X_EXTRA_LIBS} -lX11"
+fi
+
+if man -s 1 ls > /dev/null 2> /dev/null; then
+ AC_DEFINE(MAN_S_OPT)
+fi
+
+if eval 'grep -s "[[ 	]]putc[[ 	(]]" /usr/include/*.h > /dev/null'; then
+ :;
+else
+ AC_DEFINE(DEFPGC)
+fi
+
+if eval 'grep -s "[[ 	]]tputs[[ 	(]]" /usr/include/*.h > /dev/null'; then
+ :;
+else
+ AC_DEFINE(DEFTPUTS)
+fi
+
+AC_OUTPUT(Makefile)
+
