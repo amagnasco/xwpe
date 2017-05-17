@@ -51,3 +51,22 @@ by Fred Kruse.  Updates will be made available on the unofficial xwpe
 homepage, http://www.identicalsoftware.com/xwpe/.  Send questions or
 problems to Dennis Payne, dulsi@identicalsoftware.com.
 
+############################# MAINTAINER ###################################
+
+    As evidenced by their discussion list, xwpe-alpha has not seen active 
+    development since at least 2003. This GitHub version is maintained by 
+    Alessandro G. Magnasco at https://github.com/amagnasco/xwpe/.
+    
+    Caveat emptor ; this software hails from last century. I can try to help
+    figure out any questions or problems you might have, but purely out of 
+    academic interest. Solutions are left as an exercise for the hacker.
+    If you have a patch, please let me know so we can review it.
+    
+############################# DEPENDENCIES #################################
+
+    If you are having difficulties compiling your code, be aware that xwpe
+    requires 32-bit libcurses. As most modern systems should keep far, far
+    away from the original UNIX library, this dependency is satisfied by 
+                          > libncurses5-dev <
+    
+#############################    ENJOY !    ################################
