@@ -1,0 +1,6 @@
+Makefile
+config.status
+*.o
+*.bak
+*.log
+xwpe
