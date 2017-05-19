@@ -1,7 +1,7 @@
-                          XWPE ALPHA README
+# XWPE ALPHA README #
 
 
-What is xwpe?
+## What is xwpe? ##
 
      Xwpe is a development environment designed for use on UNIX
 systems.  Fred Kruse wrote xwpe and released the software for free
@@ -21,7 +21,7 @@ terminal programming environment.  Xwe and we provide a simple text
 editor for X windows and terminal modes respectively.
      On-line help describes the complete use of xwpe.
 
-What is xwpe-alpha?
+## What is xwpe-alpha? ##
      The xwpe-alpha project is an attempt to reorganize the source code to
 improve readability.  It will also incorporate as many bug fixes as
 available.  Attempts to contact the author of xwpe have received no
@@ -30,7 +30,7 @@ To signify the difference xwpe-alpha has increased the version number
 from 1.4.x to 1.5.x despite relatively few changes at present.  Also
 xwpe-alpha release end in 'a' (e.g. 1.5.4a).
 
-Why release it now?
+## Why release it now? ##
      The source code is still largely unchanged at this point.  The purpose
 in the release is to discover problems early in the modifications.  Since
 not all platforms are accessible to the developers come changes could
@@ -38,14 +38,14 @@ inadvertently break compilation on another system.  Also understanding and
 modifying the structure of xwpe is a large undertaking and will take a long
 time to complete.
 
-Copyright
+## Copyright ##
      Copyright (C) 1993 Fred Kruse xwpe is free; anyone may
 redistribute copies of xwpe to anyone under the terms stated in the
 GNU General Public License.  The author assumes no responsibility
 for errors or omissions or damages resulting from the use of xwpe or
 this manual.
 
-Maintainer
+## Maintainer ##
      This version is unofficial update to xwpe and is not supported
 by Fred Kruse.  Updates will be made available on the unofficial xwpe
 homepage, http://www.identicalsoftware.com/xwpe/.  Send questions or
