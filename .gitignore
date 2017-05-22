@@ -4,4 +4,5 @@ config.status
 *.bak
 *.log
 *.pdf
+.swp
 xwpe
