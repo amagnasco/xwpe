@@ -372,8 +372,8 @@ int fl_wnd_mouse(sw, k, fw)
 	    for(MLEN = 1; *(fw->df->name[fw->nf]+c+MLEN)
 			&& *(fw->df->name[fw->nf]+c+MLEN) != ' '; MLEN++);
 	    MLEN *= 2;
-	    file = MALLOC(MLEN * sizeof(char));
-	    bgrd = MALLOC(MLEN * sizeof(char));
+	    file = malloc(MLEN * sizeof(char));
+	    bgrd = malloc(MLEN * sizeof(char));
 	    while (e_mshit() != 0)
 	    if(sw && (e_mouse.x != xa || e_mouse.y != ya))
 	    {  xn = e_mouse.x;  yn = e_mouse.y;

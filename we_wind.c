@@ -18,7 +18,7 @@ int e_make_xr_rahmen(int xa, int ya, int xe, int ye, int sw);
 char **StringToStringArray(char *str, int *maxLen, int minWidth, int *anzahl)
 {
  int i, j, k, anz = 0, mxlen = 0, max = 0.8 * MAXSCOL;
- char **s = MALLOC(sizeof(char*));
+ char **s = malloc(sizeof(char*));
 
  for (k = 0, i = 0; str[i]; i++)
  {
@@ -31,8 +31,8 @@ char **StringToStringArray(char *str, int *maxLen, int minWidth, int *anzahl)
    if(j > k)
     i = j;
    anz++;
-   s = REALLOC(s, anz * sizeof(char *));
-   s[anz-1] = MALLOC((i - k + 2) * sizeof(char));
+   s = realloc(s, anz * sizeof(char *));
+   s[anz-1] = malloc((i - k + 2) * sizeof(char));
    for (j = k; j <= i; j++)
     s[anz-1][j-k] = str[j];
    if (isspace(str[j-1]))
@@ -44,8 +44,8 @@ char **StringToStringArray(char *str, int *maxLen, int minWidth, int *anzahl)
   }
  }
  anz++;
- s = REALLOC(s, anz * sizeof(char *));
- s[anz-1] = MALLOC((i - k + 2) * sizeof(char));
+ s = realloc(s, anz * sizeof(char *));
+ s[anz-1] = malloc((i - k + 2) * sizeof(char));
  for (j = k; j <= i; j++)
   s[anz-1][j-k] = str[j];
  if (mxlen < (j-k))
@@ -187,7 +187,7 @@ int e_pr_filetype(FENSTER *f)
 /*   open section of screen and save background  */
 PIC *e_open_view(int xa, int ya, int xe, int ye, int col, int sw)
 {
- PIC *pic = MALLOC(sizeof(PIC));
+ PIC *pic = malloc(sizeof(PIC));
  int i, j;
 
  if (pic == NULL) return(NULL);
@@ -211,9 +211,9 @@ PIC *e_open_view(int xa, int ya, int xe, int ye, int col, int sw)
  if (sw!=0)
  {
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
-  pic->p = MALLOC((pic->e.x - pic->a.x + 1) * 3 * (pic->e.y - pic->a.y + 1));
+  pic->p = malloc((pic->e.x - pic->a.x + 1) * 3 * (pic->e.y - pic->a.y + 1));
 #else
-  pic->p = MALLOC((pic->e.x - pic->a.x + 1) * 2 * (pic->e.y - pic->a.y + 1));
+  pic->p = malloc((pic->e.x - pic->a.x + 1) * 2 * (pic->e.y - pic->a.y + 1));
 #endif
   if (pic->p == NULL) {  FREE(pic);  return(NULL);  }
   for (j = pic->a.y; j <= pic->e.y; ++j)
@@ -535,7 +535,7 @@ PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb)
    }
    else
    {
-      newpic = MALLOC(sizeof(PIC));
+      newpic = malloc(sizeof(PIC));
       if(newpic == NULL)  return(NULL);
       newpic->a.x = xa;
       newpic->a.y = ya;
@@ -553,10 +553,10 @@ PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb)
       newpic->e.y = ye;
 #endif
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
-      newpic->p = MALLOC( (newpic->e.x - newpic->a.x + 1) * 3
+      newpic->p = malloc( (newpic->e.x - newpic->a.x + 1) * 3
 				* (newpic->e.y - newpic->a.y + 1) );
 #else
-      newpic->p = MALLOC( (newpic->e.x - newpic->a.x + 1) * 2
+      newpic->p = malloc( (newpic->e.x - newpic->a.x + 1) * 2
 				* (newpic->e.y - newpic->a.y + 1) );
 #endif
       if (newpic->p == NULL) {  FREE(newpic);  return(NULL);  }
@@ -1279,19 +1279,19 @@ struct dirfile *e_add_df(char *str, struct dirfile *df)
    char *tmp;
 
    if (df == NULL)
-   {  df = MALLOC(sizeof(struct dirfile));
+   {  df = malloc(sizeof(struct dirfile));
       df->anz = 0;
-      df->name = MALLOC(sizeof(char*));
+      df->name = malloc(sizeof(char*));
    }
    for(n = 0; n < df->anz && *df->name[n] && strcmp(df->name[n], str); n++);
    if(n == df->anz)
    {  if(df->anz == MAXSVSTR - 1) FREE(df->name[df->anz-1]);
       else
       {  df->anz++;
-	 df->name = REALLOC(df->name, df->anz * sizeof(char*));
+	 df->name = realloc(df->name, df->anz * sizeof(char*));
       }
       for(i = df->anz-1; i > 0; i--) df->name[i] = df->name[i-1];
-      df->name[0] = MALLOC((strlen(str)+1) * sizeof(char));
+      df->name[0] = malloc((strlen(str)+1) * sizeof(char));
       strcpy(df->name[0], str);
    }
    else
@@ -1299,7 +1299,7 @@ struct dirfile *e_add_df(char *str, struct dirfile *df)
       for(i = n; i > 0; i--) df->name[i] = df->name[i-1];
       if(!tmp[0])
       {  FREE(tmp);
-	 df->name[0] = MALLOC((strlen(str) + 1) * sizeof(char));
+	 df->name[0] = malloc((strlen(str) + 1) * sizeof(char));
 	 strcpy(df->name[0], str);
       }
       else df->name[0] = tmp;
@@ -1312,9 +1312,9 @@ int e_sv_window(int xa, int ya, int *n, struct dirfile *df, FENSTER *f)
  ECNT *cn = f->ed;
  int ret, ye = ya + 6;
  int xe = xa +21;
- FLWND *fw = MALLOC(sizeof(FLWND));
+ FLWND *fw = malloc(sizeof(FLWND));
 
- if ((f = (FENSTER *) MALLOC(sizeof(FENSTER))) == NULL)
+ if ((f = (FENSTER *) malloc(sizeof(FENSTER))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
  if (xe > MAXSCOL-3) {  xe = MAXSCOL - 3;  xa = xe - 21;  }
  if (ye > MAXSLNS-3) {  ye = MAXSLNS - 3;  ya = ye - 6;  }
@@ -1524,9 +1524,9 @@ struct dirfile *e_make_win_list(FENSTER *f)
  int i;
  struct dirfile *df;
 
- if (!(df = MALLOC(sizeof(struct dirfile)))) return(NULL);
+ if (!(df = malloc(sizeof(struct dirfile)))) return(NULL);
  df->anz = f->ed->mxedt;
- if (!(df->name = MALLOC(df->anz * sizeof(char *))))
+ if (!(df->name = malloc(df->anz * sizeof(char *))))
  {
   FREE(df);
   return(NULL);
@@ -1536,7 +1536,7 @@ struct dirfile *e_make_win_list(FENSTER *f)
   if (f->ed->f[df->anz-i]->datnam)
   {
    if (!(df->name[i] =
-     MALLOC((strlen(f->ed->f[df->anz-i]->datnam)+1) * sizeof(char))))
+     malloc((strlen(f->ed->f[df->anz-i]->datnam)+1) * sizeof(char))))
    {
     df->anz = i;
     freedf(df);
@@ -1546,7 +1546,7 @@ struct dirfile *e_make_win_list(FENSTER *f)
   }
   else
   {
-   if (!(df->name[i] = MALLOC(sizeof(char))))
+   if (!(df->name[i] = malloc(sizeof(char))))
    {
     df->anz = i;
     freedf(df);

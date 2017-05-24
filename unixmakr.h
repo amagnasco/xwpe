@@ -91,8 +91,8 @@ extern char *ctree[5];
 #define e_s_clr(f, b) (*e_s_u_clr)(f, b)
 #define e_n_clr(fb) (*e_n_u_clr)(fb)
 
-#define REALLOC(p, n) realloc((p), (n))
-#define MALLOC(n) malloc(n)
+//#define REALLOC(p, n) realloc((p), (n))
+//#define MALLOC(n) malloc(n)
 #define FREE(n) free(n)
 
 #ifdef NEWSTYLE
@@ -106,7 +106,7 @@ extern char *extbyte, *altextbyte;
     {	if(f->s->mark_begin.y == f->s->mark_end.y)                      \
         e_sc_nw_txt(f->s->mark_end.y, f->b, 0);                         \
 	else								\
-	{  f->c_sw = REALLOC(f->c_sw, f->b->mx.y * sizeof(int));	\
+	{  f->c_sw = realloc(f->c_sw, f->b->mx.y * sizeof(int));	\
 	   f->c_sw = e_sc_txt(f->c_sw, f->b);				\
 	}								\
     }									\

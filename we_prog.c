@@ -156,9 +156,9 @@ int e_p_make(FENSTER *f)
  f = cn->f[cn->mxedt-1];
  if (!e__project)
  {
-  e_arg = MALLOC(6 * sizeof(char *));
+  e_arg = malloc(6 * sizeof(char *));
   e_argc = e_make_arg(&e_arg, e_s_prog.libraries);
-  e_arg[1] = MALLOC(3);
+  e_arg[1] = malloc(3);
   strcpy(e_arg[1], "-o");
   strcpy(mstr, f->datnam);
   WpeStringCutChar(mstr, '.');
@@ -339,7 +339,7 @@ int e_comp(FENSTER *f)
  if (e_new_message(f))
   return(WPE_ESC);
  argc = e_make_arg(&arg, e_s_prog.comp_str);
- arg[1] = MALLOC(3);
+ arg[1] = malloc(3);
  strcpy(arg[1], "-c");
  len = strlen(f->dirct) - 1;
  if (!strcmp(f->ed->dirct, f->dirct))
@@ -404,7 +404,7 @@ int e_exec_inf(FENSTER *f, char **argv, int n)
   e_error(e_p_msg[ERR_PIPEOPEN], 0, f->fb);
   return(0);
  }
- efile = MALLOC((strlen(tstr)+1)*sizeof(char));
+ efile = malloc((strlen(tstr)+1)*sizeof(char));
  strcpy(efile, tstr);
  sprintf(tstr, "%s/we_112", e_tmp_dir);
  if((wfildes[1] = creat(tstr, 0777)) < 0)
@@ -417,7 +417,7 @@ int e_exec_inf(FENSTER *f, char **argv, int n)
   e_error(e_p_msg[ERR_PIPEOPEN], 0, f->fb);
   return(0);
  }
- wfile = MALLOC((strlen(tstr)+1)*sizeof(char));
+ wfile = malloc((strlen(tstr)+1)*sizeof(char));
  strcpy(wfile, tstr);
 
  if((e_save_pid = pid = fork()) > 0)
@@ -474,11 +474,11 @@ int e_p_exec(int file, FENSTER *f, PIC *pic)
  ret = 0;
  for (is = b->mxlines-1, fd = efildes[0]; fd > 0; fd = wfildes[0])
  {
-  buff=MALLOC(1);
+  buff=malloc(1);
   buff[0]='\0';
   while( e_line_read(fd, str, 128) == 0 )
   {
-   buff=REALLOC(buff, strlen(buff) + strlen(str) + 1);
+   buff=realloc(buff, strlen(buff) + strlen(str) + 1);
    strcat(buff, str);
 
    fflush(stdout);
@@ -656,7 +656,7 @@ int e_make_error_list(FENSTER *f)
   }
   FREE(err_li);
  }
- err_li = MALLOC(sizeof(struct ERR_LI) * b->mxlines);
+ err_li = malloc(sizeof(struct ERR_LI) * b->mxlines);
  err_num = 0;
  for (i = 0; i < b->mxlines; i++)
  {
@@ -669,7 +669,7 @@ int e_make_error_list(FENSTER *f)
   else if (!strncmp((char *)b->bf[i].s, "makefile:", 9) ||
     !strncmp((char *)b->bf[i].s, "Makefile:", 9))
   {
-   err_li[k].file = MALLOC(9);
+   err_li[k].file = malloc(9);
    for (j = 0; j < 8; j++)
     err_li[k].file[j] = b->bf[i].s[j];
    err_li[k].file[8] = '\0';
@@ -677,7 +677,7 @@ int e_make_error_list(FENSTER *f)
    err_li[k].y = i;
    err_li[k].x = 0;
    err_li[k].srch = NULL;
-   err_li[k].text = MALLOC(strlen((char *)b->bf[i].s) + 1);
+   err_li[k].text = malloc(strlen((char *)b->bf[i].s) + 1);
    strcpy(err_li[k].text, (char *)b->bf[i].s);
    err_li[k].text[b->bf[i].len] = '\0';
    k++;
@@ -690,14 +690,14 @@ int e_make_error_list(FENSTER *f)
     (spt = strstr((char *)b->bf[i].s, "Makefile")) ) &&
     (err_li[k].line = atoi(spt+14)) > 0 )
   {
-   err_li[k].file = MALLOC(9);
+   err_li[k].file = malloc(9);
    for (j = 0; j < 8; j++)
     err_li[k].file[j] = spt[j];
    err_li[k].file[8] = '\0';
    err_li[k].y = i;
    err_li[k].x = 0;
    err_li[k].srch = NULL;
-   err_li[k].text = MALLOC(strlen((char *)b->bf[i].s) + 1);
+   err_li[k].text = malloc(strlen((char *)b->bf[i].s) + 1);
    strcpy(err_li[k].text, (char *)b->bf[i].s);
    err_li[k].text[b->bf[i].len] = '\0';
    k++;
@@ -791,13 +791,13 @@ int e_arguments(FENSTER *f)
 
  if (!e_prog.arguments)
  {
-  e_prog.arguments = MALLOC(1);
+  e_prog.arguments = malloc(1);
   e_prog.arguments[0] = '\0';
  }
  strcpy(str, e_prog.arguments);
  if (e_add_arguments(str, "Arguments", f, 0 , AltA, NULL))
  {
-  e_prog.arguments = REALLOC(e_prog.arguments, strlen(str) + 1);
+  e_prog.arguments = realloc(e_prog.arguments, strlen(str) + 1);
   strcpy(e_prog.arguments, str);
  }
  return(0);
@@ -892,10 +892,10 @@ char *e_cat_string(char *p, char *str)
  if(str == NULL) return(p = NULL);
  if(p == NULL)
  {
-  if((p = MALLOC(strlen(str)+2)) == NULL) return(NULL);
+  if((p = malloc(strlen(str)+2)) == NULL) return(NULL);
   p[0] = '\0';
  }
- else if ((p = REALLOC(p, strlen(p) + strlen(str)+2)) == NULL)
+ else if ((p = realloc(p, strlen(p) + strlen(str)+2)) == NULL)
   return(NULL);
  strcat(p, " ");
  strcat(p, str);
@@ -908,10 +908,10 @@ int e_make_arg(char ***arg, char *str)
  char tmp[128], *p = tmp;
 
  if (!(*arg))
-  *arg = (char **) MALLOC(4*sizeof(char *));
+  *arg = (char **) malloc(4*sizeof(char *));
  else
-  *arg = (char **) REALLOC(*arg, 4*sizeof(char *));
- (*arg)[0] = MALLOC(strlen(e_s_prog.compiler) + 1);
+  *arg = (char **) realloc(*arg, 4*sizeof(char *));
+ (*arg)[0] = malloc(strlen(e_s_prog.compiler) + 1);
  strcpy((*arg)[0], e_s_prog.compiler);
  if (!str)
  {
@@ -924,10 +924,10 @@ int e_make_arg(char ***arg, char *str)
  {
   for (; p[i] != '\0' && p[i] != ' '; i++)
    ;
-  (*arg)[j] = MALLOC(i + 1);
+  (*arg)[j] = malloc(i + 1);
   strncpy((*arg)[j], p, i);
   (*arg)[j][i] = '\0';
-  *arg = (char **) REALLOC(*arg, (j + 3)*sizeof(char *));
+  *arg = (char **) realloc(*arg, (j + 3)*sizeof(char *));
   if (p[i] != '\0')
   {
    p += (i + 1);
@@ -943,10 +943,10 @@ int e_add_arg(char ***arg, char *str, int n, int argc)
  int i;
 
  argc++;
- *arg = (char **) REALLOC(*arg, (argc+1)*sizeof(char *));
+ *arg = (char **) realloc(*arg, (argc+1)*sizeof(char *));
  for(i = argc; i > n; i--)
   (*arg)[i] = (*arg)[i-1];
- (*arg)[n] = MALLOC(strlen(str) + 1);
+ (*arg)[n] = malloc(strlen(str) + 1);
  strcpy((*arg)[n], str);
  return(argc);
 }
@@ -966,11 +966,11 @@ int e_ini_prog(ECNT *cn)
  e_prog.sys_include =
    WpeStrdup("/usr/include:/usr/local/include:/usr/include/X11");
  if (e_prog.comp == NULL)
-  e_prog.comp = MALLOC(e_prog.num * sizeof(struct e_s_prog *));
+  e_prog.comp = malloc(e_prog.num * sizeof(struct e_s_prog *));
  else
-  e_prog.comp = REALLOC(e_prog.comp, e_prog.num * sizeof(struct e_s_prog *));
+  e_prog.comp = realloc(e_prog.comp, e_prog.num * sizeof(struct e_s_prog *));
  for (i = 0; i < e_prog.num; i++)
-  e_prog.comp[i] = MALLOC(sizeof(struct e_s_prog));
+  e_prog.comp[i] = malloc(sizeof(struct e_s_prog));
  e_prog.comp[0]->compiler = WpeStrdup("gcc");
  e_prog.comp[0]->language = WpeStrdup("C");
  e_prog.comp[0]->filepostfix = (char **)WpeExpArrayCreate(1, sizeof(char *), 1);
@@ -1218,7 +1218,7 @@ int e_run_c_options(FENSTER *f)
 int e_run_options(FENSTER *f)
 {
  int i, n, xa = 48, ya = 2, num = 2 + e_prog.num;
- OPTK *opt = MALLOC(num * sizeof(OPTK));
+ OPTK *opt = malloc(num * sizeof(OPTK));
  char tmp[80];
 
  tmp[0] = '\0';
@@ -1237,8 +1237,8 @@ int e_run_options(FENSTER *f)
   if (!e_run_c_options(f))
   {
    e_prog.num++;
-   e_prog.comp = REALLOC(e_prog.comp, e_prog.num * sizeof(struct e_s_prog *));
-   e_prog.comp[e_prog.num - 1] = MALLOC(sizeof(struct e_s_prog));
+   e_prog.comp = realloc(e_prog.comp, e_prog.num * sizeof(struct e_s_prog *));
+   e_prog.comp[e_prog.num - 1] = malloc(sizeof(struct e_s_prog));
    e_prog.comp[e_prog.num - 1]->language = (char *)malloc(1);
    e_prog.comp[e_prog.num - 1]->language[0] = 0;
    e_prog.comp[e_prog.num - 1]->compiler = (char *)malloc(1);
@@ -1300,13 +1300,13 @@ int e_project_name(FENSTER *f)
 
  if (!e_prog.project)
  {
-  e_prog.project = MALLOC(1);
+  e_prog.project = malloc(1);
   e_prog.project[0] = '\0';
  }
  strcpy(str, e_prog.project);
  if (e_add_arguments(str, "Project", f, 0, AltP, NULL))
  {
-  e_prog.project = REALLOC(e_prog.project, strlen(str) + 1);
+  e_prog.project = realloc(e_prog.project, strlen(str) + 1);
   strcpy(e_prog.project, str);
   return(0);
  }
@@ -1360,9 +1360,9 @@ int e_cl_project(FENSTER *f)
  int i;
 
  if (!e_prog.project)
-  e_prog.project = MALLOC(sizeof(char));
+  e_prog.project = malloc(sizeof(char));
  else
-  e_prog.project = REALLOC(e_prog.project, sizeof(char));
+  e_prog.project = realloc(e_prog.project, sizeof(char));
  e_prog.project[0] = '\0';
  for (i = cn->mxedt; i > 0 && (cn->f[i]->dtmd != DTMD_DATA || cn->f[i]->ins != 4);
    i--)
@@ -1520,9 +1520,9 @@ int print_to_end_of_buffer(BUFFER * b,char * str,int wrap_limit)
 /* copy char from string (str) to buffer */
 
   if (str[j + k]!='\0')
-   b->bf[i].s = REALLOC(b->bf[i].s, j + 2);
+   b->bf[i].s = realloc(b->bf[i].s, j + 2);
   else
-   b->bf[i].s = REALLOC(b->bf[i].s, j + 1);
+   b->bf[i].s = realloc(b->bf[i].s, j + 1);
   strncpy(b->bf[i].s,str + k,j);
 
 /* if this is not end of string, then we created substring
@@ -1640,7 +1640,7 @@ int e_exec_make(FENSTER *f)
  e_sys_ini();
  if (e_s_prog.compiler)
   FREE(e_s_prog.compiler);
- e_s_prog.compiler = MALLOC(5*sizeof(char));
+ e_s_prog.compiler = malloc(5*sizeof(char));
  strcpy(e_s_prog.compiler, "make");
  argc = e_make_arg(&arg, e_prog.arguments);
  if (argc == 0)
@@ -1753,7 +1753,7 @@ char *e_expand_var(char *string, FENSTER *f)
    }
    if (string[i+1] == '(' || string[i+1] == '{')
    {
-    if (!(var = MALLOC((j-i-1) * sizeof(char))))
+    if (!(var = malloc((j-i-1) * sizeof(char))))
     {
      e_error(e_msg[ERR_LOWMEM], 0, f->fb);
      return(string);
@@ -1763,7 +1763,7 @@ char *e_expand_var(char *string, FENSTER *f)
    }
    else
    {
-    if (!(var = MALLOC(2 * sizeof(char))))
+    if (!(var = malloc(2 * sizeof(char))))
     {  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(string);  }
     var[0] = string[i+1];  var[1] = '\0';
    }
@@ -1780,7 +1780,7 @@ char *e_expand_var(char *string, FENSTER *f)
    if (!v_string)
    {
     for(k = i; (string[k] = string[k+len]) != '\0'; k++);
-    if (!(string = REALLOC(tmp = string, (strlen(string) + 1) * sizeof(char))))
+    if (!(string = realloc(tmp = string, (strlen(string) + 1) * sizeof(char))))
     {  FREE(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
    }
    else
@@ -1788,7 +1788,7 @@ char *e_expand_var(char *string, FENSTER *f)
     len = strlen(v_string) - len;
     if (len >= 0)
     {
-     if (!(string = REALLOC(tmp = string, (k = strlen(string) + len + 1) * sizeof(char))))
+     if (!(string = realloc(tmp = string, (k = strlen(string) + len + 1) * sizeof(char))))
      {  FREE(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
      for (k--; k > j + len; k--) string[k] = string[k-len];
      for (k = i; v_string[k-i]; k++) string[k] = v_string[k-i];
@@ -1797,7 +1797,7 @@ char *e_expand_var(char *string, FENSTER *f)
     {
      for (k = i; (string[k] = string[k-len]) != '\0'; k++);
      for (k = i; v_string[k-i]; k++) string[k] = v_string[k-i];
-     if (!(string = REALLOC(tmp = string, (strlen(string) + 1) * sizeof(char))))
+     if (!(string = realloc(tmp = string, (strlen(string) + 1) * sizeof(char))))
      {  FREE(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
     }
    }
@@ -1829,7 +1829,7 @@ int e_read_var(FENSTER *f)
   FREE(p_v);
  }
  p_v_n = 0;
- if (!(p_v = MALLOC(sizeof(struct proj_var *))))
+ if (!(p_v = malloc(sizeof(struct proj_var *))))
  {  fclose(fp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
  while (fgets(str, 256, fp))
  {
@@ -1849,21 +1849,21 @@ int e_read_var(FENSTER *f)
   *stmp = 0;
   for (sp2++; isspace(*sp2) && *sp2 != '\n'; sp2++);
   p_v_n++;
-  if (!(p_v = REALLOC(tmp = p_v, sizeof(struct proj_var *) * p_v_n)))
+  if (!(p_v = realloc(tmp = p_v, sizeof(struct proj_var *) * p_v_n)))
   {  p_v = tmp;  fclose(fp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
-  if (!(p_v[p_v_n-1] = MALLOC(sizeof(struct proj_var))))
+  if (!(p_v[p_v_n-1] = malloc(sizeof(struct proj_var))))
   {  fclose(fp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
-  if (!(p_v[p_v_n-1]->var = MALLOC((strlen(sp1)+1) * sizeof(char))))
+  if (!(p_v[p_v_n-1]->var = malloc((strlen(sp1)+1) * sizeof(char))))
   {  fclose(fp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
   strcpy(p_v[p_v_n-1]->var, sp1);
-  if (!(p_v[p_v_n-1]->string = MALLOC((strlen(sp2)+1) * sizeof(char))))
+  if (!(p_v[p_v_n-1]->string = malloc((strlen(sp2)+1) * sizeof(char))))
   {  fclose(fp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
   strcpy(p_v[p_v_n-1]->string, sp2);
   while (p_v[p_v_n-1]->string[i = strlen(p_v[p_v_n-1]->string) - 1] != '\n' || (i && p_v[p_v_n-1]->string[i-1] == '\\'))
   {
    if (p_v[p_v_n-1]->string[i-1] == '\\') p_v[p_v_n-1]->string[i-1] = '\0';
    if (!fgets(str, 256, fp)) break;
-   if (!(p_v[p_v_n-1]->string = REALLOC(stmp = p_v[p_v_n-1]->string,
+   if (!(p_v[p_v_n-1]->string = realloc(stmp = p_v[p_v_n-1]->string,
 		(strlen(p_v[p_v_n-1]->string)+strlen(str)+1) * sizeof(char))))
    {
     p_v[p_v_n-1]->string = stmp;
@@ -1924,7 +1924,7 @@ int e_install(FENSTER *f)
   }
   if (text[0] != '\t')
    break;
-  if (!(string = MALLOC(strlen(sp) + 1)))
+  if (!(string = malloc(strlen(sp) + 1)))
   {
    fclose(fp);
    e_error(e_msg[ERR_LOWMEM], 0, f->fb);
@@ -1936,7 +1936,7 @@ int e_install(FENSTER *f)
    tp = fgets(text, 256, fp);
    if (tp)
    {
-    if (!(string = REALLOC(tmp = string, strlen(string) + strlen(text) + 1)))
+    if (!(string = realloc(tmp = string, strlen(string) + strlen(text) + 1)))
     {
      fclose(fp);
      FREE(tmp);
@@ -1960,13 +1960,13 @@ int e_install(FENSTER *f)
 
 struct dirfile *e_p_get_args(char *string)
 {
- struct dirfile *df = MALLOC(sizeof(struct dirfile));
+ struct dirfile *df = malloc(sizeof(struct dirfile));
  char **tmp;
  int i, j, k;
 
  if (!df)
   return(NULL);
- if (!(df->name = MALLOC(sizeof(char *))))
+ if (!(df->name = malloc(sizeof(char *))))
  {
   FREE(df);
   return(NULL);
@@ -1981,13 +1981,13 @@ struct dirfile *e_p_get_args(char *string)
   if (j == i)
    break;
   df->anz++;
-  if (!(df->name = REALLOC(tmp = df->name, df->anz * sizeof(char *))))
+  if (!(df->name = realloc(tmp = df->name, df->anz * sizeof(char *))))
   {
    df->anz--;
    df->name = tmp;
    return(df);
   }
-  if (!(df->name[df->anz-1] = MALLOC((j-i+1)*sizeof(char))))
+  if (!(df->name[df->anz-1] = malloc((j-i+1)*sizeof(char))))
   {
    df->anz--;
    return(df);
@@ -2049,8 +2049,8 @@ int e_c_project(FENSTER *f)
   e_error(ofile, 0, f->fb);
   return(-1);
  }
- e_arg = (char **) MALLOC(e_argc*sizeof(char *));
- arg = (char **) MALLOC(argc*sizeof(char *));
+ e_arg = (char **) malloc(e_argc*sizeof(char *));
+ arg = (char **) malloc(argc*sizeof(char *));
  df = e_p_get_var("CMP");
  if (!df)
  {
@@ -2061,19 +2061,19 @@ int e_c_project(FENSTER *f)
  for (k = 0; k < df->anz; k++, e_argc++, argc++)
  {
   j = e_argc == 1 ? 1 : 0;
-  e_arg = REALLOC(e_arg, (e_argc+2)*sizeof(char *));
-  e_arg[e_argc-j] = MALLOC(strlen(df->name[k]) + 1);
+  e_arg = realloc(e_arg, (e_argc+2)*sizeof(char *));
+  e_arg[e_argc-j] = malloc(strlen(df->name[k]) + 1);
   strcpy(e_arg[e_argc-j], df->name[k]);
-  arg = REALLOC(arg, (argc+2)*sizeof(char *));
-  arg[argc-j] = MALLOC(strlen(df->name[k]) + 1);
+  arg = realloc(arg, (argc+2)*sizeof(char *));
+  arg[argc-j] = malloc(strlen(df->name[k]) + 1);
   strcpy(arg[argc-j], df->name[k]);
   if (e_argc > 1)
    e_s_prog.comp_str = e_cat_string(e_s_prog.comp_str, e_arg[e_argc-j]);
  }
  freedf(df);
- arg[1] = MALLOC(3);
+ arg[1] = malloc(3);
  strcpy(arg[1], "-c");
- e_arg[1] = MALLOC(3);
+ e_arg[1] = malloc(3);
  strcpy(e_arg[1], "-o");
  df = e_p_get_var("CMPFLAGS");
  if (df)
@@ -2081,11 +2081,11 @@ int e_c_project(FENSTER *f)
   for (k = 0; k < df->anz; k++, e_argc++, argc++)
   {
    j = e_argc == 1 ? 1 : 0;
-   e_arg = REALLOC(e_arg, (e_argc+2)*sizeof(char *));
-   e_arg[e_argc-j] = MALLOC(strlen(df->name[k]) + 1);
+   e_arg = realloc(e_arg, (e_argc+2)*sizeof(char *));
+   e_arg[e_argc-j] = malloc(strlen(df->name[k]) + 1);
    strcpy(e_arg[e_argc-j], df->name[k]);
-   arg = REALLOC(arg, (argc+2)*sizeof(char *));
-   arg[argc-j] = MALLOC(strlen(df->name[k]) + 1);
+   arg = realloc(arg, (argc+2)*sizeof(char *));
+   arg[argc-j] = malloc(strlen(df->name[k]) + 1);
    strcpy(arg[argc-j], df->name[k]);
    if (e_argc > 1)
     e_s_prog.comp_str = e_cat_string(e_s_prog.comp_str, e_arg[e_argc-j]);
@@ -2124,11 +2124,11 @@ int e_c_project(FENSTER *f)
  df = e_p_get_var("CMPMESSAGE");
  if (df)
  {
-  char *tmpstr = MALLOC(1);
+  char *tmpstr = malloc(1);
   tmpstr[0] = '\0';
   for (k = 0; k < df->anz; k++)
   {
-   tmpstr = REALLOC(tmpstr,
+   tmpstr = realloc(tmpstr,
      (strlen(tmpstr)+strlen(df->name[k])+2)*sizeof(char));
    if (k) strcat(tmpstr, " ");
    strcat(tmpstr, df->name[k]);
@@ -2275,8 +2275,8 @@ gt_library:
   e_s_prog.libraries = NULL;
   for (k = 0; k < df->anz; k++, e_argc++)
   {
-   e_arg = REALLOC(e_arg, (e_argc+2)*sizeof(char *));
-   e_arg[e_argc] = MALLOC(strlen(df->name[k]) + 1);
+   e_arg = realloc(e_arg, (e_argc+2)*sizeof(char *));
+   e_arg[e_argc] = malloc(strlen(df->name[k]) + 1);
    strcpy(e_arg[e_argc], df->name[k]);
    e_s_prog.libraries = e_cat_string(e_s_prog.libraries, e_arg[e_argc]);
   }
@@ -2358,7 +2358,7 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
 				     || !f->ed->f[i]->save); i--);
  if (i > 0) {  save_df = e_p_df[0];  e_p_df[0] = NULL;  }
  if (e_p_df) freedfN(e_p_df, 3);
- e_p_df = MALLOC(3 * sizeof(struct dirfile *));
+ e_p_df = malloc(3 * sizeof(struct dirfile *));
  if (!e_p_df) return(e_p_df);
  for (i = 0; i < 3; i++) e_p_df[i] = NULL;
  e_s_prog.comp_sw = 0;
@@ -2381,20 +2381,20 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
   strcpy(library, "");
   for (i = !save_df ? 0 : 1; i < 3; i++)
   {
-   e_p_df[i] = MALLOC(sizeof(struct dirfile));
-   e_p_df[i]->name = MALLOC(sizeof(char *));
-   e_p_df[i]->name[0] = MALLOC(2 * sizeof(char));
+   e_p_df[i] = malloc(sizeof(struct dirfile));
+   e_p_df[i]->name = malloc(sizeof(char *));
+   e_p_df[i]->name[0] = malloc(2 * sizeof(char));
    *e_p_df[i]->name[0] = ' '; *(e_p_df[i]->name[0] + 1) = '\0';
    e_p_df[i]->anz = 1;
   }
   if (save_df) e_p_df[0] = save_df;
   return(e_p_df);
  }
- if (!(e_p_df[1] = MALLOC(sizeof(struct dirfile)))) return(e_p_df);
- if (!(e_p_df[1]->name = MALLOC(sizeof(char *)))) return(e_p_df);
+ if (!(e_p_df[1] = malloc(sizeof(struct dirfile)))) return(e_p_df);
+ if (!(e_p_df[1]->name = malloc(sizeof(char *)))) return(e_p_df);
  e_p_df[1]->anz = 0;
- if (!(e_p_df[2] = MALLOC(sizeof(struct dirfile)))) return(e_p_df);
- if (!(e_p_df[2]->name = MALLOC(sizeof(char *)))) return(e_p_df);
+ if (!(e_p_df[2] = malloc(sizeof(struct dirfile)))) return(e_p_df);
+ if (!(e_p_df[2]->name = malloc(sizeof(char *)))) return(e_p_df);
  e_p_df[2]->anz = 0;
  for (i = 0; i < p_v_n; i++)
  {
@@ -2450,10 +2450,10 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
   else
   {
    e_p_df[1]->anz++;
-   if (!(e_p_df[1]->name = REALLOC(tmp =
+   if (!(e_p_df[1]->name = realloc(tmp =
 				e_p_df[1]->name, e_p_df[1]->anz * sizeof(char *))))
    {  e_p_df[1]->anz--;  e_p_df[1]->name = tmp;  return(e_p_df);  }
-   if (!(e_p_df[1]->name[e_p_df[1]->anz-1] = MALLOC((strlen(p_v[i]->var)
+   if (!(e_p_df[1]->name[e_p_df[1]->anz-1] = malloc((strlen(p_v[i]->var)
 			+ strlen(p_v[i]->string) + 2)*sizeof(char))))
    {  e_p_df[1]->anz--;  return(e_p_df);  }
    sprintf(e_p_df[1]->name[e_p_df[1]->anz-1], "%s=%s",
@@ -2477,7 +2477,7 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
   e_s_prog.intstr = WpeStrdup(cc_intstr);
  if (!e_p_df[0])
  {
-  e_p_df[0] = MALLOC(sizeof(struct dirfile));
+  e_p_df[0] = malloc(sizeof(struct dirfile));
   e_p_df[0]->anz = 0;
  }
  if ((fp = fopen(e_prog.project, "r")) == NULL)
@@ -2511,10 +2511,10 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
   if (text[0] != '\t') break;
   if (sp[0] == '\0') continue;
   e_p_df[2]->anz++;
-  if (!(e_p_df[2]->name = REALLOC(tmp =
+  if (!(e_p_df[2]->name = realloc(tmp =
 				e_p_df[2]->name, e_p_df[2]->anz * sizeof(char *))))
   {  e_p_df[2]->anz--;  e_p_df[2]->name = tmp;  fclose(fp);  return(e_p_df);  }
-  if (!(e_p_df[2]->name[e_p_df[2]->anz-1] = MALLOC((strlen(sp) + 1))))
+  if (!(e_p_df[2]->name[e_p_df[2]->anz-1] = malloc((strlen(sp) + 1))))
   {  e_p_df[2]->anz--;  fclose(fp);  return(e_p_df);  }
 
   strcpy(e_p_df[2]->name[e_p_df[2]->anz-1], sp);
@@ -2526,7 +2526,7 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
     j = strlen(e_p_df[2]->name[e_p_df[2]->anz-1]);
     *(e_p_df[2]->name[e_p_df[2]->anz-1]+j-2) = '\0';
     if (!(e_p_df[2]->name[e_p_df[2]->anz-1] =
-		    REALLOC(sp = e_p_df[2]->name[e_p_df[2]->anz-1],
+		    realloc(sp = e_p_df[2]->name[e_p_df[2]->anz-1],
 			strlen(e_p_df[2]->name[e_p_df[2]->anz-1])
 			+ strlen(text) + 1)))
     {  fclose(fp);  FREE(sp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);
@@ -2544,13 +2544,13 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
  {
   if (!e_p_df[i])
   {
-   e_p_df[i] = MALLOC(sizeof(struct dirfile));
-   e_p_df[i]->name = MALLOC(sizeof(char *));
+   e_p_df[i] = malloc(sizeof(struct dirfile));
+   e_p_df[i]->name = malloc(sizeof(char *));
    e_p_df[i]->anz = 0;
   }
-  e_p_df[i]->name = REALLOC(e_p_df[i]->name,
+  e_p_df[i]->name = realloc(e_p_df[i]->name,
 				(e_p_df[i]->anz + 1) * sizeof(char *));
-  e_p_df[i]->name[e_p_df[i]->anz] = MALLOC(2*sizeof(char));
+  e_p_df[i]->name[e_p_df[i]->anz] = malloc(2*sizeof(char));
   *e_p_df[i]->name[e_p_df[i]->anz] = ' ';
   *(e_p_df[i]->name[e_p_df[i]->anz] + 1) = '\0';
   e_p_df[i]->anz++;
@@ -2685,10 +2685,10 @@ int e_p_add_df(FLWND *fw, int sw)
  if (e_add_arguments(str, title, fw->f, 0, AltA, NULL))
  {
   fw->df->anz++;
-  fw->df->name = REALLOC(fw->df->name, fw->df->anz * sizeof(char *));
+  fw->df->name = realloc(fw->df->name, fw->df->anz * sizeof(char *));
   for (i = fw->df->anz - 1; i > fw->nf; i--)
    fw->df->name[i] = fw->df->name[i-1];
-  fw->df->name[i] = MALLOC(strlen(str)+1);
+  fw->df->name[i] = malloc(strlen(str)+1);
   strcpy(fw->df->name[i], str);
  }
  return(0);
@@ -2717,12 +2717,12 @@ int e_p_edit_df(FLWND *fw, int sw)
   {
    fw->nf = fw->df->anz-1;
    fw->df->anz++;
-   fw->df->name = REALLOC(fw->df->name, fw->df->anz * sizeof(char *));
+   fw->df->name = realloc(fw->df->name, fw->df->anz * sizeof(char *));
    fw->df->name[fw->df->anz-1] = fw->df->name[fw->df->anz-2];
   }
   if (!new)
    FREE(fw->df->name[fw->nf]);
-  fw->df->name[fw->nf] = MALLOC(strlen(str)+1);
+  fw->df->name[fw->nf] = malloc(strlen(str)+1);
   if (fw->df->name[fw->nf])
    strcpy(fw->df->name[fw->nf], str);
  }
@@ -2743,14 +2743,14 @@ int e_p_del_df(FLWND *fw, int sw)
 
 int e_p_mess_win(char *header, int argc, char **argv, PIC **pic, FENSTER *f)
 {
- char *tmp = MALLOC(sizeof(char));
+ char *tmp = malloc(sizeof(char));
  int i, ret;
 
  fk_cursor(0);
  tmp[0] = '\0';
  for (i = 0; i < argc && argv[i] != NULL; i++)
  {
-  if(!(tmp = REALLOC(tmp, (strlen(tmp)+strlen(argv[i])+2)*sizeof(char))))
+  if(!(tmp = realloc(tmp, (strlen(tmp)+strlen(argv[i])+2)*sizeof(char))))
    return(-2);
   strcat(tmp, argv[i]);
   strcat(tmp, " ");
@@ -2911,7 +2911,7 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
  if (a[0] == '$' && a[1] == '{')
  {
   for (k = 2; a[k] && a[k] != '}'; k++);
-  var = MALLOC((k-1) * sizeof(char));
+  var = malloc((k-1) * sizeof(char));
   for (i = 2; i < k; i++)
    var[i-2] = a[i];
   var[k-2] = '\0';
@@ -2935,7 +2935,7 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
  {
   if (a[k] == '?')
   {
-   cp = MALLOC((strlen(a)+1)*sizeof(char));
+   cp = malloc((strlen(a)+1)*sizeof(char));
    for (i = 0; i < k && (cp[i] = a[i]); i++);
    for (i++; (cp[i-1] = a[i]) != '\0'; i++);
    FREE(var);
@@ -2952,7 +2952,7 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
     return(0);
    if (a[0] == '$')
    {
-    str = MALLOC((i+1)*sizeof(char));
+    str = malloc((i+1)*sizeof(char));
     for (k = 0; k < i; k++)
      str[k] = b[k];
     str[i] = '\0';
@@ -2963,7 +2963,7 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
    return(n);
   }
   n -= k;
-  ctmp = MALLOC(n+1);
+  ctmp = malloc(n+1);
   for (i = 0; i < n; i++)
    ctmp[i] = a[i+k];
   ctmp[n] = '\0';
@@ -2974,7 +2974,7 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
   if (a[0] == '$')
   {
    for (i = 0; c + i < cp; i++);
-   str = MALLOC((i+1)*sizeof(char));
+   str = malloc((i+1)*sizeof(char));
    for (i = 0; c + i < cp; i++)
     str[i] = c[i];
    str[i] = '\0';
@@ -3040,8 +3040,8 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
  int *wn = NULL;
 
  cmp[0] = search[0] = file[0] = '\0';
- wtxt = MALLOC(1);
- wn = MALLOC(1);
+ wtxt = malloc(1);
+ wn = malloc(1);
  for (j = 0, n = 0; n < 4 && srch[j]; n++)
  {
   for (l = 0; (tmp[n][l] = srch[j]); j++, l++)
@@ -3049,8 +3049,8 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
    if (j > 1 && srch[j] == '?' && srch[j-1] == '{' && srch[j-2] == '$')
    {
     wnum++;
-    wn = REALLOC(wn, wnum * sizeof(int));
-    wtxt = REALLOC(wtxt, wnum * sizeof(char *));
+    wn = realloc(wn, wnum * sizeof(int));
+    wtxt = realloc(wtxt, wnum * sizeof(char *));
     if (srch[j+1] == '*')
      wn[wnum-1] = -1;
     else
@@ -3062,7 +3062,7 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
      break;
     }
     for (m = 0; srch[j+m] && srch[j+m] != '}'; m++);
-    wtxt[wnum-1] = MALLOC((m+1) * sizeof(char));
+    wtxt[wnum-1] = malloc((m+1) * sizeof(char));
     for (m = 0, j++; (wtxt[wnum-1][m] = srch[j]) && srch[j] != '}'; j++, m++);
     wtxt[wnum-1][m] = '\0';
     l -= 3;
@@ -3111,7 +3111,7 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
     l = 1;
    if (file[0] && y >= 0 && l != 0)
    {
-    err_li[k].file = MALLOC((strlen(file)+1)*sizeof(char));
+    err_li[k].file = malloc((strlen(file)+1)*sizeof(char));
     strcpy(err_li[k].file, file);
     err_li[k].line = y;
     if (search[0] == 'P')
@@ -3124,20 +3124,20 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
       for (m = 0; b->bf[iy].s + m < (unsigned char *)cp; m++);
       x -= m;
      }
-     err_li[k].srch = MALLOC((strlen(cmp)+2)*sizeof(char));
+     err_li[k].srch = malloc((strlen(cmp)+2)*sizeof(char));
      err_li[k].srch[0] = 'P';
      strcpy(err_li[k].srch+1, cmp);
     }
     else if (search[0])
     {
-     err_li[k].srch = MALLOC((strlen(search)+1)*sizeof(char));
+     err_li[k].srch = malloc((strlen(search)+1)*sizeof(char));
      strcpy(err_li[k].srch, search);
     }
     else
      err_li[k].srch = NULL;
     err_li[k].x = x;
     err_li[k].y = iorig;
-    err_li[k].text = MALLOC(strlen((char *)b->bf[i].s) + 1);
+    err_li[k].text = malloc(strlen((char *)b->bf[i].s) + 1);
     strcpy(err_li[k].text, (char *)b->bf[i].s);
     err_li[k].text[b->bf[i].len] = '\0';
     k++;

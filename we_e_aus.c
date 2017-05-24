@@ -180,7 +180,7 @@ int e_schreib_zif(int *num, int x, int y, int max, int ft, int fs)
 #endif
  int c, i, jc = max-1, ntmp = *num, nnum = WpeNumberOfPlaces(ntmp);
  int first = 1;
- char *s = MALLOC((max+1)*sizeof(char));
+ char *s = malloc((max+1)*sizeof(char));
 
  e_pr_zstring(WpeNumberToString(ntmp, max, s), x, y, max, fs);
  fk_locate(x+jc, y);
@@ -275,7 +275,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
  int c, i, ja = 0, jc, l = strlen(s);
  int jd;
  int sond = 0, first = 1;
- unsigned char *tmp = MALLOC(max+1);
+ unsigned char *tmp = malloc(max+1);
 
  fk_cursor(1);
  strcpy(tmp, s);
@@ -444,7 +444,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
 
 int e_schr_nzif(int num, int x, int y, int max, int col)
 {
- char *str = MALLOC((max+1)*sizeof(char));
+ char *str = malloc((max+1)*sizeof(char));
  int i, nt;
 
  for (i = 0, nt = 1; i < max; i++) nt *= 10;

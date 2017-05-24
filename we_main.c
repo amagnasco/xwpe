@@ -292,7 +292,7 @@ void ECNT_Init(ECNT *cn)
  cn->maxcol = MAXCOLUM;
  cn->tabn = 8;
  cn->autoindent = 3;
- cn->tabs = MALLOC((cn->tabn+1)*sizeof(char));
+ cn->tabs = malloc((cn->tabn+1)*sizeof(char));
  WpeStringBlank(cn->tabs, cn->tabn);
  cn->flopt = FM_REKURSIVE_ACTIONS | FM_REMOVE_INTO_WB | FM_MOVE_PROMPT |
    FM_MOVE_PROMPT | FM_PROMPT_DELETE;
@@ -307,7 +307,7 @@ int main(int argc, char **argv)
  int so = 0, sd = 1;
  char *tp;
 
- if ((cn = (ECNT *)MALLOC(sizeof(ECNT))) == NULL) {
+ if ((cn = (ECNT *)malloc(sizeof(ECNT))) == NULL) {
   printf(" Fatal Error: %s\n", e_msg[ERR_LOWMEM]);
   return 0;
  }
@@ -318,7 +318,7 @@ int main(int argc, char **argv)
  WpeEditor = cn;
  cn->fb = fb;
 
- info_file = MALLOC((strlen(INFO_DIR)+1)*sizeof(char));
+ info_file = malloc((strlen(INFO_DIR)+1)*sizeof(char));
  strcpy(info_file, INFO_DIR);
  e_read_help_str();
  e_hlp = e_hlp_str[0];
@@ -330,9 +330,9 @@ int main(int argc, char **argv)
 #if defined(HAVE_TEMPNAM)
  e_tmp_dir = tempnam(NULL, "xwpe_");
 #else
- e_tmp_dir = MALLOC(128);
+ e_tmp_dir = malloc(128);
  sprintf(e_tmp_dir, "/tmp/we_%u", (unsigned) getpid());
- e_tmp_dir = REALLOC(e_tmp_dir, (strlen(e_tmp_dir)+1)*sizeof(char));
+ e_tmp_dir = realloc(e_tmp_dir, (strlen(e_tmp_dir)+1)*sizeof(char));
 #endif
  if ((e_tmp_dir == NULL) || (mkdir(e_tmp_dir, 0700) != 0))
 #endif
@@ -349,7 +349,7 @@ int main(int argc, char **argv)
    else if (*(argv[i]+1) == 's' && *(argv[i]+2) == 'f')
    {
     sd = 0;
-    cn->optfile = MALLOC((strlen(argv[i+1])+1)*sizeof(char));
+    cn->optfile = malloc((strlen(argv[i+1])+1)*sizeof(char));
     strcpy(cn->optfile, argv[i+1]);
    }
   }
@@ -368,7 +368,7 @@ int main(int argc, char **argv)
   else
   {
    cn->optfile = e_mkfilename(getenv("HOME"), XWPE_HOME);
-   cn->optfile = REALLOC(cn->optfile,
+   cn->optfile = realloc(cn->optfile,
      strlen(cn->optfile) + strlen(OPTION_FILE) + 2);
    strcat(cn->optfile, DIRS);
    strcat(cn->optfile, OPTION_FILE);

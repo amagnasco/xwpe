@@ -34,7 +34,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   extern OPT      opt[];
   extern char    *e_hlp, *e_hlp_str[];
   ECNT           *cn = f->ed;
-  MENU           *mainmenu = MALLOC(MENOPT * sizeof(MENU));
+  MENU           *mainmenu = malloc(MENOPT * sizeof(MENU));
 
   for(i = 0; i < MENOPT; i++)
     mainmenu[i].width = 0;
@@ -57,7 +57,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   mainmenu[0].no_of_items = 4;
   mainmenu[0].width = 20;
 #endif
-  if((mainmenu[0].menuitems = MALLOC(mainmenu[0].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[0].menuitems = malloc(mainmenu[0].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   mainmenu[0].menuitems[0] = WpeFillSubmenuItem("About WE", 0, 'A', e_about_WE);
   mainmenu[0].menuitems[1] = WpeFillSubmenuItem("Clear Desktop", 0, 'C', e_clear_desk);
@@ -71,7 +71,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
 #ifdef UNIX
   mainmenu[1].width = 24;
   mainmenu[1].no_of_items = 11;
-  if((mainmenu[1].menuitems = MALLOC(mainmenu[1].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[1].menuitems = malloc(mainmenu[1].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   if(f->ed->edopt & ED_CUA_STYLE)
   {
@@ -102,7 +102,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   else
 #endif
     mainmenu[2].no_of_items = 7;
-  if((mainmenu[2].menuitems = MALLOC(mainmenu[2].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[2].menuitems = malloc(mainmenu[2].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   mainmenu[2].menuitems[0] = WpeFillSubmenuItem("Cut     Shift Del / ^X", 2, 'T', e_edt_del);
   mainmenu[2].menuitems[1] = WpeFillSubmenuItem("Copy         ^Ins / ^C", 0, 'C', e_edt_copy);
@@ -121,7 +121,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   mainmenu[3].position = -3;
   mainmenu[3].width = 28;
   mainmenu[3].no_of_items = 4;
-  if((mainmenu[3].menuitems = MALLOC(mainmenu[3].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[3].menuitems = malloc(mainmenu[3].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   if(f->ed->edopt & ED_CUA_STYLE)
   {
@@ -139,7 +139,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   mainmenu[4].position = -3;
   mainmenu[4].width = 25;
   mainmenu[4].no_of_items = 15;
-  if((mainmenu[4].menuitems = MALLOC(mainmenu[4].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[4].menuitems = malloc(mainmenu[4].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   mainmenu[4].menuitems[0] = WpeFillSubmenuItem("Begin Mark      ^K B", 0, 'B', e_blck_begin);
   mainmenu[4].menuitems[1] = WpeFillSubmenuItem("End Mark        ^K K", 0, 'E', e_blck_end);
@@ -162,7 +162,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
     mainmenu[5].position = -3;
     mainmenu[5].width = 35;
     mainmenu[5].no_of_items = 12;
-    if((mainmenu[5].menuitems = MALLOC(mainmenu[5].no_of_items * sizeof(OPTK))) == NULL)
+    if((mainmenu[5].menuitems = malloc(mainmenu[5].no_of_items * sizeof(OPTK))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->fb);
     mainmenu[5].menuitems[0] = WpeFillSubmenuItem("Compile         Alt F9 / Alt C", 0, 'C', e_compile);
     mainmenu[5].menuitems[1] = WpeFillSubmenuItem("Make                F9 / Alt M", 0, 'M', e_p_make);
@@ -180,7 +180,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
     mainmenu[MENOPT - 4].position = -3;
     mainmenu[MENOPT - 4].width = 23;
     mainmenu[MENOPT - 4].no_of_items = 5;
-    if((mainmenu[MENOPT - 4].menuitems = MALLOC(mainmenu[MENOPT - 4].no_of_items * sizeof(OPTK))) == NULL)
+    if((mainmenu[MENOPT - 4].menuitems = malloc(mainmenu[MENOPT - 4].no_of_items * sizeof(OPTK))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->fb);
     mainmenu[MENOPT - 4].menuitems[0] = WpeFillSubmenuItem("Open Project", 5, 'P', e_project);
     mainmenu[MENOPT - 4].menuitems[1] = WpeFillSubmenuItem("Close Project", 0, 'C', e_cl_project);
@@ -195,7 +195,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
     mainmenu[MENOPT - 5].position = -3;
     mainmenu[MENOPT - 5].width = 33;
     mainmenu[MENOPT - 5].no_of_items = 13;
-    if((mainmenu[MENOPT - 5].menuitems = MALLOC(mainmenu[MENOPT - 5].no_of_items * sizeof(OPTK))) == NULL)
+    if((mainmenu[MENOPT - 5].menuitems = malloc(mainmenu[MENOPT - 5].no_of_items * sizeof(OPTK))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->fb);
 
     if(f->ed->edopt & ED_CUA_STYLE)
@@ -234,7 +234,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   else
 #endif
     mainmenu[MENOPT - 3].no_of_items = 5;
-  if((mainmenu[MENOPT - 3].menuitems = MALLOC(mainmenu[MENOPT - 3].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[MENOPT - 3].menuitems = malloc(mainmenu[MENOPT - 3].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   mainmenu[MENOPT - 3].menuitems[0] = WpeFillSubmenuItem("Adjust Colors", 0, 'A', e_ad_colors);
   mainmenu[MENOPT - 3].menuitems[1] = WpeFillSubmenuItem("Save Options", 0, 'S', e_opt_save);
@@ -280,7 +280,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   mainmenu[MENOPT - 2].no_of_items = !WpeIsXwin()? 7 : 6;
 #endif
 #endif
-  if((mainmenu[MENOPT - 2].menuitems = MALLOC(mainmenu[MENOPT - 2].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[MENOPT - 2].menuitems = malloc(mainmenu[MENOPT - 2].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   if(f->ed->edopt & ED_CUA_STYLE)
   {
@@ -328,7 +328,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
 #else
   mainmenu[MENOPT - 1].no_of_items = 6;
 #endif
-  if((mainmenu[MENOPT - 1].menuitems = MALLOC(mainmenu[MENOPT - 1].no_of_items * sizeof(OPTK))) == NULL)
+  if((mainmenu[MENOPT - 1].menuitems = malloc(mainmenu[MENOPT - 1].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   mainmenu[MENOPT - 1].menuitems[0] = WpeFillSubmenuItem("Editor              F1", 0, 'E', e_help);
 #if defined(PROG) && !defined(DJGPP)

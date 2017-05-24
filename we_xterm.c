@@ -314,15 +314,15 @@ int e_ini_size()
   FREE(schirm);
  if(altschirm)
   FREE(altschirm);
- schirm = MALLOC(2 * MAXSCOL * MAXSLNS);
- altschirm = MALLOC(2 * MAXSCOL * MAXSLNS);
+ schirm = malloc(2 * MAXSCOL * MAXSLNS);
+ altschirm = malloc(2 * MAXSCOL * MAXSLNS);
 #ifdef NEWSTYLE
  if (extbyte)
   FREE(extbyte);
  if (altextbyte)
   FREE(altextbyte);
- extbyte = MALLOC(MAXSCOL * MAXSLNS);
- altextbyte = MALLOC(MAXSCOL * MAXSLNS);
+ extbyte = malloc(MAXSCOL * MAXSLNS);
+ altextbyte = malloc(MAXSCOL * MAXSLNS);
  if (!schirm || !altschirm || !extbyte || !altextbyte)
   return(-1);
 #else
@@ -823,7 +823,7 @@ int e_x_system(const char *exe)
  char *string;
 
  sprintf(file, "%s/we_sys_tmp", e_tmp_dir);
- string = MALLOC(strlen(XTERM_CMD) + strlen(exe) + strlen(file) +
+ string = malloc(strlen(XTERM_CMD) + strlen(exe) + strlen(file) +
    strlen(user_shell) + 40);
  if (!(fp = fopen(file, "w+")))
  {

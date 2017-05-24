@@ -94,11 +94,11 @@ int WpeCreateFileManager(int sw, ECNT *cn, char *dirct)
   cn->edt[cn->mxedt] = j;
 
   /* allocate window structure */
-  if((f = (FENSTER *)MALLOC(sizeof(FENSTER))) == NULL)
+  if((f = (FENSTER *)malloc(sizeof(FENSTER))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   /* allocate buffer related to the window (NOT proper type, later casted) */
-  if((b = (FLBFFR *) MALLOC(sizeof(FLBFFR))) == NULL)
+  if((b = (FLBFFR *) malloc(sizeof(FLBFFR))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   f->fb = cn->fb;
@@ -169,7 +169,7 @@ int WpeCreateFileManager(int sw, ECNT *cn, char *dirct)
   {
     /* working directory is given, copy it over */
     allocate_size = strlen(dirct);
-    if((f->dirct = MALLOC(allocate_size+1)) == NULL)
+    if((f->dirct = malloc(allocate_size+1)) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
     strcpy(f->dirct, dirct);
@@ -186,22 +186,22 @@ int WpeCreateFileManager(int sw, ECNT *cn, char *dirct)
 
   f->b = (BUFFER *)b;
   /* the find pattern can only be 79 see FIND structure */
-  if((b->rdfile = MALLOC(80)) == NULL)
+  if((b->rdfile = malloc(80)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
   strcpy(b->rdfile, f->fd.file);               /* find file pattern */
 
   b->sw = sw;
 
   /* window for files */
-  if((b->fw = (FLWND *) MALLOC(sizeof(FLWND))) == NULL)
+  if((b->fw = (FLWND *) malloc(sizeof(FLWND))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   /* window for directory */
-  if((b->dw = (FLWND *) MALLOC(sizeof(FLWND))) == NULL)
+  if((b->dw = (FLWND *) malloc(sizeof(FLWND))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
 
-  if((sfile = MALLOC(strlen(f->dirct)+strlen(b->rdfile)+2)) == NULL)
+  if((sfile = malloc(strlen(f->dirct)+strlen(b->rdfile)+2)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   /* determine current directory */
@@ -503,7 +503,7 @@ int WpeHandleFileManager(ECNT * cn)
      save the current directory to return to it */
   if(f->save == 1 || b->sw == 5)
   {
-    if((svdir = MALLOC(strlen(f->ed->dirct) + 1)) == NULL)
+    if((svdir = malloc(strlen(f->ed->dirct) + 1)) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
     strcpy(svdir, f->ed->dirct);
   }
@@ -560,7 +560,7 @@ int WpeHandleFileManager(ECNT * cn)
           b->rdfile[i] = '\0';
           /* change the working directory */
           FREE(f->dirct);
-          if((f->dirct = MALLOC(strlen(b->rdfile) + 1)) == NULL)
+          if((f->dirct = malloc(strlen(b->rdfile) + 1)) == NULL)
             e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
           strcpy(f->dirct, b->rdfile);
 
@@ -780,7 +780,7 @@ int WpeHandleFileManager(ECNT * cn)
           if(S_ISLNK(buf.st_mode))
           {
             /* cannot go out through a softlink, restore dir name */
-            if((f->dirct = REALLOC(f->dirct, strlen(f->ed->dirct) + 1)) == NULL)
+            if((f->dirct = realloc(f->dirct, strlen(f->ed->dirct) + 1)) == NULL)
               e_error(e_msg[ERR_LOWMEM], 1, f->fb);
             else
               strcpy(f->dirct, f->ed->dirct);
@@ -817,7 +817,7 @@ int WpeHandleFileManager(ECNT * cn)
         freedf(b->dd);
 
         /* reset the current dir path in the control structure */
-        if((f->ed->dirct = REALLOC(f->ed->dirct, strlen(f->dirct) + 1)) == NULL)
+        if((f->ed->dirct = realloc(f->ed->dirct, strlen(f->dirct) + 1)) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, f->fb);
         else
           strcpy(f->ed->dirct, f->dirct);
@@ -860,7 +860,7 @@ int WpeHandleFileManager(ECNT * cn)
         /* we are coming from files */
         if(cold == AltF)
         {
-          if((ftmp = MALLOC(129)) == NULL)
+          if((ftmp = malloc(129)) == NULL)
             e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
           if(strlen(*(b->df->name + b->fw->nf)) > 128)
@@ -900,7 +900,7 @@ int WpeHandleFileManager(ECNT * cn)
         /* we are coming from dirs */
         else if(cold == AltT && b->dw->nf >= b->cd->anz)
         {
-          if((ftmp = MALLOC(129)) == NULL)
+          if((ftmp = malloc(129)) == NULL)
             e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
           /* selected dir */
@@ -1178,7 +1178,7 @@ int WpeHandleFileManager(ECNT * cn)
         /* check whether the file exist */
         if(!access(filen, F_OK))
         {
-          if((ftmp = MALLOC(strlen(filen) + 42)) == NULL)
+          if((ftmp = malloc(strlen(filen) + 42)) == NULL)
             e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
           sprintf(ftmp, "File %s exist\nDo you want to overwrite it ?", filen);
@@ -1330,7 +1330,7 @@ int WpeHandleFileManager(ECNT * cn)
           {
             t = b->dw->nf - b->cd->anz;
 
-            if((ftmp = MALLOC(strlen(*(b->dd->name + t)) + 1)) == NULL)
+            if((ftmp = malloc(strlen(*(b->dd->name + t)) + 1)) == NULL)
               e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
             strcpy(ftmp, *(b->dd->name + t));
@@ -1355,7 +1355,7 @@ int WpeHandleFileManager(ECNT * cn)
           if (cold != AltN)
             strcpy(filen, *(b->df->name + b->fw->nf));
           dirtmp = cn->f[cn->mxedt - 1]->dirct;
-          ftmp = MALLOC(strlen(f->dirct) + strlen(filen) + 2);
+          ftmp = malloc(strlen(f->dirct) + strlen(filen) + 2);
           len = strlen(dirtmp);
           if (strncmp(dirtmp, f->dirct, len) == 0)
           {
@@ -1368,7 +1368,7 @@ int WpeHandleFileManager(ECNT * cn)
            sprintf(ftmp, "%s%s", f->dirct, filen);
           }
           fw->df->anz++;
-          fw->df->name = REALLOC(fw->df->name, fw->df->anz * sizeof(char *));
+          fw->df->name = realloc(fw->df->name, fw->df->anz * sizeof(char *));
           for(i = fw->df->anz - 1; i > fw->nf; i--)
             fw->df->name[i] = fw->df->name[i - 1];
           fw->df->name[i] = ftmp;
@@ -1576,7 +1576,7 @@ int WpeMakeNewDir(FENSTER *f)
   umask(msk = umask(077));
   mode = 0777 & ~msk;
 
-  if((dirct = MALLOC(strlen(f->dirct) + 9)) == NULL)
+  if((dirct = malloc(strlen(f->dirct) + 9)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
   if(f->dirct[strlen(f->dirct) - 1] != DIRC)
@@ -1744,7 +1744,7 @@ char *WpeAssemblePath(char *pth, struct dirfile *cd, struct dirfile *dd, int n,
     if ((adir = WpeGetWastefile("")))
     {
       totall = strlen(adir) + 16;
-      if ((adir = REALLOC(adir, totall)) == NULL)
+      if ((adir = realloc(adir, totall)) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, f->fb);
 
       strcat(adir, DIRS);
@@ -1764,7 +1764,7 @@ char *WpeAssemblePath(char *pth, struct dirfile *cd, struct dirfile *dd, int n,
     if(i >= totall-1)
     {
       totall += 16;
-      if((adir = REALLOC(adir, totall)) == NULL)
+      if((adir = realloc(adir, totall)) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, f->fb);
     }
     *(adir + i) = *(*(cd->name + k) + j);
@@ -1786,7 +1786,7 @@ char *WpeAssemblePath(char *pth, struct dirfile *cd, struct dirfile *dd, int n,
       if(i >= totall-2)
       {
         totall += 16;
-        if((adir = REALLOC(adir, totall)) == NULL)
+        if((adir = realloc(adir, totall)) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, f->fb);
       }
       *(adir + i) = *(*(dd->name + t) + j);
@@ -1822,12 +1822,12 @@ struct dirfile *WpeCreateWorkingDirTree(int sw, ECNT *cn)
   buf = WpeGetCurrentDir(cn);
 
   buflen = strlen(buf);
-  if((tmp = MALLOC(buflen+1)) == NULL)
+  if((tmp = malloc(buflen+1)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   /* initialise directory list */
-  if(   ((df = MALLOC(sizeof(struct dirfile))) == NULL)
-     || ((df->name = MALLOC(sizeof(char *) * maxd)) == NULL) )
+  if(   ((df = malloc(sizeof(struct dirfile))) == NULL)
+     || ((df->name = malloc(sizeof(char *) * maxd)) == NULL) )
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   df->anz = 0;
@@ -1847,7 +1847,7 @@ struct dirfile *WpeCreateWorkingDirTree(int sw, ECNT *cn)
       /* increase the level in the dir tree */
       df->anz = 1;
       /* save the name into first level */
-      if((*(df->name) = MALLOC(12 * sizeof(char))) == NULL)
+      if((*(df->name) = malloc(12 * sizeof(char))) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
       strcpy(*(df->name), "Wastebasket");
 
@@ -1888,14 +1888,14 @@ struct dirfile *WpeCreateWorkingDirTree(int sw, ECNT *cn)
       {
         maxd += 10;
         dftmp = df->name;
-        if((df->name = MALLOC(sizeof(char *) * maxd)) == NULL)
+        if((df->name = malloc(sizeof(char *) * maxd)) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
         for(k = 0; k < maxd - 10; k++)
           *(df->name + k) = *(dftmp + k);
         FREE(dftmp);
       }
       /* save the current directory */
-      if((*(df->name + df->anz) = MALLOC((strlen(tmp) + 1) * sizeof(char))) == NULL)
+      if((*(df->name + df->anz) = malloc((strlen(tmp) + 1) * sizeof(char))) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
       strcpy(*(df->name + df->anz), tmp);
       df->anz++;
@@ -1928,7 +1928,7 @@ char  *WpeGetWastefile(char *file)
 
     lw = strlen(tmp2) + 1 + strlen(WASTEBASKET) + 1;
     /*    HOME          /     WASTEBASKET       \0    */
-    if((tmp = (char *)MALLOC(lw)) == NULL)
+    if((tmp = (char *)malloc(lw)) == NULL)
       return NULL;
 
     sprintf(tmp, "%s/%s", tmp2, WASTEBASKET);
@@ -1962,7 +1962,7 @@ char  *WpeGetWastefile(char *file)
   /* return wastebasket directory path if no filename in 'file' */
   if(file[0] == '\0')
   {
-    if((tmp2 = MALLOC(strlen(wastebasket)+1)) == NULL)
+    if((tmp2 = malloc(strlen(wastebasket)+1)) == NULL)
       return NULL;
     strcpy(tmp2, wastebasket);
     return(tmp2);
@@ -1972,7 +1972,7 @@ char  *WpeGetWastefile(char *file)
      append to wastebasket sting */
   for(i = strlen(file) - 1; i >= 0 && file[i] != DIRC; i--)
     ;
-  if((tmp2 = MALLOC(strlen(wastebasket) + strlen(file + 1 + i) + 2)) == NULL)
+  if((tmp2 = malloc(strlen(wastebasket) + strlen(file + 1 + i) + 2)) == NULL)
     return NULL;
 
   sprintf(tmp2, "%s/%s", wastebasket, file + 1 + i);
@@ -1986,7 +1986,7 @@ struct dirfile *WpeGraphicalFileList(struct dirfile *df, int sw, ECNT *cn)
  int             ntmp, n, i, *num;
 
  /* allocate the same structure as the argument */
- if ((edf = MALLOC(sizeof(struct dirfile))) == NULL)
+ if ((edf = malloc(sizeof(struct dirfile))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
  edf->anz = df->anz;
@@ -1995,16 +1995,16 @@ struct dirfile *WpeGraphicalFileList(struct dirfile *df, int sw, ECNT *cn)
 /* OSF and AIX fix, for malloc(0) they return NULL */
  if (df->anz)
  {
-  if ((edf->name = MALLOC(df->anz * sizeof(char *))) == NULL)
+  if ((edf->name = malloc(df->anz * sizeof(char *))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
-  if ((num = MALLOC(df->anz * sizeof(int))) == NULL)
+  if ((num = malloc(df->anz * sizeof(int))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   for (i = 0; i < df->anz; i++)
   {
    e_file_info(*(df->name + i), str, num + i, sw);
-   if ((*(edf->name + i) = MALLOC(strlen(str) + 1)) == NULL)
+   if ((*(edf->name + i) = malloc(strlen(str) + 1)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
    strcpy(*(edf->name + i), str);
   }
@@ -2012,10 +2012,10 @@ struct dirfile *WpeGraphicalFileList(struct dirfile *df, int sw, ECNT *cn)
   /* sort by time or size mode */
   if (sw & 3)
   {
-   if ((ename = MALLOC(df->anz * sizeof(char *))) == NULL)
+   if ((ename = malloc(df->anz * sizeof(char *))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
-   if ((name = MALLOC(df->anz * sizeof(char *))) == NULL)
+   if ((name = malloc(df->anz * sizeof(char *))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
    for (i = 0; i < df->anz; i++)
@@ -2063,13 +2063,13 @@ struct dirfile *WpeGraphicalDirTree(struct dirfile *cd, struct dirfile *dd, ECNT
   char            str[256];
   int             i = 0, j;
 
-  if((edf = MALLOC(sizeof(struct dirfile))) == NULL)
+  if((edf = malloc(sizeof(struct dirfile))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
   /* for the OSF and AIX this should never be zero, we are always somewhere */
   if(cd->anz + dd->anz > 0)
   {
-    if((edf->name = MALLOC((cd->anz + dd->anz) * sizeof(char *))) == NULL)
+    if((edf->name = malloc((cd->anz + dd->anz) * sizeof(char *))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
     for(i = 0; i < cd->anz; i++)
@@ -2098,7 +2098,7 @@ struct dirfile *WpeGraphicalDirTree(struct dirfile *cd, struct dirfile *dd, ECNT
           strcat(str, ctree[0]);
         strcat(str, *(cd->name + i));
       }
-      if((*(edf->name + i) = MALLOC((strlen(str) + 1) * sizeof(char))) == NULL)
+      if((*(edf->name + i) = malloc((strlen(str) + 1) * sizeof(char))) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
       strcpy(*(edf->name + i), str);
     }
@@ -2116,7 +2116,7 @@ struct dirfile *WpeGraphicalDirTree(struct dirfile *cd, struct dirfile *dd, ECNT
         int             tttt = i - cd->anz;
         strcat(str, *(dd->name + tttt));
       }
-      if((*(edf->name + i) = MALLOC((strlen(str) + 1) * sizeof(char))) == NULL)
+      if((*(edf->name + i) = malloc((strlen(str) + 1) * sizeof(char))) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
       strcpy(*(edf->name + i), str);
     }
@@ -2235,7 +2235,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
     }
   }
 
-  if((tmp = MALLOC(strlen(dirct) + strlen(file)+2)) == NULL)
+  if((tmp = malloc(strlen(dirct) + strlen(file)+2)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
   /* search for files in the directory */
@@ -2263,7 +2263,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
   /* cleans up the files in the directory */
   for(i = 0; i < dd->anz; i++)
   {
-    if((tmp = MALLOC(strlen(dirct) + strlen(dd->name[i])+15)) == NULL)
+    if((tmp = malloc(strlen(dirct) + strlen(dd->name[i])+15)) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
     sprintf(tmp, "Remove File:\n%s%c%s", dirct, DIRC, dd->name[i]);
@@ -2319,7 +2319,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
      subdirectories as well */
   if(f->ed->flopt & FM_REKURSIVE_ACTIONS)
   {
-    if((tmp = MALLOC(strlen(dirct) + strlen(SUDIR)+2)) == NULL)
+    if((tmp = malloc(strlen(dirct) + strlen(SUDIR)+2)) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
     /* search for subdirectories */
@@ -2348,7 +2348,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
     /* call recursively itself to delete the subdirectories */
     for(rec++, i = 0; i < dd->anz; i++)
     {
-      if((tmp = MALLOC(strlen(dirct) + strlen(dd->name[i])+2)) == NULL)
+      if((tmp = malloc(strlen(dirct) + strlen(dd->name[i])+2)) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
       sprintf(tmp, "%s%c%s", dirct, DIRC, dd->name[i]);
@@ -2418,7 +2418,7 @@ int WpeRemove(char *file, FENSTER * f)
     {
       if(f->ed->flopt & FM_REMOVE_PROMPT)
       {
-        if((tmp2 = MALLOC(strlen(file) + 14)) == NULL)
+        if((tmp2 = malloc(strlen(file) + 14)) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
         sprintf(tmp2, "Remove File:\n%s", file);
@@ -2495,7 +2495,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
 
   if(f->ed->flopt & FM_REKURSIVE_ACTIONS)
   {
-    if((tmp = MALLOC(strlen(dirct) + 2 + strlen(SUDIR))) == NULL)
+    if((tmp = malloc(strlen(dirct) + 2 + strlen(SUDIR))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
     sprintf(tmp, "%s%c%s", dirct, DIRC, SUDIR);
@@ -2505,10 +2505,10 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
     for(rec++, i = 0; i < dd->anz; i++)
     {
 
-      if((tmp = MALLOC(strlen(dirct) + 2 + strlen(dd->name[i]))) == NULL)
+      if((tmp = malloc(strlen(dirct) + 2 + strlen(dd->name[i]))) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
-      if((ntmp = MALLOC(strlen(newname) + 2 + strlen(dd->name[i]))) == NULL)
+      if((ntmp = malloc(strlen(newname) + 2 + strlen(dd->name[i]))) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
       sprintf(tmp, "%s%c%s", dirct, DIRC, dd->name[i]);
@@ -2527,7 +2527,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
     freedf(dd);
   }
 
-  if((tmp = MALLOC(strlen(dirct) + 2 + strlen(file))) == NULL)
+  if((tmp = malloc(strlen(dirct) + 2 + strlen(file))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
   sprintf(tmp, "%s%c%s", dirct, DIRC, file);
   dd = e_find_files(tmp, f->ed->flopt & FM_SHOW_HIDDEN_FILES ? 1 : 0);
@@ -2538,7 +2538,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
 
   for(i = 0; i < dd->anz; i++)
   {
-    if((ntmp = MALLOC(strlen(newname) + 2 + strlen(dd->name[i]))) == NULL)
+    if((ntmp = malloc(strlen(newname) + 2 + strlen(dd->name[i]))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
     sprintf(ntmp, "%s%c%s", newname, DIRC, dd->name[i]);
@@ -2548,7 +2548,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
     {
       if(f->ed->flopt & FM_MOVE_PROMPT)
       {
-        if((tmp = MALLOC(strlen(ntmp) + 31)) == NULL)
+        if((tmp = malloc(strlen(ntmp) + 31)) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
         sprintf(tmp, "File %s exist !\nOverwrite File ?", ntmp);
@@ -2587,14 +2587,14 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
       }
     }
 
-    if((tmp = MALLOC(strlen(dirct) + 2 + strlen(dd->name[i]))) == NULL)
+    if((tmp = malloc(strlen(dirct) + 2 + strlen(dd->name[i]))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
     sprintf(tmp, "%s%c%s", dirct, DIRC, dd->name[i]);
 
     if(ret == 'Y')
     {
-      if((mtmp = MALLOC(strlen(tmp) + 2 + strlen(ntmp))) == NULL)
+      if((mtmp = malloc(strlen(tmp) + 2 + strlen(ntmp))) == NULL)
         e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
       sprintf(mtmp, "%s %s", tmp, ntmp);
@@ -2700,7 +2700,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
    }
    else if (f->ed->flopt & FM_MOVE_PROMPT)
    {
-    if ((tmp = MALLOC(strlen(newname) + 26)) == NULL)
+    if ((tmp = malloc(strlen(newname) + 26)) == NULL)
      e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
     sprintf(tmp, "File %s exist\nRemove File ?", newname);
     ret = e_message(1, tmp, f);
@@ -2754,7 +2754,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
      if (tmp)
       FREE(tmp);
      allocate_size += 4;
-     if ((tmp = MALLOC(allocate_size)) == NULL)
+     if ((tmp = malloc(allocate_size)) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
       ln = readlink(file, tmp, allocate_size-1);
@@ -2765,7 +2765,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
      ;
     if (ln < 0)
     {
-     if ((tmpl = MALLOC(strlen(f->dirct) + 2 + strlen(tmp))) == NULL)
+     if ((tmpl = malloc(strlen(f->dirct) + 2 + strlen(tmp))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
      sprintf(tmpl, "%s%c%s", f->dirct, DIRC, tmp);
@@ -3069,7 +3069,7 @@ int WpePrintFile(FENSTER *f)
  {
   return(e_error(e_msg[ERR_NOPRINT], 0, f->fb));
  }
- if ((str = MALLOC(strlen(f->datnam) + 32 )) == NULL)
+ if ((str = malloc(strlen(f->datnam) + 32 )) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
  sprintf(str, "File: %s\nDo you want to print it?", f->datnam);
@@ -3087,7 +3087,7 @@ int WpePrintFile(FENSTER *f)
  f->dirct = dp;
  f->ins = sins;
 
- if ((str = MALLOC(strlen(e_tmp_dir) + 7 +
+ if ((str = malloc(strlen(e_tmp_dir) + 7 +
                    strlen(f->ed->print_cmd) + strlen(f->datnam) )) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
@@ -3125,7 +3125,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
   {
     tmp2 = WpeGetCurrentDir(f->ed);
 
-    tmp = REALLOC(tmp2, strlen(tmp2) + strlen(dirct) + 4);
+    tmp = realloc(tmp2, strlen(tmp2) + strlen(dirct) + 4);
     if(tmp == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
@@ -3137,7 +3137,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
   }
   else
   {
-    if((tmp2 = MALLOC(strlen(dirct) + 2)) == NULL)
+    if((tmp2 = malloc(strlen(dirct) + 2)) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
     if(dirct[strlen(dirct) - 1] != DIRC)
@@ -3147,18 +3147,18 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
   }
 
   /* assemble total path, dir + filename */
-  if((tmp = MALLOC(strlen(tmp2) + strlen(file) + 2)) == NULL)
+  if((tmp = malloc(strlen(tmp2) + strlen(file) + 2)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
   sprintf(tmp, "%s%s", tmp2, file);
 
   /* initialise structure, only once */
   if(df == NULL)
   {
-    if((df = MALLOC(sizeof(struct dirfile))) == NULL)
+    if((df = malloc(sizeof(struct dirfile))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
     df->anz = 0;
-    if((df->name = MALLOC(sizeof(char *))) == NULL)
+    if((df->name = malloc(sizeof(char *))) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
   }
 
@@ -3174,14 +3174,14 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
     {
       for(i = 0; i < dd->anz; i++)
       {
-        if((tp = MALLOC(strlen(tmp2) + strlen(dd->name[i]) + 2)) == NULL)
+        if((tp = malloc(strlen(tmp2) + strlen(dd->name[i]) + 2)) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
         sprintf(tp, "%s%s", tmp2, dd->name[i]);
 
         df->anz++;
 
-        if((tname = REALLOC(df->name, df->anz * sizeof(char *))) == NULL)
+        if((tname = realloc(df->name, df->anz * sizeof(char *))) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
         df->name = tname;
@@ -3193,7 +3193,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
     {
       for(i = 0; i < dd->anz; i++)
       {
-        if((tp = MALLOC(strlen(tmp2) + strlen(dd->name[i]) + 2)) == NULL)
+        if((tp = malloc(strlen(tmp2) + strlen(dd->name[i]) + 2)) == NULL)
           e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
         sprintf(tp, "%s%s", tmp2, dd->name[i]);
@@ -3201,7 +3201,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
         if(WpeGrepFile(tp, string, sw))
         {
           df->anz++;
-          if((tname = REALLOC(df->name, df->anz * sizeof(char *))) == NULL)
+          if((tname = realloc(df->name, df->anz * sizeof(char *))) == NULL)
             e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
           df->name = tname;
@@ -3221,7 +3221,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
   if(!(sw & 512))
     return(df);
 
-  if((tmp = MALLOC(strlen(dirct) + strlen(SUDIR) + 2)) == NULL)
+  if((tmp = malloc(strlen(dirct) + strlen(SUDIR) + 2)) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
   if(dirct[strlen(dirct) - 1] != DIRC)
@@ -3240,7 +3240,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
   rec++;
   for(i = 0; i < dd->anz; i++)
   {
-    if((tmp = MALLOC(strlen(dirct) + strlen(dd->name[i]) + 3)) == NULL)
+    if((tmp = malloc(strlen(dirct) + strlen(dd->name[i]) + 3)) == NULL)
     {
       e_error(e_msg[ERR_LOWMEM], 0, f->ed->fb);
       rec--;
@@ -3518,7 +3518,7 @@ int e_funct(FENSTER * f)
 
 struct dirfile *e_make_funct(char *man)
 {
- struct dirfile *df = NULL, *dout = MALLOC(sizeof(struct dirfile));
+ struct dirfile *df = NULL, *dout = malloc(sizeof(struct dirfile));
  char *sustr, *subpath, *manpath;
  int ret = 0, n, i = 0, j, k, l = 0;
 
@@ -3577,7 +3577,7 @@ struct dirfile *e_make_funct(char *man)
     ;
    if (k >= 0 /**(df->name[j]+k)*/ )
    {
-    df->name[j] = REALLOC(df->name[j],
+    df->name[j] = realloc(df->name[j],
       (l = strlen(df->name[j]) + 2) * sizeof(char));
     *(df->name[j] + k) = '(';
     *(df->name[j] + l - 2) = ')';
@@ -3585,9 +3585,9 @@ struct dirfile *e_make_funct(char *man)
    }
   }
   if (!dout->name)
-   dout->name = MALLOC(df->anz * sizeof(char *));
+   dout->name = malloc(df->anz * sizeof(char *));
   else
-   dout->name = REALLOC(dout->name, (df->anz + dout->anz) * sizeof(char *));
+   dout->name = realloc(dout->name, (df->anz + dout->anz) * sizeof(char *));
   for (j = 0; j < df->anz; j++)
   {
    for (k = 0; k < dout->anz; k++)
@@ -3644,9 +3644,9 @@ int e_data_first(int sw, ECNT *cn, char *nstr)
   (cn->mxedt)++;
   cn->edt[cn->mxedt] = j;
 
-  if((f = (FENSTER *) MALLOC(sizeof(FENSTER))) == NULL)
+  if((f = (FENSTER *) malloc(sizeof(FENSTER))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
-  if((fw = (FLWND *) MALLOC(sizeof(FLWND))) == NULL)
+  if((fw = (FLWND *) malloc(sizeof(FLWND))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
   f->fb = cn->fb;
   cn->f[cn->mxedt] = f;
@@ -3667,7 +3667,7 @@ int e_data_first(int sw, ECNT *cn, char *nstr)
     f->dirct = NULL; /* how about a free up ??? */
   else
   {
-    f->dirct = MALLOC(strlen(nstr) + 1);
+    f->dirct = malloc(strlen(nstr) + 1);
     strcpy(f->dirct, nstr);
   }
   WpeMouseChangeShape(WpeWorkingShape);
@@ -3937,7 +3937,7 @@ int e_get_funct_in(char *nstr, FENSTER * f)
 int e_funct_in(FENSTER * f)
 {
   int             n, xa = 37, ya = 2, num = 8;
-  OPTK           *opt = MALLOC(num * sizeof(OPTK));
+  OPTK           *opt = malloc(num * sizeof(OPTK));
   char            nstr[2];
 
   opt[0].t = "User Commands";

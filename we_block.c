@@ -321,7 +321,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  {
   n = kex - kax;
   bz->b.x = x; bz->b.y = y;
-  if ((cstr = MALLOC(f->ed->maxcol * sizeof(char))) == NULL)
+  if ((cstr = malloc(f->ed->maxcol * sizeof(char))) == NULL)
   {
    e_error(e_msg[ERR_LOWMEM], 0, bz->fb);
    return;
@@ -345,7 +345,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  {
   n = kax - x;
   bv->b.x = x; bv->b.y = y;
-  if ((cstr = MALLOC(f->ed->maxcol * sizeof(char))) == NULL)
+  if ((cstr = malloc(f->ed->maxcol * sizeof(char))) == NULL)
   {
    e_error(e_msg[ERR_LOWMEM], 0, bz->fb);
    return;
@@ -367,7 +367,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  {
   n = x - kex;
   bv->b.x = kex; bv->b.y = y;
-  if ((cstr = MALLOC(f->ed->maxcol * sizeof(char))) == NULL)
+  if ((cstr = malloc(f->ed->maxcol * sizeof(char))) == NULL)
   {
    e_error(e_msg[ERR_LOWMEM], 0, bz->fb);
    return;
@@ -388,14 +388,14 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  while (bz->mxlines+n > bz->mx.y-2)
  {
   bz->mx.y += MAXLINES;
-  if ((tmp = REALLOC(bz->bf, bz->mx.y * sizeof(STRING))) == NULL)
+  if ((tmp = realloc(bz->bf, bz->mx.y * sizeof(STRING))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, bz->fb);
   else
    bz->bf = tmp;
   if (bz->f->c_sw)
-   bz->f->c_sw = REALLOC(bz->f->c_sw, bz->mx.y * sizeof(int));
+   bz->f->c_sw = realloc(bz->f->c_sw, bz->mx.y * sizeof(int));
  }
- if ((str = MALLOC((n+2) * sizeof(STRING))) == NULL)
+ if ((str = malloc((n+2) * sizeof(STRING))) == NULL)
  {
   e_error(e_msg[ERR_LOWMEM], 0, bz->fb);
   return;
@@ -493,7 +493,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
  unsigned char *cstr;
 
  if (key < kay || (kay == key && kex <= kax)) return;
- if ((cstr = MALLOC(buffer_src->mx.x + 1)) == NULL)
+ if ((cstr = malloc(buffer_src->mx.x + 1)) == NULL)
  {
   e_error(e_msg[ERR_LOWMEM], 0, buffer_dst->fb);
   return;
@@ -528,14 +528,14 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
  while (buffer_dst->mxlines+n > buffer_dst->mx.y-2)
  {
   buffer_dst->mx.y += MAXLINES;
-  if ((tmp = REALLOC(buffer_dst->bf, buffer_dst->mx.y * sizeof(STRING))) == NULL)
+  if ((tmp = realloc(buffer_dst->bf, buffer_dst->mx.y * sizeof(STRING))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, buffer_dst->fb);
   else
    buffer_dst->bf = tmp;
   if (buffer_dst->f->c_sw)
-   buffer_dst->f->c_sw = REALLOC(buffer_dst->f->c_sw , buffer_dst->mx.y * sizeof(int));
+   buffer_dst->f->c_sw = realloc(buffer_dst->f->c_sw , buffer_dst->mx.y * sizeof(int));
  }
- if ((str = MALLOC((n+2) * sizeof(STRING *))) == NULL)
+ if ((str = malloc((n+2) * sizeof(STRING *))) == NULL)
  {
   e_error(e_msg[ERR_LOWMEM], 0, buffer_dst->fb);
   FREE(cstr);
@@ -564,7 +564,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
   buffer_dst->bf[i+y].s = NULL;
  for (i = 1; i <= n; i++)
  {
-  if ((buffer_dst->bf[i+y].s = MALLOC(buffer_dst->mx.x+1)) == NULL)
+  if ((buffer_dst->bf[i+y].s = malloc(buffer_dst->mx.x+1)) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, b->fb);
   for (j = 0; j <= str[i]->len; j++)
    *(buffer_dst->bf[i+y].s+j) = *(str[i]->s+j);
@@ -803,7 +803,7 @@ int e_blck_to_left(FENSTER *f)
  BUFFER *b;
  SCHIRM *s;
  int n = f->ed->tabn/2, i, j, k, l, m, nn;
- char *tstr = MALLOC((n+2)*sizeof(char));
+ char *tstr = malloc((n+2)*sizeof(char));
 
  for(i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT(f->ed->f[i]->dtmd); i--);
  if(i <= 0) return(0);
@@ -851,7 +851,7 @@ int e_blck_to_right(FENSTER *f)
  BUFFER *b;
  SCHIRM *s;
  int n = f->ed->tabn/2, i, j;
- char *tstr = MALLOC((n+1)*sizeof(char));
+ char *tstr = malloc((n+1)*sizeof(char));
 
  for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT(f->ed->f[i]->dtmd); i--)
   ;
