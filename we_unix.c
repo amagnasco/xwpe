@@ -527,7 +527,7 @@ struct dirfile *e_find_files(char *sufile, int sw)
    {
     while (sizeSdir + strlen(dp->d_name) + 10 > sizeStmp)
      sizeStmp <<= 1;
-    stmp = (char *)WpeRealloc(stmp, sizeStmp);
+    stmp = (char *)realloc(stmp, sizeStmp);
    }
 
    e_mkfilepath(sdir, dp->d_name, stmp);
@@ -619,7 +619,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
    {
     while (sizeSdir + strlen(dp->d_name) + 10 > sizeStmp)
      sizeStmp <<= 1;
-    stmp = (char *)WpeRealloc(stmp, sizeStmp);
+    stmp = (char *)realloc(stmp, sizeStmp);
    }
    stat(e_mkfilepath(sdir, dp->d_name, stmp), &buf);
 

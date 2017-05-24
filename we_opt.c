@@ -1076,7 +1076,7 @@ int e_opt_read(ECNT *cn)
   if (sz != 256)
   {
    sz = 256;
-   str_line = (char *)WpeRealloc(str_line, sz * sizeof(char));
+   str_line = (char *)realloc(str_line, sz * sizeof(char));
   }
   str_line[0] = 0;
   fgets(str_line, sz, fp);
@@ -1084,7 +1084,7 @@ int e_opt_read(ECNT *cn)
     ((str_line[0] == 0) || (str_line[strlen(str_line) - 1] != '\n')))
   {
    sz += 255;
-   str_line = (char *)WpeRealloc(str_line, sz * sizeof(char));
+   str_line = (char *)realloc(str_line, sz * sizeof(char));
    fgets(str_line + sz - 256, 256, fp);
   }
   i = strlen(str_line);

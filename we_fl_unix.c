@@ -1684,7 +1684,7 @@ char *WpeGetCurrentDir(ECNT *cn)
   do
   {
     /* allocate space for the directory name */
-    if ((current_dir = (char *)WpeRealloc(current_dir, allocate_size + 1)) == NULL)
+    if ((current_dir = (char *)realloc(current_dir, allocate_size + 1)) == NULL)
     {
      e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
      return NULL;

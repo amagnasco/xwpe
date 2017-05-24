@@ -19,7 +19,7 @@ typedef enum wpeMouseShape {
 #define WpeIsXwin() (e_we_sw & 1)
 
 //#define WpeMalloc(x) malloc(x)
-#define WpeRealloc(x, y) realloc(x, y)
+//#define WpeRealloc(x, y) realloc(x, y)
 #define WpeFree(x) free(x)
 
 #endif

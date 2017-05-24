@@ -1070,11 +1070,11 @@ int e_x_paste_X_buffer(FENSTER *f)
   WpeXInfo.selection[n] = b0->bf[s0->mark_begin.y].s[j];
  for (i = s0->mark_begin.y+1; i < s0->mark_end.y; i++)
  {
-  WpeXInfo.selection = WpeRealloc(WpeXInfo.selection, (n + b0->bf[i].nrc)*sizeof(char));
+  WpeXInfo.selection = realloc(WpeXInfo.selection, (n + b0->bf[i].nrc)*sizeof(char));
   for (j = 0; j < b0->bf[i].nrc; j++, n++)
    WpeXInfo.selection[n] = b0->bf[i].s[j];
  }
- WpeXInfo.selection = WpeRealloc(WpeXInfo.selection, (n + s0->mark_end.x + 1)*sizeof(char));
+ WpeXInfo.selection = realloc(WpeXInfo.selection, (n + s0->mark_end.x + 1)*sizeof(char));
  for (j = 0; j < s0->mark_end.x; j++, n++)
   WpeXInfo.selection[n] = b0->bf[i].s[j];
  WpeXInfo.selection[n] = 0;

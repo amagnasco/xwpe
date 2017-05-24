@@ -43,7 +43,7 @@ void WpeExpArrayAdd(void **exp_array, void *new_elem)
  if (*real_array == *(real_array + 3))
  {
   *(real_array) += *(real_array + 2);
-  real_array = WpeRealloc(real_array, (*real_array) * (*(real_array + 1)) +
+  real_array = realloc(real_array, (*real_array) * (*(real_array + 1)) +
                                       sizeof(int) * 4);
   if (real_array == NULL)
   {
