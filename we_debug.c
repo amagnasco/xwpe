@@ -467,7 +467,7 @@ int e_d_quit_basic(FENSTER *f)
  if (!WpeIsXwin())
  {
   if (e_d_out)
-   FREE(e_d_out);
+   free(e_d_out);
   e_d_out = NULL;
  }
  if (rfildes[1] >= 0)
@@ -544,9 +544,9 @@ int e_remove_all_watches(FENSTER *f)
  int i, n;
 
  if (e_d_nwtchs < 1) return(0);
- for (n = 0; n < e_d_nwtchs;n++) FREE(e_d_swtchs[n]);
- FREE(e_d_swtchs);
- FREE(e_d_nrwtchs);
+ for (n = 0; n < e_d_nwtchs;n++) free(e_d_swtchs[n]);
+ free(e_d_swtchs);
+ free(e_d_nrwtchs);
  e_d_nwtchs = 0;
  for (i = cn->mxedt; i > 0; i--)
  {
@@ -573,7 +573,7 @@ int e_delete_watches(FENSTER *f)
   return(0);
  for (n = 0; n < e_d_nwtchs && e_d_nrwtchs[n] <= b->b.y; n++)
   ;
- FREE(e_d_swtchs[n - 1]);
+ free(e_d_swtchs[n - 1]);
  for (; n < e_d_nwtchs; n++)
   e_d_swtchs[n - 1] = e_d_swtchs[n];
  e_d_nwtchs--;
@@ -697,7 +697,7 @@ int e_d_p_watches(FENSTER *f, int sw)
  
  /* free all lines of BUFFER b */
  e_p_red_buffer(b);
- FREE(b->bf[0].s);
+ free(b->bf[0].s);
  b->mxlines=0;
 
  for (i = 0, l = 0; l < e_d_nwtchs; l++)
@@ -759,7 +759,7 @@ int e_d_p_watches(FENSTER *f, int sw)
      for(k = 0; str[k] != '\0' && str[k] != '='; k++);
     if (str[k] == '\0')
     {
-     if (str != str1) FREE(str);
+     if (str != str1) free(str);
      str = str1;
      strcpy(str, e_d_msg[ERR_NOSYMBOL]);
      k = 0;
@@ -786,7 +786,7 @@ int e_d_p_watches(FENSTER *f, int sw)
   free(str2);
   if(str != str1)
   {
-   FREE(str);
+   free(str);
   }
  }
 
@@ -855,7 +855,7 @@ int e_d_reinit_watches(FENSTER * f,char * prj)
   strcpy(e_d_swtchs[e], prj2+q); 
   q+=strlen(prj2+q)+1;
  } 
- FREE(prj2);
+ free(prj2);
  e_d_p_watches(f, 1);   
  return 0;
 }
@@ -1137,7 +1137,7 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
      }
      name+=e+1;
    }
-   FREE(prj2);
+   free(prj2);
    return 0;
 }
 
@@ -1223,24 +1223,24 @@ int e_remove_breakpoints(FENSTER *f)
    write(rfildes[1], "db *\n", 2);
  }
  for (i = 0; i < e_d_nbrpts; i++)
-  FREE(e_d_sbrpts[i]);
+  free(e_d_sbrpts[i]);
  for (i = cn->mxedt; i >= 0; i--)
   if (DTMD_ISTEXT(cn->f[i]->dtmd))
    cn->f[i]->s->brp[0] = 0;
  e_d_nbrpts = 0;
  if (e_d_sbrpts)
  {
-  FREE(e_d_sbrpts);
+  free(e_d_sbrpts);
   e_d_sbrpts = NULL;
  }
  if (e_d_ybrpts)
  {
-  FREE(e_d_ybrpts);
+  free(e_d_ybrpts);
   e_d_ybrpts = NULL;
  }
  if (e_d_nrbrpts)
  {
-  FREE(e_d_nrbrpts);
+  free(e_d_nrbrpts);
   e_d_nrbrpts = NULL;
  }
  e_rep_win_tree(cn);
@@ -1271,7 +1271,7 @@ int e_mk_brk_main(FENSTER *f, int sw)
    write(rfildes[1], eing, strlen(eing));
    if (e_d_dum_read() == -1) return(-1);
   }
-  FREE(e_d_sbrpts[sw-1]);
+  free(e_d_sbrpts[sw-1]);
   for (i = sw-1; i < e_d_nbrpts - 1; i++)
   {
    e_d_sbrpts[i] = e_d_sbrpts[i+1];
@@ -1281,11 +1281,11 @@ int e_mk_brk_main(FENSTER *f, int sw)
   e_d_nbrpts--;
   if (e_d_nbrpts == 0)
   {
-   FREE(e_d_sbrpts);
+   free(e_d_sbrpts);
    e_d_sbrpts = NULL;
-   FREE(e_d_ybrpts);
+   free(e_d_ybrpts);
    e_d_ybrpts = NULL;
-   FREE(e_d_nrbrpts);
+   free(e_d_nrbrpts);
    e_d_nrbrpts = NULL;
   }
  }
@@ -1406,7 +1406,7 @@ int e_make_breakpoint(FENSTER *f, int sw)
     write(rfildes[1], eing, strlen(eing));
     if (e_d_dum_read() == -1) return(-1);
    }
-   FREE(e_d_sbrpts[i]);
+   free(e_d_sbrpts[i]);
    for (; i < e_d_nbrpts - 1; i++)
    {
     e_d_sbrpts[i] = e_d_sbrpts[i+1];
@@ -1416,11 +1416,11 @@ int e_make_breakpoint(FENSTER *f, int sw)
    e_d_nbrpts--;
    if (e_d_nbrpts == 0)
    {
-    FREE(e_d_sbrpts);
+    free(e_d_sbrpts);
     e_d_sbrpts = NULL;
-    FREE(e_d_ybrpts);
+    free(e_d_ybrpts);
     e_d_ybrpts = NULL;
-    FREE(e_d_nrbrpts);
+    free(e_d_nrbrpts);
     e_d_nrbrpts = NULL;
    }
   }
@@ -1575,7 +1575,7 @@ int e_exec_deb(FENSTER *f, char *prog)
   for (i = 0; i < 5; i++)
   {
    if (npipe[i])
-    FREE(npipe[i]);
+    free(npipe[i]);
    npipe[i] = malloc(128);
    sprintf(npipe[i], "%s/we_pipe%d", e_tmp_dir, i);
    remove(npipe[i]);
@@ -2468,8 +2468,8 @@ int e_d_goto_break(char *file, int line, FENSTER *f)
    break;
   }
  f = cn->f[cn->mxedt];
- FREE(ftmp.dirct);
- FREE(ftmp.datnam);
+ free(ftmp.dirct);
+ free(ftmp.datnam);
  if (i <= 0)
  {
   if (access(file, 0))

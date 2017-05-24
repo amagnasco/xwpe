@@ -311,16 +311,16 @@ int e_ini_size()
  old_cursor_y = cur_y;
 
  if (schirm)
-  FREE(schirm);
+  free(schirm);
  if(altschirm)
-  FREE(altschirm);
+  free(altschirm);
  schirm = malloc(2 * MAXSCOL * MAXSLNS);
  altschirm = malloc(2 * MAXSCOL * MAXSLNS);
 #ifdef NEWSTYLE
  if (extbyte)
-  FREE(extbyte);
+  free(extbyte);
  if (altextbyte)
-  FREE(altextbyte);
+  free(altextbyte);
  extbyte = malloc(MAXSCOL * MAXSLNS);
  altextbyte = malloc(MAXSCOL * MAXSLNS);
  if (!schirm || !altschirm || !extbyte || !altextbyte)
@@ -827,7 +827,7 @@ int e_x_system(const char *exe)
    strlen(user_shell) + 40);
  if (!(fp = fopen(file, "w+")))
  {
-  FREE(string);
+  free(string);
   return(-1);
  }
  fputs("$*\necho type \\<Return\\> to continue\nread i\n", fp);
@@ -841,7 +841,7 @@ int e_x_system(const char *exe)
     user_shell, file, exe);
  ret = system(string);
  remove(file);
- FREE(string);
+ free(string);
  return(ret);
 }
 
@@ -874,8 +874,8 @@ int e_x_repaint_desk(FENSTER *f)
  e_abs_refr();
  for (i = cn->mxedt; i >= 1; i--)
  {
-  FREE(cn->f[i]->pic->p);
-  FREE(cn->f[i]->pic);
+  free(cn->f[i]->pic->p);
+  free(cn->f[i]->pic);
  }
  for (i = 0; i <= cn->mxedt; i++)
  {
@@ -948,7 +948,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  long nitems, bytes_left;
 
  for (i = 1; i < b0->mxlines; i++)
-  FREE(b0->bf[i].s);
+  free(b0->bf[i].s);
  b0->mxlines = 1;
  *(b0->bf[0].s) = WPE_WR;
  *(b0->bf[0].s+1) = '\0';

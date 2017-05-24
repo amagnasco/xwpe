@@ -100,7 +100,7 @@ int e_blck_clear(BUFFER *b, SCHIRM *s)
  return(0);
  }
  for (i = s->mark_begin.y + 1; i < s->mark_end.y; i++)
-  FREE(b->bf[i].s);
+  free(b->bf[i].s);
  for (i = s->mark_begin.y + 1; i <= b->mxlines-len; i++)
   b->bf[i] = b->bf[i+len];
  (b->mxlines) -= len;
@@ -217,7 +217,7 @@ int e_edt_copy(FENSTER *f)
   return(0);
  }
  for (i = 1; i < b0->mxlines; i++)
-  FREE(b0->bf[i].s);
+  free(b0->bf[i].s);
  b0->mxlines = 1;
  *(b0->bf[0].s) = WPE_WR;
  *(b0->bf[0].s+1) = '\0';
@@ -337,7 +337,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
   sz->mark_begin.y = sz->mark_end.y = bz->b.y = y;
   e_cursor(f, 1);
   e_schirm(f, 1);
-  FREE(cstr);
+  free(cstr);
   return;
  }
 
@@ -359,7 +359,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
   sv->mark_end.x = kex;  sv->mark_end.y = key;
   e_cursor(f, 1);
   e_schirm(f, 1);
-  FREE(cstr);
+  free(cstr);
   return;
  }
 
@@ -381,7 +381,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
   bv->b.x = sv->mark_end.x;  bv->b.y = sv->mark_end.y;
   e_cursor(f, 1);
   e_schirm(f, 1);
-  FREE(cstr);
+  free(cstr);
   return;
  }
 
@@ -452,7 +452,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  sc_txt_1(bz->f);
  e_cursor(f, 1);
  e_schirm(f, 1);
- FREE(str);
+ free(str);
 }
 
 /*   copy block within window   */
@@ -502,7 +502,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
  {
   if (buffer_src == buffer_dst && y == kay && x >= kax && x < kex)
   {
-   FREE(cstr);
+   free(cstr);
    return;
   }
   n = kex - kax;
@@ -513,7 +513,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
   s_dst->mark_begin.x = x;
   s_dst->mark_end.x = buffer_dst->b.x = x + n;
   s_dst->mark_begin.y = s_dst->mark_end.y = buffer_dst->b.y = y;
-  FREE(cstr);
+  free(cstr);
   e_cursor(f, 1);
   e_schirm(f, 1);
   return;
@@ -522,7 +522,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
  if (buffer_src == buffer_dst && ( (y > kay && y < key) ||
    ( y == kay && x >= kax ) || ( y == key && x < kex) ))
  {
-  FREE(cstr);
+  free(cstr);
   return;
  }
  while (buffer_dst->mxlines+n > buffer_dst->mx.y-2)
@@ -538,7 +538,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
  if ((str = malloc((n+2) * sizeof(STRING *))) == NULL)
  {
   e_error(e_msg[ERR_LOWMEM], 0, buffer_dst->fb);
-  FREE(cstr);
+  free(cstr);
   return;
  }
  e_new_line(y+1, buffer_dst);
@@ -590,8 +590,8 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
 
  e_cursor(f, 1);
  e_schirm(f, 1);
- FREE(cstr);
- FREE(str);
+ free(cstr);
+ free(str);
 }
 
 /*   delete block marks   */
@@ -840,7 +840,7 @@ int e_blck_to_left(FENSTER *f)
    s->mark_begin.x = nn;
   }
  }
- FREE(tstr);
+ free(tstr);
  e_schirm(f, 1);
  return(0);
 }
@@ -873,7 +873,7 @@ int e_blck_to_right(FENSTER *f)
   if (i == s->mark_begin.y)
    s->mark_begin.x = 0;
  }
- FREE(tstr);
+ free(tstr);
  e_schirm(f, 1);
  return(0);
 }

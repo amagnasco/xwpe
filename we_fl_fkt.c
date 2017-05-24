@@ -107,7 +107,7 @@ POINT e_readin(int i, int j, FILE *fp, BUFFER *b, char *type)
   {
    if (i == 0 && j > 0)
    {
-    FREE(b->bf[j].s);
+    free(b->bf[j].s);
     for (k = j; k < b->mxlines; k++) b->bf[k] = b->bf[k+1];
     (b->mxlines)--;
    }
@@ -271,7 +271,7 @@ int e_write(int xa, int ya, int xe, int ye, FENSTER *f, int backup)
  if ((fp = fopen(ptmp, "wb")) == NULL)
  {
   e_error(e_msg[ERR_FOPEN], 0, f->fb);
-  FREE(ptmp);
+  free(ptmp);
   return(WPE_ESC);
  }
  if (f->filemode >= 0)
@@ -310,7 +310,7 @@ int e_write(int xa, int ya, int xe, int ye, FENSTER *f, int backup)
    else
     putc(*(b->bf[j].s+i), fp);
   }
- FREE(ptmp);
+ free(ptmp);
  fclose(fp);
  return(0);
 }
@@ -374,10 +374,10 @@ int freedf(struct dirfile *df)
  {
   for (; df->anz > 0; (df->anz)--)
    if (*(df->name+df->anz-1))
-    FREE(*(df->name+df->anz-1));
-   FREE(df->name);
+    free(*(df->name+df->anz-1));
+   free(df->name);
  }
- FREE(df);
+ free(df);
  df = NULL;
  return(0);
 }
@@ -557,7 +557,7 @@ int e_mkdir_path(char *path)
    mkdir(tmp, 0700);
   }
  }
- FREE(tmp);
+ free(tmp);
  return(0);
 }
 
@@ -571,46 +571,46 @@ IFILE *e_i_fopen(char *path, char *stat)
  if ((fp = gzopen(path, stat))) {  return(fp);  }
  if (!(tmp2 = malloc((strlen(path)+11)*sizeof(char))))
  {
-  FREE(fp);
+  free(fp);
   return(NULL);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".gz");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".Z");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info.gz");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info.Z");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
- FREE(fp);
- FREE(tmp2);
+ free(fp);
+ free(tmp2);
  return(NULL);
 #else
  extern char *e_tmp_dir;
@@ -619,18 +619,18 @@ IFILE *e_i_fopen(char *path, char *stat)
  IFILE *fp = malloc(sizeof(IFILE));
 
  if (!fp) return(NULL);
- if (!path) {  FREE(fp); return(NULL);  }
+ if (!path) {  free(fp); return(NULL);  }
  if ((fp->fp = fopen(path, stat))) {  fp->sw = 0;  return(fp);  }
  if (!(tmp2 = malloc((strlen(path)+11)*sizeof(char)))) 
  {
-  FREE(fp);
+  free(fp);
   return(NULL);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info");
  if ((fp->fp = fopen(tmp2, stat))) 
  {
-  FREE(tmp2);
+  free(tmp2);
   fp->sw = 0;
   return(fp);
  }
@@ -650,8 +650,8 @@ IFILE *e_i_fopen(char *path, char *stat)
     strcat(tmp2, ".info.Z");
     if (access(tmp2, 0))
     {
-     FREE(fp);
-     FREE(tmp2);
+     free(fp);
+     free(tmp2);
      return(NULL);
     }
    }
@@ -659,8 +659,8 @@ IFILE *e_i_fopen(char *path, char *stat)
  }
  if (!(tmp = malloc((strlen(path)+(len=strlen(e_tmp_dir))+2)*sizeof(char)))) 
  {
-  FREE(fp);
-  FREE(tmp2);
+  free(fp);
+  free(tmp2);
   return(NULL);
  }
  strcpy(tmp, e_tmp_dir);
@@ -669,20 +669,20 @@ IFILE *e_i_fopen(char *path, char *stat)
  if ((fp->fp = fopen(tmp, stat)))
  {
   fp->sw = 1;
-  FREE(tmp);
-  FREE(tmp2);
+  free(tmp);
+  free(tmp2);
   return(fp);
  }
  command = malloc((strlen(tmp) + strlen(tmp2) + 14) * sizeof(char));
- if (!command) {  FREE(fp);  FREE(tmp);  FREE(tmp2);  return(NULL);  }
+ if (!command) {  free(fp);  free(tmp);  free(tmp2);  return(NULL);  }
  e_mkdir_path(tmp);
  sprintf(command, "gunzip < %s > %s", tmp2, tmp);
- FREE(tmp2);
+ free(tmp2);
  system(command);
- FREE(command);  
+ free(command);  
  fp->fp = fopen(tmp, stat);
- FREE(tmp);
- if (!fp->fp) {  FREE(fp);  return(NULL);  }
+ free(tmp);
+ if (!fp->fp) {  free(fp);  return(NULL);  }
  fp->sw = 1;
  return(fp);  
 #endif
@@ -693,7 +693,7 @@ int e_i_fclose(IFILE *fp)
 {
  int ret = fclose(fp->fp);
 
- FREE(fp);
+ free(fp);
  return(ret);
 }
 #endif
@@ -706,7 +706,7 @@ int e_read_help(char *str, FENSTER *f, int sw)
 
  ptmp = e_mkfilename(LIBRARY_DIR, HELP_FILE);
  fp = e_i_fopen(ptmp, "rb");
- FREE(ptmp);
+ free(ptmp);
  if (!fp)
   return(1);
  e_close_buffer(f->b);
@@ -867,8 +867,8 @@ int e_help_last(FENSTER *f)
  e_cursor(f, 1);
  e_schirm(f, 1);
  ud_help = last->next;
- FREE(last->str);
- FREE(last);
+ free(last->str);
+ free(last);
  return(0);
 }
 
@@ -877,14 +877,14 @@ int e_help_next(FENSTER *f, int sw)
    struct help_ud *last = ud_help;
    if(last && last->sw)
    {  if(sw && last->nstr)
-      {  if(last->str) FREE(last->str);
-         if(last->pstr) FREE(last->pstr);
+      {  if(last->str) free(last->str);
+         if(last->pstr) free(last->pstr);
          last->str = last->nstr;
          last->nstr = NULL;
       }
       else if(!sw && last->pstr)
-      {  if(last->str) FREE(last->str);
-         if(last->nstr) FREE(last->nstr);
+      {  if(last->str) free(last->str);
+         if(last->nstr) free(last->nstr);
          last->str = last->pstr;
          last->pstr = NULL;
       }
@@ -925,11 +925,11 @@ int e_help_free(FENSTER *f)
  while (last)
  {
   next = last->next;
-  if (last->str) FREE(last->str);
-  if (last->pstr) FREE(last->pstr);
-  if (last->nstr) FREE(last->nstr);
-  if (last->file) FREE(last->file);
-  FREE(last);
+  if (last->str) free(last->str);
+  if (last->pstr) free(last->pstr);
+  if (last->nstr) free(last->nstr);
+  if (last->file) free(last->file);
+  free(last);
   last = next;
  }
  ud_help = NULL;
@@ -1014,10 +1014,10 @@ int e_help_comp(FENSTER *f)
   }
  }
 ende:
- for (i = 0; i < sn; i++) FREE(swtch[i]);
- for (i = 0; i < hn; i++) FREE(hdrs[i]);
- FREE(swtch);
- FREE(hdrs);
+ for (i = 0; i < sn; i++) free(swtch[i]);
+ for (i = 0; i < hn; i++) free(hdrs[i]);
+ free(swtch);
+ free(hdrs);
  return(0);
 }
 
@@ -1151,19 +1151,19 @@ IFILE *e_info_jump(char *str, char **path, IFILE *fp)
   {
    e_i_fclose(fp);
    fp = fpn;
-   FREE(*path);
+   free(*path);
    *path = ptmp;
   }
   else
-   FREE(ptmp);
+   free(ptmp);
  }
- FREE(fstr);
+ free(fstr);
  for (i = 0; i < anz; i++)
  {
-  FREE(files[i]->name);
-  FREE(files[i]);
+  free(files[i]->name);
+  free(files[i]);
  }
- FREE(files);
+ free(files);
  return(fp);
 }
 
@@ -1201,8 +1201,8 @@ char *e_mk_info_path(char *path, char *file)
  if (!info_file || !*info_file) return(NULL);
  if (file[0] == DIRC)
  {
-  if (path && !strcmp(path, file)) {  FREE(path);  return(NULL);  }
-  else if(path) FREE(path);
+  if (path && !strcmp(path, file)) {  free(path);  return(NULL);  }
+  else if(path) free(path);
   if (!(path = malloc((strlen(file) + 1) * sizeof(char)))) return(NULL);
   return (strcpy(path, file));
  }
@@ -1214,7 +1214,7 @@ char *e_mk_info_path(char *path, char *file)
   else if (n == 1) path[n++] = PTHD;
   while (strncmp(tp, path, n) && (tp = strchr(tp, PTHD)) != NULL && *++tp);
   if (tp == NULL || !*tp || !*(tp += n)) return(NULL);
-  FREE(path);
+  free(path);
  }
  for (n = 0; tp[n] && tp[n] != PTHD; n++);
  if (!(path = malloc((strlen(file) + n + 2) * sizeof(char)))) return(NULL);
@@ -1257,7 +1257,7 @@ int e_read_info(char *str, FENSTER *f, char *file)
    {  if(!strncmp(tstr, "Indirect:", 9)) fp = e_info_jump(str, &path, fp);
       else if(!strncmp(tstr, "File:", 5) && strstr(tstr, fstr)) break;
    }
-   FREE(path);
+   free(path);
    if(ptmp)
    {  ud_help->nstr = e_mk_info_pt(tstr, "Next");
       ud_help->pstr = e_mk_info_pt(tstr, "Prev");

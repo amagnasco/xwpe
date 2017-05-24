@@ -319,7 +319,7 @@ int e_sc_all(FENSTER *f, int sw)
   for (i = 0; i <= f->ed->mxedt; i++)
   if (f->ed->f[i]->c_sw)
   {
-   FREE(f->ed->f[i]->c_sw);
+   free(f->ed->f[i]->c_sw);
    f->ed->f[i]->c_sw = NULL;
   }
  }
@@ -328,12 +328,12 @@ int e_sc_all(FENSTER *f, int sw)
   for (i = 0; i <= f->ed->mxedt; i++)
   {
    if (f->ed->f[i]->c_sw)
-    FREE(f->ed->f[i]->c_sw);
+    free(f->ed->f[i]->c_sw);
    e_add_synt_tl(f->ed->f[i]->datnam, f->ed->f[i]);
    if (f->ed->f[i]->c_st)
    {
     if (f->ed->f[i]->c_sw)
-     FREE(f->ed->f[i]->c_sw);
+     free(f->ed->f[i]->c_sw);
     f->ed->f[i]->c_sw = e_sc_txt(NULL, f->ed->f[i]->b);
    }
   }
@@ -370,10 +370,10 @@ int e_program_opt(FENSTER *f)
  if (ret != WPE_ESC)
  {
   if (e_prog.exedir)
-   FREE(e_prog.exedir);
+   free(e_prog.exedir);
   e_prog.exedir = WpeStrdup(o->wstr[0]->txt);
   if (e_prog.sys_include)
-   FREE(e_prog.sys_include);
+   free(e_prog.sys_include);
   e_prog.sys_include = WpeStrdup(o->wstr[1]->txt);
   f->ed->edopt = (f->ed->edopt & ~ED_PROGRAMMING_OPTIONS) +
     (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
@@ -656,7 +656,7 @@ E_AFILE *e_aopen(char *name, char *path, int mode)
  }
  if (!ep->b && !ep->fp)
  {
-  FREE(ep);
+  free(ep);
   return NULL;
  }
  return(ep);
@@ -668,7 +668,7 @@ int e_aclose(E_AFILE *ep)
 
  if (ep->fp)
   ret = fclose(ep->fp);
- FREE(ep);
+ free(ep);
  return(ret);
 }
 
@@ -1190,7 +1190,7 @@ int e_show_nm_f(char *name, FENSTER *f, int oldn, char **oldname)
   WpeMouseRestoreShape();
   return(-1);
  }
- if (*oldname) FREE(*oldname);
+ if (*oldname) free(*oldname);
  *oldname = malloc((strlen(file)+1) * sizeof(char));
  strcpy(*oldname, file);
  for (i = strlen(file)-1; i >= 0 && file[i] != '/'; i--)
@@ -1242,12 +1242,12 @@ int e_sh_def(FENSTER *f)
  if (e_add_arguments(str, "Show Definition", f, 0 , AltB, &f->ed->shdf))
  {
   if (sh_df.str)
-   FREE(sh_df.str);
+   free(sh_df.str);
   sh_df.str = malloc((strlen(str)+1)*sizeof(char));
   strcpy(sh_df.str, str);
   if (sh_df.file)
   {
-   FREE(sh_df.file);
+   free(sh_df.file);
    sh_df.file = NULL;
   }
   f->ed->shdf = e_add_df(str, f->ed->shdf);
@@ -1553,7 +1553,7 @@ int e_mbt_str(BUFFER *b, int *ii, int *jj, unsigned char c, int n, int sw,
     e_ins_nchar(b, b->f->s, str, 0, i, m);
    }
    j = -1;
-   FREE(str);
+   free(str);
   }
  }
  *ii = i;
@@ -1585,7 +1585,7 @@ int e_mbt_cnd(BUFFER *b, int *ii, int *jj, int n, int sw, int *cmnd)
      e_ins_nchar(b, b->f->s, str, 0, i, m);
     }
     j = -1;
-    FREE(str);
+    free(str);
     if (*cmnd == 2)
      *cmnd = 1;
    }
@@ -1617,8 +1617,8 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
   ;
  if (i <= 0)
  {
-  FREE(tstr);  FREE(bstr);  FREE(nvek);  FREE(ifvekb);
-  FREE(ifvekr);  FREE(vkcs);  FREE(vkcb);
+  free(tstr);  free(bstr);  free(nvek);  free(ifvekb);
+  free(ifvekr);  free(vkcs);  free(vkcb);
   return(0);
  }
  *ifvekb = 0;
@@ -1788,9 +1788,9 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     {  n = nvek[brk];  nic--;  brk--;  }
     if (brk < 0)
     {
-     FREE(tstr);  FREE(bstr);  FREE(nvek);
-     FREE(ifvekb);  FREE(ifvekr);
-     FREE(vkcs);  FREE(vkcb);
+     free(tstr);  free(bstr);  free(nvek);
+     free(ifvekb);  free(ifvekr);
+     free(vkcs);  free(vkcb);
      b->b = sb;  s->mark_begin = sa;  s->mark_end = se;
      e_schirm(f, 1);
      WpeMouseRestoreShape();
@@ -1871,9 +1871,9 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
    else if (cmnd == 3 && f->b->bf[i].s[j] == ':') cmnd = 1;
   }
  }
- FREE(nvek);  FREE(tstr);  FREE(bstr);
- FREE(ifvekb);  FREE(ifvekr);
- FREE(vkcs);  FREE(vkcb);
+ free(nvek);  free(tstr);  free(bstr);
+ free(ifvekb);  free(ifvekr);
+ free(vkcs);  free(vkcb);
  s->mark_begin = sa;  s->mark_end = se;
  b->b = sb;
  e_schirm(f, 1);

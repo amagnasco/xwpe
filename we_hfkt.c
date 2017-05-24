@@ -92,8 +92,8 @@ int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
   ;
 
  i = e_rstrstr(x, n, str, ft, nn);
- FREE(str);
- FREE(ft);
+ free(str);
+ free(ft);
  return(i);
 }
 
@@ -164,7 +164,7 @@ int e_num_kst(char *s, int num, int max, FENSTER *f, int n, int sw)
  o->crsw = AltO;
  sprintf(tmp, "%s:", s);
  e_add_numstr(3, 2, 29-nz, 2, nz, max, n, sw, tmp, num, o);
- FREE(tmp);
+ free(tmp);
  e_add_bttstr(6, 4, 1, AltO, " Ok ", NULL, o);
  e_add_bttstr(21, 4, -1, WPE_ESC, "Cancel", NULL, o);
  ret = e_opt_kst(o);

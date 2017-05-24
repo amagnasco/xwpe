@@ -460,8 +460,8 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   /* free up the submenu structure */
   for(i = 0; i < MENOPT; i++)
     if(mainmenu[i].width != 0)
-      FREE(mainmenu[i].menuitems);
-  FREE(mainmenu);
+      free(mainmenu[i].menuitems);
+  free(mainmenu);
 
   fk_cursor(1);
   return(c);

@@ -304,7 +304,7 @@ int e_edit(ECNT *cn, char *filename)
   f->filemode = 0666 & ~i;
  }
 #endif
- FREE(complete_fname);
+ free(complete_fname);
 
  if (fp != NULL && ftype != 1)
  {
@@ -349,7 +349,7 @@ int e_edit(ECNT *cn, char *filename)
   else
   {
    e_p_m_buffer = f->b;
-   FREE(f->b->bf[0].s);
+   free(f->b->bf[0].s);
    f->b->mxlines = 0;
   }
  }
@@ -1365,7 +1365,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
  }
 
  e_ins_nchar(b, s, str, b->b.x, b->b.y, char_to_ins);
- FREE(str);
+ free(str);
  return(b->b.x);
 }
 
@@ -1393,7 +1393,7 @@ int e_del_a_ind(BUFFER *b, SCHIRM *s)
      str[j] = ' ';
     e_ins_nchar(b, s, str, 0, b->b.y, i);
     b->b.x = i - 1;
-    FREE(str);
+    free(str);
    }
    for (j = b->b.y-1; j >= 0; j--)
    {
@@ -1443,7 +1443,7 @@ int e_car_a_ind(BUFFER *b, SCHIRM *s)
    str[j] = ' ';
   e_ins_nchar(b, s, str, 0, b->b.y, i);
   b->b.x = i;
-  FREE(str);
+  free(str);
  }
  return(i);
 }
@@ -2057,7 +2057,7 @@ int e_autosave(FENSTER *f)
   WpeMouseRestoreShape();
   f->datnam = tmp;
   f->save = 1;
-  FREE(str);
+  free(str);
  }
  return(0);
 }
@@ -2070,27 +2070,27 @@ Undo *e_remove_undo(Undo *ud, int sw)
  if (sw > WpeEditor->numundo)
  {
   if(ud->type == 'l')
-   FREE(ud->u.pt);
+   free(ud->u.pt);
   else if (ud->type == 'd')
   {
    BUFFER *b = (BUFFER*) ud->u.pt;
    int i;
 
-   FREE(b->f->s);
-   FREE(b->f);
+   free(b->f->s);
+   free(b->f);
    if (b->bf != NULL)
    {
     for (i = 0; i < b->mxlines; i++)
     {
      if (b->bf[i].s != NULL)
-      FREE( b->bf[i].s );
+      free( b->bf[i].s );
      b->bf[i].s = NULL;
     }
-    FREE(b->bf);
+    free(b->bf);
    }
-   FREE(b);
+   free(b);
   }
-  FREE(ud);
+  free(ud);
   ud = NULL;
  }
  return(ud);
@@ -2124,7 +2124,7 @@ int e_add_undo(int sw, BUFFER *b, int x, int y, int n)
   if (str == NULL)
   {
    e_error(e_msg[ERR_LOWMEM], 0, b->fb);
-   FREE(next);
+   free(next);
    return(-1);
   }
   for (i = 0; i < n; i++)
@@ -2241,7 +2241,7 @@ int e_make_rudo(FENSTER *f, int sw)
   s->mark_begin = ud->b;
   s->mark_end.y = ud->b.y;
   s->mark_end.x = ud->b.x + ud->a.x;
-  FREE(ud->u.pt);
+  free(ud->u.pt);
  }
  else if (ud->type == 'l')
  {
@@ -2283,17 +2283,17 @@ int e_make_rudo(FENSTER *f, int sw)
   s->mark_end = bn->f->s->mark_end;
   e_move_block(ud->b.x, ud->b.y, bn, b, f);
   e_undo_sw = 0;
-  FREE(bn->f->s);
-  FREE(bn->f);
-  FREE(bn->bf[0].s);
-  FREE(bn->bf);
-  FREE(ud->u.pt);
+  free(bn->f->s);
+  free(bn->f);
+  free(bn->bf[0].s);
+  free(bn->bf);
+  free(ud->u.pt);
   e_add_undo('c', b, ud->b.x, ud->b.y, 0);
  }
  if (!sw) b->ud = ud->next;
  else b->rd = ud->next;
  e_redo_sw = 0;
- FREE(ud);
+ free(ud);
  e_schirm(f, 1);
  e_cursor(f, 1);
  return(0);

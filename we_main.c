@@ -378,7 +378,7 @@ int main(int argc, char **argv)
  e_edit(cn, ""); /* Clipboard (must first read option file) */
  if ((tp = getenv("INFOPATH")) != NULL)
  {
-  if (info_file) FREE(info_file);
+  if (info_file) free(info_file);
   info_file = WpeStrdup(tp);
  }
  if (cn->edopt & ED_CUA_STYLE) blst = eblst_u;

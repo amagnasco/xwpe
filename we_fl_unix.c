@@ -222,7 +222,7 @@ int WpeCreateFileManager(int sw, ECNT *cn, char *dirct)
   sprintf(sfile, "%s/%s", f->dirct, b->rdfile);
   b->df = e_find_files(sfile, i);
 
-  FREE(sfile);
+  free(sfile);
 
   /* setup the drawing in the file list window */
   b->fw->df = WpeGraphicalFileList(b->df, f->ed->flopt >> 9, cn);
@@ -429,7 +429,7 @@ int WpeCallFileManager(int sw, FENSTER * f)
       if ((tmp = WpeGetWastefile("")))
       {
         ret = WpeCreateFileManager(sw, f->ed, tmp);
-        FREE(tmp);
+        free(tmp);
         return(ret);
       }
       else
@@ -559,7 +559,7 @@ int WpeHandleFileManager(ECNT * cn)
             i++;
           b->rdfile[i] = '\0';
           /* change the working directory */
-          FREE(f->dirct);
+          free(f->dirct);
           if((f->dirct = malloc(strlen(b->rdfile) + 1)) == NULL)
             e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
           strcpy(f->dirct, b->rdfile);
@@ -654,7 +654,7 @@ int WpeHandleFileManager(ECNT * cn)
 
         c = e_schr_lst_wsv(dirtmp, f->a.x + b->xda, f->a.y + 3, b->xdd + 1, WPE_PATHMAX,
                            f->fb->fr.fb, f->fb->fz.fb, &f->ed->ddf, f);
-        FREE(f->dirct);
+        free(f->dirct);
         f->dirct = WpeStrdup(dirtmp);
         free(dirtmp);
 
@@ -699,7 +699,7 @@ int WpeHandleFileManager(ECNT * cn)
         {
           if ((dirtmp = WpeAssemblePath(f->dirct, b->cd, b->dd, b->dw->nf, f)))
           {
-            FREE(f->dirct);
+            free(f->dirct);
             f->dirct = dirtmp;
             e_schr_nchar_wsv(f->dirct, f->a.x + b->xda, f->a.y + 3, 0, b->xdd + 1,
                              f->fb->fr.fb, f->fb->fz.fb);
@@ -806,7 +806,7 @@ int WpeHandleFileManager(ECNT * cn)
         /* change the shape of the mouse */
         WpeMouseChangeShape(WpeWorkingShape);
 
-        FREE(f->dirct);
+        free(f->dirct);
         f->dirct = dirtmp;
 
         /* free up all relevant structures */
@@ -895,7 +895,7 @@ int WpeHandleFileManager(ECNT * cn)
             b->fw->ia = b->fw->nf = 0;
             b->fw->ja = b->fw->srcha;
           }
-          FREE(ftmp);
+          free(ftmp);
         }
         /* we are coming from dirs */
         else if(cold == AltT && b->dw->nf >= b->cd->anz)
@@ -951,7 +951,7 @@ int WpeHandleFileManager(ECNT * cn)
             nco = b->dw->nf = b->cd->anz - 1;
             b->dw->ia = b->dw->ja = 0;
           }
-          FREE(ftmp);
+          free(ftmp);
         }
         c = cold;
         cold = AltN; /* go back to name entry */
@@ -1126,7 +1126,7 @@ int WpeHandleFileManager(ECNT * cn)
 
           /* if there was no error */
           dirtmp = WpeGetCurrentDir(cn);
-          FREE(cn->dirct);
+          free(cn->dirct);
           cn->dirct = dirtmp;
 
           if (svmode >= 0)
@@ -1149,10 +1149,10 @@ int WpeHandleFileManager(ECNT * cn)
             /* determine current dir */
             dirtmp = WpeGetCurrentDir(cn);
 
-            FREE(cn->dirct);
+            free(cn->dirct);
             cn->dirct = dirtmp;
 
-            FREE(svdir);
+            free(svdir);
             svdir = NULL;
           }
 
@@ -1183,7 +1183,7 @@ int WpeHandleFileManager(ECNT * cn)
 
           sprintf(ftmp, "File %s exist\nDo you want to overwrite it ?", filen);
           i = e_message(1, ftmp, f);
-          FREE(ftmp);
+          free(ftmp);
 
           if(i == WPE_ESC)
           {
@@ -1203,8 +1203,8 @@ int WpeHandleFileManager(ECNT * cn)
         }
         else /* save as mode, current dir and window header will/may change */
         {
-          FREE(fe->dirct);
-          FREE(fe->datnam);
+          free(fe->dirct);
+          free(fe->datnam);
         }
 
         WpeFilenameToPathFile(filen, &fe->dirct, &fe->datnam);
@@ -1213,8 +1213,8 @@ int WpeHandleFileManager(ECNT * cn)
         else
         {
           e_write(se->mark_begin.x, se->mark_begin.y, se->mark_end.x, se->mark_end.y, fe, WPE_BACKUP);
-          FREE(fe->dirct);  /* restore current dir window header */
-          FREE(fe->datnam);
+          free(fe->dirct);  /* restore current dir window header */
+          free(fe->datnam);
           fe->dirct = dtp;
           fe->datnam = ftp;
         }
@@ -1222,13 +1222,13 @@ int WpeHandleFileManager(ECNT * cn)
         if(b->sw == 4 && (f->ed->edopt & ED_SYNTAX_HIGHLIGHT))
         {
           if(fe->c_sw)
-            FREE(fe->c_sw);
+            free(fe->c_sw);
           if(WpeIsProg())
             e_add_synt_tl(fe->datnam, fe);
           if(fe->c_st)
           {
             if(fe->c_sw)
-              FREE(fe->c_sw);
+              free(fe->c_sw);
             fe->c_sw = e_sc_txt(NULL, fe->b);
           }
           e_rep_win_tree(f->ed);
@@ -1253,10 +1253,10 @@ int WpeHandleFileManager(ECNT * cn)
           /* determine current dir */
           dirtmp = WpeGetCurrentDir(cn);
 
-          FREE(cn->dirct);
+          free(cn->dirct);
           cn->dirct = dirtmp;
 
-          FREE(svdir);
+          free(svdir);
           svdir = NULL;
         }
 
@@ -1337,7 +1337,7 @@ int WpeHandleFileManager(ECNT * cn)
             /* change the dir attributes */
             WpeFileDirAttributes(ftmp, f);
 
-            FREE(ftmp);
+            free(ftmp);
 
             /* free up old file list structures */
             freedf(b->dd);
@@ -1417,7 +1417,7 @@ int WpeHandleFileManager(ECNT * cn)
 
             /* determine current dir */
             dirtmp = WpeGetCurrentDir(f->ed);
-            FREE(f->ed->dirct);
+            free(f->ed->dirct);
             f->ed->dirct = dirtmp;
           }
 
@@ -1432,7 +1432,7 @@ int WpeHandleFileManager(ECNT * cn)
           {
             if(svdir != NULL)
             {
-              FREE(svdir);
+              free(svdir);
               svdir = NULL;
             }
 
@@ -1464,10 +1464,10 @@ int WpeHandleFileManager(ECNT * cn)
             /* determine current dir */
             dirtmp = WpeGetCurrentDir(cn);
 
-            FREE(cn->dirct);
+            free(cn->dirct);
             cn->dirct = dirtmp;
 
-            FREE(svdir);
+            free(svdir);
             svdir = NULL;
           }
 
@@ -1503,10 +1503,10 @@ int WpeHandleFileManager(ECNT * cn)
     /* determine current dir */
     dirtmp = WpeGetCurrentDir(cn);
 
-    FREE(cn->dirct);
+    free(cn->dirct);
     cn->dirct = dirtmp;
 
-    FREE(svdir);
+    free(svdir);
     svdir = NULL;
   }
 
@@ -1602,7 +1602,7 @@ int WpeMakeNewDir(FENSTER *f)
       ret = 0;
   }
 
-  FREE(dirct);
+  free(dirct);
   return(ret);
 }
 
@@ -1853,14 +1853,14 @@ struct dirfile *WpeCreateWorkingDirTree(int sw, ECNT *cn)
 
       if(!strncmp(tmp2, buf, i) && buf[i])
       {
-        FREE(tmp2);
+        free(tmp2);
         i++;
       }
       else
       {
-        FREE(tmp2);
-        FREE(buf);
-        FREE(tmp);
+        free(tmp2);
+        free(buf);
+        free(tmp);
         return(df);
       }
     }
@@ -1892,7 +1892,7 @@ struct dirfile *WpeCreateWorkingDirTree(int sw, ECNT *cn)
           e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
         for(k = 0; k < maxd - 10; k++)
           *(df->name + k) = *(dftmp + k);
-        FREE(dftmp);
+        free(dftmp);
       }
       /* save the current directory */
       if((*(df->name + df->anz) = malloc((strlen(tmp) + 1) * sizeof(char))) == NULL)
@@ -1902,8 +1902,8 @@ struct dirfile *WpeCreateWorkingDirTree(int sw, ECNT *cn)
       j = -1;
     }
   }
-  FREE(buf);
-  FREE(tmp);
+  free(buf);
+  free(tmp);
   return(df);
 }
 
@@ -1938,14 +1938,14 @@ char  *WpeGetWastefile(char *file)
     {
       if(mkdir(tmp, 0700))
       {
-        FREE(tmp);
+        free(tmp);
         return NULL;
       }
     }
     /* check for wastebasket's permissions */
     if(access(tmp, R_OK | W_OK | X_OK))
     {
-      FREE(tmp);
+      free(tmp);
       return NULL;
     }
     wastebasket = tmp;
@@ -2030,13 +2030,13 @@ struct dirfile *WpeGraphicalFileList(struct dirfile *df, int sw, ECNT *cn)
     *(name + n) = *(df->name + i);
     num[n] = ntmp;
    }
-   FREE(edf->name);
-   FREE(df->name);
+   free(edf->name);
+   free(df->name);
    edf->name = ename;
    df->name = name;
   }
 
-  FREE(num);
+  free(num);
 
   /* reverse order */
   if (sw & 4)
@@ -2137,13 +2137,13 @@ int WpeDelWastebasket(FENSTER *f)
   if ((tmp = WpeGetWastefile("")))
   {
     ret = WpeRemoveDir(tmp, "*", f, 0);
-    FREE(tmp);
+    free(tmp);
 
     /* Unfortunately there is this racing condition, so
        this is necessary to get back the deleted wastebasket. */
     if ((tmp = WpeGetWastefile("")))
     {
-      FREE(tmp);
+      free(tmp);
       ret = 0;
     }
     else
@@ -2186,7 +2186,7 @@ int WpeQuitWastebasket(FENSTER * f)
     if ((tmp = WpeGetWastefile("")))
     {
       ret = WpeRemoveDir(tmp, "*", f, 0);
-      FREE(tmp);
+      free(tmp);
     }
     else
     {
@@ -2223,10 +2223,10 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
       if(strncmp(tmp, dirct, i))
       {
         ret = WpeRenameCopyDir(dirct, file, tmp, f, 0, 0);
-        FREE(tmp);
+        free(tmp);
         return(ret);
       }
-      FREE(tmp);
+      free(tmp);
     }
     else
     {
@@ -2249,7 +2249,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
     if((ret = WpeDirDelOptions(f)) < 0)
     {
       freedf(dd);
-      FREE(tmp);
+      free(tmp);
       return(ret == WPE_ESC ? 1 : 0);
     }
     if(ret)
@@ -2258,7 +2258,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
       f->ed->flopt &= ~FM_REMOVE_PROMPT;
     rec = -1;
   }
-  FREE(tmp);
+  free(tmp);
 
   /* cleans up the files in the directory */
   for(i = 0; i < dd->anz; i++)
@@ -2276,7 +2276,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
     if(ret == WPE_ESC)
     {
       freedf(dd);
-      FREE(tmp);
+      free(tmp);
       f->ed->flopt = svmode;
       return(1);
     }
@@ -2288,7 +2288,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
       /* put message out */
       if(e_mess_win("Remove", tmp, &pic, f))
       {
-        FREE(tmp);
+        free(tmp);
         break;
       }
 
@@ -2303,12 +2303,12 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
       {
         e_error(e_msg[ERR_DELFILE], 0, f->ed->fb);
         freedf(dd);
-        FREE(tmp);
+        free(tmp);
         f->ed->flopt = svmode;
         return(1);
       }
     }
-    FREE(tmp);
+    free(tmp);
   }
 
   if(pic)
@@ -2332,7 +2332,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
       if((ret = WpeDirDelOptions(f)) < 0)
       {
         freedf(dd);
-        FREE(tmp);
+        free(tmp);
         return(ret == WPE_ESC ? 1 : 0);
       }
       if(ret)
@@ -2343,7 +2343,7 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
     else if(rec < 0)
       rec = 0;
 
-    FREE(tmp);
+    free(tmp);
 
     /* call recursively itself to delete the subdirectories */
     for(rec++, i = 0; i < dd->anz; i++)
@@ -2355,11 +2355,11 @@ int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
       if(WpeRemoveDir(tmp, file, f, rec))
       {
         freedf(dd);
-        FREE(tmp);
+        free(tmp);
         f->ed->flopt = svmode;
         return(1);
       }
-      FREE(tmp);
+      free(tmp);
     }
     freedf(dd);
   }
@@ -2405,7 +2405,7 @@ int WpeRemove(char *file, FENSTER * f)
         {
           e_rename(file, tmp2, f);
         }
-        FREE(tmp2);
+        free(tmp2);
         ret = 0;
       }
       else
@@ -2423,7 +2423,7 @@ int WpeRemove(char *file, FENSTER * f)
 
         sprintf(tmp2, "Remove File:\n%s", file);
         ret = e_message(1, tmp2, f);
-        FREE(tmp2);
+        free(tmp2);
       }
       else
         ret = 'Y';
@@ -2500,7 +2500,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
 
     sprintf(tmp, "%s%c%s", dirct, DIRC, SUDIR);
     dd = e_find_dir(tmp, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-    FREE(tmp);
+    free(tmp);
 
     for(rec++, i = 0; i < dd->anz; i++)
     {
@@ -2516,13 +2516,13 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
 
       if(WpeRenameCopyDir(tmp, file, ntmp, f, rec, sw))
       {
-        FREE(tmp);
-        FREE(ntmp);
+        free(tmp);
+        free(ntmp);
         freedf(dd);
         return(1);
       }
-      FREE(tmp);
-      FREE(ntmp);
+      free(tmp);
+      free(ntmp);
     }
     freedf(dd);
   }
@@ -2531,7 +2531,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
     e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
   sprintf(tmp, "%s%c%s", dirct, DIRC, file);
   dd = e_find_files(tmp, f->ed->flopt & FM_SHOW_HIDDEN_FILES ? 1 : 0);
-  FREE(tmp);
+  free(tmp);
 
   mode = f->ed->flopt;
   f->ed->flopt &= ~FM_REMOVE_PROMPT;
@@ -2558,20 +2558,20 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
           pic = NULL;
         }
         ret = e_message(1, tmp, f);
-        FREE(tmp);
+        free(tmp);
 
         if(ret == 'Y')
         {
           if(WpeRemove(ntmp, f))
           {
-            FREE(ntmp);
+            free(ntmp);
             freedf(dd);
             return(1);
           }
         }
         else if(ret == WPE_ESC)
         {
-          FREE(ntmp);
+          free(ntmp);
           freedf(dd);
           return(1);
         }
@@ -2580,7 +2580,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
       {
         if(WpeRemove(ntmp, f))
         {
-          FREE(ntmp);
+          free(ntmp);
           freedf(dd);
           return(1);
         }
@@ -2600,20 +2600,20 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
       sprintf(mtmp, "%s %s", tmp, ntmp);
       if(e_mess_win(!sw ? "Rename" : "Copy", mtmp, &pic, f))
       {
-        FREE(tmp);
-        FREE(ntmp);
-        FREE(mtmp);
+        free(tmp);
+        free(ntmp);
+        free(mtmp);
         break;
       }
-      FREE(mtmp);
+      free(mtmp);
 
       if (sw == 0)
       {
         if ((ret = rename(tmp, ntmp)))
         {
           e_error(e_msg[ERR_RENFILE], 0, f->ed->fb);
-          FREE(tmp);
-          FREE(ntmp);
+          free(tmp);
+          free(ntmp);
           freedf(dd);
           return(1);
         }
@@ -2622,8 +2622,8 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
       {
         if (WpeCopyFileCont(tmp, ntmp, f))
         {
-          FREE(tmp);
-          FREE(ntmp);
+          free(tmp);
+          free(ntmp);
           freedf(dd);
           return(1);
         }
@@ -2632,16 +2632,16 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
       {
         if(WpeLinkFile(tmp, ntmp, f->ed->flopt & FM_TRY_HARDLINK, f))
         {
-          FREE(tmp);
-          FREE(ntmp);
+          free(tmp);
+          free(ntmp);
           freedf(dd);
           return(1);
         }
       }
     }
 
-    FREE(tmp);
-    FREE(ntmp);
+    free(tmp);
+    free(ntmp);
   }
 
   if(pic)
@@ -2704,7 +2704,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
      e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
     sprintf(tmp, "File %s exist\nRemove File ?", newname);
     ret = e_message(1, tmp, f);
-    FREE(tmp);
+    free(tmp);
     if (ret == 'Y')
     {
      if (WpeRemove(newname, f))
@@ -2752,7 +2752,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
     do
     {
      if (tmp)
-      FREE(tmp);
+      free(tmp);
      allocate_size += 4;
      if ((tmp = malloc(allocate_size)) == NULL)
       e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
@@ -2770,7 +2770,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
 
      sprintf(tmpl, "%s%c%s", f->dirct, DIRC, tmp);
      retl = WpeRenameLink(file, newname, tmpl, f);
-     FREE(tmpl);
+     free(tmpl);
     }
     else
     {
@@ -3074,7 +3074,7 @@ int WpePrintFile(FENSTER *f)
 
  sprintf(str, "File: %s\nDo you want to print it?", f->datnam);
  c = e_message(1, str, f);
- FREE(str);
+ free(str);
  if (c != 'Y')
   return(0);
 
@@ -3099,7 +3099,7 @@ int WpePrintFile(FENSTER *f)
  if (remove(str))
   e_error(e_msg[ERR_DELFILE], 0, f->ed->fb);
 
- FREE(str);
+ free(str);
  return(0);
 }
 #else
@@ -3208,14 +3208,14 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
           df->name[df->anz - 1] = tp;
         }
         else
-          FREE(tp);
+          free(tp);
       }
     }
   }
 
   freedf(dd);
-  FREE(tmp2);
-  FREE(tmp);
+  free(tmp2);
+  free(tmp);
 
   /* whether recursive action */
   if(!(sw & 512))
@@ -3232,7 +3232,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
   /* find directories */
   dd = e_find_dir(tmp, 0);
 
-  FREE(tmp);
+  free(tmp);
 
   if(!dd)
     return(df);
@@ -3254,7 +3254,7 @@ struct dirfile *WpeSearchFiles(FENSTER *f, char *dirct, char *file, char *string
       sprintf(tmp, "%s%s", dirct, dd->name[i]);
 
     df = WpeSearchFiles(f, tmp, file, string, df, sw);
-    FREE(tmp);
+    free(tmp);
   }
 
   freedf(dd);
@@ -3594,7 +3594,7 @@ struct dirfile *e_make_funct(char *man)
    {
     if (!(ret = strcmp(df->name[j], dout->name[k])))
     {
-     FREE(df->name[j]);
+     free(df->name[j]);
      break;
     }
     else if (ret < 0)
@@ -3607,7 +3607,7 @@ struct dirfile *e_make_funct(char *man)
    dout->name[k] = df->name[j];
    dout->anz++;
   }
-  FREE(df);
+  free(df);
  }
  free(manpath);
  free(sustr);
@@ -3967,7 +3967,7 @@ int e_funct_in(FENSTER * f)
 
   n = e_opt_sec_box(xa, ya, num, opt, f, 1);
 
-  FREE(opt);
+  free(opt);
   if(n < 0)
     return(WPE_ESC);
 

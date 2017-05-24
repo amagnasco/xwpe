@@ -93,7 +93,7 @@ extern char *ctree[5];
 
 //#define REALLOC(p, n) realloc((p), (n))
 //#define MALLOC(n) malloc(n)
-#define FREE(n) free(n)
+//#define FREE(n) free(n)
 
 #ifdef NEWSTYLE
 extern char *extbyte, *altextbyte;

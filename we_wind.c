@@ -136,9 +136,9 @@ int e_message(int sw, char *str, FENSTER *f)
  for (i = 0; i < anz; i++)
  {
   e_add_txtstr((o->xe-o->xa-strlen(s[i]))/2, 2+i, s[i], o);
-  FREE(s[i]);
+  free(s[i]);
  }
- FREE(s);
+ free(s);
  if (!sw)
  {
   o->crsw = AltO;
@@ -215,7 +215,7 @@ PIC *e_open_view(int xa, int ya, int xe, int ye, int col, int sw)
 #else
   pic->p = malloc((pic->e.x - pic->a.x + 1) * 2 * (pic->e.y - pic->a.y + 1));
 #endif
-  if (pic->p == NULL) {  FREE(pic);  return(NULL);  }
+  if (pic->p == NULL) {  free(pic);  return(NULL);  }
   for (j = pic->a.y; j <= pic->e.y; ++j)
    for (i = 2*pic->a.x; i <= 2*pic->e.x+1; ++i)
     *( pic->p + (j-pic->a.y)*2*(pic->e.x-pic->a.x+1) + (i-2*pic->a.x) ) = e_gt_byte(i, j);
@@ -274,8 +274,8 @@ int e_close_view(PIC *pic, int sw)
  }
  if (sw < 2)
  {
-  if (pic->p != NULL) FREE(pic->p);
-  FREE(pic);
+  if (pic->p != NULL) free(pic->p);
+  free(pic);
  }
  e_refresh();
  return(sw);
@@ -559,7 +559,7 @@ PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb)
       newpic->p = malloc( (newpic->e.x - newpic->a.x + 1) * 2
 				* (newpic->e.y - newpic->a.y + 1) );
 #endif
-      if (newpic->p == NULL) {  FREE(newpic);  return(NULL);  }
+      if (newpic->p == NULL) {  free(newpic);  return(NULL);  }
       ax = pic->a.x > newpic->a.x ? pic->a.x : newpic->a.x;
       ay = pic->a.y > newpic->a.y ? pic->a.y : newpic->a.y;
       ex = pic->e.x < newpic->e.x ? pic->e.x : newpic->e.x;
@@ -625,8 +625,8 @@ PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb)
       						e_pt_col(i, ye+1, SHDCOL);
       }
 #endif
-      FREE(pic->p);
-      FREE(pic);
+      free(pic->p);
+      free(pic);
    }
 #ifndef NO_XWINDOWS
    if (WpeIsXwin()) (*e_u_setlastpic)(newpic);
@@ -655,12 +655,12 @@ int e_close_buffer(BUFFER *b)
    for (i = 0; i < b->mxlines; i++)
    {
     if (b->bf[i].s != NULL)
-     FREE( b->bf[i].s );
+     free( b->bf[i].s );
     b->bf[i].s = NULL;
    }
-   FREE(b->bf);
+   free(b->bf);
   }
-  FREE(b);
+  free(b);
  }
  return(0);
 }
@@ -679,20 +679,20 @@ int e_close_window(FENSTER *f)
  {
   FLBFFR *b = (FLBFFR *)f->b;
 
-  FREE(f->dirct);
-  FREE(b->rdfile);
+  free(f->dirct);
+  free(b->rdfile);
   freedf(b->df);  freedf(b->fw->df);
   freedf(b->dd);  freedf(b->cd);  freedf(b->dw->df);
-  FREE(b->fw);
-  FREE(b->dw);
-  FREE(b);
+  free(b->fw);
+  free(b->dw);
+  free(b);
   (cn->mxedt)--;
   cn->curedt = cn->edt[cn->mxedt];
   e_close_view(f->pic, 1);
   if (f != f0 && f != NULL)
   {
    e_free_find(&f->fd);
-   FREE(f);
+   free(f);
   }
   if (cn->mxedt > 0)
   {
@@ -711,17 +711,17 @@ int e_close_window(FENSTER *f)
    e_p_update_prj_fl(f);
 #endif
   if (f->dirct)
-   FREE(f->dirct);
+   free(f->dirct);
   if (swt == 7)
    freedf(fw->df);
-  FREE(fw);
+  free(fw);
   (cn->mxedt)--;
   cn->curedt = cn->edt[cn->mxedt];
   e_close_view(f->pic, 1);
   if (f != f0 && f != NULL)
   {
    e_free_find(&f->fd);
-   FREE(f);
+   free(f);
   }
   if (cn->mxedt > 0 && (swt < 5 || swt == 7))
   {
@@ -756,11 +756,11 @@ int e_close_window(FENSTER *f)
   if (f->dtmd == DTMD_HELP && f->ins == 8)
    e_help_free(f);
   if (f->datnam != NULL)
-   FREE(f->datnam);
+   free(f->datnam);
   if (f->dirct != NULL)
-   FREE(f->dirct);
+   free(f->dirct);
   if (f && f->s != NULL)
-   FREE(f->s);
+   free(f->s);
  }
  (cn->mxedt)--;
  cn->curedt = cn->edt[cn->mxedt];
@@ -768,7 +768,7 @@ int e_close_window(FENSTER *f)
  if (f != f0 && f != NULL)
  {
   e_free_find(&f->fd);
-  FREE(f);
+  free(f);
  }
  if (cn->mxedt > 0)
  {
@@ -808,8 +808,8 @@ void e_switch_window(int num, FENSTER *f)
  if (n >= cn->mxedt) return;
  for (i = cn->mxedt; i >= 1; i--)
  {
-  FREE(cn->f[i]->pic->p);
-  FREE(cn->f[i]->pic);
+  free(cn->f[i]->pic->p);
+  free(cn->f[i]->pic);
  }
  ft = cn->f[n];
  te = cn->edt[n];
@@ -861,8 +861,8 @@ int e_ed_cascade(FENSTER *f)
   return 0; /* no windows open */
  for (i = cn->mxedt; i >= 1; i--)
  {
-  FREE(cn->f[i]->pic->p);
-  FREE(cn->f[i]->pic);
+  free(cn->f[i]->pic->p);
+  free(cn->f[i]->pic);
   cn->f[i]->a = e_set_pnt(i-1, i);
   cn->f[i]->e = e_set_pnt(MAXSCOL-1-cn->mxedt+i, MAXSLNS-2-cn->mxedt+i);
  }
@@ -912,8 +912,8 @@ int e_ed_tile(FENSTER *f)
  }
  for (i = cn->mxedt; i >= 1; i--)
  {
-  FREE(cn->f[i]->pic->p);
-  FREE(cn->f[i]->pic);
+  free(cn->f[i]->pic->p);
+  free(cn->f[i]->pic);
  }
  for (ni = editwin, nj = 1; ni > 1; ni--)
  {
@@ -1285,7 +1285,7 @@ struct dirfile *e_add_df(char *str, struct dirfile *df)
    }
    for(n = 0; n < df->anz && *df->name[n] && strcmp(df->name[n], str); n++);
    if(n == df->anz)
-   {  if(df->anz == MAXSVSTR - 1) FREE(df->name[df->anz-1]);
+   {  if(df->anz == MAXSVSTR - 1) free(df->name[df->anz-1]);
       else
       {  df->anz++;
 	 df->name = realloc(df->name, df->anz * sizeof(char*));
@@ -1298,7 +1298,7 @@ struct dirfile *e_add_df(char *str, struct dirfile *df)
    {  tmp = df->name[n];
       for(i = n; i > 0; i--) df->name[i] = df->name[i-1];
       if(!tmp[0])
-      {  FREE(tmp);
+      {  free(tmp);
 	 df->name[0] = malloc((strlen(str) + 1) * sizeof(char));
 	 strcpy(df->name[0], str);
       }
@@ -1348,8 +1348,8 @@ int e_sv_window(int xa, int ya, int *n, struct dirfile *df, FENSTER *f)
  } while(ret != WPE_CR && ret != WPE_ESC);
  *n = fw->nf;
  e_close_view(f->pic, 1);
- FREE(fw);
- FREE(f);
+ free(fw);
+ free(f);
  return(ret);
 }
 
@@ -1457,8 +1457,8 @@ int e_mess_win(char *header, char *str, PIC **pic, FENSTER *f)
   for (i = xa + 1; i < xe; i++)
    e_pr_char(i, j, ' ', cn->fb->nt.fb);
  for (i = 0; i < anz; i++)
-  FREE(s[i]);
- FREE(s);
+  free(s[i]);
+ free(s);
 #ifndef NO_XWINDOWS
  if (WpeIsXwin())
  {
@@ -1528,7 +1528,7 @@ struct dirfile *e_make_win_list(FENSTER *f)
  df->anz = f->ed->mxedt;
  if (!(df->name = malloc(df->anz * sizeof(char *))))
  {
-  FREE(df);
+  free(df);
   return(NULL);
  }
  for (i = 0; i < df->anz; i++)

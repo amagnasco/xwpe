@@ -422,7 +422,7 @@ int e_compstr(char *a, char *b)
    strcpy(cp, a);
    cp[0] = '*';
    n = e_compstr(cp, ++b);
-   FREE(cp);
+   free(cp);
    return(n);
   }
   else if (a[0] == '[')
@@ -436,7 +436,7 @@ int e_compstr(char *a, char *b)
    ctmp[k] = a[k];
   ctmp[n] = '\0';
   cp = strstr(b, ctmp);
-  FREE(ctmp);
+  free(ctmp);
   if (cp == NULL)
    return((a[0] - b[0]) ? a[0] - b[0] : -1);
   if (!a[n] && !cp[n])
@@ -512,7 +512,7 @@ struct dirfile *e_find_files(char *sufile, int sw)
  }
  if (!(dirp = opendir(sdir)))
  {
-  FREE(sdir);
+  free(sdir);
   return(df);
  }
  sizeStmp = 256;
@@ -603,7 +603,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
  }
  if (!(dirp = opendir(sdir)))
  {
-  FREE(sdir);
+  free(sdir);
   return(df);
  }
  sizeStmp = 256;
@@ -635,7 +635,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
     {
      df->anz = 0;
      closedir(dirp);
-     FREE(sdir);
+     free(sdir);
      free(stmp);
      return(df);
     }
@@ -648,7 +648,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
   }
  }
  closedir(dirp);
- FREE(sdir);
+ free(sdir);
  free(stmp);
  return(df);
 }

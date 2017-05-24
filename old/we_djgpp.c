@@ -118,7 +118,7 @@ void end_repaint()
    {  schirm = svschirm;
       for(n = 0; n < 160*MAXSLNS; n++)
 	    *(schirm + n) = *(tmpschirm + n);
-      FREE((char *)tmpschirm);
+      free((char *)tmpschirm);
    }
 }
 
@@ -140,7 +140,7 @@ void end_repaint_1(FENSTER *f)
       {  *(schirm+2*MAXSCOL*j+2*i)   = *(tmpschirm+2*MAXSCOL*j+2*i);
 	 *(schirm+2*MAXSCOL*j+2*i+1) = *(tmpschirm+2*MAXSCOL*j+2*i+1);
       }
-      FREE((char *)tmpschirm);
+      free((char *)tmpschirm);
    }
 }
 
@@ -398,7 +398,7 @@ int e_exec_inf(FENSTER *f, char **argv, int n)
    sp = argv[0];
    argv[0] = s_tmp;
    if(spawnvp(P_WAIT, s_tmp, argv)) e_print_arg(stderr, e_p_msg[ERR_IN_COMMAND], argv, n);
-   FREE(s_tmp);
+   free(s_tmp);
    argv[0] = sp;
 /*
    if(system(s_tmp)) e_print_arg(stderr, e_p_msg[ERR_IN_COMMAND], argv, n);
@@ -558,12 +558,12 @@ void e_free_djenv()
    if(e_djenv)
    {  for(i = 0; i < e_djenv_n; i++)
       {  if(e_djenv[i])
-         {  if(e_djenv[i]->var) FREE(e_djenv[i]->var);
-            if(e_djenv[i]->string) FREE(e_djenv[i]->string);
-            FREE(e_djenv[i]->var);
+         {  if(e_djenv[i]->var) free(e_djenv[i]->var);
+            if(e_djenv[i]->string) free(e_djenv[i]->string);
+            free(e_djenv[i]->var);
          }
       }
-      FREE(e_djenv);
+      free(e_djenv);
    }
    e_djenv = NULL;
    e_djenv_n = 0;

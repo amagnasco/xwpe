@@ -484,7 +484,7 @@ int e_p_exec(int file, FENSTER *f, PIC *pic)
    fflush(stdout);
   }
   print_to_end_of_buffer(b, buff, b->mx.x);
-  FREE(buff);
+  free(buff);
 
   if( fd == wfildes[0] )
     break;
@@ -501,13 +501,13 @@ int e_p_exec(int file, FENSTER *f, PIC *pic)
  if (wfile)
  {
   remove(wfile);
-  FREE(wfile);
+  free(wfile);
   wfile = NULL;
  }
  if (efile)
  {
   remove(efile);
-  FREE(efile);
+  free(efile);
   efile = NULL;
  }
  efildes[0] = efildes[1] = -1;
@@ -555,7 +555,7 @@ int e_show_error(int n, FENSTER *f)
   {
    if (filename != cn->f[i+1]->datnam)
    {
-    FREE(filename);
+    free(filename);
     filename = e_mkfilename(cn->f[i]->dirct, cn->f[i]->datnam);
    }
    else
@@ -563,7 +563,7 @@ int e_show_error(int n, FENSTER *f)
    if (!strcmp(err_li[n].file+bg, filename))
    {
     if (filename != cn->f[i]->datnam)
-     FREE(filename);
+     free(filename);
     e_switch_window(cn->edt[i], cn->f[cn->mxedt]);
     break;  
    }
@@ -571,13 +571,13 @@ int e_show_error(int n, FENSTER *f)
   if (i <= 0)
   {
    if (filename != cn->f[i+1]->datnam)
-    FREE(filename); 
+    free(filename); 
    if (e_edit(cn, err_li[n].file))
     return(WPE_ESC);
   }
  }
  else if (filename != f->datnam)
-  FREE(filename);
+  free(filename);
  e_pr_str_wsd(1, MAXSLNS - 1, err_li[n].text, f->fb->mt.fb, -1, 0,
    f->fb->mt.fb, 1, MAXSCOL-2);
 /*   e_pr_nstr(2, MAXSLNS - 1, MAXSCOL-2, err_li[n].text,
@@ -650,11 +650,11 @@ int e_make_error_list(FENSTER *f)
  {
   for (i = 0; i < err_num; i++)
   {
-   if(err_li[i].file) FREE(err_li[i].file);
-   if(err_li[i].text) FREE(err_li[i].text);
-   if(err_li[i].srch) FREE(err_li[i].srch);
+   if(err_li[i].file) free(err_li[i].file);
+   if(err_li[i].text) free(err_li[i].text);
+   if(err_li[i].srch) free(err_li[i].srch);
   }
-  FREE(err_li);
+  free(err_li);
  }
  err_li = malloc(sizeof(struct ERR_LI) * b->mxlines);
  err_num = 0;
@@ -838,9 +838,9 @@ int e_check_header(char *file, M_TIME otime, ECNT *cn, int sw)
   else
    p = cn->f[i]->datnam;
   if (!strcmp(p, file) && cn->f[i]->save)
-  {  e_save(cn->f[i]);  if(p != cn->f[i]->datnam) FREE(p);  break;  }
+  {  e_save(cn->f[i]);  if(p != cn->f[i]->datnam) free(p);  break;  }
   if (p != cn->f[i]->datnam)
-   FREE(p);
+   free(p);
  }
  if ((fp = fopen(file, "r")) == NULL)
   return(sw);
@@ -956,13 +956,13 @@ int e_ini_prog(ECNT *cn)
  int i;
 
  e_prog.num = 4;
- if (e_prog.arguments) FREE(e_prog.arguments);
+ if (e_prog.arguments) free(e_prog.arguments);
  e_prog.arguments = WpeStrdup("");
- if (e_prog.project) FREE(e_prog.project);
+ if (e_prog.project) free(e_prog.project);
  e_prog.project = WpeStrdup("project.prj");
- if (e_prog.exedir) FREE(e_prog.exedir);
+ if (e_prog.exedir) free(e_prog.exedir);
  e_prog.exedir = WpeStrdup(".");
- if (e_prog.sys_include) FREE(e_prog.sys_include);
+ if (e_prog.sys_include) free(e_prog.sys_include);
  e_prog.sys_include =
    WpeStrdup("/usr/include:/usr/local/include:/usr/include/X11");
  if (e_prog.comp == NULL)
@@ -1017,7 +1017,7 @@ int e_copy_prog(struct e_s_prog *out, struct e_s_prog *in)
 {
  int i;
 
- if (out->language) FREE(out->language);
+ if (out->language) free(out->language);
  out->language = WpeStrdup(in->language);
  if (out->filepostfix)
  {
@@ -1028,15 +1028,15 @@ int e_copy_prog(struct e_s_prog *out, struct e_s_prog *in)
  out->filepostfix = (char **)WpeExpArrayCreate(WpeExpArrayGetSize(in->filepostfix), sizeof(char *), 1);
  for (i = WpeExpArrayGetSize(out->filepostfix); i; i--)
   out->filepostfix[i - 1] = WpeStrdup(in->filepostfix[i - 1]);
- if (out->compiler) FREE(out->compiler);
+ if (out->compiler) free(out->compiler);
  out->compiler = WpeStrdup(in->compiler);
- if (out->comp_str) FREE(out->comp_str);
+ if (out->comp_str) free(out->comp_str);
  out->comp_str = WpeStrdup(in->comp_str);
- if (out->libraries) FREE(out->libraries);
+ if (out->libraries) free(out->libraries);
  out->libraries = WpeStrdup(in->libraries);
- if (out->exe_name) FREE(out->exe_name);
+ if (out->exe_name) free(out->exe_name);
  out->exe_name = WpeStrdup(in->exe_name);
- if (out->intstr) FREE(out->intstr);
+ if (out->intstr) free(out->intstr);
  out->intstr = WpeStrdup(in->intstr);
  out->key = in->key;
  out->comp_sw = in->comp_sw;
@@ -1120,15 +1120,15 @@ int e_project_options(FENSTER *f)
  ret = e_opt_kst(o);
  if (ret != WPE_ESC)
  {
-  if (e_s_prog.compiler) FREE(e_s_prog.compiler);
+  if (e_s_prog.compiler) free(e_s_prog.compiler);
   e_s_prog.compiler = WpeStrdup(o->wstr[0]->txt);
-  if (e_s_prog.comp_str) FREE(e_s_prog.comp_str);
+  if (e_s_prog.comp_str) free(e_s_prog.comp_str);
   e_s_prog.comp_str = WpeStrdup(o->wstr[1]->txt);
-  if (e_s_prog.libraries) FREE(e_s_prog.libraries);
+  if (e_s_prog.libraries) free(e_s_prog.libraries);
   e_s_prog.libraries = WpeStrdup(o->wstr[2]->txt);
-  if (e_s_prog.exe_name) FREE(e_s_prog.exe_name);
+  if (e_s_prog.exe_name) free(e_s_prog.exe_name);
   e_s_prog.exe_name = WpeStrdup(o->wstr[3]->txt);
-  if (e_s_prog.intstr) FREE(e_s_prog.intstr);
+  if (e_s_prog.intstr) free(e_s_prog.intstr);
   e_s_prog.intstr = WpeValueToString(o->wstr[5]->txt);
   strcpy(library, o->wstr[4]->txt);
   e_s_prog.comp_sw = o->pstr[0]->num;
@@ -1181,15 +1181,15 @@ int e_run_c_options(FENSTER *f)
  ret = e_opt_kst(o);
  if (ret != WPE_ESC)
  {
-  if (e_s_prog.language) FREE(e_s_prog.language);
+  if (e_s_prog.language) free(e_s_prog.language);
   e_s_prog.language = WpeStrdup(o->wstr[0]->txt);
-  if (e_s_prog.compiler) FREE(e_s_prog.compiler);
+  if (e_s_prog.compiler) free(e_s_prog.compiler);
   e_s_prog.compiler = WpeStrdup(o->wstr[1]->txt);
-  if (e_s_prog.comp_str) FREE(e_s_prog.comp_str);
+  if (e_s_prog.comp_str) free(e_s_prog.comp_str);
   e_s_prog.comp_str = WpeStrdup(o->wstr[2]->txt);
-  if (e_s_prog.libraries) FREE(e_s_prog.libraries);
+  if (e_s_prog.libraries) free(e_s_prog.libraries);
   e_s_prog.libraries = WpeStrdup(o->wstr[3]->txt);
-  if (e_s_prog.exe_name) FREE(e_s_prog.exe_name);
+  if (e_s_prog.exe_name) free(e_s_prog.exe_name);
   e_s_prog.exe_name = WpeStrdup(o->wstr[4]->txt);
   for (i = 0; i < j; i++)
    free(e_s_prog.filepostfix[i]);
@@ -1207,7 +1207,7 @@ int e_run_c_options(FENSTER *f)
    WpeExpArrayAdd((void **)&e_s_prog.filepostfix, &newpostfix);
    i = j - 1;
   }
-  if (e_s_prog.intstr) FREE(e_s_prog.intstr);
+  if (e_s_prog.intstr) free(e_s_prog.intstr);
   e_s_prog.intstr = WpeValueToString(o->wstr[6]->txt);
   e_s_prog.comp_sw = o->pstr[0]->num;
  }
@@ -1276,10 +1276,10 @@ int e_run_options(FENSTER *f)
    if (i >= e_prog.num)
    {
     e_error(e_p_msg[ERR_NO_COMPILER], 0, f->fb);
-    FREE(opt);
+    free(opt);
     return(0);
    }
-   FREE(e_prog.comp[i]);
+   free(e_prog.comp[i]);
    for(; i < e_prog.num-1; i++) e_prog.comp[i] = e_prog.comp[i+1];
     e_prog.num--;
   }
@@ -1290,7 +1290,7 @@ int e_run_options(FENSTER *f)
   e_run_c_options(f);
   e_copy_prog(e_prog.comp[n-2], &e_s_prog);
  }
- FREE(opt);
+ free(opt);
  return(n < 0 ? WPE_ESC : 0);
 }
 
@@ -1639,7 +1639,7 @@ int e_exec_make(FENSTER *f)
  f = cn->f[cn->mxedt];
  e_sys_ini();
  if (e_s_prog.compiler)
-  FREE(e_s_prog.compiler);
+  free(e_s_prog.compiler);
  e_s_prog.compiler = malloc(5*sizeof(char));
  strcpy(e_s_prog.compiler, "make");
  argc = e_make_arg(&arg, e_prog.arguments);
@@ -1781,7 +1781,7 @@ char *e_expand_var(char *string, FENSTER *f)
    {
     for(k = i; (string[k] = string[k+len]) != '\0'; k++);
     if (!(string = realloc(tmp = string, (strlen(string) + 1) * sizeof(char))))
-    {  FREE(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
+    {  free(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
    }
    else
    {
@@ -1789,7 +1789,7 @@ char *e_expand_var(char *string, FENSTER *f)
     if (len >= 0)
     {
      if (!(string = realloc(tmp = string, (k = strlen(string) + len + 1) * sizeof(char))))
-     {  FREE(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
+     {  free(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
      for (k--; k > j + len; k--) string[k] = string[k-len];
      for (k = i; v_string[k-i]; k++) string[k] = v_string[k-i];
     }
@@ -1798,10 +1798,10 @@ char *e_expand_var(char *string, FENSTER *f)
      for (k = i; (string[k] = string[k-len]) != '\0'; k++);
      for (k = i; v_string[k-i]; k++) string[k] = v_string[k-i];
      if (!(string = realloc(tmp = string, (strlen(string) + 1) * sizeof(char))))
-     {  FREE(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
+     {  free(var);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(tmp);  }
     }
    }
-   FREE(var);
+   free(var);
   }
  }
  return(string);
@@ -1821,12 +1821,12 @@ int e_read_var(FENSTER *f)
   {
    if (p_v[i])
    {
-    if (p_v[i]->var) FREE(p_v[i]->var);
-    if (p_v[i]->string) FREE(p_v[i]->string);
-    FREE(p_v[i]);
+    if (p_v[i]->var) free(p_v[i]->var);
+    if (p_v[i]->string) free(p_v[i]->string);
+    free(p_v[i]);
    }
   }
-  FREE(p_v);
+  free(p_v);
  }
  p_v_n = 0;
  if (!(p_v = malloc(sizeof(struct proj_var *))))
@@ -1939,7 +1939,7 @@ int e_install(FENSTER *f)
     if (!(string = realloc(tmp = string, strlen(string) + strlen(text) + 1)))
     {
      fclose(fp);
-     FREE(tmp);
+     free(tmp);
      e_error(e_msg[ERR_LOWMEM], 0, f->fb);
      return(-1);
     }
@@ -1952,7 +1952,7 @@ int e_install(FENSTER *f)
   if (p_v_n) p_v_n--;
   e_d_p_message(string, f, 1);
   system(string);
-  FREE(string);
+  free(string);
  }
  fclose(fp);
  return(0);
@@ -1968,7 +1968,7 @@ struct dirfile *e_p_get_args(char *string)
   return(NULL);
  if (!(df->name = malloc(sizeof(char *))))
  {
-  FREE(df);
+  free(df);
   return(NULL);
  }
  df->anz = 0;
@@ -2033,7 +2033,7 @@ int e_c_project(FENSTER *f)
  f = cn->f[cn->mxedt];
  if (e_s_prog.comp_str)
  {
-  FREE(e_s_prog.comp_str);
+  free(e_s_prog.comp_str);
   e_s_prog.comp_str = NULL;
  }
  e_s_prog.comp_sw &= ~1;
@@ -2101,7 +2101,7 @@ int e_c_project(FENSTER *f)
   sprintf(ofile, "%s/%s", e_prog.exedir,
     (df && df->anz > 0 && df->name[0][0]) ? df->name[0] : "a.out");
  if (df) freedf(df);
- if (e_s_prog.exe_name) FREE(e_s_prog.exe_name);
+ if (e_s_prog.exe_name) free(e_s_prog.exe_name);
  e_s_prog.exe_name = WpeStrdup(ofile);
  e_argc = e_add_arg(&e_arg, e_s_prog.exe_name, 2, e_argc);
  df = e_p_get_var("LIBNAME");
@@ -2133,14 +2133,14 @@ int e_c_project(FENSTER *f)
    if (k) strcat(tmpstr, " ");
    strcat(tmpstr, df->name[k]);
   }
-  if (e_s_prog.intstr) FREE(e_s_prog.intstr);
+  if (e_s_prog.intstr) free(e_s_prog.intstr);
   e_s_prog.intstr = WpeStrdup(tmpstr);
-  FREE(tmpstr);
+  free(tmpstr);
   freedf(df);
  }
  else
  {
-  if (e_s_prog.intstr) FREE(e_s_prog.intstr);
+  if (e_s_prog.intstr) free(e_s_prog.intstr);
   e_s_prog.intstr = WpeStrdup(cc_intstr);
  }
  df = e_p_get_var("FILES");
@@ -2220,7 +2220,7 @@ int e_c_project(FENSTER *f)
    }
    else libsw = 1;
   }
-  for (j = 0; j < 3; j++) FREE(arg[argc-j-1])
+  for (j = 0; j < 3; j++) free(arg[argc-j-1])
    ;
   argc -= 3;
 gt_library:
@@ -2271,7 +2271,7 @@ gt_library:
  df = e_p_get_var("LDFLAGS");
  if (df)
  {
-  FREE(e_s_prog.libraries);
+  free(e_s_prog.libraries);
   e_s_prog.libraries = NULL;
   for (k = 0; k < df->anz; k++, e_argc++)
   {
@@ -2294,8 +2294,8 @@ int e_free_arg(char **arg, int argc)
 
  for(i = 0; i < argc; i++)
   if(arg[i])
-   FREE(arg[i]);
- FREE(arg);
+   free(arg[i]);
+ free(arg);
  return(i);
 }
 
@@ -2365,18 +2365,18 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
  ret = e_read_var(f);
  if (ret)
  {
-  if (e_s_prog.compiler) FREE(e_s_prog.compiler);
+  if (e_s_prog.compiler) free(e_s_prog.compiler);
   e_s_prog.compiler = WpeStrdup("gcc");
-  if (e_s_prog.comp_str) FREE(e_s_prog.comp_str);
+  if (e_s_prog.comp_str) free(e_s_prog.comp_str);
   e_s_prog.comp_str = WpeStrdup("-g");
-  if (e_s_prog.libraries) FREE(e_s_prog.libraries);
+  if (e_s_prog.libraries) free(e_s_prog.libraries);
   e_s_prog.libraries = WpeStrdup("");
-  if (e_s_prog.exe_name) FREE(e_s_prog.exe_name);
+  if (e_s_prog.exe_name) free(e_s_prog.exe_name);
   /* Project my_prog.prj defaults to an executable of my_prog BD */
   strcpy(text, e_prog.project);
   e_s_prog.exe_name = WpeStrdup(WpeStringCutChar(text, '.'));
   /*e_s_prog.exe_name = WpeStrdup("a.out");*/
-  if (e_s_prog.intstr) FREE(e_s_prog.intstr);
+  if (e_s_prog.intstr) free(e_s_prog.intstr);
   e_s_prog.intstr = WpeStrdup(cc_intstr);
   strcpy(library, "");
   for (i = !save_df ? 0 : 1; i < 3; i++)
@@ -2400,27 +2400,27 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
  {
   if (!strcmp(p_v[i]->var, "CMP"))
   {
-   if (e_s_prog.compiler) FREE(e_s_prog.compiler);
+   if (e_s_prog.compiler) free(e_s_prog.compiler);
    e_s_prog.compiler = WpeStrdup(p_v[i]->string);
   }
   else if (!strcmp(p_v[i]->var, "CMPFLAGS"))
   {
-   if (e_s_prog.comp_str) FREE(e_s_prog.comp_str);
+   if (e_s_prog.comp_str) free(e_s_prog.comp_str);
    e_s_prog.comp_str = WpeStrdup(p_v[i]->string);
   }
   else if (!strcmp(p_v[i]->var, "LDFLAGS"))
   {
-   if (e_s_prog.libraries) FREE(e_s_prog.libraries);
+   if (e_s_prog.libraries) free(e_s_prog.libraries);
    e_s_prog.libraries = WpeStrdup(p_v[i]->string);
   }
   else if (!strcmp(p_v[i]->var, "EXENAME"))
   {
-   if (e_s_prog.exe_name) FREE(e_s_prog.exe_name);
+   if (e_s_prog.exe_name) free(e_s_prog.exe_name);
    e_s_prog.exe_name = WpeStrdup(p_v[i]->string);
   }
   else if (!strcmp(p_v[i]->var, "CMPMESSAGE"))
   {
-   if (e_s_prog.intstr) FREE(e_s_prog.intstr);
+   if (e_s_prog.intstr) free(e_s_prog.intstr);
    e_s_prog.intstr = WpeStrdup(e_interpr_var(p_v[i]->string));
   }
 
@@ -2529,7 +2529,7 @@ struct dirfile **e_make_prj_opt(FENSTER *f)
 		    realloc(sp = e_p_df[2]->name[e_p_df[2]->anz-1],
 			strlen(e_p_df[2]->name[e_p_df[2]->anz-1])
 			+ strlen(text) + 1)))
-    {  fclose(fp);  FREE(sp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);
+    {  fclose(fp);  free(sp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);
 	       return(e_p_df);
     }
     strcat(e_p_df[2]->name[e_p_df[2]->anz-1], text);
@@ -2566,7 +2566,7 @@ int freedfN(struct dirfile **df, int n)
  for(i = 0; i < n; i++)
   if(df[i])
    freedf(df[i]);
- FREE(df);
+ free(df);
  return(0);
 }
 
@@ -2721,7 +2721,7 @@ int e_p_edit_df(FLWND *fw, int sw)
    fw->df->name[fw->df->anz-1] = fw->df->name[fw->df->anz-2];
   }
   if (!new)
-   FREE(fw->df->name[fw->nf]);
+   free(fw->df->name[fw->nf]);
   fw->df->name[fw->nf] = malloc(strlen(str)+1);
   if (fw->df->name[fw->nf])
    strcpy(fw->df->name[fw->nf], str);
@@ -2756,7 +2756,7 @@ int e_p_mess_win(char *header, int argc, char **argv, PIC **pic, FENSTER *f)
   strcat(tmp, " ");
  }
  ret = e_mess_win(header, tmp, pic, f);
- FREE(tmp);
+ free(tmp);
  fk_cursor(1);
  return(ret);
 }
@@ -2769,7 +2769,7 @@ int e_p_red_buffer(BUFFER *b)
 
  for (i = 1; i < b->mxlines; i++)
   if (b->bf[i].s != NULL)
-   FREE( b->bf[i].s );
+   free( b->bf[i].s );
  if (b->mxlines==0) e_new_line(0,b);
  b->bf[0].s[0] = WPE_WR;
  b->bf[0].s[1] = '\0';
@@ -2938,9 +2938,9 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
    cp = malloc((strlen(a)+1)*sizeof(char));
    for (i = 0; i < k && (cp[i] = a[i]); i++);
    for (i++; (cp[i-1] = a[i]) != '\0'; i++);
-   FREE(var);
+   free(var);
    n = e_p_comp_mess(cp, ++b, ++c, txt, file, cmp, y, x);
-   FREE(cp);
+   free(cp);
    return(n);
   }
   if (a[k] == '[')
@@ -2957,8 +2957,8 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
      str[k] = b[k];
     str[i] = '\0';
     e_p_konv_mess(var, str, txt, file, cmp, y, x);
-    FREE(var);
-    FREE(str);
+    free(var);
+    free(str);
    }
    return(n);
   }
@@ -2968,7 +2968,7 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
    ctmp[i] = a[i+k];
   ctmp[n] = '\0';
   cp = strstr(b, ctmp);
-  FREE(ctmp);
+  free(ctmp);
   if (cp == NULL)
    return(0);
   if (a[0] == '$')
@@ -2979,8 +2979,8 @@ int e_p_comp_mess(char *a, char *b, char *c, char *txt, char *file, char *cmp,
     str[i] = c[i];
    str[i] = '\0';
    i = e_p_konv_mess(var, str, txt, file, cmp, y, x);
-   FREE(var);  
-   FREE(str);
+   free(var);  
+   free(str);
    if (i)
     return(0);
   }
@@ -3168,9 +3168,9 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
  *ii = i;
  *kk = k;
  for (m = 0; m < wnum; m++)
-  FREE(wtxt[m]);
- FREE(wn);
- FREE(wtxt);
+  free(wtxt[m]);
+ free(wn);
+ free(wtxt);
  return(ret);
 }
 

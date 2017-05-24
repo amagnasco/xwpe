@@ -198,7 +198,7 @@ int e_schreib_zif(int *num, int x, int y, int max, int ft, int fs)
    {
     if (c > -2)
      *num = WpeStringToNumber(s);
-    FREE(s);
+    free(s);
     return(c);
    }
   }
@@ -251,7 +251,7 @@ int e_schreib_zif(int *num, int x, int y, int max, int ft, int fs)
   {
    if (c != WPE_ESC)
     *num = WpeStringToNumber(s);
-   FREE(s);
+   free(s);
    return(c);
   }
   if (jc > max -1)
@@ -325,7 +325,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
    else
    {
     if (c > -4) strcpy(s, tmp);
-    FREE(tmp);
+    free(tmp);
     fk_cursor(0);
     return(c);
    }
@@ -419,7 +419,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
   else if (c > 0)	
   { 
    if (c != WPE_ESC) strcpy(s, tmp);
-   FREE(tmp);fk_cursor(0);
+   free(tmp);fk_cursor(0);
    if (c == CtrlP) c = CUP;
    else if (c == CtrlN) c = CDO;
    return(c);
@@ -451,7 +451,7 @@ int e_schr_nzif(int num, int x, int y, int max, int col)
  if (num >= nt)
   num = nt - 1;
  e_pr_zstring(WpeNumberToString(num, max, str), x, y, max, col);
- FREE(str);
+ free(str);
  return(0);
 }
 

@@ -242,7 +242,7 @@ int e_ad_colors(FENSTER *f)
 
  n = e_opt_sec_box(xa, ya, num, opt, f, 1);
 
- FREE(opt);
+ free(opt);
  if (n < 0)
   return(WPE_ESC);
 
@@ -919,25 +919,25 @@ int WpeReadLanguage(ECNT *cn, char *section, char *option, char *value)
  if (WpeStrccmp("Compiler", option) == 0)
  {
   if (e_prog.comp[i]->compiler)
-   FREE(e_prog.comp[i]->compiler);
+   free(e_prog.comp[i]->compiler);
   e_prog.comp[i]->compiler = WpeStrdup(value);
  }
  else if (WpeStrccmp("CompilerOptions", option) == 0)
  {
   if (e_prog.comp[i]->comp_str)
-   FREE(e_prog.comp[i]->comp_str);
+   free(e_prog.comp[i]->comp_str);
   e_prog.comp[i]->comp_str = WpeStrdup(value);
  }
  else if (WpeStrccmp("Libraries", option) == 0)
  {
   if (e_prog.comp[i]->libraries)
-   FREE(e_prog.comp[i]->libraries);
+   free(e_prog.comp[i]->libraries);
   e_prog.comp[i]->libraries = WpeStrdup(value);
  }
  else if (WpeStrccmp("Executable", option) == 0)
  {
   if (e_prog.comp[i]->exe_name)
-   FREE(e_prog.comp[i]->exe_name);
+   free(e_prog.comp[i]->exe_name);
   e_prog.comp[i]->exe_name = WpeStrdup(value);
  }
  else if (WpeStrccmp("FileExtension", option) == 0)
@@ -954,7 +954,7 @@ int WpeReadLanguage(ECNT *cn, char *section, char *option, char *value)
  else if (WpeStrccmp("MessageString", option) == 0)
  {
   if (e_prog.comp[i]->intstr)
-   FREE(e_prog.comp[i]->intstr);
+   free(e_prog.comp[i]->intstr);
   e_prog.comp[i]->intstr = WpeValueToString(value);
  }
  else if (WpeStrccmp("Key", option) == 0)
@@ -1006,7 +1006,7 @@ int e_save_opt(FENSTER *f)
  for (i = strlen(str_line); i > 0 && str_line[i] != DIRC; i--);
  str_line[i] = '\0';
  if (access(str_line, 0)) mkdir(str_line, 0700);
- FREE(str_line);
+ free(str_line);
  fp = fopen(cn->optfile, "w");
  if (fp == NULL)
  {
@@ -1030,7 +1030,7 @@ int e_save_opt(FENSTER *f)
   fprintf(fp, "[%s]\n", str_line);
   WpeWriteColor(cn, str_line, fp);
  }
- FREE(str_line);
+ free(str_line);
  str_line = OPT_SECTION_PROGRAMMING;
  fprintf(fp, "[%s]\n", str_line);
  WpeWriteProgramming(cn, str_line, fp);
@@ -1044,7 +1044,7 @@ int e_save_opt(FENSTER *f)
   fprintf(fp, "[%s]\n", str_line);
   WpeWriteLanguage(cn, str_line, fp);
  }
- FREE(str_line);
+ free(str_line);
  fclose(fp);
  return 0;
 }
@@ -1065,7 +1065,7 @@ int e_opt_read(ECNT *cn)
  {
   char *file = e_mkfilename(LIBRARY_DIR, OPTION_FILE);
   fp = fopen(file, "r");
-  FREE(file);
+  free(file);
  }
  if (fp == NULL) return(0);
  sz = 256;
@@ -1156,7 +1156,7 @@ int e_add_arguments(char *str, char *head, FENSTER *f, int n, int sw,
  e_add_wrstr(4, 2, 4, 3, 30, 128, n, sw, tmp, str, df, o);
  e_add_bttstr(7, 5, 1, AltO, " Ok ", NULL, o);
  e_add_bttstr(24, 5, -1, WPE_ESC, "Cancel", NULL, o);
- FREE(tmp);
+ free(tmp);
  ret = e_opt_kst(o);
  if (ret != WPE_ESC)
   strcpy(str, o->wstr[0]->txt);
@@ -1329,47 +1329,47 @@ int freeostr(W_OPTSTR *o)
   return(0);
  for (i = 0; i < o->tn; i++)
  {
-  FREE(o->tstr[i]->txt);
-  FREE(o->tstr[i]);
+  free(o->tstr[i]->txt);
+  free(o->tstr[i]);
  }
  if (o->tn)
-  FREE(o->tstr);
+  free(o->tstr);
  for (i = 0; i < o->wn; i++)
  {
-  FREE(o->wstr[i]->txt);
-  FREE(o->wstr[i]->header);
-  FREE(o->wstr[i]);
+  free(o->wstr[i]->txt);
+  free(o->wstr[i]->header);
+  free(o->wstr[i]);
  }
  if (o->wn)
-  FREE(o->wstr);
+  free(o->wstr);
  for (i = 0; i < o->nn; i++)
  {
-  FREE(o->nstr[i]->header);
-  FREE(o->nstr[i]);
+  free(o->nstr[i]->header);
+  free(o->nstr[i]);
  }
  if (o->nn)
-  FREE(o->nstr);
+  free(o->nstr);
  for (i = 0; i < o->pn; i++)
  {
   for (j = 0; j < o->pstr[i]->np; j++)
   {
-   FREE(o->pstr[i]->ps[j]->header);
-   FREE(o->pstr[i]->ps[j]);
+   free(o->pstr[i]->ps[j]->header);
+   free(o->pstr[i]->ps[j]);
   }
   if (o->pstr[i]->np)
-   FREE(o->pstr[i]->ps);
-  FREE(o->pstr[i]);
+   free(o->pstr[i]->ps);
+  free(o->pstr[i]);
  }
  if (o->pn)
-  FREE(o->pstr);
+  free(o->pstr);
  for (i = 0; i < o->bn; i++)
  {
-  FREE(o->bstr[i]->header);
-  FREE(o->bstr[i]);
+  free(o->bstr[i]->header);
+  free(o->bstr[i]);
  }
  if (o->bn)
-  FREE(o->bstr);
- FREE(o);
+  free(o->bstr);
+ free(o);
  return(0);
 }
 

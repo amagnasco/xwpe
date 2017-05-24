@@ -381,7 +381,7 @@ int fl_wnd_mouse(sw, k, fw)
 	       {  FLBFFR *b = (FLBFFR *)fw->f->b;
 		  if(b->cd->anz > fw->nf)
 		  {  while (e_mshit() != 0);
-		     FREE (file);  FREE (bgrd);  return(WPE_CR);
+		     free (file);  free (bgrd);  return(WPE_CR);
 		  }
 		  for(c = 0; *(fw->df->name[fw->nf]+c)
 			&& ( *(fw->df->name[fw->nf]+c) <= 32
@@ -402,10 +402,10 @@ int fl_wnd_mouse(sw, k, fw)
 		  e_refresh();
 	       }
 	       e_pt_btstr(xn-xdif, yn, MLEN, bgrd);
-	       FREE (file);  FREE (bgrd);
+	       free (file);  free (bgrd);
 	       return(k);
 	    }
-	    FREE (file);  FREE (bgrd);
+	    free (file);  free (bgrd);
 	    if(sw && k == -2) return(AltU);
 	    else if(sw && k == -4) return(AltM);
 	    else return(WPE_CR);
