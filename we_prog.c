@@ -1022,7 +1022,7 @@ int e_copy_prog(struct e_s_prog *out, struct e_s_prog *in)
  if (out->filepostfix)
  {
   for (i = WpeExpArrayGetSize(out->filepostfix); i; i--)
-   WpeFree(out->filepostfix[i - 1]);
+   free(out->filepostfix[i - 1]);
   WpeExpArrayDestroy(out->filepostfix);
  }
  out->filepostfix = (char **)WpeExpArrayCreate(WpeExpArrayGetSize(in->filepostfix), sizeof(char *), 1);
@@ -1108,7 +1108,7 @@ int e_project_options(FENSTER *f)
  e_add_wrstr(4, 10, 22, 10, 36, 128, 2, AltB, "LiBrary:", library, NULL, o);
  messagestring = WpeStringToValue(e_s_prog.intstr);
  e_add_wrstr(22, 12, 22, 13, 36, 256, 0, AltM, "Message-String:", messagestring, NULL, o);
- WpeFree(messagestring);
+ free(messagestring);
  e_add_pswstr(0, 5, 13, 0, AltG, 0, "GNU       ", o);
  e_add_pswstr(0, 5, 14, 1, AltT, e_s_prog.comp_sw, "OTher     ", o);
  e_add_bttstr(9, 18, 0, AltS, "Save", NULL, o);
@@ -1173,7 +1173,7 @@ int e_run_c_options(FENSTER *f)
  e_add_wrstr(4, 12, 22, 12, 36, 128, 0, AltF, "File-Postfix:", filepostfix, NULL, o);
  messagestring = WpeStringToValue(e_s_prog.intstr);
  e_add_wrstr(22, 14, 22, 15, 36, 128, 0, AltM, "Message-String:", messagestring, NULL, o);
- WpeFree(messagestring);
+ free(messagestring);
  e_add_pswstr(0, 5, 15, 0, AltG, 0, "GNU      ", o);
  e_add_pswstr(0, 5, 16, 1, AltT, e_s_prog.comp_sw, "OTher    ", o);
  e_add_bttstr(16, 18, 1, AltO, " Ok ", NULL, o);
@@ -1192,7 +1192,7 @@ int e_run_c_options(FENSTER *f)
   if (e_s_prog.exe_name) FREE(e_s_prog.exe_name);
   e_s_prog.exe_name = WpeStrdup(o->wstr[4]->txt);
   for (i = 0; i < j; i++)
-   WpeFree(e_s_prog.filepostfix[i]);
+   free(e_s_prog.filepostfix[i]);
   WpeExpArrayDestroy(e_s_prog.filepostfix);
   e_s_prog.filepostfix = (char **)WpeExpArrayCreate(0, sizeof(char *), 1);
   for (i = 0; o->wstr[5]->txt[i]; i++)

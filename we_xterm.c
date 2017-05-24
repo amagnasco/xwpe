@@ -731,7 +731,7 @@ int e_x_getch()
    case SelectionClear:
     if (WpeXInfo.selection)
     {
-     WpeFree(WpeXInfo.selection);
+     free(WpeXInfo.selection);
      WpeXInfo.selection = NULL;
     }
     break;
@@ -1016,7 +1016,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  s0->mark_end.x = b0->bf[b0->mxlines-1].len;
 #if SELECTION
  if (WpeXInfo.selection)
-  WpeFree(str);
+  free(str);
  else
 #endif
   XFree(str);
@@ -1040,7 +1040,7 @@ int e_x_paste_X_buffer(FENSTER *f)
 #if SELECTION
  if (WpeXInfo.selection)
  {
-  WpeFree(WpeXInfo.selection);
+  free(WpeXInfo.selection);
   WpeXInfo.selection = NULL;
  }
 #endif
@@ -1083,7 +1083,7 @@ int e_x_paste_X_buffer(FENSTER *f)
    WpeXInfo.window, CurrentTime);
 #else
  XStoreBytes(WpeXInfo.display, WpeXInfo.selection, n);
- WpeFree(WpeXInfo.selection);
+ free(WpeXInfo.selection);
  WpeXInfo.selection = NULL;
 #endif
  return(0);

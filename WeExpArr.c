@@ -70,6 +70,6 @@ void WpeExpArrayDestroy(void *exp_array)
  int *real_array;
 
  real_array = ((int *)exp_array) - 4;
- WpeFree(real_array);
+ free(real_array);
 }
 

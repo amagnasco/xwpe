@@ -75,8 +75,8 @@ int e_edit(ECNT *cn, char *filename)
     (strcmp(cn->f[i]->dirct, path) == 0))
   {
    e_switch_window(cn->edt[i], cn->f[cn->mxedt]);
-   WpeFree(path);
-   WpeFree(file);
+   free(path);
+   free(file);
    return(0);
   }
  }
@@ -229,7 +229,7 @@ int e_edit(ECNT *cn, char *filename)
  {
   cn->curedt=0;
   cn->edt[cn->mxedt]=0;
-  WpeFree(file);
+  free(file);
   file = f->datnam = WpeStrdup(BUFFER_NAME);
 #ifdef UNIX
   f->filemode = 0600;
@@ -243,7 +243,7 @@ int e_edit(ECNT *cn, char *filename)
  }
  if (strcmp(file,"") == 0)
  {
-  WpeFree(file);
+  free(file);
   file = f->datnam = WpeStrdup("Noname");
  }
  else
@@ -1926,7 +1926,7 @@ void WpeFilenameToPathFile(char *filename, char **path, char **file)
   {
    if ((cur_dir = WpeGetCurrentDir(WpeEditor)) == NULL)
    {
-    WpeFree(*file);
+    free(*file);
     *file = NULL;
     return ;
    }
@@ -1961,7 +1961,7 @@ void WpeFilenameToPathFile(char *filename, char **path, char **file)
     (*path)[strlen(cur_dir) + len] = DIRC;
     (*path)[strlen(cur_dir) + len + 1] = 0;
    }
-   WpeFree(cur_dir);
+   free(cur_dir);
   }
   else
   {

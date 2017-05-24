@@ -656,7 +656,7 @@ int WpeHandleFileManager(ECNT * cn)
                            f->fb->fr.fb, f->fb->fz.fb, &f->ed->ddf, f);
         FREE(f->dirct);
         f->dirct = WpeStrdup(dirtmp);
-        WpeFree(dirtmp);
+        free(dirtmp);
 
 #if  MOUSE
         if(c == -1)
@@ -3305,7 +3305,7 @@ int WpeGrepWindow(FENSTER * f)
     strcpy(fd->file, o->wstr[1]->txt);
     if (fd->dirct)
     {
-     WpeFree(fd->dirct);
+     free(fd->dirct);
     }
     fd->dirct = WpeStrdup(o->wstr[2]->txt);
   }
@@ -3344,7 +3344,7 @@ int WpeFindWindow(FENSTER * f)
     strcpy(fd->file, o->wstr[0]->txt);
     if (fd->dirct)
     {
-     WpeFree(fd->dirct);
+     free(fd->dirct);
     }
     fd->dirct = WpeStrdup(o->wstr[1]->txt);
   }

@@ -349,7 +349,7 @@ void e_ed_rahmen(FENSTER *f, int sw)
  e_std_rahmen(f->a.x, f->a.y, f->e.x, f->e.y, header, sw, f->fb->er.fb,
    f->fb->es.fb);
  if (header)
-  WpeFree(header);
+  free(header);
  if (sw > 0)
  {
   e_mouse_bar(f->e.x, f->a.y+1, NUM_LINES_ON_SCREEN - 1, 0, f->fb->em.fb);

@@ -554,8 +554,8 @@ struct dirfile *e_find_files(char *sufile, int sw)
     {
      df->anz = 0;
      closedir(dirp);
-     WpeFree(stmp);
-     WpeFree(sdir);
+     free(stmp);
+     free(sdir);
      return(df);
     }
     strcpy(tmpst, dp->d_name);
@@ -567,8 +567,8 @@ struct dirfile *e_find_files(char *sufile, int sw)
   }
  }
  closedir(dirp);
- WpeFree(stmp);
- WpeFree(sdir);
+ free(stmp);
+ free(sdir);
  return(df);
 }
 
@@ -636,7 +636,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
      df->anz = 0;
      closedir(dirp);
      FREE(sdir);
-     WpeFree(stmp);
+     free(stmp);
      return(df);
     }
     strcpy(tmpst, dp->d_name);
@@ -649,7 +649,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
  }
  closedir(dirp);
  FREE(sdir);
- WpeFree(stmp);
+ free(stmp);
  return(df);
 }
 

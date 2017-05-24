@@ -783,7 +783,7 @@ int e_d_p_watches(FENSTER *f, int sw)
   print_to_end_of_buffer(b, str2, b->mx.x);
 
   /* Free any allocated string */
-  WpeFree(str2);
+  free(str2);
   if(str != str1)
   {
    FREE(str);

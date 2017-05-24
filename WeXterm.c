@@ -457,7 +457,7 @@ void WpeXInit(int *argc, char **argv)
  WpeXInfo.protocol_atom = XInternAtom(WpeXInfo.display, "WM_PROTOCOLS", False);
  XSetWMProtocols(WpeXInfo.display, WpeXInfo.window, new_atom_list,
    atom_num + 1);
- WpeFree(new_atom_list);
+ free(new_atom_list);
 
  WpeXInfo.selection_atom = XInternAtom(WpeXInfo.display, "PRIMARY", False);
  WpeXInfo.text_atom = XInternAtom(WpeXInfo.display, "STRING", False);

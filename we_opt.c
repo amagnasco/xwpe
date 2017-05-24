@@ -985,7 +985,7 @@ int WpeWriteLanguage(ECNT *cn, char *section, FILE *opt_file)
    fprintf(opt_file, "FileExtension : %s\n", e_prog.comp[i]->filepostfix[j - 1]);
   str_tmp = WpeStringToValue(e_prog.comp[i]->intstr);
   fprintf(opt_file, "MessageString : %s\n", str_tmp);
-  WpeFree(str_tmp);
+  free(str_tmp);
   fprintf(opt_file, "CompilerSwitch : %d\n", e_prog.comp[i]->comp_sw);
   fprintf(opt_file, "Key : %c\n", e_prog.comp[i]->key);
   fprintf(opt_file, "X : %d\n", e_prog.comp[i]->x);
@@ -1097,12 +1097,12 @@ int e_opt_read(ECNT *cn)
    if (*option == '[')
    {
     if (section)
-     WpeFree(section);
+     free(section);
     for (value = option + 1; (*value) && (*value != ']'); value++)
      ;
     if (*value != ']')
     {
-     WpeFree(str_line);
+     free(str_line);
      return ERR_READ_OPF;
     }
     *value = 0;
@@ -1113,7 +1113,7 @@ int e_opt_read(ECNT *cn)
     value = strchr(option, ':');
     if ((value == NULL) || (value == option))
     {
-     WpeFree(str_line);
+     free(str_line);
      return ERR_READ_OPF;
     }
     for (str_tmp = value - 1; isspace(*str_tmp); str_tmp--)
@@ -1842,7 +1842,7 @@ int e_edt_options(FENSTER *f)
     (o->sstr[3]->num ? ED_OLD_TILE_METHOD : 0) +
     (o->sstr[0]->num ? ED_SHOW_ENDMARKS : 0);
   if (f->ed->print_cmd)
-   WpeFree(f->ed->print_cmd);
+   free(f->ed->print_cmd);
   f->ed->print_cmd = WpeStrdup(o->wstr[0]->txt);
   if (edopt != f->ed->edopt)
   {

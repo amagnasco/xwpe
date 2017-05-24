@@ -266,7 +266,7 @@ int e_write(int xa, int ya, int xe, int ye, FENSTER *f, int backup)
   if (access(tmp, 0) == 0)
    remove(tmp);
   WpeRenameCopy(ptmp, tmp, f, 1);
-  WpeFree(tmp);
+  free(tmp);
  }
  if ((fp = fopen(ptmp, "wb")) == NULL)
  {
