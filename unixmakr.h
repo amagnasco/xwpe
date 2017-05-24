@@ -91,10 +91,6 @@ extern char *ctree[5];
 #define e_s_clr(f, b) (*e_s_u_clr)(f, b)
 #define e_n_clr(fb) (*e_n_u_clr)(fb)
 
-//#define REALLOC(p, n) realloc((p), (n))
-//#define MALLOC(n) malloc(n)
-//#define FREE(n) free(n)
-
 #ifdef NEWSTYLE
 extern char *extbyte, *altextbyte;
 #endif
