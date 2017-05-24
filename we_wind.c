@@ -336,12 +336,12 @@ void e_ed_rahmen(FENSTER *f, int sw)
     f->dtmd == DTMD_HELP || strcmp(f->datnam, BUFFER_NAME) == 0 ||
     NUM_COLS_ON_SCREEN < 40)
   {
-   header = (char *)WpeMalloc(strlen(f->datnam) + 1);
+   header = (char *)malloc(strlen(f->datnam) + 1);
    strcpy(header, f->datnam);
   }
   else
   {
-   header = (char *)WpeMalloc(strlen(f->dirct) + strlen(f->datnam) + 1);
+   header = (char *)malloc(strlen(f->dirct) + strlen(f->datnam) + 1);
    strcpy(header, f->dirct);
    strcat(header, f->datnam);
   }

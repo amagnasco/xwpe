@@ -1948,7 +1948,7 @@ void WpeFilenameToPathFile(char *filename, char **path, char **file)
     len -= 3;
     filename += 3;
    }
-   *path = WpeMalloc((strlen(cur_dir) + len + 2) * sizeof(char));
+   *path = malloc((strlen(cur_dir) + len + 2) * sizeof(char));
    strcpy(*path, cur_dir);
    strcat(*path, DIRS);
    strncat(*path, filename, len);
@@ -1966,7 +1966,7 @@ void WpeFilenameToPathFile(char *filename, char **path, char **file)
   else
   {
    len = tmp - filename + 1;
-   *path = WpeMalloc(len + 1 * sizeof(char));
+   *path = malloc(len + 1 * sizeof(char));
    strncpy(*path, filename, len);
    (*path)[len] = 0;
   }

@@ -498,14 +498,14 @@ struct dirfile *e_find_files(char *sufile, int sw)
  if (n <= 0)
  {
   sizeSdir = 2;
-  sdir = (char *)WpeMalloc(2 * sizeof(char));
+  sdir = (char *)malloc(2 * sizeof(char));
   sdir[0] = n ? '.' : DIRC;
   sdir[1] = '\0';
  }
  else
  {
   sizeSdir = n + 1;
-  sdir = (char *)WpeMalloc((n + 1) * sizeof(char));
+  sdir = (char *)malloc((n + 1) * sizeof(char));
   for (i = 0; i < n; i++)
    sdir[i] = sufile[i];
   sdir[n] = '\0';
@@ -516,7 +516,7 @@ struct dirfile *e_find_files(char *sufile, int sw)
   return(df);
  }
  sizeStmp = 256;
- stmp = (char *)WpeMalloc(sizeStmp);
+ stmp = (char *)malloc(sizeStmp);
  while((dp = readdir(dirp)) != NULL)
  {
   if (!(sw & 1) && dp->d_name[0] == '.' && sfile[0] != '.')
@@ -607,7 +607,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
   return(df);
  }
  sizeStmp = 256;
- stmp = (char *)WpeMalloc(sizeStmp);
+ stmp = (char *)malloc(sizeStmp);
  while ((dp = readdir(dirp)) != NULL)
  {
   if (!sw && dp->d_name[0] == '.' && sfile[0] != '.')

@@ -776,7 +776,7 @@ int e_d_p_watches(FENSTER *f, int sw)
 
   /* Print variable name */
   for ( ; str[k] != '\0' && isspace(str[k]); k++);
-  str2 = WpeMalloc(strlen(e_d_swtchs[l]) + strlen(str + k) + 4);
+  str2 = malloc(strlen(e_d_swtchs[l]) + strlen(str + k) + 4);
   sprintf(str2, "%s: %s", e_d_swtchs[l], str + k);
 
   e_d_nrwtchs[l] = b->mxlines;

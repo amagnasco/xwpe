@@ -50,7 +50,7 @@ char *WpeStrcstr(char *str, const char *substr);
 
     Parameters:
       str          (In)  String to copy
-    Returns: Pointer to new string created with WpeMalloc().  NULL if
+    Returns: Pointer to new string created with malloc().  NULL if
   insufficient memory free to create the string.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 char *WpeStrdup(const char *str);

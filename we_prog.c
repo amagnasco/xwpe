@@ -1201,7 +1201,7 @@ int e_run_c_options(FENSTER *f)
     continue;
    for (j = i; (o->wstr[5]->txt[j]) && (!isspace(o->wstr[5]->txt[j])); j++)
     ;
-   newpostfix = (char *)WpeMalloc(sizeof(char) * j - i + 1);
+   newpostfix = (char *)malloc(sizeof(char) * j - i + 1);
    strncpy(newpostfix, o->wstr[5]->txt + i, j - i);
    newpostfix[j - i] = 0;
    WpeExpArrayAdd((void **)&e_s_prog.filepostfix, &newpostfix);
@@ -1239,17 +1239,17 @@ int e_run_options(FENSTER *f)
    e_prog.num++;
    e_prog.comp = REALLOC(e_prog.comp, e_prog.num * sizeof(struct e_s_prog *));
    e_prog.comp[e_prog.num - 1] = MALLOC(sizeof(struct e_s_prog));
-   e_prog.comp[e_prog.num - 1]->language = (char *)WpeMalloc(1);
+   e_prog.comp[e_prog.num - 1]->language = (char *)malloc(1);
    e_prog.comp[e_prog.num - 1]->language[0] = 0;
-   e_prog.comp[e_prog.num - 1]->compiler = (char *)WpeMalloc(1);
+   e_prog.comp[e_prog.num - 1]->compiler = (char *)malloc(1);
    e_prog.comp[e_prog.num - 1]->compiler[0] = 0;
-   e_prog.comp[e_prog.num - 1]->comp_str = (char *)WpeMalloc(1);
+   e_prog.comp[e_prog.num - 1]->comp_str = (char *)malloc(1);
    e_prog.comp[e_prog.num - 1]->comp_str[0] = 0;
-   e_prog.comp[e_prog.num - 1]->libraries = (char *)WpeMalloc(1);
+   e_prog.comp[e_prog.num - 1]->libraries = (char *)malloc(1);
    e_prog.comp[e_prog.num - 1]->libraries[0] = 0;
-   e_prog.comp[e_prog.num - 1]->exe_name = (char *)WpeMalloc(1);
+   e_prog.comp[e_prog.num - 1]->exe_name = (char *)malloc(1);
    e_prog.comp[e_prog.num - 1]->exe_name[0] = 0;
-   e_prog.comp[e_prog.num - 1]->intstr = (char *)WpeMalloc(1);
+   e_prog.comp[e_prog.num - 1]->intstr = (char *)malloc(1);
    e_prog.comp[e_prog.num - 1]->intstr[0] = 0;
    e_prog.comp[e_prog.num - 1]->filepostfix =
      (char **)WpeExpArrayCreate(0, sizeof(char *), 1);

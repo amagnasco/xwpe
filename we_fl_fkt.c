@@ -355,7 +355,7 @@ char *e_bakfilename(char* s)
   if (!bak) bak = SIMPLE_BACKUP_SUFFIX;
  }
 
- result = WpeMalloc(strlen(s) + strlen(bak) + 5);
+ result = malloc(strlen(s) + strlen(bak) + 5);
  if (!*bak)
   return e_new_qual(s, "bak", result); /* TurboC style */
  else

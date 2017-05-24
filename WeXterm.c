@@ -446,7 +446,7 @@ void WpeXInit(int *argc, char **argv)
  {
   atom_num = 0;
  }
- new_atom_list = WpeMalloc((atom_num + 1) * sizeof(Atom));
+ new_atom_list = malloc((atom_num + 1) * sizeof(Atom));
  if (atom_list != NULL)
  {
   memcpy(new_atom_list, atom_list, atom_num * sizeof(Atom));

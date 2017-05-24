@@ -548,14 +548,14 @@ FARBE *e_ini_farbe()
  if (WpeIsXwin())
  {
   if (!x_fb)
-   x_fb = WpeMalloc(sizeof(FARBE));
+   x_fb = malloc(sizeof(FARBE));
   FARBE_Init(x_fb);
   return x_fb;
  }
  else
  {
   if (!u_fb)
-   u_fb = WpeMalloc(sizeof(FARBE));
+   u_fb = malloc(sizeof(FARBE));
   if (col_num)
   {
    FARBE_Init(u_fb);

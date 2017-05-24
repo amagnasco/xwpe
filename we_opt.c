@@ -589,7 +589,7 @@ char *WpeStringToValue(const char *str)
  int i, len;
 
  len = strlen(str);
- answer = WpeMalloc((len * 2) * sizeof(char));
+ answer = malloc((len * 2) * sizeof(char));
  for (i = strlen(str), cur_ans = answer, cur_str = str; i; i--, cur_str++)
  {
   if ((*cur_str == '\n') || (*cur_str == '\\'))
@@ -613,7 +613,7 @@ char *WpeValueToString(const char *value)
  const char *cur_val;
  int i;
 
- answer = WpeMalloc((strlen(value) + 1) * sizeof(char));
+ answer = malloc((strlen(value) + 1) * sizeof(char));
  for (i = strlen(value), cur_ans = answer, cur_val = value; i; i--, cur_ans++)
  {
   if (*cur_val == '\\')
@@ -687,7 +687,7 @@ int WpeReadColor(ECNT *cn, char *section, char *option, char *value)
  {
   if (!u_fb)
   {
-   u_fb = WpeMalloc(sizeof(FARBE));
+   u_fb = malloc(sizeof(FARBE));
    FARBE_Init(u_fb);
   }
   fb = u_fb;
@@ -696,7 +696,7 @@ int WpeReadColor(ECNT *cn, char *section, char *option, char *value)
  {
   if (!x_fb)
   {
-   x_fb = WpeMalloc(sizeof(FARBE));
+   x_fb = malloc(sizeof(FARBE));
    FARBE_Init(x_fb);
   }
   fb = x_fb;
@@ -1069,7 +1069,7 @@ int e_opt_read(ECNT *cn)
  }
  if (fp == NULL) return(0);
  sz = 256;
- str_line = (char *)WpeMalloc(256 * sizeof(char));
+ str_line = (char *)malloc(256 * sizeof(char));
  section = NULL;
  while (!feof(fp))
  {

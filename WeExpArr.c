@@ -27,7 +27,7 @@ void *WpeExpArrayCreate(int initial_num, int elem_size, int growth_num)
 {
  int *exp_array;
 
- exp_array = (int *)WpeMalloc(initial_num * elem_size + sizeof(int) * 4);
+ exp_array = (int *)malloc(initial_num * elem_size + sizeof(int) * 4);
  *(exp_array) = initial_num;
  *(exp_array + 1) = elem_size;
  *(exp_array + 2) = growth_num;

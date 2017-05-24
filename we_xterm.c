@@ -1053,7 +1053,7 @@ int e_x_paste_X_buffer(FENSTER *f)
    return(0);
   n = s0->mark_end.x - s0->mark_begin.x;
 #if SELECTION
-  WpeXInfo.selection = WpeMalloc(n + 1);
+  WpeXInfo.selection = malloc(n + 1);
   strncpy(WpeXInfo.selection, b0->bf[s0->mark_begin.y].s+s0->mark_begin.x,
     n);
   WpeXInfo.selection[n] = 0;
@@ -1065,7 +1065,7 @@ int e_x_paste_X_buffer(FENSTER *f)
 #endif
   return(0);
  }
- WpeXInfo.selection = WpeMalloc(b0->bf[s0->mark_begin.y].nrc * sizeof(char));
+ WpeXInfo.selection = malloc(b0->bf[s0->mark_begin.y].nrc * sizeof(char));
  for (n = 0, j = s0->mark_begin.x; j < b0->bf[s0->mark_begin.y].nrc; j++, n++)
   WpeXInfo.selection[n] = b0->bf[s0->mark_begin.y].s[j];
  for (i = s0->mark_begin.y+1; i < s0->mark_end.y; i++)

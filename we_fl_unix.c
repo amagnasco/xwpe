@@ -641,7 +641,7 @@ int WpeHandleFileManager(ECNT * cn)
         fk_cursor(1);
 
         /* get the directory name */
-        if ((dirtmp = WpeMalloc(WPE_PATHMAX)) == NULL)        /* dirct mat not have enough memory */
+        if ((dirtmp = malloc(WPE_PATHMAX)) == NULL)        /* dirct mat not have enough memory */
           e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
 
         if (strlen(f->dirct) >= WPE_PATHMAX)
@@ -1675,7 +1675,7 @@ char *WpeGetCurrentDir(ECNT *cn)
 
   home = 0;
   allocate_size = 256;
-  if ((current_dir = (char *)WpeMalloc(allocate_size + 1)) == NULL)
+  if ((current_dir = (char *)malloc(allocate_size + 1)) == NULL)
   {
    e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
    return NULL;
