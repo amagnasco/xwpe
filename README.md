@@ -22,17 +22,24 @@ windows version of the programming environment.  Wpe simply runs a
 terminal programming environment.  Xwe and we provide a simple text
 editor for X windows and terminal modes respectively.
 
-On-line help describes the complete use of xwpe.
+Online help describes the complete use of xwpe.
 
 ## What is xwpe-alpha? ##
 
-The xwpe-alpha project is an attempt to reorganize the source code to
-improve readability.  It will also incorporate as many bug fixes as
+The xwpe-alpha project was an attempt to reorganize the source code to
+improve readability.  It also incorporated as many bug fixes as
 available.  Attempts to contact the author of xwpe have received no
 response so xwpe-alpha should be considered unsupported by Fred Kruse.
 To signify the difference xwpe-alpha has increased the version number
 from 1.4.x to 1.5.x despite relatively few changes at present.  Also
 xwpe-alpha release end in 'a' (e.g. 1.5.4a).
+
+## What is xwpe-git? ##
+
+Since more than a decade has passed since the xwpe-alpha project closed,
+the code has been ported to GitHub and made available to the community.
+In keeping with the spirit of xwpe-alpha, xwpe-git has increased the 
+version number from 1.5.x to 1.6.x despite relatively few changes as well.
 
 ## Why release it now? ##
 
@@ -45,7 +52,7 @@ time to complete.
 
 ## Copyright ##
 
-Copyright (C) 1993 Fred Kruse xwpe is free; anyone may
+Copyright (C) 1993 Fred Kruse. xwpe is free; anyone may
 redistribute copies of xwpe to anyone under the terms stated in the
 GNU General Public License.  The author assumes no responsibility
 for errors or omissions or damages resulting from the use of xwpe or
@@ -53,27 +60,26 @@ this manual.
 
 ## Maintainer ##
 
-This version is unofficial update to xwpe and is not supported
-by Fred Kruse.  Updates will be made available on the unofficial xwpe
-homepage, http://www.identicalsoftware.com/xwpe/.  Send questions or
-problems to Dennis Payne, dulsi@identicalsoftware.com.
+This version is an unofficial update to xwpe and is not supported 
+by Fred Kruse. Updates have previously been made available on the unofficial 
+xwpe-alpha homepage, http://www.identicalsoftware.com/xwpe/. The previous
+maintainer was Dennis Payne, dulsi@identicalsoftware.com.
 
-############################# MAINTAINER ###################################
 
-    As evidenced by their discussion list, xwpe-alpha has not seen active 
-    development since at least 2003. This GitHub version is maintained by 
-    Alessandro G. Magnasco at https://github.com/amagnasco/xwpe/.
+As evidenced by their discussion list, xwpe-alpha has not seen active 
+development since at least 2003. This GitHub version is maintained by 
+Alessandro G. Magnasco at https://github.com/amagnasco/xwpe/.
     
-    Caveat emptor ; this software hails from last century. I can try to help
-    figure out any questions or problems you might have, but purely out of 
-    academic interest. Solutions are left as an exercise for the hacker.
-    If you have a patch, please let me know so we can review it.
+Caveat emptor ; this software hails from last century. I can try to help
+figure out any questions or problems you might have, but purely out of 
+academic interest. Solutions are left as an exercise for the hacker.
+If you have a patch, please let me know so we can review it.
     
-############################# DEPENDENCIES #################################
+## DEPENDENCIES ##
 
-    If you are having difficulties compiling your code, be aware that xwpe
-    requires 32-bit libcurses. As most modern systems should keep far, far
-    away from the original UNIX library, this dependency is satisfied by 
-                          > libncurses5-dev <
+If you are having difficulties compiling your code, be aware that xwpe
+requires a backport version of libcurses. As most modern systems should keep 
+far, far away from the original UNIX library, at time of writing (02017-05)
+this dependency is satisfied by libncurses5-dev or libncurses6.
     
-#############################    ENJOY !    ################################
+## ENJOY ! ##
