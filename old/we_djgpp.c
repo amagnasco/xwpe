@@ -101,7 +101,7 @@ char *tmpschirm, *svschirm;
 void ini_repaint(ECNT *cn)
 {
    svschirm = schirm;
-   if((tmpschirm = (char *)MALLOC(4000*sizeof(char))) == NULL)
+   if((tmpschirm = (char *)malloc(4000*sizeof(char))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
    else
    {
@@ -118,14 +118,14 @@ void end_repaint()
    {  schirm = svschirm;
       for(n = 0; n < 160*MAXSLNS; n++)
 	    *(schirm + n) = *(tmpschirm + n);
-      FREE((char *)tmpschirm);
+      free((char *)tmpschirm);
    }
 }
 
 void ini_repaint_1(FENSTER *f)
 {
    svschirm = schirm;
-   if((tmpschirm = (char *)MALLOC(4000*sizeof(char))) == NULL)
+   if((tmpschirm = (char *)malloc(4000*sizeof(char))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, f->fb);
    else  schirm = tmpschirm;
 }
@@ -140,7 +140,7 @@ void end_repaint_1(FENSTER *f)
       {  *(schirm+2*MAXSCOL*j+2*i)   = *(tmpschirm+2*MAXSCOL*j+2*i);
 	 *(schirm+2*MAXSCOL*j+2*i+1) = *(tmpschirm+2*MAXSCOL*j+2*i+1);
       }
-      FREE((char *)tmpschirm);
+      free((char *)tmpschirm);
    }
 }
 
@@ -393,12 +393,12 @@ int e_exec_inf(FENSTER *f, char **argv, int n)
       write(e_p_err_file, " ", 1);
    }
    write(e_p_err_file, "\n", 1);
-   s_tmp = MALLOC((strlen(argv[0])+1)*sizeof(char));
+   s_tmp = malloc((strlen(argv[0])+1)*sizeof(char));
    strcpy(s_tmp, argv[0]);
    sp = argv[0];
    argv[0] = s_tmp;
    if(spawnvp(P_WAIT, s_tmp, argv)) e_print_arg(stderr, e_p_msg[ERR_IN_COMMAND], argv, n);
-   FREE(s_tmp);
+   free(s_tmp);
    argv[0] = sp;
 /*
    if(system(s_tmp)) e_print_arg(stderr, e_p_msg[ERR_IN_COMMAND], argv, n);
@@ -558,12 +558,12 @@ void e_free_djenv()
    if(e_djenv)
    {  for(i = 0; i < e_djenv_n; i++)
       {  if(e_djenv[i])
-         {  if(e_djenv[i]->var) FREE(e_djenv[i]->var);
-            if(e_djenv[i]->string) FREE(e_djenv[i]->string);
-            FREE(e_djenv[i]->var);
+         {  if(e_djenv[i]->var) free(e_djenv[i]->var);
+            if(e_djenv[i]->string) free(e_djenv[i]->string);
+            free(e_djenv[i]->var);
          }
       }
-      FREE(e_djenv);
+      free(e_djenv);
    }
    e_djenv = NULL;
    e_djenv_n = 0;
@@ -571,13 +571,13 @@ void e_free_djenv()
 
 void e_add_djvar(char *var, char *string)
 {
-   if(!e_djenv) e_djenv = MALLOC(sizeof(struct dj_env *));
-   else e_djenv = REALLOC(e_djenv, (e_djenv_n+1) * sizeof(struct dj_env *));
+   if(!e_djenv) e_djenv = malloc(sizeof(struct dj_env *));
+   else e_djenv = realloc(e_djenv, (e_djenv_n+1) * sizeof(struct dj_env *));
    if(!e_djenv) return;
-   e_djenv[e_djenv_n] = MALLOC(sizeof(struct dj_env));
+   e_djenv[e_djenv_n] = malloc(sizeof(struct dj_env));
    if(!e_djenv[e_djenv_n]) return;
-   e_djenv[e_djenv_n]->var = MALLOC((strlen(var)+1) * sizeof(char));
-   e_djenv[e_djenv_n]->string = MALLOC((strlen(string)+1) * sizeof(char));
+   e_djenv[e_djenv_n]->var = malloc((strlen(var)+1) * sizeof(char));
+   e_djenv[e_djenv_n]->string = malloc((strlen(string)+1) * sizeof(char));
    if(!e_djenv[e_djenv_n]->var || !e_djenv[e_djenv_n]->var) return;
    strcpy(e_djenv[e_djenv_n]->var, var);
    strcpy(e_djenv[e_djenv_n]->string, string);
@@ -672,13 +672,13 @@ char *e_getenv(char *var)
 
 struct dirfile *e_mk_drives(void)
 {
-   struct dirfile *df = MALLOC(sizeof(struct dirfile));
+   struct dirfile *df = malloc(sizeof(struct dirfile));
    int drvs, i;
-   df->name = MALLOC(sizeof(char *) * 26);
+   df->name = malloc(sizeof(char *) * 26);
    df->anz = 0;
    for ( i = 0; i < 26; i++)
    {  if(fk_lfw_test(i) >= 0)
-      {  *(df->name + df->anz) = MALLOC(2 * sizeof(char));
+      {  *(df->name + df->anz) = malloc(2 * sizeof(char));
 	 *(*(df->name + df->anz)) = 'A'+i;
 	 *(*(df->name + df->anz)+1) = '\0';
 	 (df->anz)++;

@@ -319,7 +319,7 @@ int e_sc_all(FENSTER *f, int sw)
   for (i = 0; i <= f->ed->mxedt; i++)
   if (f->ed->f[i]->c_sw)
   {
-   FREE(f->ed->f[i]->c_sw);
+   free(f->ed->f[i]->c_sw);
    f->ed->f[i]->c_sw = NULL;
   }
  }
@@ -328,12 +328,12 @@ int e_sc_all(FENSTER *f, int sw)
   for (i = 0; i <= f->ed->mxedt; i++)
   {
    if (f->ed->f[i]->c_sw)
-    FREE(f->ed->f[i]->c_sw);
+    free(f->ed->f[i]->c_sw);
    e_add_synt_tl(f->ed->f[i]->datnam, f->ed->f[i]);
    if (f->ed->f[i]->c_st)
    {
     if (f->ed->f[i]->c_sw)
-     FREE(f->ed->f[i]->c_sw);
+     free(f->ed->f[i]->c_sw);
     f->ed->f[i]->c_sw = e_sc_txt(NULL, f->ed->f[i]->b);
    }
   }
@@ -370,10 +370,10 @@ int e_program_opt(FENSTER *f)
  if (ret != WPE_ESC)
  {
   if (e_prog.exedir)
-   FREE(e_prog.exedir);
+   free(e_prog.exedir);
   e_prog.exedir = WpeStrdup(o->wstr[0]->txt);
   if (e_prog.sys_include)
-   FREE(e_prog.sys_include);
+   free(e_prog.sys_include);
   e_prog.sys_include = WpeStrdup(o->wstr[1]->txt);
   f->ed->edopt = (f->ed->edopt & ~ED_PROGRAMMING_OPTIONS) +
     (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
@@ -437,7 +437,7 @@ int *e_sc_txt(int *c_sw, BUFFER *b)
  int i;
 
  if (!c_sw)
-  c_sw = MALLOC(b->mx.y * sizeof(int));
+  c_sw = malloc(b->mx.y * sizeof(int));
  c_sw[0] = 0;
  if (b->f->c_st->continue_column < 0)
  {
@@ -609,7 +609,7 @@ int e_add_synt_tl(char *filename, FENSTER *f)
    {
     f->c_st = WpeSyntaxDef[i]->syntax_rule;
     if (f->ed->edopt & ED_SYNTAX_HIGHLIGHT)
-     f->c_sw = MALLOC(f->b->mx.y*sizeof(int));
+     f->c_sw = malloc(f->b->mx.y*sizeof(int));
    }
   }
  }
@@ -620,7 +620,7 @@ int e_add_synt_tl(char *filename, FENSTER *f)
 E_AFILE *e_aopen(char *name, char *path, int mode)
 {
  ECNT *cn = WpeEditor;
- E_AFILE *ep = MALLOC(sizeof(E_AFILE));
+ E_AFILE *ep = malloc(sizeof(E_AFILE));
  char str[256];
  int i, j;
 
@@ -656,7 +656,7 @@ E_AFILE *e_aopen(char *name, char *path, int mode)
  }
  if (!ep->b && !ep->fp)
  {
-  FREE(ep);
+  free(ep);
   return NULL;
  }
  return(ep);
@@ -668,7 +668,7 @@ int e_aclose(E_AFILE *ep)
 
  if (ep->fp)
   ret = fclose(ep->fp);
- FREE(ep);
+ free(ep);
  return(ret);
 }
 
@@ -888,13 +888,13 @@ struct dirfile *e_c_add_df(char *str, struct dirfile *df)
 {
  if (df == NULL)
  {
-  df = MALLOC(sizeof(struct dirfile));
+  df = malloc(sizeof(struct dirfile));
   df->anz = 0;
-  df->name = MALLOC(sizeof(char*));
+  df->name = malloc(sizeof(char*));
  }
  df->anz++;
- df->name = REALLOC(df->name, df->anz * sizeof(char*));
- df->name[df->anz-1] = MALLOC((strlen(str)+1) * sizeof(char));
+ df->name = realloc(df->name, df->anz * sizeof(char*));
+ df->name[df->anz-1] = malloc((strlen(str)+1) * sizeof(char));
  strcpy(df->name[df->anz-1], str);
  return(df);
 }
@@ -1190,8 +1190,8 @@ int e_show_nm_f(char *name, FENSTER *f, int oldn, char **oldname)
   WpeMouseRestoreShape();
   return(-1);
  }
- if (*oldname) FREE(*oldname);
- *oldname = MALLOC((strlen(file)+1) * sizeof(char));
+ if (*oldname) free(*oldname);
+ *oldname = malloc((strlen(file)+1) * sizeof(char));
  strcpy(*oldname, file);
  for (i = strlen(file)-1; i >= 0 && file[i] != '/'; i--)
   ;
@@ -1242,12 +1242,12 @@ int e_sh_def(FENSTER *f)
  if (e_add_arguments(str, "Show Definition", f, 0 , AltB, &f->ed->shdf))
  {
   if (sh_df.str)
-   FREE(sh_df.str);
-  sh_df.str = MALLOC((strlen(str)+1)*sizeof(char));
+   free(sh_df.str);
+  sh_df.str = malloc((strlen(str)+1)*sizeof(char));
   strcpy(sh_df.str, str);
   if (sh_df.file)
   {
-   FREE(sh_df.file);
+   free(sh_df.file);
    sh_df.file = NULL;
   }
   f->ed->shdf = e_add_df(str, f->ed->shdf);
@@ -1515,7 +1515,7 @@ char *e_mbt_mk_sp(char *str, int n, int sw, int *m)
 
  if (!sw) *m = n;
  else *m = n / sw + n % sw;
- str = REALLOC(str, (*m+1)*sizeof(char));
+ str = realloc(str, (*m+1)*sizeof(char));
  if (!sw) k = 0;
  else for (k = 0; k < n / sw; k++) str[k] = '\t';
  for (; k < *m; k++) str[k] = ' ';
@@ -1538,7 +1538,7 @@ int e_mbt_str(BUFFER *b, int *ii, int *jj, unsigned char c, int n, int sw,
    bsp = 0;
   if (j == b->bf[i].len - 1 && bsp && i < b->mxlines-1)
   {
-   char *str = MALLOC(1);
+   char *str = malloc(1);
    int m;
 
    i++;
@@ -1553,7 +1553,7 @@ int e_mbt_str(BUFFER *b, int *ii, int *jj, unsigned char c, int n, int sw,
     e_ins_nchar(b, b->f->s, str, 0, i, m);
    }
    j = -1;
-   FREE(str);
+   free(str);
   }
  }
  *ii = i;
@@ -1571,7 +1571,7 @@ int e_mbt_cnd(BUFFER *b, int *ii, int *jj, int n, int sw, int *cmnd)
   {
    if (i < b->mxlines-1)
    {
-    char *str = MALLOC(1);
+    char *str = malloc(1);
     int m;
 
     i++;
@@ -1585,7 +1585,7 @@ int e_mbt_cnd(BUFFER *b, int *ii, int *jj, int n, int sw, int *cmnd)
      e_ins_nchar(b, b->f->s, str, 0, i, m);
     }
     j = -1;
-    FREE(str);
+    free(str);
     if (*cmnd == 2)
      *cmnd = 1;
    }
@@ -1604,21 +1604,21 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
  SCHIRM *s;
  int bg, nd, m, n, i, j, k, brk, cbrk = 0, nif = 0, nic = 0;
  int nstrct = 0, cmnd, cm_sv;
- char *tstr = MALLOC(sizeof(char));
- char *bstr = MALLOC((ndif+1)*sizeof(char));
- int *nvek = MALLOC(sizeof(int));
- int *ifvekb = MALLOC(sizeof(int));
- int *ifvekr = MALLOC(sizeof(int));
- int *vkcs = MALLOC(sizeof(int));
- int *vkcb = MALLOC(sizeof(int));
+ char *tstr = malloc(sizeof(char));
+ char *bstr = malloc((ndif+1)*sizeof(char));
+ int *nvek = malloc(sizeof(int));
+ int *ifvekb = malloc(sizeof(int));
+ int *ifvekr = malloc(sizeof(int));
+ int *vkcs = malloc(sizeof(int));
+ int *vkcb = malloc(sizeof(int));
  POINT sa, se, sb;
 
  for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT(f->ed->f[i]->dtmd); i--)
   ;
  if (i <= 0)
  {
-  FREE(tstr);  FREE(bstr);  FREE(nvek);  FREE(ifvekb);
-  FREE(ifvekr);  FREE(vkcs);  FREE(vkcb);
+  free(tstr);  free(bstr);  free(nvek);  free(ifvekb);
+  free(ifvekr);  free(vkcs);  free(vkcb);
   return(0);
  }
  *ifvekb = 0;
@@ -1704,8 +1704,8 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
    else if (b->bf[i].s[j] == '#' && ispif(b->bf[i].s))
    {
     nif++;
-    ifvekb = REALLOC(ifvekb, (nif+1)*sizeof(int));
-    ifvekr = REALLOC(ifvekr, (nif+1)*sizeof(int));
+    ifvekb = realloc(ifvekb, (nif+1)*sizeof(int));
+    ifvekr = realloc(ifvekr, (nif+1)*sizeof(int));
     ifvekb[nif] = brk;
     ifvekr[nif] = cbrk;
     cmnd = 2;
@@ -1760,8 +1760,8 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
      }
      nstrct++;
      nic++;
-     vkcb = REALLOC(vkcb, (nic+1)*sizeof(int));
-     vkcs = REALLOC(vkcs, (nic+1)*sizeof(int));
+     vkcb = realloc(vkcb, (nic+1)*sizeof(int));
+     vkcs = realloc(vkcs, (nic+1)*sizeof(int));
      vkcs[nic] = 0;
      vkcb[nic] = brk-1;
     }
@@ -1776,7 +1776,7 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     }
     n += ndif;
     tstr = e_mbt_mk_sp(tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
-    nvek = REALLOC(nvek, (brk+1)*sizeof(int));
+    nvek = realloc(nvek, (brk+1)*sizeof(int));
     nvek[brk] = n;
    }
    else if (f->b->bf[i].s[j] == '}')
@@ -1788,9 +1788,9 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     {  n = nvek[brk];  nic--;  brk--;  }
     if (brk < 0)
     {
-     FREE(tstr);  FREE(bstr);  FREE(nvek);
-     FREE(ifvekb);  FREE(ifvekr);
-     FREE(vkcs);  FREE(vkcb);
+     free(tstr);  free(bstr);  free(nvek);
+     free(ifvekb);  free(ifvekr);
+     free(vkcs);  free(vkcb);
      b->b = sb;  s->mark_begin = sa;  s->mark_end = se;
      e_schirm(f, 1);
      WpeMouseRestoreShape();
@@ -1848,7 +1848,7 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
      j--;
     n += ndif;
     tstr = e_mbt_mk_sp(tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
-    nvek = REALLOC(nvek, (brk+1)*sizeof(int));
+    nvek = realloc(nvek, (brk+1)*sizeof(int));
     nvek[brk] = n;
     cmnd = 3;
     nstrct = 0;
@@ -1857,8 +1857,8 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
      (!strncmp(b->bf[i].s+j, "switch", 6) && !isalnum1(b->bf[i].s[j+6])))
    {
     nic++;
-    vkcb = REALLOC(vkcb, (nic+1)*sizeof(int));
-    vkcs = REALLOC(vkcs, (nic+1)*sizeof(int));
+    vkcb = realloc(vkcb, (nic+1)*sizeof(int));
+    vkcs = realloc(vkcs, (nic+1)*sizeof(int));
     vkcs[nic] = 0;
     vkcb[nic] = brk;
    }
@@ -1871,9 +1871,9 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
    else if (cmnd == 3 && f->b->bf[i].s[j] == ':') cmnd = 1;
   }
  }
- FREE(nvek);  FREE(tstr);  FREE(bstr);
- FREE(ifvekb);  FREE(ifvekr);
- FREE(vkcs);  FREE(vkcb);
+ free(nvek);  free(tstr);  free(bstr);
+ free(ifvekb);  free(ifvekr);
+ free(vkcs);  free(vkcb);
  s->mark_begin = sa;  s->mark_end = se;
  b->b = sb;
  e_schirm(f, 1);

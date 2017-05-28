@@ -233,7 +233,7 @@ int e_sys_info(FENSTER *f)
 int e_ad_colors(FENSTER *f)
 {
  int n, xa = 48, ya = 2, num = 4;
- OPTK *opt = MALLOC(num * sizeof(OPTK));
+ OPTK *opt = malloc(num * sizeof(OPTK));
 
  opt[0].t = "Editor Colors";     opt[0].x = 0;  opt[0].o = 'E';
  opt[1].t = "Desk Colors";       opt[1].x = 0;  opt[1].o = 'D';
@@ -242,7 +242,7 @@ int e_ad_colors(FENSTER *f)
 
  n = e_opt_sec_box(xa, ya, num, opt, f, 1);
 
- FREE(opt);
+ free(opt);
  if (n < 0)
   return(WPE_ESC);
 
@@ -575,7 +575,7 @@ int e_opt_save(FENSTER *f)
  ret = e_add_arguments(tmp, "Save Option File", f, 0, AltS, NULL);
  if (ret)
  {
-  f->ed->optfile = REALLOC(f->ed->optfile, (strlen(tmp)+1)*sizeof(char));
+  f->ed->optfile = realloc(f->ed->optfile, (strlen(tmp)+1)*sizeof(char));
   strcpy(f->ed->optfile, tmp);
   e_save_opt(f);
  }
@@ -589,7 +589,7 @@ char *WpeStringToValue(const char *str)
  int i, len;
 
  len = strlen(str);
- answer = WpeMalloc((len * 2) * sizeof(char));
+ answer = malloc((len * 2) * sizeof(char));
  for (i = strlen(str), cur_ans = answer, cur_str = str; i; i--, cur_str++)
  {
   if ((*cur_str == '\n') || (*cur_str == '\\'))
@@ -613,7 +613,7 @@ char *WpeValueToString(const char *value)
  const char *cur_val;
  int i;
 
- answer = WpeMalloc((strlen(value) + 1) * sizeof(char));
+ answer = malloc((strlen(value) + 1) * sizeof(char));
  for (i = strlen(value), cur_ans = answer, cur_val = value; i; i--, cur_ans++)
  {
   if (*cur_val == '\\')
@@ -687,7 +687,7 @@ int WpeReadColor(ECNT *cn, char *section, char *option, char *value)
  {
   if (!u_fb)
   {
-   u_fb = WpeMalloc(sizeof(FARBE));
+   u_fb = malloc(sizeof(FARBE));
    FARBE_Init(u_fb);
   }
   fb = u_fb;
@@ -696,7 +696,7 @@ int WpeReadColor(ECNT *cn, char *section, char *option, char *value)
  {
   if (!x_fb)
   {
-   x_fb = WpeMalloc(sizeof(FARBE));
+   x_fb = malloc(sizeof(FARBE));
    FARBE_Init(x_fb);
   }
   fb = x_fb;
@@ -903,8 +903,8 @@ int WpeReadLanguage(ECNT *cn, char *section, char *option, char *value)
  if (i == e_prog.num)
  {
   e_prog.num++;
-  e_prog.comp = REALLOC(e_prog.comp, e_prog.num * sizeof(struct e_s_prog *));
-  e_prog.comp[i] = MALLOC(sizeof(struct e_s_prog));
+  e_prog.comp = realloc(e_prog.comp, e_prog.num * sizeof(struct e_s_prog *));
+  e_prog.comp[i] = malloc(sizeof(struct e_s_prog));
   e_prog.comp[i]->language = WpeStrdup(section + strlen(OPT_SECTION_LANGUAGE) + 1);
   e_prog.comp[i]->compiler = WpeStrdup("");
   e_prog.comp[i]->comp_str = WpeStrdup("");
@@ -919,25 +919,25 @@ int WpeReadLanguage(ECNT *cn, char *section, char *option, char *value)
  if (WpeStrccmp("Compiler", option) == 0)
  {
   if (e_prog.comp[i]->compiler)
-   FREE(e_prog.comp[i]->compiler);
+   free(e_prog.comp[i]->compiler);
   e_prog.comp[i]->compiler = WpeStrdup(value);
  }
  else if (WpeStrccmp("CompilerOptions", option) == 0)
  {
   if (e_prog.comp[i]->comp_str)
-   FREE(e_prog.comp[i]->comp_str);
+   free(e_prog.comp[i]->comp_str);
   e_prog.comp[i]->comp_str = WpeStrdup(value);
  }
  else if (WpeStrccmp("Libraries", option) == 0)
  {
   if (e_prog.comp[i]->libraries)
-   FREE(e_prog.comp[i]->libraries);
+   free(e_prog.comp[i]->libraries);
   e_prog.comp[i]->libraries = WpeStrdup(value);
  }
  else if (WpeStrccmp("Executable", option) == 0)
  {
   if (e_prog.comp[i]->exe_name)
-   FREE(e_prog.comp[i]->exe_name);
+   free(e_prog.comp[i]->exe_name);
   e_prog.comp[i]->exe_name = WpeStrdup(value);
  }
  else if (WpeStrccmp("FileExtension", option) == 0)
@@ -954,7 +954,7 @@ int WpeReadLanguage(ECNT *cn, char *section, char *option, char *value)
  else if (WpeStrccmp("MessageString", option) == 0)
  {
   if (e_prog.comp[i]->intstr)
-   FREE(e_prog.comp[i]->intstr);
+   free(e_prog.comp[i]->intstr);
   e_prog.comp[i]->intstr = WpeValueToString(value);
  }
  else if (WpeStrccmp("Key", option) == 0)
@@ -985,7 +985,7 @@ int WpeWriteLanguage(ECNT *cn, char *section, FILE *opt_file)
    fprintf(opt_file, "FileExtension : %s\n", e_prog.comp[i]->filepostfix[j - 1]);
   str_tmp = WpeStringToValue(e_prog.comp[i]->intstr);
   fprintf(opt_file, "MessageString : %s\n", str_tmp);
-  WpeFree(str_tmp);
+  free(str_tmp);
   fprintf(opt_file, "CompilerSwitch : %d\n", e_prog.comp[i]->comp_sw);
   fprintf(opt_file, "Key : %c\n", e_prog.comp[i]->key);
   fprintf(opt_file, "X : %d\n", e_prog.comp[i]->x);
@@ -1001,12 +1001,12 @@ int e_save_opt(FENSTER *f)
  int i;
  char *str_line;
 
- str_line = MALLOC((strlen(cn->optfile)+1)*sizeof(char));
+ str_line = malloc((strlen(cn->optfile)+1)*sizeof(char));
  strcpy(str_line, cn->optfile);
  for (i = strlen(str_line); i > 0 && str_line[i] != DIRC; i--);
  str_line[i] = '\0';
  if (access(str_line, 0)) mkdir(str_line, 0700);
- FREE(str_line);
+ free(str_line);
  fp = fopen(cn->optfile, "w");
  if (fp == NULL)
  {
@@ -1016,7 +1016,7 @@ int e_save_opt(FENSTER *f)
  str_line = OPT_SECTION_GENERAL;
  fprintf(fp, "[%s]\n", str_line);
  WpeWriteGeneral(cn, str_line, fp);
- str_line = MALLOC(strlen(OPT_SECTION_COLOR) + 10);
+ str_line = malloc(strlen(OPT_SECTION_COLOR) + 10);
  strcpy(str_line, OPT_SECTION_COLOR);
  if (u_fb)
  {
@@ -1030,21 +1030,21 @@ int e_save_opt(FENSTER *f)
   fprintf(fp, "[%s]\n", str_line);
   WpeWriteColor(cn, str_line, fp);
  }
- FREE(str_line);
+ free(str_line);
  str_line = OPT_SECTION_PROGRAMMING;
  fprintf(fp, "[%s]\n", str_line);
  WpeWriteProgramming(cn, str_line, fp);
- str_line = MALLOC(strlen(OPT_SECTION_LANGUAGE) + 2);
+ str_line = malloc(strlen(OPT_SECTION_LANGUAGE) + 2);
  strcpy(str_line, OPT_SECTION_LANGUAGE);
  strcat(str_line, "/");
  for (i = 0; i < e_prog.num; i++)
  {
-  str_line = REALLOC(str_line, strlen(OPT_SECTION_LANGUAGE) + strlen(e_prog.comp[i]->language) + 2);
+  str_line = realloc(str_line, strlen(OPT_SECTION_LANGUAGE) + strlen(e_prog.comp[i]->language) + 2);
   strcpy(str_line + strlen(OPT_SECTION_LANGUAGE) + 1, e_prog.comp[i]->language);
   fprintf(fp, "[%s]\n", str_line);
   WpeWriteLanguage(cn, str_line, fp);
  }
- FREE(str_line);
+ free(str_line);
  fclose(fp);
  return 0;
 }
@@ -1065,18 +1065,18 @@ int e_opt_read(ECNT *cn)
  {
   char *file = e_mkfilename(LIBRARY_DIR, OPTION_FILE);
   fp = fopen(file, "r");
-  FREE(file);
+  free(file);
  }
  if (fp == NULL) return(0);
  sz = 256;
- str_line = (char *)WpeMalloc(256 * sizeof(char));
+ str_line = (char *)malloc(256 * sizeof(char));
  section = NULL;
  while (!feof(fp))
  {
   if (sz != 256)
   {
    sz = 256;
-   str_line = (char *)WpeRealloc(str_line, sz * sizeof(char));
+   str_line = (char *)realloc(str_line, sz * sizeof(char));
   }
   str_line[0] = 0;
   fgets(str_line, sz, fp);
@@ -1084,7 +1084,7 @@ int e_opt_read(ECNT *cn)
     ((str_line[0] == 0) || (str_line[strlen(str_line) - 1] != '\n')))
   {
    sz += 255;
-   str_line = (char *)WpeRealloc(str_line, sz * sizeof(char));
+   str_line = (char *)realloc(str_line, sz * sizeof(char));
    fgets(str_line + sz - 256, 256, fp);
   }
   i = strlen(str_line);
@@ -1097,12 +1097,12 @@ int e_opt_read(ECNT *cn)
    if (*option == '[')
    {
     if (section)
-     WpeFree(section);
+     free(section);
     for (value = option + 1; (*value) && (*value != ']'); value++)
      ;
     if (*value != ']')
     {
-     WpeFree(str_line);
+     free(str_line);
      return ERR_READ_OPF;
     }
     *value = 0;
@@ -1113,7 +1113,7 @@ int e_opt_read(ECNT *cn)
     value = strchr(option, ':');
     if ((value == NULL) || (value == option))
     {
-     WpeFree(str_line);
+     free(str_line);
      return ERR_READ_OPF;
     }
     for (str_tmp = value - 1; isspace(*str_tmp); str_tmp--)
@@ -1143,7 +1143,7 @@ int e_add_arguments(char *str, char *head, FENSTER *f, int n, int sw,
   struct dirfile **df)
 {
  int ret;
- char *tmp = MALLOC((strlen(head)+2) * sizeof(char));
+ char *tmp = malloc((strlen(head)+2) * sizeof(char));
  W_OPTSTR *o = e_init_opt_kst(f);
 
  if (!o || !tmp)
@@ -1156,7 +1156,7 @@ int e_add_arguments(char *str, char *head, FENSTER *f, int n, int sw,
  e_add_wrstr(4, 2, 4, 3, 30, 128, n, sw, tmp, str, df, o);
  e_add_bttstr(7, 5, 1, AltO, " Ok ", NULL, o);
  e_add_bttstr(24, 5, -1, WPE_ESC, "Cancel", NULL, o);
- FREE(tmp);
+ free(tmp);
  ret = e_opt_kst(o);
  if (ret != WPE_ESC)
   strcpy(str, o->wstr[0]->txt);
@@ -1167,13 +1167,13 @@ int e_add_arguments(char *str, char *head, FENSTER *f, int n, int sw,
 W_O_TXTSTR **e_add_txtstr(int x, int y, char *txt, W_OPTSTR *o)
 {
  if (o->tn == 0)
-  o->tstr = MALLOC(1);
+  o->tstr = malloc(1);
  (o->tn)++;
- if (!(o->tstr = REALLOC(o->tstr, o->tn * sizeof(W_O_TXTSTR *))))
+ if (!(o->tstr = realloc(o->tstr, o->tn * sizeof(W_O_TXTSTR *))))
   return(NULL);
- if (!(o->tstr[o->tn-1] = MALLOC(sizeof(W_O_TXTSTR))))
+ if (!(o->tstr[o->tn-1] = malloc(sizeof(W_O_TXTSTR))))
   return(NULL);
- if (!(o->tstr[o->tn-1]->txt = MALLOC((strlen(txt)+1) * sizeof(char))))
+ if (!(o->tstr[o->tn-1]->txt = malloc((strlen(txt)+1) * sizeof(char))))
   return(NULL);
  o->tstr[o->tn-1]->x = x;
  o->tstr[o->tn-1]->y = y;
@@ -1185,15 +1185,15 @@ W_O_WRSTR **e_add_wrstr(int xt, int yt, int xw, int yw, int nw, int wmx,
    int nc, int sw, char *header, char *txt, struct dirfile **df, W_OPTSTR *o)
 {
  if (o->wn == 0)
-  o->wstr = MALLOC(1);
+  o->wstr = malloc(1);
  (o->wn)++;
- if (!(o->wstr = REALLOC(o->wstr, o->wn * sizeof(W_O_WRSTR *))))
+ if (!(o->wstr = realloc(o->wstr, o->wn * sizeof(W_O_WRSTR *))))
   return(NULL);
- if (!(o->wstr[o->wn-1] = MALLOC(sizeof(W_O_WRSTR))))
+ if (!(o->wstr[o->wn-1] = malloc(sizeof(W_O_WRSTR))))
   return(NULL);
- if (!(o->wstr[o->wn-1]->txt = MALLOC((wmx+1) * sizeof(char))))
+ if (!(o->wstr[o->wn-1]->txt = malloc((wmx+1) * sizeof(char))))
   return(NULL);
- if (!(o->wstr[o->wn-1]->header = MALLOC((strlen(header)+1) * sizeof(char))))
+ if (!(o->wstr[o->wn-1]->header = malloc((strlen(header)+1) * sizeof(char))))
   return(NULL);
  o->wstr[o->wn-1]->xt = xt;
  o->wstr[o->wn-1]->yt = yt;
@@ -1213,13 +1213,13 @@ W_O_NUMSTR **e_add_numstr(int xt, int yt, int xw, int yw, int nw, int wmx,
    int nc, int sw, char *header, int num, W_OPTSTR *o)
 {
  if (o->nn == 0)
-  o->nstr = MALLOC(1);
+  o->nstr = malloc(1);
  (o->nn)++;
- if (!(o->nstr = REALLOC(o->nstr, o->nn * sizeof(W_O_NUMSTR *))))
+ if (!(o->nstr = realloc(o->nstr, o->nn * sizeof(W_O_NUMSTR *))))
   return(NULL);
- if (!(o->nstr[o->nn-1] = MALLOC(sizeof(W_O_NUMSTR))))
+ if (!(o->nstr[o->nn-1] = malloc(sizeof(W_O_NUMSTR))))
   return(NULL);
- if (!(o->nstr[o->nn-1]->header = MALLOC((strlen(header)+1) * sizeof(char))))
+ if (!(o->nstr[o->nn-1]->header = malloc((strlen(header)+1) * sizeof(char))))
   return(NULL);
  o->nstr[o->nn-1]->xt = xt;
  o->nstr[o->nn-1]->yt = yt;
@@ -1238,13 +1238,13 @@ W_O_SSWSTR **e_add_sswstr(int x, int y, int nc, int sw, int num,
    char *header, W_OPTSTR *o)
 {
  if (o->sn == 0)
-  o->sstr = MALLOC(1);
+  o->sstr = malloc(1);
  (o->sn)++;
- if (!(o->sstr = REALLOC(o->sstr, o->sn * sizeof(W_O_SSWSTR *))))
+ if (!(o->sstr = realloc(o->sstr, o->sn * sizeof(W_O_SSWSTR *))))
   return(NULL);
- if (!(o->sstr[o->sn-1] = MALLOC(sizeof(W_O_SSWSTR))))
+ if (!(o->sstr[o->sn-1] = malloc(sizeof(W_O_SSWSTR))))
   return(NULL);
- if (!(o->sstr[o->sn-1]->header = MALLOC((strlen(header)+1) * sizeof(char))))
+ if (!(o->sstr[o->sn-1]->header = malloc((strlen(header)+1) * sizeof(char))))
   return(NULL);
  o->sstr[o->sn-1]->x = x;
  o->sstr[o->sn-1]->y = y;
@@ -1263,13 +1263,13 @@ W_O_SPSWSTR **e_add_spswstr(int n, int x, int y, int nc, int sw,
  if (n < 0)
   n = 0;
  if (o->pstr[n]->np == 0)
-  o->pstr[n]->ps = MALLOC(1);
+  o->pstr[n]->ps = malloc(1);
  (o->pstr[n]->np)++;
- if (!(o->pstr[n]->ps = REALLOC(o->pstr[n]->ps, o->pstr[n]->np * sizeof(W_O_SPSWSTR *))))
+ if (!(o->pstr[n]->ps = realloc(o->pstr[n]->ps, o->pstr[n]->np * sizeof(W_O_SPSWSTR *))))
   return(NULL);
- if (!(o->pstr[n]->ps[o->pstr[n]->np-1] = MALLOC(sizeof(W_O_SPSWSTR))))
+ if (!(o->pstr[n]->ps[o->pstr[n]->np-1] = malloc(sizeof(W_O_SPSWSTR))))
   return(NULL);
- if (!(o->pstr[n]->ps[o->pstr[n]->np-1]->header = MALLOC((strlen(header)+1) * sizeof(char))))
+ if (!(o->pstr[n]->ps[o->pstr[n]->np-1]->header = malloc((strlen(header)+1) * sizeof(char))))
   return(NULL);
  o->pstr[n]->ps[o->pstr[n]->np-1]->x = x;
  o->pstr[n]->ps[o->pstr[n]->np-1]->y = y;
@@ -1283,14 +1283,14 @@ W_O_PSWSTR **e_add_pswstr(int n, int x, int y, int nc, int sw, int num,
    char *header, W_OPTSTR *o)
 {
  if (o->pn == 0)
-  o->pstr = MALLOC(1);
+  o->pstr = malloc(1);
  if (n >= o->pn)
  {
   n = o->pn;
   (o->pn)++;
-  if (!(o->pstr = REALLOC(o->pstr, o->pn * sizeof(W_O_PSWSTR *))))
+  if (!(o->pstr = realloc(o->pstr, o->pn * sizeof(W_O_PSWSTR *))))
    return(NULL);
-  if (!(o->pstr[o->pn-1] = MALLOC(sizeof(W_O_PSWSTR))))
+  if (!(o->pstr[o->pn-1] = malloc(sizeof(W_O_PSWSTR))))
    return(NULL);
   o->pstr[o->pn-1]->np = 0;
  }
@@ -1304,13 +1304,13 @@ W_O_BTTSTR **e_add_bttstr(int x, int y, int nc, int sw, char *header,
    int (*fkt)(FENSTER *f), W_OPTSTR *o)
 {
  if (o->bn == 0)
-  o->bstr = MALLOC(1);
+  o->bstr = malloc(1);
  (o->bn)++;
- if (!(o->bstr = REALLOC(o->bstr, o->bn * sizeof(W_O_BTTSTR *))))
+ if (!(o->bstr = realloc(o->bstr, o->bn * sizeof(W_O_BTTSTR *))))
   return(NULL);
- if (!(o->bstr[o->bn-1] = MALLOC(sizeof(W_O_BTTSTR))))
+ if (!(o->bstr[o->bn-1] = malloc(sizeof(W_O_BTTSTR))))
   return(NULL);
- if (!(o->bstr[o->bn-1]->header = MALLOC((strlen(header)+1) * sizeof(char))))
+ if (!(o->bstr[o->bn-1]->header = malloc((strlen(header)+1) * sizeof(char))))
   return(NULL);
  o->bstr[o->bn-1]->x = x;
  o->bstr[o->bn-1]->y = y;
@@ -1329,53 +1329,53 @@ int freeostr(W_OPTSTR *o)
   return(0);
  for (i = 0; i < o->tn; i++)
  {
-  FREE(o->tstr[i]->txt);
-  FREE(o->tstr[i]);
+  free(o->tstr[i]->txt);
+  free(o->tstr[i]);
  }
  if (o->tn)
-  FREE(o->tstr);
+  free(o->tstr);
  for (i = 0; i < o->wn; i++)
  {
-  FREE(o->wstr[i]->txt);
-  FREE(o->wstr[i]->header);
-  FREE(o->wstr[i]);
+  free(o->wstr[i]->txt);
+  free(o->wstr[i]->header);
+  free(o->wstr[i]);
  }
  if (o->wn)
-  FREE(o->wstr);
+  free(o->wstr);
  for (i = 0; i < o->nn; i++)
  {
-  FREE(o->nstr[i]->header);
-  FREE(o->nstr[i]);
+  free(o->nstr[i]->header);
+  free(o->nstr[i]);
  }
  if (o->nn)
-  FREE(o->nstr);
+  free(o->nstr);
  for (i = 0; i < o->pn; i++)
  {
   for (j = 0; j < o->pstr[i]->np; j++)
   {
-   FREE(o->pstr[i]->ps[j]->header);
-   FREE(o->pstr[i]->ps[j]);
+   free(o->pstr[i]->ps[j]->header);
+   free(o->pstr[i]->ps[j]);
   }
   if (o->pstr[i]->np)
-   FREE(o->pstr[i]->ps);
-  FREE(o->pstr[i]);
+   free(o->pstr[i]->ps);
+  free(o->pstr[i]);
  }
  if (o->pn)
-  FREE(o->pstr);
+  free(o->pstr);
  for (i = 0; i < o->bn; i++)
  {
-  FREE(o->bstr[i]->header);
-  FREE(o->bstr[i]);
+  free(o->bstr[i]->header);
+  free(o->bstr[i]);
  }
  if (o->bn)
-  FREE(o->bstr);
- FREE(o);
+  free(o->bstr);
+ free(o);
  return(0);
 }
 
 W_OPTSTR *e_init_opt_kst(FENSTER *f)
 {
- W_OPTSTR *o = MALLOC(sizeof(W_OPTSTR));
+ W_OPTSTR *o = malloc(sizeof(W_OPTSTR));
  if (!o)
   return(NULL);
  o->frt = f->fb->nr.fb;
@@ -1618,7 +1618,7 @@ int e_opt_kst(W_OPTSTR *o)
          if(o->wstr[i]->sw == c || (o->wstr[i]->nc >= 0 &&
          toupper(c) == o->wstr[i]->header[o->wstr[i]->nc]))
       {  cold = c;
-         tmp = MALLOC((o->wstr[i]->wmx + 1) * sizeof(char));
+         tmp = malloc((o->wstr[i]->wmx + 1) * sizeof(char));
          strcpy(tmp, o->wstr[i]->txt);
 #if MOUSE
          if(!o->wstr[i]->df && (c = e_schreib_leiste(tmp,
@@ -1842,7 +1842,7 @@ int e_edt_options(FENSTER *f)
     (o->sstr[3]->num ? ED_OLD_TILE_METHOD : 0) +
     (o->sstr[0]->num ? ED_SHOW_ENDMARKS : 0);
   if (f->ed->print_cmd)
-   WpeFree(f->ed->print_cmd);
+   free(f->ed->print_cmd);
   f->ed->print_cmd = WpeStrdup(o->wstr[0]->txt);
   if (edopt != f->ed->edopt)
   {
@@ -1869,7 +1869,7 @@ int e_read_help_str()
  sprintf(str, "%s/help.key", LIBRARY_DIR);
  for (i = 0; i < E_HLP_NUM; i++)
  {
-  e_hlp_str[i] = MALLOC(sizeof(char));
+  e_hlp_str[i] = malloc(sizeof(char));
   *e_hlp_str[i] = '\0';
  }
  if (!(fp = fopen(str, "rb")))
@@ -1879,7 +1879,7 @@ int e_read_help_str()
   len = strlen(str);
   if (str[len-1] == '\n')
    str[--len] = '\0';
-  e_hlp_str[i] = REALLOC(e_hlp_str[i], (len+1)*sizeof(char));
+  e_hlp_str[i] = realloc(e_hlp_str[i], (len+1)*sizeof(char));
   strcpy(e_hlp_str[i], str);
  }
  fclose(fp);

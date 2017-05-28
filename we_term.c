@@ -197,7 +197,7 @@ char *init_key(char *key)
   return(NULL);
  else
  {
-  keystr = MALLOC(strlen(tmp)+1);
+  keystr = malloc(strlen(tmp)+1);
   strcpy(keystr, tmp);
  }
  return(keystr);
@@ -214,7 +214,7 @@ char *init_kkey(char *key)
   return(NULL);
  if (!key_key)
  {
-  key_key = MALLOC(2);
+  key_key = malloc(2);
   key_key[0] = tmp[1];
   key_key[1] = '\0';
   return(tmp);
@@ -224,7 +224,7 @@ char *init_kkey(char *key)
   for (i = 0; key_key[i] != '\0'; i++)
    if (key_key[i] == tmp[1])
     return(tmp);
-  key_key = REALLOC(key_key, i + 2);
+  key_key = realloc(key_key, i + 2);
   key_key[i] = tmp[1];
   key_key[i + 1] = '\0';
  }
@@ -243,7 +243,7 @@ char *init_spchr(char c)
   ;
  if (spc_st[i] && spc_st[i+1])
  {
-  pt = MALLOC((strlen(spc_bg)+strlen(spc_nd)+2)*sizeof(char));
+  pt = malloc((strlen(spc_bg)+strlen(spc_nd)+2)*sizeof(char));
   if(pt)
    sprintf(pt, "%s%c%s", spc_bg, spc_st[i+1], spc_nd);
  }
@@ -490,10 +490,10 @@ int e_t_initscr()
  }
 #endif
  e_begscr();
- schirm = MALLOC(2 * MAXSCOL * MAXSLNS);
- altschirm = MALLOC(2 * MAXSCOL * MAXSLNS);
+ schirm = malloc(2 * MAXSCOL * MAXSLNS);
+ altschirm = malloc(2 * MAXSCOL * MAXSLNS);
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
- extbyte = MALLOC(MAXSCOL * MAXSLNS);
+ extbyte = malloc(MAXSCOL * MAXSLNS);
 #endif
  e_abs_refr();
  if(init_cursor())

@@ -418,11 +418,11 @@ int e_compstr(char *a, char *b)
   a++;
   if (a[0] == '?')
   {
-   cp = MALLOC((strlen(a)+1)*sizeof(char));
+   cp = malloc((strlen(a)+1)*sizeof(char));
    strcpy(cp, a);
    cp[0] = '*';
    n = e_compstr(cp, ++b);
-   FREE(cp);
+   free(cp);
    return(n);
   }
   else if (a[0] == '[')
@@ -431,12 +431,12 @@ int e_compstr(char *a, char *b)
     b++;
    return(n);
   }
-  ctmp = MALLOC(n+1);
+  ctmp = malloc(n+1);
   for (k = 0; k < n; k++)
    ctmp[k] = a[k];
   ctmp[n] = '\0';
   cp = strstr(b, ctmp);
-  FREE(ctmp);
+  free(ctmp);
   if (cp == NULL)
    return((a[0] - b[0]) ? a[0] - b[0] : -1);
   if (!a[n] && !cp[n])
@@ -484,7 +484,7 @@ int e_compstr(char *a, char *b)
 struct dirfile *e_find_files(char *sufile, int sw)
 {
  char           *stmp, *tmpst, *sfile, *sdir;
- struct dirfile *df = MALLOC(sizeof(struct dirfile));
+ struct dirfile *df = malloc(sizeof(struct dirfile));
  DIR            *dirp;
  struct dirent  *dp;
  struct stat     buf;
@@ -498,25 +498,25 @@ struct dirfile *e_find_files(char *sufile, int sw)
  if (n <= 0)
  {
   sizeSdir = 2;
-  sdir = (char *)WpeMalloc(2 * sizeof(char));
+  sdir = (char *)malloc(2 * sizeof(char));
   sdir[0] = n ? '.' : DIRC;
   sdir[1] = '\0';
  }
  else
  {
   sizeSdir = n + 1;
-  sdir = (char *)WpeMalloc((n + 1) * sizeof(char));
+  sdir = (char *)malloc((n + 1) * sizeof(char));
   for (i = 0; i < n; i++)
    sdir[i] = sufile[i];
   sdir[n] = '\0';
  }
  if (!(dirp = opendir(sdir)))
  {
-  FREE(sdir);
+  free(sdir);
   return(df);
  }
  sizeStmp = 256;
- stmp = (char *)WpeMalloc(sizeStmp);
+ stmp = (char *)malloc(sizeStmp);
  while((dp = readdir(dirp)) != NULL)
  {
   if (!(sw & 1) && dp->d_name[0] == '.' && sfile[0] != '.')
@@ -527,7 +527,7 @@ struct dirfile *e_find_files(char *sufile, int sw)
    {
     while (sizeSdir + strlen(dp->d_name) + 10 > sizeStmp)
      sizeStmp <<= 1;
-    stmp = (char *)WpeRealloc(stmp, sizeStmp);
+    stmp = (char *)realloc(stmp, sizeStmp);
    }
 
    e_mkfilepath(sdir, dp->d_name, stmp);
@@ -547,15 +547,15 @@ struct dirfile *e_find_files(char *sufile, int sw)
      (!(sw & 2) || (buf.st_mode & 0111)) )
    {
     if (df->anz == 0)
-     df->name = MALLOC((df->anz + 1) * sizeof(char *));
+     df->name = malloc((df->anz + 1) * sizeof(char *));
     else
-     df->name = REALLOC(df->name, (df->anz + 1) * sizeof(char *));
-    if (df->name == NULL || !(tmpst = MALLOC(strlen(dp->d_name) + 1)))
+     df->name = realloc(df->name, (df->anz + 1) * sizeof(char *));
+    if (df->name == NULL || !(tmpst = malloc(strlen(dp->d_name) + 1)))
     {
      df->anz = 0;
      closedir(dirp);
-     WpeFree(stmp);
-     WpeFree(sdir);
+     free(stmp);
+     free(sdir);
      return(df);
     }
     strcpy(tmpst, dp->d_name);
@@ -567,15 +567,15 @@ struct dirfile *e_find_files(char *sufile, int sw)
   }
  }
  closedir(dirp);
- WpeFree(stmp);
- WpeFree(sdir);
+ free(stmp);
+ free(sdir);
  return(df);
 }
 
 struct dirfile *e_find_dir(char *sufile, int sw)
 {
  char           *stmp, *tmpst, *sfile, *sdir;
- struct dirfile *df = MALLOC(sizeof(struct dirfile));
+ struct dirfile *df = malloc(sizeof(struct dirfile));
  DIR            *dirp;
  struct dirent  *dp;
  struct stat     buf;
@@ -589,25 +589,25 @@ struct dirfile *e_find_dir(char *sufile, int sw)
  if (n <= 0)
  {
   sizeSdir = 2;
-  sdir = MALLOC(2 * sizeof(char));
+  sdir = malloc(2 * sizeof(char));
   sdir[0] = n ? '.' : DIRC;
   sdir[1] = '\0';
  }
  else
  {
   sizeSdir = n + 1;
-  sdir = MALLOC((n + 1) * sizeof(char));
+  sdir = malloc((n + 1) * sizeof(char));
   for (i = 0; i < n; i++)
    sdir[i] = sufile[i];
   sdir[n] = '\0';
  }
  if (!(dirp = opendir(sdir)))
  {
-  FREE(sdir);
+  free(sdir);
   return(df);
  }
  sizeStmp = 256;
- stmp = (char *)WpeMalloc(sizeStmp);
+ stmp = (char *)malloc(sizeStmp);
  while ((dp = readdir(dirp)) != NULL)
  {
   if (!sw && dp->d_name[0] == '.' && sfile[0] != '.')
@@ -619,7 +619,7 @@ struct dirfile *e_find_dir(char *sufile, int sw)
    {
     while (sizeSdir + strlen(dp->d_name) + 10 > sizeStmp)
      sizeStmp <<= 1;
-    stmp = (char *)WpeRealloc(stmp, sizeStmp);
+    stmp = (char *)realloc(stmp, sizeStmp);
    }
    stat(e_mkfilepath(sdir, dp->d_name, stmp), &buf);
 
@@ -628,15 +628,15 @@ struct dirfile *e_find_dir(char *sufile, int sw)
    {
 
     if (df->anz == 0)
-     df->name = MALLOC((df->anz + 1) * sizeof(char *));
+     df->name = malloc((df->anz + 1) * sizeof(char *));
     else
-     df->name = REALLOC(df->name, (df->anz + 1) * sizeof(char *));
-    if (df->name == NULL || !(tmpst = MALLOC(strlen(dp->d_name) + 1)))
+     df->name = realloc(df->name, (df->anz + 1) * sizeof(char *));
+    if (df->name == NULL || !(tmpst = malloc(strlen(dp->d_name) + 1)))
     {
      df->anz = 0;
      closedir(dirp);
-     FREE(sdir);
-     WpeFree(stmp);
+     free(sdir);
+     free(stmp);
      return(df);
     }
     strcpy(tmpst, dp->d_name);
@@ -648,8 +648,8 @@ struct dirfile *e_find_dir(char *sufile, int sw)
   }
  }
  closedir(dirp);
- FREE(sdir);
- WpeFree(stmp);
+ free(sdir);
+ free(stmp);
  return(df);
 }
 

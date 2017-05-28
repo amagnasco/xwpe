@@ -72,18 +72,18 @@ int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
 {
  int i;
  unsigned char *str;
- unsigned char *ft = MALLOC((strlen(f)+1)*sizeof(unsigned char));
+ unsigned char *ft = malloc((strlen(f)+1)*sizeof(unsigned char));
 
  if (x <= n)
  {
-  str = MALLOC((n+1)*sizeof(unsigned char));
+  str = malloc((n+1)*sizeof(unsigned char));
   for (i = 0; i < n; i++)
    str[i] = e_toupper(s[i]);
   str[n] = '\0';
  }
  else
  {
-  str = MALLOC((x+1)*sizeof(unsigned char));
+  str = malloc((x+1)*sizeof(unsigned char));
   for (i = 0; i < x; i++)
    str[i] = e_toupper(s[i]);
   str[x] = '\0';
@@ -92,8 +92,8 @@ int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
   ;
 
  i = e_rstrstr(x, n, str, ft, nn);
- FREE(str);
- FREE(ft);
+ free(str);
+ free(ft);
  return(i);
 }
 
@@ -106,7 +106,7 @@ int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
  int res;
  unsigned char old;
 
- regz = MALLOC(sizeof(regex_t));
+ regz = malloc(sizeof(regex_t));
  if (regcomp(regz,f,REG_EXTENDED))
  {
   free(regz);
@@ -114,7 +114,7 @@ int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
  }
  len = regz->re_nsub;
  if (len)
-  matches = MALLOC(len*sizeof(regmatch_t));
+  matches = malloc(len*sizeof(regmatch_t));
  start = (x < n) ? x : n;
  end = (n > x) ? n : x;
  if (start < 0)
@@ -153,7 +153,7 @@ int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
 int e_num_kst(char *s, int num, int max, FENSTER *f, int n, int sw)
 {
  int ret, nz = WpeNumberOfPlaces(max);
- char *tmp = MALLOC((strlen(s)+2) * sizeof(char));
+ char *tmp = malloc((strlen(s)+2) * sizeof(char));
  W_OPTSTR *o = e_init_opt_kst(f);
 
  if (!o || !tmp)
@@ -164,7 +164,7 @@ int e_num_kst(char *s, int num, int max, FENSTER *f, int n, int sw)
  o->crsw = AltO;
  sprintf(tmp, "%s:", s);
  e_add_numstr(3, 2, 29-nz, 2, nz, max, n, sw, tmp, num, o);
- FREE(tmp);
+ free(tmp);
  e_add_bttstr(6, 4, 1, AltO, " Ok ", NULL, o);
  e_add_bttstr(21, 4, -1, WPE_ESC, "Cancel", NULL, o);
  ret = e_opt_kst(o);

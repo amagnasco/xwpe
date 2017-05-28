@@ -311,18 +311,18 @@ int e_ini_size()
  old_cursor_y = cur_y;
 
  if (schirm)
-  FREE(schirm);
+  free(schirm);
  if(altschirm)
-  FREE(altschirm);
- schirm = MALLOC(2 * MAXSCOL * MAXSLNS);
- altschirm = MALLOC(2 * MAXSCOL * MAXSLNS);
+  free(altschirm);
+ schirm = malloc(2 * MAXSCOL * MAXSLNS);
+ altschirm = malloc(2 * MAXSCOL * MAXSLNS);
 #ifdef NEWSTYLE
  if (extbyte)
-  FREE(extbyte);
+  free(extbyte);
  if (altextbyte)
-  FREE(altextbyte);
- extbyte = MALLOC(MAXSCOL * MAXSLNS);
- altextbyte = MALLOC(MAXSCOL * MAXSLNS);
+  free(altextbyte);
+ extbyte = malloc(MAXSCOL * MAXSLNS);
+ altextbyte = malloc(MAXSCOL * MAXSLNS);
  if (!schirm || !altschirm || !extbyte || !altextbyte)
   return(-1);
 #else
@@ -731,7 +731,7 @@ int e_x_getch()
    case SelectionClear:
     if (WpeXInfo.selection)
     {
-     WpeFree(WpeXInfo.selection);
+     free(WpeXInfo.selection);
      WpeXInfo.selection = NULL;
     }
     break;
@@ -823,11 +823,11 @@ int e_x_system(const char *exe)
  char *string;
 
  sprintf(file, "%s/we_sys_tmp", e_tmp_dir);
- string = MALLOC(strlen(XTERM_CMD) + strlen(exe) + strlen(file) +
+ string = malloc(strlen(XTERM_CMD) + strlen(exe) + strlen(file) +
    strlen(user_shell) + 40);
  if (!(fp = fopen(file, "w+")))
  {
-  FREE(string);
+  free(string);
   return(-1);
  }
  fputs("$*\necho type \\<Return\\> to continue\nread i\n", fp);
@@ -841,7 +841,7 @@ int e_x_system(const char *exe)
     user_shell, file, exe);
  ret = system(string);
  remove(file);
- FREE(string);
+ free(string);
  return(ret);
 }
 
@@ -874,8 +874,8 @@ int e_x_repaint_desk(FENSTER *f)
  e_abs_refr();
  for (i = cn->mxedt; i >= 1; i--)
  {
-  FREE(cn->f[i]->pic->p);
-  FREE(cn->f[i]->pic);
+  free(cn->f[i]->pic->p);
+  free(cn->f[i]->pic);
  }
  for (i = 0; i <= cn->mxedt; i++)
  {
@@ -948,7 +948,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  long nitems, bytes_left;
 
  for (i = 1; i < b0->mxlines; i++)
-  FREE(b0->bf[i].s);
+  free(b0->bf[i].s);
  b0->mxlines = 1;
  *(b0->bf[0].s) = WPE_WR;
  *(b0->bf[0].s+1) = '\0';
@@ -1016,7 +1016,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  s0->mark_end.x = b0->bf[b0->mxlines-1].len;
 #if SELECTION
  if (WpeXInfo.selection)
-  WpeFree(str);
+  free(str);
  else
 #endif
   XFree(str);
@@ -1040,7 +1040,7 @@ int e_x_paste_X_buffer(FENSTER *f)
 #if SELECTION
  if (WpeXInfo.selection)
  {
-  WpeFree(WpeXInfo.selection);
+  free(WpeXInfo.selection);
   WpeXInfo.selection = NULL;
  }
 #endif
@@ -1053,7 +1053,7 @@ int e_x_paste_X_buffer(FENSTER *f)
    return(0);
   n = s0->mark_end.x - s0->mark_begin.x;
 #if SELECTION
-  WpeXInfo.selection = WpeMalloc(n + 1);
+  WpeXInfo.selection = malloc(n + 1);
   strncpy(WpeXInfo.selection, b0->bf[s0->mark_begin.y].s+s0->mark_begin.x,
     n);
   WpeXInfo.selection[n] = 0;
@@ -1065,16 +1065,16 @@ int e_x_paste_X_buffer(FENSTER *f)
 #endif
   return(0);
  }
- WpeXInfo.selection = WpeMalloc(b0->bf[s0->mark_begin.y].nrc * sizeof(char));
+ WpeXInfo.selection = malloc(b0->bf[s0->mark_begin.y].nrc * sizeof(char));
  for (n = 0, j = s0->mark_begin.x; j < b0->bf[s0->mark_begin.y].nrc; j++, n++)
   WpeXInfo.selection[n] = b0->bf[s0->mark_begin.y].s[j];
  for (i = s0->mark_begin.y+1; i < s0->mark_end.y; i++)
  {
-  WpeXInfo.selection = WpeRealloc(WpeXInfo.selection, (n + b0->bf[i].nrc)*sizeof(char));
+  WpeXInfo.selection = realloc(WpeXInfo.selection, (n + b0->bf[i].nrc)*sizeof(char));
   for (j = 0; j < b0->bf[i].nrc; j++, n++)
    WpeXInfo.selection[n] = b0->bf[i].s[j];
  }
- WpeXInfo.selection = WpeRealloc(WpeXInfo.selection, (n + s0->mark_end.x + 1)*sizeof(char));
+ WpeXInfo.selection = realloc(WpeXInfo.selection, (n + s0->mark_end.x + 1)*sizeof(char));
  for (j = 0; j < s0->mark_end.x; j++, n++)
   WpeXInfo.selection[n] = b0->bf[i].s[j];
  WpeXInfo.selection[n] = 0;
@@ -1083,7 +1083,7 @@ int e_x_paste_X_buffer(FENSTER *f)
    WpeXInfo.window, CurrentTime);
 #else
  XStoreBytes(WpeXInfo.display, WpeXInfo.selection, n);
- WpeFree(WpeXInfo.selection);
+ free(WpeXInfo.selection);
  WpeXInfo.selection = NULL;
 #endif
  return(0);

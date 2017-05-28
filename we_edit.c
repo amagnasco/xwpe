@@ -42,7 +42,7 @@ int e_edit(ECNT *cn, char *filename)
  {
   if (!e_prog.project)
   {
-   e_prog.project = MALLOC(1);
+   e_prog.project = malloc(1);
    e_prog.project[0] = '\0';
   }
   else
@@ -56,7 +56,7 @@ int e_edit(ECNT *cn, char *filename)
     e_close_window(cn->f[cn->mxedt]);
    }
   }
-  e_prog.project = REALLOC(e_prog.project, j + 1);
+  e_prog.project = realloc(e_prog.project, j + 1);
   strcpy(e_prog.project, filename);
   e_make_prj_opt(cn->f[cn->mxedt]);
 /************************************/  
@@ -75,8 +75,8 @@ int e_edit(ECNT *cn, char *filename)
     (strcmp(cn->f[i]->dirct, path) == 0))
   {
    e_switch_window(cn->edt[i], cn->f[cn->mxedt]);
-   WpeFree(path);
-   WpeFree(file);
+   free(path);
+   free(file);
    return(0);
   }
  }
@@ -103,17 +103,17 @@ int e_edit(ECNT *cn, char *filename)
  (cn->mxedt)++;
  cn->edt[cn->mxedt]=j;
    
- if ((f = (FENSTER *)MALLOC(sizeof(FENSTER))) == NULL)
+ if ((f = (FENSTER *)malloc(sizeof(FENSTER))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, cn->fb);
    
  f->fb = cn->fb;
  cn->f[cn->mxedt] = f;
 
- if ((f->b = (BUFFER *)MALLOC(sizeof(BUFFER))) == NULL)
+ if ((f->b = (BUFFER *)malloc(sizeof(BUFFER))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, f->fb);
- if ((f->s = (SCHIRM*)MALLOC(sizeof(SCHIRM))) == NULL)
+ if ((f->s = (SCHIRM*)malloc(sizeof(SCHIRM))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, f->fb);
- if ((f->b->bf = (STRING *) MALLOC(MAXLINES*sizeof(STRING))) == NULL)
+ if ((f->b->bf = (STRING *) malloc(MAXLINES*sizeof(STRING))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, f->fb);
 #ifdef PROG
  for (i = cn->mxedt-1;
@@ -218,7 +218,7 @@ int e_edit(ECNT *cn, char *filename)
  f->s->fe = e_set_pnt(0, 0);
  f->s->fb = f->fb;
 #ifdef DEBUGGER
- f->s->brp = MALLOC(sizeof(int));
+ f->s->brp = malloc(sizeof(int));
  f->s->brp[0] = 0;
  f->s->da.y = -1;
 #endif
@@ -229,7 +229,7 @@ int e_edit(ECNT *cn, char *filename)
  {
   cn->curedt=0;
   cn->edt[cn->mxedt]=0;
-  WpeFree(file);
+  free(file);
   file = f->datnam = WpeStrdup(BUFFER_NAME);
 #ifdef UNIX
   f->filemode = 0600;
@@ -243,7 +243,7 @@ int e_edit(ECNT *cn, char *filename)
  }
  if (strcmp(file,"") == 0)
  {
-  WpeFree(file);
+  free(file);
   file = f->datnam = WpeStrdup("Noname");
  }
  else
@@ -304,7 +304,7 @@ int e_edit(ECNT *cn, char *filename)
   f->filemode = 0666 & ~i;
  }
 #endif
- FREE(complete_fname);
+ free(complete_fname);
 
  if (fp != NULL && ftype != 1)
  {
@@ -349,7 +349,7 @@ int e_edit(ECNT *cn, char *filename)
   else
   {
    e_p_m_buffer = f->b;
-   FREE(f->b->bf[0].s);
+   free(f->b->bf[0].s);
    f->b->mxlines = 0;
   }
  }
@@ -1315,7 +1315,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
  if (!do_auto_indent)
  {
   /* insert TAB char */
-  str = MALLOC(sizeof(char));
+  str = malloc(sizeof(char));
   str[0] = '\t';
   char_to_ins = 1;
  }
@@ -1340,7 +1340,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
    /* indent to x with spaces */
    /* insert chars */
    k = x - b->b.x;
-   str = MALLOC(k * sizeof(char));
+   str = malloc(k * sizeof(char));
    for (x = 0; x < k; x++)
     str[x] = ' ';
    char_to_ins = k;
@@ -1350,7 +1350,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
    /* indent to x + a_indent with spaces */
    /* insert chars */
    k = x + a_indent - b->b.x;
-   str = MALLOC(k * sizeof(char));
+   str = malloc(k * sizeof(char));
    for (x = 0; x < k; x++)
     str[x] = ' ';
    char_to_ins = k;
@@ -1358,14 +1358,14 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
   else
   {
    /* insert TAB char */
-   str = MALLOC(sizeof(char));
+   str = malloc(sizeof(char));
    str[0] = '\t';
    char_to_ins = 1;
   }
  }
 
  e_ins_nchar(b, s, str, b->b.x, b->b.y, char_to_ins);
- FREE(str);
+ free(str);
  return(b->b.x);
 }
 
@@ -1387,13 +1387,13 @@ int e_del_a_ind(BUFFER *b, SCHIRM *s)
    }
    if (i != j)
    {
-    char *str = MALLOC(i * sizeof(char));
+    char *str = malloc(i * sizeof(char));
     e_del_nchar(b, s, 0, b->b.y, j);
     for (j = 0; j < i; j++)
      str[j] = ' ';
     e_ins_nchar(b, s, str, 0, b->b.y, i);
     b->b.x = i - 1;
-    FREE(str);
+    free(str);
    }
    for (j = b->b.y-1; j >= 0; j--)
    {
@@ -1438,12 +1438,12 @@ int e_car_a_ind(BUFFER *b, SCHIRM *s)
   i--;
  if (i > 0)
  {
-  str = MALLOC(i * sizeof(char));
+  str = malloc(i * sizeof(char));
   for (j = 0; j < i; j++)
    str[j] = ' ';
   e_ins_nchar(b, s, str, 0, b->b.y, i);
   b->b.x = i;
-  FREE(str);
+  free(str);
  }
  return(i);
 }
@@ -1810,17 +1810,17 @@ int e_new_line(int yd, BUFFER *b)
  if (b->mxlines > b->mx.y-2)
  {
   b->mx.y += MAXLINES;
-  if ((b->bf = REALLOC(b->bf, b->mx.y * sizeof(STRING))) == NULL)
+  if ((b->bf = realloc(b->bf, b->mx.y * sizeof(STRING))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, b->fb);
   if (b->f->c_sw)
-   b->f->c_sw = REALLOC(b->f->c_sw , b->mx.y * sizeof(int));
+   b->f->c_sw = realloc(b->f->c_sw , b->mx.y * sizeof(int));
  }
  for (i = b->mxlines-1; i >= yd; i--)
  {
   b->bf[i+1] = b->bf[i];
  }
  (b->mxlines)++;
- b->bf[yd].s = MALLOC(b->mx.x+1);
+ b->bf[yd].s = malloc(b->mx.x+1);
  if (b->bf[yd].s == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, b->fb);
  *(b->bf[yd].s) = '\0';
@@ -1926,7 +1926,7 @@ void WpeFilenameToPathFile(char *filename, char **path, char **file)
   {
    if ((cur_dir = WpeGetCurrentDir(WpeEditor)) == NULL)
    {
-    WpeFree(*file);
+    free(*file);
     *file = NULL;
     return ;
    }
@@ -1948,7 +1948,7 @@ void WpeFilenameToPathFile(char *filename, char **path, char **file)
     len -= 3;
     filename += 3;
    }
-   *path = WpeMalloc((strlen(cur_dir) + len + 2) * sizeof(char));
+   *path = malloc((strlen(cur_dir) + len + 2) * sizeof(char));
    strcpy(*path, cur_dir);
    strcat(*path, DIRS);
    strncat(*path, filename, len);
@@ -1961,12 +1961,12 @@ void WpeFilenameToPathFile(char *filename, char **path, char **file)
     (*path)[strlen(cur_dir) + len] = DIRC;
     (*path)[strlen(cur_dir) + len + 1] = 0;
    }
-   WpeFree(cur_dir);
+   free(cur_dir);
   }
   else
   {
    len = tmp - filename + 1;
-   *path = WpeMalloc(len + 1 * sizeof(char));
+   *path = malloc(len + 1 * sizeof(char));
    strncpy(*path, filename, len);
    (*path)[len] = 0;
   }
@@ -2047,7 +2047,7 @@ int e_autosave(FENSTER *f)
  if (((maxname = pathconf(f->dirct, _PC_NAME_MAX)) >= strlen(f->datnam) + 4) &&
    (maxname > 12))
  {
-  str = MALLOC(strlen(f->datnam) + 5);
+  str = malloc(strlen(f->datnam) + 5);
   str = e_make_postf(str, f->datnam, ".ASV");
   tmp = f->datnam;
   f->datnam = str;
@@ -2057,7 +2057,7 @@ int e_autosave(FENSTER *f)
   WpeMouseRestoreShape();
   f->datnam = tmp;
   f->save = 1;
-  FREE(str);
+  free(str);
  }
  return(0);
 }
@@ -2070,27 +2070,27 @@ Undo *e_remove_undo(Undo *ud, int sw)
  if (sw > WpeEditor->numundo)
  {
   if(ud->type == 'l')
-   FREE(ud->u.pt);
+   free(ud->u.pt);
   else if (ud->type == 'd')
   {
    BUFFER *b = (BUFFER*) ud->u.pt;
    int i;
 
-   FREE(b->f->s);
-   FREE(b->f);
+   free(b->f->s);
+   free(b->f);
    if (b->bf != NULL)
    {
     for (i = 0; i < b->mxlines; i++)
     {
      if (b->bf[i].s != NULL)
-      FREE( b->bf[i].s );
+      free( b->bf[i].s );
      b->bf[i].s = NULL;
     }
-    FREE(b->bf);
+    free(b->bf);
    }
-   FREE(b);
+   free(b);
   }
-  FREE(ud);
+  free(ud);
   ud = NULL;
  }
  return(ud);
@@ -2103,7 +2103,7 @@ int e_add_undo(int sw, BUFFER *b, int x, int y, int n)
  if (e_undo_sw) return(0);
  if (!e_redo_sw && b->rd)
   b->rd = e_remove_undo(b->rd, WpeEditor->numundo+1);
- if ((next = MALLOC(sizeof(Undo))) == NULL)
+ if ((next = malloc(sizeof(Undo))) == NULL)
  {
   e_error(e_msg[ERR_LOWMEM], 0, b->fb);
   return(-1);
@@ -2118,13 +2118,13 @@ int e_add_undo(int sw, BUFFER *b, int x, int y, int n)
  else if (sw == 'p') next->u.c = b->bf[y].s[x];
  else if (sw == 'r' || sw == 's')
  {
-  char *str = MALLOC(n);
+  char *str = malloc(n);
   int i;
 
   if (str == NULL)
   {
    e_error(e_msg[ERR_LOWMEM], 0, b->fb);
-   FREE(next);
+   free(next);
    return(-1);
   }
   for (i = 0; i < n; i++)
@@ -2147,12 +2147,12 @@ int e_add_undo(int sw, BUFFER *b, int x, int y, int n)
  }
  else if (sw == 'd')
  {
-  BUFFER *bn = MALLOC(sizeof(BUFFER));
-  SCHIRM *sn = MALLOC(sizeof(SCHIRM));
-  FENSTER *fn = MALLOC(sizeof(FENSTER));
+  BUFFER *bn = malloc(sizeof(BUFFER));
+  SCHIRM *sn = malloc(sizeof(SCHIRM));
+  FENSTER *fn = malloc(sizeof(FENSTER));
   FENSTER *f = b->cn->f[b->cn->mxedt];
 
-  bn->bf = (STRING *) MALLOC(MAXLINES*sizeof(STRING));
+  bn->bf = (STRING *) malloc(MAXLINES*sizeof(STRING));
   if (bn == NULL || sn == 0 || bn->bf == NULL)
    return(e_error(e_msg[ERR_LOWMEM], 0, b->fb));
   fn->b = bn;
@@ -2241,7 +2241,7 @@ int e_make_rudo(FENSTER *f, int sw)
   s->mark_begin = ud->b;
   s->mark_end.y = ud->b.y;
   s->mark_end.x = ud->b.x + ud->a.x;
-  FREE(ud->u.pt);
+  free(ud->u.pt);
  }
  else if (ud->type == 'l')
  {
@@ -2283,17 +2283,17 @@ int e_make_rudo(FENSTER *f, int sw)
   s->mark_end = bn->f->s->mark_end;
   e_move_block(ud->b.x, ud->b.y, bn, b, f);
   e_undo_sw = 0;
-  FREE(bn->f->s);
-  FREE(bn->f);
-  FREE(bn->bf[0].s);
-  FREE(bn->bf);
-  FREE(ud->u.pt);
+  free(bn->f->s);
+  free(bn->f);
+  free(bn->bf[0].s);
+  free(bn->bf);
+  free(ud->u.pt);
   e_add_undo('c', b, ud->b.x, ud->b.y, 0);
  }
  if (!sw) b->ud = ud->next;
  else b->rd = ud->next;
  e_redo_sw = 0;
- FREE(ud);
+ free(ud);
  e_schirm(f, 1);
  e_cursor(f, 1);
  return(0);

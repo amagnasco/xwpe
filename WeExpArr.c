@@ -27,7 +27,7 @@ void *WpeExpArrayCreate(int initial_num, int elem_size, int growth_num)
 {
  int *exp_array;
 
- exp_array = (int *)WpeMalloc(initial_num * elem_size + sizeof(int) * 4);
+ exp_array = (int *)malloc(initial_num * elem_size + sizeof(int) * 4);
  *(exp_array) = initial_num;
  *(exp_array + 1) = elem_size;
  *(exp_array + 2) = growth_num;
@@ -43,7 +43,7 @@ void WpeExpArrayAdd(void **exp_array, void *new_elem)
  if (*real_array == *(real_array + 3))
  {
   *(real_array) += *(real_array + 2);
-  real_array = WpeRealloc(real_array, (*real_array) * (*(real_array + 1)) +
+  real_array = realloc(real_array, (*real_array) * (*(real_array + 1)) +
                                       sizeof(int) * 4);
   if (real_array == NULL)
   {
@@ -70,6 +70,6 @@ void WpeExpArrayDestroy(void *exp_array)
  int *real_array;
 
  real_array = ((int *)exp_array) - 4;
- WpeFree(real_array);
+ free(real_array);
 }
 

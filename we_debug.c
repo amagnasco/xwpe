@@ -467,7 +467,7 @@ int e_d_quit_basic(FENSTER *f)
  if (!WpeIsXwin())
  {
   if (e_d_out)
-   FREE(e_d_out);
+   free(e_d_out);
   e_d_out = NULL;
  }
  if (rfildes[1] >= 0)
@@ -544,9 +544,9 @@ int e_remove_all_watches(FENSTER *f)
  int i, n;
 
  if (e_d_nwtchs < 1) return(0);
- for (n = 0; n < e_d_nwtchs;n++) FREE(e_d_swtchs[n]);
- FREE(e_d_swtchs);
- FREE(e_d_nrwtchs);
+ for (n = 0; n < e_d_nwtchs;n++) free(e_d_swtchs[n]);
+ free(e_d_swtchs);
+ free(e_d_nrwtchs);
  e_d_nwtchs = 0;
  for (i = cn->mxedt; i > 0; i--)
  {
@@ -573,12 +573,12 @@ int e_delete_watches(FENSTER *f)
   return(0);
  for (n = 0; n < e_d_nwtchs && e_d_nrwtchs[n] <= b->b.y; n++)
   ;
- FREE(e_d_swtchs[n - 1]);
+ free(e_d_swtchs[n - 1]);
  for (; n < e_d_nwtchs; n++)
   e_d_swtchs[n - 1] = e_d_swtchs[n];
  e_d_nwtchs--;
- e_d_swtchs = REALLOC(e_d_swtchs, e_d_nwtchs * sizeof(char *));
- e_d_nrwtchs = REALLOC(e_d_nrwtchs, e_d_nwtchs * sizeof(int));
+ e_d_swtchs = realloc(e_d_swtchs, e_d_nwtchs * sizeof(char *));
+ e_d_nrwtchs = realloc(e_d_nrwtchs, e_d_nwtchs * sizeof(int));
  e_d_p_watches(f, 0);
  return(0);
 }
@@ -604,13 +604,13 @@ int e_make_watches(FENSTER *f)
   e_d_nwtchs++;
   if (e_d_nwtchs == 1)
   {
-   e_d_swtchs = MALLOC(sizeof(char *));
-   e_d_nrwtchs = MALLOC(sizeof(int));
+   e_d_swtchs = malloc(sizeof(char *));
+   e_d_nrwtchs = malloc(sizeof(int));
   }
   else
   {
-   e_d_swtchs = REALLOC(e_d_swtchs, e_d_nwtchs * sizeof(char *));
-   e_d_nrwtchs = REALLOC(e_d_nrwtchs, e_d_nwtchs * sizeof(int));
+   e_d_swtchs = realloc(e_d_swtchs, e_d_nwtchs * sizeof(char *));
+   e_d_nrwtchs = realloc(e_d_nrwtchs, e_d_nwtchs * sizeof(int));
   }
   
   /*
@@ -626,7 +626,7 @@ int e_make_watches(FENSTER *f)
    */
    e_d_nrwtchs[i] = e_d_nrwtchs[i-1];
   }
-  e_d_swtchs[y] = MALLOC(strlen(str) + 1); /* insert...                    */
+  e_d_swtchs[y] = malloc(strlen(str) + 1); /* insert...                    */
   strcpy(e_d_swtchs[y], str);              /*       ... new watch at pos y */
   e_d_p_watches(f, 1);
   return(0);
@@ -649,7 +649,7 @@ int e_edit_watches(FENSTER *f)
  strcpy(str, e_d_swtchs[l - 1]);
  if (e_d_add_watch(str, f))
  {
-  e_d_swtchs[l - 1] = REALLOC(e_d_swtchs[l - 1], strlen(str) + 1);
+  e_d_swtchs[l - 1] = realloc(e_d_swtchs[l - 1], strlen(str) + 1);
   strcpy(e_d_swtchs[l - 1], str);
   e_d_p_watches(f, 0);
   return(0);
@@ -697,7 +697,7 @@ int e_d_p_watches(FENSTER *f, int sw)
  
  /* free all lines of BUFFER b */
  e_p_red_buffer(b);
- FREE(b->bf[0].s);
+ free(b->bf[0].s);
  b->mxlines=0;
 
  for (i = 0, l = 0; l < e_d_nwtchs; l++)
@@ -736,13 +736,13 @@ int e_d_p_watches(FENSTER *f, int sw)
    {
     return(ret); /* BUG? e_d_nrwtchs not initialized if this return is taken */
    }
-   str = MALLOC(strlen(str1) + 1);
+   str = malloc(strlen(str1) + 1);
    strcpy(str, str1);
    while ((ret = e_d_line_read(wfildes[0], str1, 256, 0, 0)) == 0 || ret == 2)
    {
     if (ret == -1) return(ret); /* BUG? e_d_nrwtchs not initialized if this return is taken */
     if (ret == 2) e_d_error(str1);
-    str = REALLOC(str, (k = strlen(str)) + strlen(str1) + 1);
+    str = realloc(str, (k = strlen(str)) + strlen(str1) + 1);
     if (str[k-1] == '\n') str[k-1] = ' ';
     strcat(str, str1);
    }
@@ -759,7 +759,7 @@ int e_d_p_watches(FENSTER *f, int sw)
      for(k = 0; str[k] != '\0' && str[k] != '='; k++);
     if (str[k] == '\0')
     {
-     if (str != str1) FREE(str);
+     if (str != str1) free(str);
      str = str1;
      strcpy(str, e_d_msg[ERR_NOSYMBOL]);
      k = 0;
@@ -776,17 +776,17 @@ int e_d_p_watches(FENSTER *f, int sw)
 
   /* Print variable name */
   for ( ; str[k] != '\0' && isspace(str[k]); k++);
-  str2 = WpeMalloc(strlen(e_d_swtchs[l]) + strlen(str + k) + 4);
+  str2 = malloc(strlen(e_d_swtchs[l]) + strlen(str + k) + 4);
   sprintf(str2, "%s: %s", e_d_swtchs[l], str + k);
 
   e_d_nrwtchs[l] = b->mxlines;
   print_to_end_of_buffer(b, str2, b->mx.x);
 
   /* Free any allocated string */
-  WpeFree(str2);
+  free(str2);
   if(str != str1)
   {
-   FREE(str);
+   free(str);
   }
  }
 
@@ -832,7 +832,7 @@ int e_d_reinit_watches(FENSTER * f,char * prj)
   }
  }
  g=strlen(prj);
- prj2=MALLOC(sizeof(char)*(g+1));
+ prj2=malloc(sizeof(char)*(g+1));
  strcpy(prj2,prj);
  q=0;
  y=0;
@@ -846,16 +846,16 @@ int e_d_reinit_watches(FENSTER * f,char * prj)
   r++;
  } 
  e_d_nwtchs=r;
- e_d_swtchs = (char **) MALLOC(e_d_nwtchs * sizeof(char *));
- e_d_nrwtchs =(int *) MALLOC(e_d_nwtchs * sizeof(int));   
+ e_d_swtchs = (char **) malloc(e_d_nwtchs * sizeof(char *));
+ e_d_nrwtchs =(int *) malloc(e_d_nwtchs * sizeof(int));   
 
  for(e=0,q=0;e<r;e++)
  {
-  e_d_swtchs[e] = MALLOC(strlen(prj2+q)+1);
+  e_d_swtchs[e] = malloc(strlen(prj2+q)+1);
   strcpy(e_d_swtchs[e], prj2+q); 
   q+=strlen(prj2+q)+1;
  } 
- FREE(prj2);
+ free(prj2);
  e_d_p_watches(f, 1);   
  return 0;
 }
@@ -980,7 +980,7 @@ int e_d_p_stack(FENSTER *f, int sw)
 
 int e_make_stack(FENSTER *f)
 {
-   char file[128], str[128], *tmpstr = MALLOC(1);
+   char file[128], str[128], *tmpstr = malloc(1);
    int i, ret, line = 0, dif;
    BUFFER *b = f->ed->f[f->ed->mxedt]->b;
    e_d_switch_out(0);
@@ -992,7 +992,7 @@ int e_make_stack(FENSTER *f)
 	 for(i = b->b.y; i >= 0 && b->bf[i].s[0] != '#'; i--);
 	 if(i < 0) return(1);
 	 for(; i < b->mxlines; i++)
-	 {  if(!(tmpstr = REALLOC(tmpstr, strlen(tmpstr) + b->bf[i].len + 2)))
+	 {  if(!(tmpstr = realloc(tmpstr, strlen(tmpstr) + b->bf[i].len + 2)))
 	    {  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
 	    strcat(tmpstr, (char *) b->bf[i].s);
 	    if(i == b->mxlines-1 || b->bf[i+1].s[0] == '#') break;
@@ -1009,7 +1009,7 @@ int e_make_stack(FENSTER *f)
 	    i--);
 	 if(i == 0 && b->bf[i].len == 0) return(1);
 	 for(; i < b->mxlines; i++)
-	 {  if(!(tmpstr = REALLOC(tmpstr, strlen(tmpstr) + b->bf[i].len + 2)))
+	 {  if(!(tmpstr = realloc(tmpstr, strlen(tmpstr) + b->bf[i].len + 2)))
 	    {  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
 	    strcat(tmpstr, (char *) b->bf[i].s);
 	    if(i == b->mxlines-1 || b->bf[i].s[b->bf[i].len - 1] != '\\')
@@ -1056,7 +1056,7 @@ int e_brk_schirm(FENSTER *f)
  int n;
 
  SCHIRM *s = f->s;
- s->brp= REALLOC(s->brp, sizeof(int));
+ s->brp= realloc(s->brp, sizeof(int));
  s->brp[0]=0;
  for(i=0;i<e_d_nbrpts;i++)
  {
@@ -1067,7 +1067,7 @@ int e_brk_schirm(FENSTER *f)
    {
     /****  New break, not in schirm  ****/   
     (s->brp[0])++;
-    s->brp = REALLOC(s->brp, (s->brp[0]+1) * sizeof(int));
+    s->brp = realloc(s->brp, (s->brp[0]+1) * sizeof(int));
     s->brp[s->brp[0]] = e_d_ybrpts[i]-1; 
    }
   }
@@ -1086,7 +1086,7 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
 
    e_remove_breakpoints(f);
    g=strlen(prj);
-   prj2=MALLOC(sizeof(char)*(g+1));
+   prj2=malloc(sizeof(char)*(g+1));
    strcpy(prj2,prj);
    q=0;
    r=0;
@@ -1102,9 +1102,9 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
    e_d_nbrpts=0;
    
 /**** allocate memory for breakpoints ****/   
-   e_d_sbrpts = MALLOC(sizeof(char *) * r);
-   e_d_ybrpts = MALLOC(sizeof(int) * r);
-   e_d_nrbrpts = MALLOC(sizeof(int) * r);
+   e_d_sbrpts = malloc(sizeof(char *) * r);
+   e_d_ybrpts = malloc(sizeof(int) * r);
+   e_d_nrbrpts = malloc(sizeof(int) * r);
    
    name=prj2;
    for(q=0;q<r;q++)
@@ -1121,7 +1121,7 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
 /**** hopefully we have filename and line number ****/
 
 	   e_d_ybrpts[e_d_nbrpts]=line;
-	   e_d_sbrpts[e_d_nbrpts]=MALLOC(sizeof(char)*(strlen(name)+1));
+	   e_d_sbrpts[e_d_nbrpts]=malloc(sizeof(char)*(strlen(name)+1));
 	   strcpy(e_d_sbrpts[e_d_nbrpts],name);
 	   e_d_nbrpts++;
 	   
@@ -1137,7 +1137,7 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
      }
      name+=e+1;
    }
-   FREE(prj2);
+   free(prj2);
    return 0;
 }
 
@@ -1223,24 +1223,24 @@ int e_remove_breakpoints(FENSTER *f)
    write(rfildes[1], "db *\n", 2);
  }
  for (i = 0; i < e_d_nbrpts; i++)
-  FREE(e_d_sbrpts[i]);
+  free(e_d_sbrpts[i]);
  for (i = cn->mxedt; i >= 0; i--)
   if (DTMD_ISTEXT(cn->f[i]->dtmd))
    cn->f[i]->s->brp[0] = 0;
  e_d_nbrpts = 0;
  if (e_d_sbrpts)
  {
-  FREE(e_d_sbrpts);
+  free(e_d_sbrpts);
   e_d_sbrpts = NULL;
  }
  if (e_d_ybrpts)
  {
-  FREE(e_d_ybrpts);
+  free(e_d_ybrpts);
   e_d_ybrpts = NULL;
  }
  if (e_d_nrbrpts)
  {
-  FREE(e_d_nrbrpts);
+  free(e_d_nrbrpts);
   e_d_nrbrpts = NULL;
  }
  e_rep_win_tree(cn);
@@ -1271,7 +1271,7 @@ int e_mk_brk_main(FENSTER *f, int sw)
    write(rfildes[1], eing, strlen(eing));
    if (e_d_dum_read() == -1) return(-1);
   }
-  FREE(e_d_sbrpts[sw-1]);
+  free(e_d_sbrpts[sw-1]);
   for (i = sw-1; i < e_d_nbrpts - 1; i++)
   {
    e_d_sbrpts[i] = e_d_sbrpts[i+1];
@@ -1281,11 +1281,11 @@ int e_mk_brk_main(FENSTER *f, int sw)
   e_d_nbrpts--;
   if (e_d_nbrpts == 0)
   {
-   FREE(e_d_sbrpts);
+   free(e_d_sbrpts);
    e_d_sbrpts = NULL;
-   FREE(e_d_ybrpts);
+   free(e_d_ybrpts);
    e_d_ybrpts = NULL;
-   FREE(e_d_nrbrpts);
+   free(e_d_nrbrpts);
    e_d_nrbrpts = NULL;
   }
  }
@@ -1294,17 +1294,17 @@ int e_mk_brk_main(FENSTER *f, int sw)
   e_d_nbrpts++;
   if (e_d_nbrpts == 1)
   {
-   e_d_sbrpts = MALLOC(sizeof(char *));
-   e_d_ybrpts = MALLOC(sizeof(int));
-   e_d_nrbrpts = MALLOC(sizeof(int));
+   e_d_sbrpts = malloc(sizeof(char *));
+   e_d_ybrpts = malloc(sizeof(int));
+   e_d_nrbrpts = malloc(sizeof(int));
   }
   else
   {
-   e_d_sbrpts = REALLOC(e_d_sbrpts, e_d_nbrpts * sizeof(char *));
-   e_d_ybrpts = REALLOC(e_d_ybrpts, e_d_nbrpts * sizeof(int));
-   e_d_nrbrpts = REALLOC(e_d_nrbrpts, e_d_nbrpts * sizeof(int));
+   e_d_sbrpts = realloc(e_d_sbrpts, e_d_nbrpts * sizeof(char *));
+   e_d_ybrpts = realloc(e_d_ybrpts, e_d_nbrpts * sizeof(int));
+   e_d_nrbrpts = realloc(e_d_nrbrpts, e_d_nbrpts * sizeof(int));
   }
-  e_d_sbrpts[e_d_nbrpts - 1] = MALLOC(1);
+  e_d_sbrpts[e_d_nbrpts - 1] = malloc(1);
   if (e_d_swtch)
   {
    if (e_deb_type == 0)
@@ -1406,7 +1406,7 @@ int e_make_breakpoint(FENSTER *f, int sw)
     write(rfildes[1], eing, strlen(eing));
     if (e_d_dum_read() == -1) return(-1);
    }
-   FREE(e_d_sbrpts[i]);
+   free(e_d_sbrpts[i]);
    for (; i < e_d_nbrpts - 1; i++)
    {
     e_d_sbrpts[i] = e_d_sbrpts[i+1];
@@ -1416,11 +1416,11 @@ int e_make_breakpoint(FENSTER *f, int sw)
    e_d_nbrpts--;
    if (e_d_nbrpts == 0)
    {
-    FREE(e_d_sbrpts);
+    free(e_d_sbrpts);
     e_d_sbrpts = NULL;
-    FREE(e_d_ybrpts);
+    free(e_d_ybrpts);
     e_d_ybrpts = NULL;
-    FREE(e_d_nrbrpts);
+    free(e_d_nrbrpts);
     e_d_nrbrpts = NULL;
    }
   }
@@ -1429,17 +1429,17 @@ int e_make_breakpoint(FENSTER *f, int sw)
    e_d_nbrpts++;
    if (e_d_nbrpts == 1)
    {
-    e_d_sbrpts = MALLOC(sizeof(char *));
-    e_d_ybrpts = MALLOC(sizeof(int));
-    e_d_nrbrpts = MALLOC(sizeof(int));
+    e_d_sbrpts = malloc(sizeof(char *));
+    e_d_ybrpts = malloc(sizeof(int));
+    e_d_nrbrpts = malloc(sizeof(int));
    }
    else
    {
-    e_d_sbrpts = REALLOC(e_d_sbrpts, e_d_nbrpts * sizeof(char *));
-    e_d_ybrpts = REALLOC(e_d_ybrpts, e_d_nbrpts * sizeof(int));
-    e_d_nrbrpts = REALLOC(e_d_nrbrpts, e_d_nbrpts * sizeof(int));
+    e_d_sbrpts = realloc(e_d_sbrpts, e_d_nbrpts * sizeof(char *));
+    e_d_ybrpts = realloc(e_d_ybrpts, e_d_nbrpts * sizeof(int));
+    e_d_nrbrpts = realloc(e_d_nrbrpts, e_d_nbrpts * sizeof(int));
    }
-   e_d_sbrpts[e_d_nbrpts - 1] = MALLOC(strlen(f->datnam) + 1);
+   e_d_sbrpts[e_d_nbrpts - 1] = malloc(strlen(f->datnam) + 1);
    strcpy(e_d_sbrpts[e_d_nbrpts - 1], f->datnam);
    e_d_ybrpts[e_d_nbrpts - 1] = b->b.y + 1;
    if (e_d_swtch)
@@ -1492,7 +1492,7 @@ int e_make_breakpoint(FENSTER *f, int sw)
     }
    }
    (s->brp[0])++;
-   s->brp = REALLOC(s->brp, (s->brp[0]+1) * sizeof(int));
+   s->brp = realloc(s->brp, (s->brp[0]+1) * sizeof(int));
    s->brp[s->brp[0]] = b->b.y;
   }
  }
@@ -1575,8 +1575,8 @@ int e_exec_deb(FENSTER *f, char *prog)
   for (i = 0; i < 5; i++)
   {
    if (npipe[i])
-    FREE(npipe[i]);
-   npipe[i] = MALLOC(128);
+    free(npipe[i]);
+   npipe[i] = malloc(128);
    sprintf(npipe[i], "%s/we_pipe%d", e_tmp_dir, i);
    remove(npipe[i]);
   }
@@ -2468,8 +2468,8 @@ int e_d_goto_break(char *file, int line, FENSTER *f)
    break;
   }
  f = cn->f[cn->mxedt];
- FREE(ftmp.dirct);
- FREE(ftmp.datnam);
+ free(ftmp.dirct);
+ free(ftmp.datnam);
  if (i <= 0)
  {
   if (access(file, 0))

@@ -56,7 +56,7 @@ char *WpeStrdup(const char *str)
 {
  char *newstr;
  
- newstr = WpeMalloc((strlen(str)+1)*sizeof(char));
+ newstr = malloc((strlen(str)+1)*sizeof(char));
  if (newstr != NULL)
  {
   strcpy(newstr, str);

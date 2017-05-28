@@ -18,9 +18,5 @@ typedef enum wpeMouseShape {
 /* Checks if x windows is running (old variable currently used) */
 #define WpeIsXwin() (e_we_sw & 1)
 
-#define WpeMalloc(x) malloc(x)
-#define WpeRealloc(x, y) realloc(x, y)
-#define WpeFree(x) free(x)
-
 #endif
 

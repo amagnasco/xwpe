@@ -33,11 +33,11 @@ char *e_mkfilename(char *dr, char *fn)
   return(NULL);
  if(!dr)
  {
-  fl = MALLOC(strlen(fn) + 1);
+  fl = malloc(strlen(fn) + 1);
   strcpy(fl, fn);
   return(fl);
  }
- fl = MALLOC(strlen(dr) + strlen(fn) + 2);
+ fl = malloc(strlen(dr) + strlen(fn) + 2);
  strcpy(fl, dr);
  if (dr[0] != '\0' && dr[strlen(dr)-1] != DIRC)
   strcat(fl, DIRS);
@@ -107,7 +107,7 @@ POINT e_readin(int i, int j, FILE *fp, BUFFER *b, char *type)
   {
    if (i == 0 && j > 0)
    {
-    FREE(b->bf[j].s);
+    free(b->bf[j].s);
     for (k = j; k < b->mxlines; k++) b->bf[k] = b->bf[k+1];
     (b->mxlines)--;
    }
@@ -266,12 +266,12 @@ int e_write(int xa, int ya, int xe, int ye, FENSTER *f, int backup)
   if (access(tmp, 0) == 0)
    remove(tmp);
   WpeRenameCopy(ptmp, tmp, f, 1);
-  WpeFree(tmp);
+  free(tmp);
  }
  if ((fp = fopen(ptmp, "wb")) == NULL)
  {
   e_error(e_msg[ERR_FOPEN], 0, f->fb);
-  FREE(ptmp);
+  free(ptmp);
   return(WPE_ESC);
  }
  if (f->filemode >= 0)
@@ -310,7 +310,7 @@ int e_write(int xa, int ya, int xe, int ye, FENSTER *f, int backup)
    else
     putc(*(b->bf[j].s+i), fp);
   }
- FREE(ptmp);
+ free(ptmp);
  fclose(fp);
  return(0);
 }
@@ -355,7 +355,7 @@ char *e_bakfilename(char* s)
   if (!bak) bak = SIMPLE_BACKUP_SUFFIX;
  }
 
- result = WpeMalloc(strlen(s) + strlen(bak) + 5);
+ result = malloc(strlen(s) + strlen(bak) + 5);
  if (!*bak)
   return e_new_qual(s, "bak", result); /* TurboC style */
  else
@@ -374,10 +374,10 @@ int freedf(struct dirfile *df)
  {
   for (; df->anz > 0; (df->anz)--)
    if (*(df->name+df->anz-1))
-    FREE(*(df->name+df->anz-1));
-   FREE(df->name);
+    free(*(df->name+df->anz-1));
+   free(df->name);
  }
- FREE(df);
+ free(df);
  df = NULL;
  return(0);
 }
@@ -541,7 +541,7 @@ typedef struct
 int e_mkdir_path(char *path)
 {
  int i, len;
- char *tmp = MALLOC(((len=strlen(path))+1)*sizeof(char));
+ char *tmp = malloc(((len=strlen(path))+1)*sizeof(char));
 
  if (!tmp)
   return(-1);
@@ -557,7 +557,7 @@ int e_mkdir_path(char *path)
    mkdir(tmp, 0700);
   }
  }
- FREE(tmp);
+ free(tmp);
  return(0);
 }
 
@@ -569,68 +569,68 @@ IFILE *e_i_fopen(char *path, char *stat)
 
  if (!path) {  return(NULL);  }
  if ((fp = gzopen(path, stat))) {  return(fp);  }
- if (!(tmp2 = MALLOC((strlen(path)+11)*sizeof(char))))
+ if (!(tmp2 = malloc((strlen(path)+11)*sizeof(char))))
  {
-  FREE(fp);
+  free(fp);
   return(NULL);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".gz");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".Z");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info.gz");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info.Z");
  if ((fp = gzopen(tmp2, stat)))
  {
-  FREE(tmp2);
+  free(tmp2);
   return(fp);
  }
- FREE(fp);
- FREE(tmp2);
+ free(fp);
+ free(tmp2);
  return(NULL);
 #else
  extern char *e_tmp_dir;
  char *tmp, *command;
  int len;
- IFILE *fp = MALLOC(sizeof(IFILE));
+ IFILE *fp = malloc(sizeof(IFILE));
 
  if (!fp) return(NULL);
- if (!path) {  FREE(fp); return(NULL);  }
+ if (!path) {  free(fp); return(NULL);  }
  if ((fp->fp = fopen(path, stat))) {  fp->sw = 0;  return(fp);  }
- if (!(tmp2 = MALLOC((strlen(path)+11)*sizeof(char)))) 
+ if (!(tmp2 = malloc((strlen(path)+11)*sizeof(char)))) 
  {
-  FREE(fp);
+  free(fp);
   return(NULL);
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".info");
  if ((fp->fp = fopen(tmp2, stat))) 
  {
-  FREE(tmp2);
+  free(tmp2);
   fp->sw = 0;
   return(fp);
  }
@@ -650,17 +650,17 @@ IFILE *e_i_fopen(char *path, char *stat)
     strcat(tmp2, ".info.Z");
     if (access(tmp2, 0))
     {
-     FREE(fp);
-     FREE(tmp2);
+     free(fp);
+     free(tmp2);
      return(NULL);
     }
    }
   }
  }
- if (!(tmp = MALLOC((strlen(path)+(len=strlen(e_tmp_dir))+2)*sizeof(char)))) 
+ if (!(tmp = malloc((strlen(path)+(len=strlen(e_tmp_dir))+2)*sizeof(char)))) 
  {
-  FREE(fp);
-  FREE(tmp2);
+  free(fp);
+  free(tmp2);
   return(NULL);
  }
  strcpy(tmp, e_tmp_dir);
@@ -669,20 +669,20 @@ IFILE *e_i_fopen(char *path, char *stat)
  if ((fp->fp = fopen(tmp, stat)))
  {
   fp->sw = 1;
-  FREE(tmp);
-  FREE(tmp2);
+  free(tmp);
+  free(tmp2);
   return(fp);
  }
- command = MALLOC((strlen(tmp) + strlen(tmp2) + 14) * sizeof(char));
- if (!command) {  FREE(fp);  FREE(tmp);  FREE(tmp2);  return(NULL);  }
+ command = malloc((strlen(tmp) + strlen(tmp2) + 14) * sizeof(char));
+ if (!command) {  free(fp);  free(tmp);  free(tmp2);  return(NULL);  }
  e_mkdir_path(tmp);
  sprintf(command, "gunzip < %s > %s", tmp2, tmp);
- FREE(tmp2);
+ free(tmp2);
  system(command);
- FREE(command);  
+ free(command);  
  fp->fp = fopen(tmp, stat);
- FREE(tmp);
- if (!fp->fp) {  FREE(fp);  return(NULL);  }
+ free(tmp);
+ if (!fp->fp) {  free(fp);  return(NULL);  }
  fp->sw = 1;
  return(fp);  
 #endif
@@ -693,7 +693,7 @@ int e_i_fclose(IFILE *fp)
 {
  int ret = fclose(fp->fp);
 
- FREE(fp);
+ free(fp);
  return(ret);
 }
 #endif
@@ -706,13 +706,13 @@ int e_read_help(char *str, FENSTER *f, int sw)
 
  ptmp = e_mkfilename(LIBRARY_DIR, HELP_FILE);
  fp = e_i_fopen(ptmp, "rb");
- FREE(ptmp);
+ free(ptmp);
  if (!fp)
   return(1);
  e_close_buffer(f->b);
- if ((f->b = (BUFFER *) MALLOC(sizeof(BUFFER))) == NULL)
+ if ((f->b = (BUFFER *) malloc(sizeof(BUFFER))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, f->fb);
- if ((f->b->bf = (STRING *) MALLOC(MAXLINES*sizeof(STRING))) == NULL)
+ if ((f->b->bf = (STRING *) malloc(MAXLINES*sizeof(STRING))) == NULL)
   e_error(e_msg[ERR_LOWMEM], 1, f->fb);
  f->b->f = f;
  f->b->b = e_set_pnt(0, 0);
@@ -753,7 +753,7 @@ int e_read_help(char *str, FENSTER *f, int sw)
    for (i = 0; (tmp[i] = tp[i]) && tp[i] != HED; i++)
     ;
    tmp[i] = HED;  tmp[i+1] = '\0';
-   if ((ud_help->str = MALLOC((strlen(tmp)+1)*sizeof(char))) != NULL)
+   if ((ud_help->str = malloc((strlen(tmp)+1)*sizeof(char))) != NULL)
     strcpy(ud_help->str, tmp);
    strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
    f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
@@ -786,11 +786,11 @@ int e_help_ret(FENSTER *f)
 	 for(j = i+1; j < b->bf[b->b.y].len
 			&& (str[j-i] = b->bf[b->b.y].s[j]) != HED; j++);
 	 str[j-i+1] = '\0';
-	 if((next = MALLOC(sizeof(struct help_ud))) != NULL)
-	 {  next->str = MALLOC((strlen(str)+1) * sizeof(char));
+	 if((next = malloc(sizeof(struct help_ud))) != NULL)
+	 {  next->str = malloc((strlen(str)+1) * sizeof(char));
 	    if(next->str) strcpy(next->str, str);
             if(ud_help && ud_help->file)
-            {  next->file = MALLOC((strlen(ud_help->file)+1) * sizeof(char));
+            {  next->file = malloc((strlen(ud_help->file)+1) * sizeof(char));
                if(next->file) strcpy(next->file, ud_help->file);
             }
             else next->file = NULL;
@@ -813,10 +813,10 @@ int e_help_ret(FENSTER *f)
 	 for(i++, j = 0; j+i < b->bf[b->b.y].len
 			&& (str[j] = b->bf[b->b.y].s[j+i]) != HED; j++);
 	 str[j] = '\0';
-	 if((next = MALLOC(sizeof(struct help_ud))) != NULL)
-	 {  next->str = MALLOC(4 * sizeof(char));
+	 if((next = malloc(sizeof(struct help_ud))) != NULL)
+	 {  next->str = malloc(4 * sizeof(char));
 	    if(next->str) strcpy(next->str, "Top");
-            next->file = MALLOC((strlen(str)+1) * sizeof(char));
+            next->file = malloc((strlen(str)+1) * sizeof(char));
             if(next->file) strcpy(next->file, str);
             next->sw = 1;
 	    next->next = ud_help;
@@ -867,8 +867,8 @@ int e_help_last(FENSTER *f)
  e_cursor(f, 1);
  e_schirm(f, 1);
  ud_help = last->next;
- FREE(last->str);
- FREE(last);
+ free(last->str);
+ free(last);
  return(0);
 }
 
@@ -877,14 +877,14 @@ int e_help_next(FENSTER *f, int sw)
    struct help_ud *last = ud_help;
    if(last && last->sw)
    {  if(sw && last->nstr)
-      {  if(last->str) FREE(last->str);
-         if(last->pstr) FREE(last->pstr);
+      {  if(last->str) free(last->str);
+         if(last->pstr) free(last->pstr);
          last->str = last->nstr;
          last->nstr = NULL;
       }
       else if(!sw && last->pstr)
-      {  if(last->str) FREE(last->str);
-         if(last->nstr) FREE(last->nstr);
+      {  if(last->str) free(last->str);
+         if(last->nstr) free(last->nstr);
          last->str = last->pstr;
          last->pstr = NULL;
       }
@@ -898,7 +898,7 @@ int e_help_next(FENSTER *f, int sw)
    }
    else
    {  if(sw)
-      {  if((last = MALLOC(sizeof(struct help_ud))) != NULL)
+      {  if((last = malloc(sizeof(struct help_ud))) != NULL)
 	 {  last->str = NULL;
             last->file = NULL;
 	    last->x = last->y = 0;
@@ -925,11 +925,11 @@ int e_help_free(FENSTER *f)
  while (last)
  {
   next = last->next;
-  if (last->str) FREE(last->str);
-  if (last->pstr) FREE(last->pstr);
-  if (last->nstr) FREE(last->nstr);
-  if (last->file) FREE(last->file);
-  FREE(last);
+  if (last->str) free(last->str);
+  if (last->pstr) free(last->pstr);
+  if (last->nstr) free(last->nstr);
+  if (last->file) free(last->file);
+  free(last);
   last = next;
  }
  ud_help = NULL;
@@ -940,8 +940,8 @@ int e_help_comp(FENSTER *f)
 {
  BUFFER *b = f->b;
  int i, j, k, hn = 0, sn = 0;
- char **swtch = MALLOC(sizeof(char *));
- char **hdrs = MALLOC(sizeof(char *));
+ char **swtch = malloc(sizeof(char *));
+ char **hdrs = malloc(sizeof(char *));
  char str[256];
 
  if (f->dtmd != DTMD_HELP) return(1);
@@ -963,8 +963,8 @@ int e_help_comp(FENSTER *f)
     }
     str[k-i-1] = '\0';
     sn++;
-    swtch = REALLOC(swtch, sn * sizeof(char *));
-    swtch[sn-1] = MALLOC((strlen(str) + 1) + sizeof(char));
+    swtch = realloc(swtch, sn * sizeof(char *));
+    swtch[sn-1] = malloc((strlen(str) + 1) + sizeof(char));
     strcpy(swtch[sn-1], str);
    }
   }
@@ -987,8 +987,8 @@ int e_help_comp(FENSTER *f)
     }
     str[k-i-1] = '\0';
     hn++;
-    hdrs = REALLOC(hdrs, hn * sizeof(char *));
-    hdrs[hn-1] = MALLOC((strlen(str) + 1) + sizeof(char));
+    hdrs = realloc(hdrs, hn * sizeof(char *));
+    hdrs[hn-1] = malloc((strlen(str) + 1) + sizeof(char));
     strcpy(hdrs[hn-1], str);
    }
   }
@@ -1014,10 +1014,10 @@ int e_help_comp(FENSTER *f)
   }
  }
 ende:
- for (i = 0; i < sn; i++) FREE(swtch[i]);
- for (i = 0; i < hn; i++) FREE(hdrs[i]);
- FREE(swtch);
- FREE(hdrs);
+ for (i = 0; i < sn; i++) free(swtch[i]);
+ for (i = 0; i < hn; i++) free(hdrs[i]);
+ free(swtch);
+ free(hdrs);
  return(0);
 }
 
@@ -1105,7 +1105,7 @@ IFILE *e_info_jump(char *str, char **path, IFILE *fp)
  IFILE *fpn;
  int i, j, n, anz = 0;
  char *ptmp, *fstr, tstr[256], nfl[128];
- struct FL_INFO{  char *name; int line;  } **files = MALLOC(1);
+ struct FL_INFO{  char *name; int line;  } **files = malloc(1);
 
  while (e_i_fgets(tstr, 256, fp) && tstr[0] != IFE)
  {
@@ -1114,14 +1114,14 @@ IFILE *e_info_jump(char *str, char **path, IFILE *fp)
   if (!tstr[i]) continue;
   nfl[i] = '\0';
   anz++;
-  files = REALLOC(files, anz * sizeof(struct FL_INFO *));
-  files[anz-1] = MALLOC(sizeof(struct FL_INFO));
-  files[anz-1]->name = MALLOC((strlen(nfl)+1)*sizeof(char));
+  files = realloc(files, anz * sizeof(struct FL_INFO *));
+  files[anz-1] = malloc(sizeof(struct FL_INFO));
+  files[anz-1]->name = malloc((strlen(nfl)+1)*sizeof(char));
   strcpy(files[anz-1]->name, nfl);
   files[anz-1]->line = atoi(tstr+i+1);
  }
  i = (strlen(str) + 6);
- fstr = MALLOC((i+1) * sizeof(char));
+ fstr = malloc((i+1) * sizeof(char));
  strcat(strcpy(fstr, "Node: "), str);
  if (fstr[n = strlen(fstr)-1] == HED) {  fstr[n] = '\0';  i--;  }
  while ((ptmp = e_i_fgets(tstr, 256, fp)) && strncmp(tstr, fstr, i))
@@ -1133,7 +1133,7 @@ IFILE *e_info_jump(char *str, char **path, IFILE *fp)
    ;
   if (files[i-1]->name[0] == DIRC)
   {
-   ptmp = MALLOC((strlen(files[i-1]->name)+1)*sizeof(char));
+   ptmp = malloc((strlen(files[i-1]->name)+1)*sizeof(char));
    strcpy(ptmp, files[i-1]->name);
   }
   else
@@ -1141,7 +1141,7 @@ IFILE *e_info_jump(char *str, char **path, IFILE *fp)
    for (n = strlen(*path)-1; n >= 0 && *(*path+n) != DIRC; n--)
     ;
    n++;
-   ptmp = MALLOC((strlen(files[i-1]->name)+n+1)*sizeof(char));
+   ptmp = malloc((strlen(files[i-1]->name)+n+1)*sizeof(char));
    for (j = 0; j < n; j++)
     ptmp[j] = *(*path+j);
    ptmp[j] = '\0';
@@ -1151,19 +1151,19 @@ IFILE *e_info_jump(char *str, char **path, IFILE *fp)
   {
    e_i_fclose(fp);
    fp = fpn;
-   FREE(*path);
+   free(*path);
    *path = ptmp;
   }
   else
-   FREE(ptmp);
+   free(ptmp);
  }
- FREE(fstr);
+ free(fstr);
  for (i = 0; i < anz; i++)
  {
-  FREE(files[i]->name);
-  FREE(files[i]);
+  free(files[i]->name);
+  free(files[i]);
  }
- FREE(files);
+ free(files);
  return(fp);
 }
 
@@ -1188,7 +1188,7 @@ char *e_mk_info_pt(char *str, char *node)
  tmp[i] = '\0';
  if (i == 0)
   return(NULL);
- ptmp = MALLOC((strlen(tmp)+1)*sizeof(char));
+ ptmp = malloc((strlen(tmp)+1)*sizeof(char));
  strcpy(ptmp, tmp);
  return(ptmp);
 }
@@ -1201,9 +1201,9 @@ char *e_mk_info_path(char *path, char *file)
  if (!info_file || !*info_file) return(NULL);
  if (file[0] == DIRC)
  {
-  if (path && !strcmp(path, file)) {  FREE(path);  return(NULL);  }
-  else if(path) FREE(path);
-  if (!(path = MALLOC((strlen(file) + 1) * sizeof(char)))) return(NULL);
+  if (path && !strcmp(path, file)) {  free(path);  return(NULL);  }
+  else if(path) free(path);
+  if (!(path = malloc((strlen(file) + 1) * sizeof(char)))) return(NULL);
   return (strcpy(path, file));
  }
  tp = info_file;
@@ -1214,10 +1214,10 @@ char *e_mk_info_path(char *path, char *file)
   else if (n == 1) path[n++] = PTHD;
   while (strncmp(tp, path, n) && (tp = strchr(tp, PTHD)) != NULL && *++tp);
   if (tp == NULL || !*tp || !*(tp += n)) return(NULL);
-  FREE(path);
+  free(path);
  }
  for (n = 0; tp[n] && tp[n] != PTHD; n++);
- if (!(path = MALLOC((strlen(file) + n + 2) * sizeof(char)))) return(NULL);
+ if (!(path = malloc((strlen(file) + n + 2) * sizeof(char)))) return(NULL);
  strncpy(path, tp, n);
  if (n > 1) path[n++] = DIRC;
  strcpy(path + n, file);
@@ -1241,9 +1241,9 @@ int e_read_info(char *str, FENSTER *f, char *file)
    } while(!fp && path);
    if(!fp) return(1);
    e_close_buffer(f->b);
-   if( (f->b = (BUFFER *) MALLOC(sizeof(BUFFER))) == NULL)
+   if( (f->b = (BUFFER *) malloc(sizeof(BUFFER))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, f->fb);
-   if( (f->b->bf = (STRING *) MALLOC(MAXLINES*sizeof(STRING))) == NULL)
+   if( (f->b->bf = (STRING *) malloc(MAXLINES*sizeof(STRING))) == NULL)
    e_error(e_msg[ERR_LOWMEM], 1, f->fb);
    f->b->f = f;
    f->b->b = e_set_pnt(0, 0);
@@ -1257,7 +1257,7 @@ int e_read_info(char *str, FENSTER *f, char *file)
    {  if(!strncmp(tstr, "Indirect:", 9)) fp = e_info_jump(str, &path, fp);
       else if(!strncmp(tstr, "File:", 5) && strstr(tstr, fstr)) break;
    }
-   FREE(path);
+   free(path);
    if(ptmp)
    {  ud_help->nstr = e_mk_info_pt(tstr, "Next");
       ud_help->pstr = e_mk_info_pt(tstr, "Prev");
@@ -1327,11 +1327,11 @@ int e_help_loc(FENSTER *f, int sw)
  }
  if (i < 0)
   e_edit(f->ed, "Help");
- if ((tmp || sw) && (next = MALLOC(sizeof(struct help_ud))))
+ if ((tmp || sw) && (next = malloc(sizeof(struct help_ud))))
  {
   if (tmp)
   {
-   next->str = MALLOC((strlen(tmp)+1) * sizeof(char));
+   next->str = malloc((strlen(tmp)+1) * sizeof(char));
    if (next->str)
     strcpy(next->str, tmp);
   }
@@ -1358,13 +1358,13 @@ int e_help_options(FENSTER *f)
 
  if (!info_file)
  {
-  info_file = MALLOC(1);
+  info_file = malloc(1);
   info_file[0] = '\0';
  }
  strcpy(str, info_file);
  if (e_add_arguments(str, "Info-Path", f, 0 , AltI, NULL))
  {
-  info_file = REALLOC(info_file, strlen(str) + 1);
+  info_file = realloc(info_file, strlen(str) + 1);
   strcpy(info_file, str);
  }
  return(0);

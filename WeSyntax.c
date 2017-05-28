@@ -95,13 +95,13 @@ void WpeSyntaxReadFile(ECNT *cn)
   if ((syntax_file = fopen(tmp, "r")) == NULL)
   {
    /* C Syntax (".c" extension) */
-   new_syntax = WpeMalloc(sizeof(WpeSyntaxExt));
+   new_syntax = malloc(sizeof(WpeSyntaxExt));
    new_syntax->extension = (char **)WpeExpArrayCreate(1, sizeof(char *), 1);
    new_syntax->extension[0] = strdup(".c");
    new_syntax->syntax_rule = &WpeCSyntaxRule;
    WpeExpArrayAdd((void **)&WpeSyntaxDef, &new_syntax);
    /* C++ Syntax (".C", ".cpp", ".cxx", ".cc", ".h", and ".hpp" extensions) */
-   new_syntax = WpeMalloc(sizeof(WpeSyntaxExt));
+   new_syntax = malloc(sizeof(WpeSyntaxExt));
    new_syntax->extension = (char **)WpeExpArrayCreate(6, sizeof(char *), 1);
    new_syntax->extension[0] = strdup(".C");
    new_syntax->extension[1] = strdup(".cpp");
@@ -117,7 +117,7 @@ void WpeSyntaxReadFile(ECNT *cn)
  }
  while (fscanf(syntax_file, "%s", tmp) == 1)
  {
-  new_syntax = WpeMalloc(sizeof(WpeSyntaxExt));
+  new_syntax = malloc(sizeof(WpeSyntaxExt));
   i = atoi(tmp);
   if (i > 0)
   {
@@ -137,13 +137,13 @@ void WpeSyntaxReadFile(ECNT *cn)
    new_syntax->extension = (char **)WpeExpArrayCreate(1, sizeof(char *), 1);
    new_syntax->extension[0] = WpeStrdup(tmp);
   }
-  new_syntax->syntax_rule = WpeMalloc(sizeof(WpeSyntaxRule));
+  new_syntax->syntax_rule = malloc(sizeof(WpeSyntaxRule));
   if (fscanf(syntax_file, "%d", &reserved_num) != 1)
   {
    e_error("Error reading syntax_def", 0, cn->fb);
    return ;
   }
-  new_syntax->syntax_rule->reserved_word = WpeMalloc((reserved_num + 1) *
+  new_syntax->syntax_rule->reserved_word = malloc((reserved_num + 1) *
                                                      sizeof(char *));
   for (i = 0; i < reserved_num; i++)
   {
@@ -160,7 +160,7 @@ void WpeSyntaxReadFile(ECNT *cn)
    e_error("Error reading syntax_def", 0, cn->fb);
    return ;
   }
-  new_syntax->syntax_rule->long_operator = WpeMalloc((long_op_num + 1) *
+  new_syntax->syntax_rule->long_operator = malloc((long_op_num + 1) *
                                                      sizeof(char *));
   for (i = 0; i < long_op_num; i++)
   {
