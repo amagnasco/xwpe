@@ -6,6 +6,7 @@
 
 #include "messages.h"
 #include "edit.h"
+#include "we_mouse.h"
 
 #if  MOUSE
 
