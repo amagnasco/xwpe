@@ -2,6 +2,7 @@
 #define WE_BLOCK_H
 
 #include "we_edit.h"
+#include "we_fl_unix.h"
 
 int e_blck_del(FENSTER *f);
 int e_blck_dup(char *dup, FENSTER *f);

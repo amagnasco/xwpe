@@ -5,6 +5,7 @@
 #include "we_block.h"
 #include "we_wind.h"
 #include "we_e_aus.h"
+#include "we_fl_unix.h"
 
 /*   we_edit.c   */
 int e_edit(ECNT *cn, char *filename);
