@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "we_edit.h"
+#include "we_e_aus.h"
 
 void e_ini_desk(ECNT * cn);
 void FARBE_Init(FARBE * fb);

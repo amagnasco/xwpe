@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "we_block.h"
 #include "we_wind.h"
+#include "we_e_aus.h"
 
 /*   we_edit.c   */
 int e_edit(ECNT *cn, char *filename);
