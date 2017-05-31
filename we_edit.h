@@ -3,4 +3,6 @@
 
 #include "globals.h"
 
+#include "we_block.h"
+
 #endif

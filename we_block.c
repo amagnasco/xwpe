@@ -6,6 +6,7 @@
 
 #include "messages.h"
 #include "edit.h"
+#include "we_block.h"
 #include <ctype.h>
 
 extern int e_undo_sw;

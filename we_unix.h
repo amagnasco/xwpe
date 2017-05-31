@@ -4,4 +4,6 @@
 #include "globals.h"
 #include "we_main.h"
 
+int e_edt_copy(FENSTER *f);
+
 #endif
