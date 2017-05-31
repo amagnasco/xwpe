@@ -3937,37 +3937,37 @@ int e_get_funct_in(char *nstr, FENSTER * f)
 int e_funct_in(FENSTER * f)
 {
   int             n, xa = 37, ya = 2, num = 8;
-  OPTK           *opt = malloc(num * sizeof(OPTK));
+  OPTK           *optk = malloc(num * sizeof(OPTK));
   char            nstr[2];
 
-  opt[0].t = "User Commands";
-  opt[0].x = 0;
-  opt[0].o = 'U';
-  opt[1].t = "System Calls";
-  opt[1].x = 0;
-  opt[1].o = 'S';
-  opt[2].t = "C-Lib.-Functions";
-  opt[2].x = 0;
-  opt[2].o = 'C';
-  opt[3].t = "Devices & Netw. I.";
-  opt[3].x = 0;
-  opt[3].o = 'D';
-  opt[4].t = "File Formats";
-  opt[4].x = 0;
-  opt[4].o = 'F';
-  opt[5].t = "Games & Demos";
-  opt[5].x = 0;
-  opt[5].o = 'G';
-  opt[6].t = "Environment, ...";
-  opt[6].x = 0;
-  opt[6].o = 'E';
-  opt[7].t = "Maintenance Com.";
-  opt[7].x = 0;
-  opt[7].o = 'M';
+  optk[0].t = "User Commands";
+  optk[0].x = 0;
+  optk[0].o = 'U';
+  optk[1].t = "System Calls";
+  optk[1].x = 0;
+  optk[1].o = 'S';
+  optk[2].t = "C-Lib.-Functions";
+  optk[2].x = 0;
+  optk[2].o = 'C';
+  optk[3].t = "Devices & Netw. I.";
+  optk[3].x = 0;
+  optk[3].o = 'D';
+  optk[4].t = "File Formats";
+  optk[4].x = 0;
+  optk[4].o = 'F';
+  optk[5].t = "Games & Demos";
+  optk[5].x = 0;
+  optk[5].o = 'G';
+  optk[6].t = "Environment, ...";
+  optk[6].x = 0;
+  optk[6].o = 'E';
+  optk[7].t = "Maintenance Com.";
+  optk[7].x = 0;
+  optk[7].o = 'M';
 
-  n = e_opt_sec_box(xa, ya, num, opt, f, 1);
+  n = e_opt_sec_box(xa, ya, num, optk, f, 1);
 
-  free(opt);
+  free(optk);
   if(n < 0)
     return(WPE_ESC);
 

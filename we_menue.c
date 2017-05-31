@@ -651,12 +651,13 @@ int WpeHandleSubmenu(int xa, int ya, int xe, int ye, int nm, OPTK * fopt, FENSTE
 /*      fill "options" struct */
 OPTK WpeFillSubmenuItem(char *t, int x, char o, int(*fkt) ())
 {
-  OPTK            opt;
+  // FIXME: returning a locally allocated automatic variable !
+  OPTK            optk;
 
-  opt.t = t;
-  opt.x = x;
-  opt.o = o;
-  opt.fkt = fkt;
-  return(opt);
+  optk.t = t;
+  optk.x = x;
+  optk.o = o;
+  optk.fkt = fkt;
+  return(optk);
 }
 

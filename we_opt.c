@@ -233,16 +233,16 @@ int e_sys_info(FENSTER *f)
 int e_ad_colors(FENSTER *f)
 {
  int n, xa = 48, ya = 2, num = 4;
- OPTK *opt = malloc(num * sizeof(OPTK));
+ OPTK *optk = malloc(num * sizeof(OPTK));
 
- opt[0].t = "Editor Colors";     opt[0].x = 0;  opt[0].o = 'E';
- opt[1].t = "Desk Colors";       opt[1].x = 0;  opt[1].o = 'D';
- opt[2].t = "Option Colors";     opt[2].x = 0;  opt[2].o = 'O';
- opt[3].t = "Progr. Colors";     opt[3].x = 0;  opt[3].o = 'P';
+ optk[0].t = "Editor Colors";     optk[0].x = 0;  optk[0].o = 'E';
+ optk[1].t = "Desk Colors";       optk[1].x = 0;  optk[1].o = 'D';
+ optk[2].t = "optkion Colors";     optk[2].x = 0;  optk[2].o = 'O';
+ optk[3].t = "Progr. Colors";     optk[3].x = 0;  optk[3].o = 'P';
 
- n = e_opt_sec_box(xa, ya, num, opt, f, 1);
+ n = e_opt_sec_box(xa, ya, num, optk, f, 1);
 
- free(opt);
+ free(optk);
  if (n < 0)
   return(WPE_ESC);
 

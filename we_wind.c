@@ -1477,17 +1477,17 @@ int e_mess_win(char *header, char *str, PIC **pic, FENSTER *f)
  return(i == CtrlC ? 1 : 0);
 }
 
-int e_opt_sec_box(int xa, int ya, int num, OPTK *opt, FENSTER *f, int sw)
+int e_opt_sec_box(int xa, int ya, int num, OPTK *optk, FENSTER *f, int sw)
 {
    PIC *pic;
    int n, nold, max = 0, i, c = 0, xe, ye = ya + num + 1;
    for(i = 0; i < num; i++)
-   if((n = strlen(opt[i].t)) > max) max = n;
+   if((n = strlen(optk[i].t)) > max) max = n;
    xe = xa + max + 3;
    pic = e_std_kst(xa, ya, xe, ye, NULL, sw, f->fb->nr.fb, f->fb->nt.fb, f->fb->ne.fb);
    if(pic == NULL)  {  e_error(e_msg[ERR_LOWMEM], 0, f->fb); return(-2);  }
    for (i = 0; i < num; i++)
-   e_pr_str_wsd(xa+2, ya+i+1, opt[i].t, f->fb->mt.fb, opt[i].x,
+   e_pr_str_wsd(xa+2, ya+i+1, optk[i].t, f->fb->mt.fb, optk[i].x,
 		1, f->fb->ms.fb, xa+1, xe-1);
 #if  MOUSE
    while (e_mshit() != 0);
@@ -1495,20 +1495,20 @@ int e_opt_sec_box(int xa, int ya, int num, OPTK *opt, FENSTER *f, int sw)
    n = 0; nold = 1;
    while (c != WPE_ESC && c != WPE_CR)
    {  if (nold != n)
-      {  e_pr_str_wsd(xa+2, nold+ya+1, opt[nold].t, f->fb->mt.fb,
-				opt[nold].x, 1, f->fb->ms.fb, xa+1, xe-1);
-	 e_pr_str_wsd(xa+2, n+ya+1, opt[n].t, f->fb->mz.fb,
-				opt[n].x, 1, f->fb->mz.fb, xa+1, xe-1);
+      {  e_pr_str_wsd(xa+2, nold+ya+1, optk[nold].t, f->fb->mt.fb,
+				optk[nold].x, 1, f->fb->ms.fb, xa+1, xe-1);
+	 e_pr_str_wsd(xa+2, n+ya+1, optk[n].t, f->fb->mz.fb,
+				optk[n].x, 1, f->fb->mz.fb, xa+1, xe-1);
 	 nold = n;
       }
 #if  MOUSE
       if( (c = e_toupper(e_getch())) == -1)
-      c = e_m2_mouse(xa, ya, xe, ye, opt);
+      c = e_m2_mouse(xa, ya, xe, ye, optk);
 #else
       c = e_toupper(e_getch());
 #endif
       for (i = 0; i < ye - ya - 1; i++)
-      if( c == opt[i].o) {  c = WPE_CR;  n = i;  break;  }
+      if( c == optk[i].o) {  c = WPE_CR;  n = i;  break;  }
       if (i > ye - ya) c = WPE_ESC;
       else if ( c == CUP || c == CtrlP ) n = n > 0 ? n-1 : ye - ya - 2 ;
       else if ( c == CDO || c == CtrlN ) n = n < ye-ya-2 ? n+1 : 0 ;
