@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "edit.h"
+#include "we_hfkt.h"
 #include <regex.h>
 
 /*        find string in text line    */

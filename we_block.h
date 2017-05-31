@@ -1,6 +1,8 @@
 #ifndef WE_BLOCK_H
 #define WE_BLOCK_H
 
+#include "we_edit.h"
+
 int e_blck_del(FENSTER *f);
 int e_blck_dup(char *dup, FENSTER *f);
 int e_show_clipboard(FENSTER *f);

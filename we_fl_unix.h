@@ -3,5 +3,6 @@
 
 #include "we_block.h"
 #include "we_wind.h"
+#include "we_edit.h"
 
 #endif

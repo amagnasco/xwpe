@@ -6,6 +6,7 @@
 
 #include "messages.h"
 #include "edit.h"
+#include "we_prog.h"
 #include "WeExpArr.h"
 
 #ifdef PROG

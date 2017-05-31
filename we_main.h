@@ -2,6 +2,7 @@
 #define WE_MAIN_H
 
 #include "globals.h"
+#include "we_edit.h"
 
 void e_ini_desk(ECNT * cn);
 void FARBE_Init(FARBE * fb);
