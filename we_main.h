@@ -1,7 +1,7 @@
 #ifndef WE_MAIN_H
 #define WE_MAIN_H
 
-extern struct CNT * WpeEditor;
+#include "globals.h"
 
 void e_ini_desk(ECNT * cn);
 void FARBE_Init(FARBE * fb);
