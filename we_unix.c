@@ -27,6 +27,7 @@ int WpeTermInit(int *argc, char **argv);
 #endif
 
 #include "edit.h"		/*   exchange for D.S.  */
+#include "we_unix.h"
 #include "attrb.h"
 
 #ifdef NOSYMLINKS

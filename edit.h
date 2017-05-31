@@ -341,16 +341,6 @@ typedef struct wpeOptionSection {
 } WpeOptionSection;
 
 
-
-/*   we_main.c   */
-extern struct CNT *WpeEditor;
-
-void e_ini_desk(ECNT *cn);
-void FARBE_Init(FARBE *fb);
-FARBE *e_ini_farbe();
-int e_switch_blst(ECNT *cn);
-void e_free_find(FIND *fd);
-
 /*   we_block.c   */
 int e_blck_del(FENSTER *f);
 int e_blck_dup(char *dup, FENSTER *f);

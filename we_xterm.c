@@ -7,6 +7,7 @@
 #ifndef NO_XWINDOWS
 
 #include "edit.h"
+#include "we_xterm.h"
 
 /* partial conversion in place */
 #include "WeXterm.h"

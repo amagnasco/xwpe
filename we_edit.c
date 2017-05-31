@@ -6,6 +6,7 @@
 
 #include "messages.h"
 #include "edit.h"
+#include "we_edit.h"
 #include "makro.h"
 
 #include<sys/types.h> /*  included for digital station  */

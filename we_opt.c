@@ -6,6 +6,7 @@
 
 #include "messages.h"
 #include "edit.h"
+#include "we_opt.h"
 #include "WeExpArr.h"
 #include <ctype.h>
 #include <sys/types.h>

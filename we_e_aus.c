@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "edit.h"
+#include "we_e_aus.h"
 
 /*
    draw entire screen with uniform chars and color */

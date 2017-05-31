@@ -13,6 +13,7 @@
 #include <signal.h>
 #include "messages.h"
 #include "edit.h"
+#include "we_main.h"
 
 #ifdef UNIX
 #include <sys/types.h>
