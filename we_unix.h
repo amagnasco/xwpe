@@ -8,6 +8,4 @@
 #include "we_mouse.h"
 #include "we_opt.h"
 
-int e_edt_copy(FENSTER *f);
-
 #endif

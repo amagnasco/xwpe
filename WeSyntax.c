@@ -23,6 +23,7 @@
 #include "WeExpArr.h"
 #include "WeProg.h"
 #include "WeString.h"
+#include "WeSyntax.h"
 
 unsigned char *WpeCReservedWord[] = {
  "auto", "break", "case", "char", "const", "continue", "default", "do",
