@@ -340,12 +340,6 @@ typedef struct wpeOptionSection {
  int (*function)(ECNT *cn, char *section, char *option, char *value);
 } WpeOptionSection;
 
-/*   we_menue.c   */
-int WpeHandleMainmenu(int n, FENSTER *f);
-int WpeHandleSubmenu(int xa, int ya, int xe, int ye, 
-                     int nm, OPTK *fopt, FENSTER *f);
-OPTK WpeFillSubmenuItem(char *t, int x, char o, int (*fkt)());
-
 /*   we_mouse.c   */
 #if  MOUSE
 int e_mshit(void);
