@@ -358,11 +358,6 @@ int e_make_xrect_abs(int xa, int ya, int xe, int ye, int sw);
 #include "WeProg.h"
 #endif
 
-/* WeLinux.c */
-#ifdef __linux__
-int WpeLinuxBioskey(void);
-#endif
-
 extern char *e_msg[];
 extern char e_we_sw;
 
