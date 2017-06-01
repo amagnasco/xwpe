@@ -7,6 +7,7 @@
 #include "messages.h"
 #include "edit.h"
 #include "we_edit.h"
+#include "we_fl_fkt.h"
 #include "makro.h"
 #ifdef UNIX
 #include <sys/types.h>

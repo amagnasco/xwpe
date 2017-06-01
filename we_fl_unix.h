@@ -4,6 +4,7 @@
 #include "we_block.h"
 #include "we_wind.h"
 #include "we_edit.h"
+#include "we_fl_fkt.h"
 
 #ifdef UNIX
 #include "we_fl_unix_private.h"
