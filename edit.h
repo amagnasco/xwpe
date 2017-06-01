@@ -358,12 +358,6 @@ int e_make_xrect_abs(int xa, int ya, int xe, int ye, int sw);
 #include "WeProg.h"
 #endif
 
-/* we_gpm.c */
-#ifdef HAVE_LIBGPM
-int WpeGpmInit(void);
-int WpeGpmMouse(int *g);
-#endif
-
 /* WeLinux.c */
 #ifdef __linux__
 int WpeLinuxBioskey(void);
