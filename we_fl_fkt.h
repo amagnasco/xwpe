@@ -5,6 +5,7 @@
 #include "we_e_aus.h"
 #include "we_fl_unix.h"
 #include "we_mouse.h"
+#include "we_opt.h"
 
 
 /*   we_fl_fkt.c   */

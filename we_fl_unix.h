@@ -6,6 +6,7 @@
 #include "we_edit.h"
 #include "we_fl_fkt.h"
 #include "we_mouse.h"
+#include "we_opt.h"
 
 #ifdef UNIX
 #include "we_fl_unix_private.h"

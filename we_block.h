@@ -3,6 +3,7 @@
 
 #include "we_edit.h"
 #include "we_fl_unix.h"
+#include "we_opt.h"
 
 int e_blck_del(FENSTER *f);
 int e_blck_dup(char *dup, FENSTER *f);

@@ -2,6 +2,7 @@
 #define WE_HFKT_H
 
 #include "we_edit.h"
+#include "we_opt.h"
 
 /*   we_hfkt.c   */
 int e_strstr(int x, int n, unsigned char *s, unsigned char *f);

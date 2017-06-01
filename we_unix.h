@@ -6,6 +6,7 @@
 #include "we_edit.h"
 #include "we_e_aus.h"
 #include "we_mouse.h"
+#include "we_opt.h"
 
 int e_edt_copy(FENSTER *f);
 
