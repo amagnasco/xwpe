@@ -7,6 +7,7 @@
 #include "we_fl_fkt.h"
 #include "we_mouse.h"
 #include "we_opt.h"
+#include "we_debug.h"
 
 #ifdef UNIX
 #include "we_fl_unix_private.h"

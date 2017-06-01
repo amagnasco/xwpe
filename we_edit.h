@@ -9,6 +9,7 @@
 #include "we_fl_fkt.h"
 #include "we_menue.h"
 #include "we_mouse.h"
+#include "we_debug.h"
 
 /*   we_edit.c   */
 int e_edit(ECNT *cn, char *filename);

@@ -6,7 +6,7 @@
 #include "we_fl_unix.h"
 #include "we_mouse.h"
 #include "we_opt.h"
-
+#include "we_debug.h"
 
 /*   we_fl_fkt.c   */
 char *e_mkfilename(char *dr, char *fn);
