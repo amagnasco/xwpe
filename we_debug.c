@@ -1775,10 +1775,10 @@ int e_start_debug(FENSTER *f)
   e_error(estr, 0, f->fb);
   return(-1);
  }
- e_sys_ini();
+ (*e_u_sys_ini)();
  if (e__project && (file = e_exec_deb(f, e_s_prog.exe_name )) == 0)
  {
-  e_sys_end();
+  (*e_u_sys_end)();
   return(-2);
  }
  else if (!e__project)
@@ -1795,11 +1795,11 @@ int e_start_debug(FENSTER *f)
   }
   if ((file = e_exec_deb(f, estr)) == 0)
   {
-   e_sys_end();
+   (*e_u_sys_end)();
    return(-2);
   }
  }
- e_sys_end();
+ (*e_u_sys_end)();
  e_d_p_message(e_d_msg[ERR_STARTDEBUG], f, 1);
  WpeMouseChangeShape(WpeDebuggingShape);
  if (cn->mxedt > 1)

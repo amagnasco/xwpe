@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "we_main.h"
 #include "we_mouse.h"
+#include "we_xterm.h"
 
 /*   we_opt.c   */
 char *WpeStringToValue(const char *str);

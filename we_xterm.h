@@ -6,4 +6,6 @@
 #include "we_block.h"
 #include "we_e_aus.h"
 
+extern int (*e_u_ini_size)(void);
+
 #endif

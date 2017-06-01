@@ -1033,14 +1033,14 @@ int WpeHandleFileManager(ECNT * cn)
             g[0] = 2;
             fk_mouse(g);
 #endif
-            e_sys_ini();
+            (*e_u_sys_ini)();
             printf(e_msg[ERR_EXEC], filen);
             fflush(stdout);
           }
           if ((*e_u_system)(filen))
           {
             if(!WpeIsXwin())
-              e_sys_end();
+              (*e_u_sys_end)();
             e_error(e_msg[ERR_COMMAND], 0, f->fb);
           }
           else if(!WpeIsXwin())
@@ -1052,7 +1052,7 @@ int WpeHandleFileManager(ECNT * cn)
           }
           if(!WpeIsXwin())
           {
-            e_sys_end();
+            (*e_u_sys_end)();
             e_close_view(outp, 1);
             fk_cursor(0);
 #if MOUSE

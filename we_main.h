@@ -8,6 +8,7 @@
 #include "we_fl_fkt.h"
 #include "we_hfkt.h"
 #include "we_opt.h"
+#include "we_unix.h"
 
 void e_ini_desk(ECNT * cn);
 void FARBE_Init(FARBE * fb);

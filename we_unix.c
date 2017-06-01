@@ -379,7 +379,7 @@ void e_exit(int n)
   kill(e_d_pid, 7);
 #endif
  (*WpeDisplayEnd)();
- e_switch_screen(0);
+ (*e_u_switch_screen)(0);
  if (n != 0)
  {
   printf("\nError-Exit!   Code: %d!\n", n);

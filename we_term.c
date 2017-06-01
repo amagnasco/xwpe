@@ -1048,7 +1048,7 @@ int e_d_switch_screen(int sw)
  else
   e_g_sys_end();
 #endif
- return(e_switch_screen(sw));
+  return((*e_u_switch_screen)(sw));
 }
 
 int e_t_d_switch_out(int sw)
@@ -1088,14 +1088,14 @@ void e_exitm(char *s, int n)
 
 int e_s_sys_ini()
 {
- e_sys_ini();
- return(e_switch_screen(0));
+ (*e_u_sys_ini)();
+  return((*e_u_switch_screen)(0));
 }
 
 int e_s_sys_end()
 {
- e_switch_screen(1);
- return(e_sys_end());
+ (*e_u_switch_screen)(1);
+ return((*e_u_sys_end)());
 }
 
 #endif  /*  Is UNIX       */

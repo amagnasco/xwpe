@@ -202,9 +202,9 @@ int e_p_make(FENSTER *f)
 #endif
   if (!e_p_mess_win("Linking", e_argc, e_arg, &pic, f))
   {
-   e_sys_ini();
+   (*e_u_sys_ini)();
    file = e_exec_inf(f, e_arg, e_argc);
-   e_sys_end();
+   (*e_u_sys_end)();
   }
   else
    file = 0;
@@ -360,7 +360,7 @@ int e_comp(FENSTER *f)
  argc = e_add_arg(&arg, "-o", argc, argc);
  argc = e_add_arg(&arg, ostr, argc, argc);
 #endif
- e_sys_ini();
+ (*e_u_sys_ini)();
 #ifdef CHECKHEADER
  if ((stat(ostr, obuf) || e_check_header(fstr, obuf->st_mtime, cn, 0)))
 #else
@@ -372,14 +372,14 @@ int e_comp(FENSTER *f)
   if (!e_p_mess_win("Compiling", argc, arg, &pic, f) &&
     (file = e_exec_inf(f, arg, argc)) == 0)
   {
-   e_sys_end();
+   (*e_u_sys_end)();
    e_free_arg(arg, argc);
    if (pic)
     e_close_view(pic, 1);
    return(WPE_ESC);
   }
  }
- e_sys_end();
+ (*e_u_sys_end)();
  e_free_arg(arg, argc);
  i = e_p_exec(file, f, pic);
  return(i);
@@ -1434,9 +1434,9 @@ int e_make_library(char *library, char *ofile, FENSTER *f)
  ar_arg[3] = ofile;
  if ((ret = e_p_mess_win("Insert into Archive", 4, ar_arg, &pic, f)) == 0)
  {
-  e_sys_ini();
+  (*e_u_sys_ini)();
   file = e_exec_inf(f, ar_arg, 4);
-  e_sys_end();
+  (*e_u_sys_end)();
   if ((file) && ((ret = e_p_exec(file, f, pic)) == 0))
   {
    pic = NULL;
@@ -1446,9 +1446,9 @@ int e_make_library(char *library, char *ofile, FENSTER *f)
     ar_arg[1] = library;
     ar_arg[2] = NULL;
     if(ret = e_p_mess_win("Convert Archive", 2, ar_arg, &pic, f)) goto m_l_ende;
-    e_sys_ini();
+    (*e_u_sys_ini)();
     file = e_exec_inf(f, ar_arg, 2);
-    e_sys_end();
+    (*e_u_sys_end)();
     if(file) ret = e_p_exec(file, f, pic);
 #endif
 */
@@ -1638,7 +1638,7 @@ int e_exec_make(FENSTER *f)
  if (e_new_message(f))
   return(WPE_ESC);
  f = cn->f[cn->mxedt];
- e_sys_ini();
+ (*e_u_sys_ini)();
  if (e_s_prog.compiler)
   free(e_s_prog.compiler);
  e_s_prog.compiler = malloc(5*sizeof(char));
@@ -1656,11 +1656,11 @@ int e_exec_make(FENSTER *f)
  }
  if ((file = e_exec_inf(f, arg, argc)) == 0)
  {
-  e_sys_end();
+  (*e_u_sys_end)();
   WpeMouseRestoreShape();
   return(WPE_ESC);
  }
- e_sys_end();
+ (*e_u_sys_end)();
  e_free_arg(arg, argc - 1);
  i = e_p_exec(file, f, NULL);
  WpeMouseRestoreShape();
@@ -2186,17 +2186,17 @@ int e_c_project(FENSTER *f)
   remove(ofile);
   sccs = 1;
   j = e_p_mess_win("Compiling", argc, arg, &pic, f);
-  e_sys_ini();
+  (*e_u_sys_ini)();
   if (j != 0 || (file = e_exec_inf(f, arg, argc)) == 0)
   {
-   e_sys_end();
+   (*e_u_sys_end)();
    e_free_arg(arg, argc);
    freedf(df);
    e_free_arg(e_arg, e_argc);
    if (pic) e_close_view(pic, 1);
    return(WPE_ESC);
   }
-  e_sys_end();
+  (*e_u_sys_end)();
   e_p_l_comp = 1;
   if (e_p_exec(file, f, pic))
   {
@@ -2252,9 +2252,9 @@ gt_library:
   ar_arg[2] = NULL;
   if (!(j = e_p_mess_win("Convert Archive", 2, ar_arg, &pic, f)))
   {
-   e_sys_ini();
+   (*e_u_sys_ini)();
    file = e_exec_inf(f, ar_arg, 2);
-   e_sys_end();
+   (*e_u_sys_end)();
    if (file) j = e_p_exec(file, f, pic);
   }
   if (j || !file)

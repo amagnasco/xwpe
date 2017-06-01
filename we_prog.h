@@ -4,5 +4,6 @@
 #include "we_edit.h"
 #include "we_hfkt.h"
 #include "we_mouse.h"
+#include "we_unix.h"
 
 #endif
