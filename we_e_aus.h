@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "we_edit.h"
+#include "we_mouse.h"
 
 /*   we_e_aus.c   */
 void e_cls(int frb, int chr);

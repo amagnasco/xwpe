@@ -3,6 +3,7 @@
 
 #include "we_block.h"
 #include "we_edit.h"
+#include "we_mouse.h"
 
 /*   we_menue.c   */
 int WpeHandleMainmenu(int n, FENSTER *f);

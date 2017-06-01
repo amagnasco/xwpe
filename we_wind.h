@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "we_main.h"
+#include "we_mouse.h"
 
 /*******************************************************************************/
 /* (FENSTER *)f                                   */

@@ -7,6 +7,8 @@
 #include "we_e_aus.h"
 #include "we_fl_unix.h"
 #include "we_fl_fkt.h"
+#include "we_menue.h"
+#include "we_mouse.h"
 
 /*   we_edit.c   */
 int e_edit(ECNT *cn, char *filename);
