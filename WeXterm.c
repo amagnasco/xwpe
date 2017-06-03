@@ -22,12 +22,14 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
-#include "WeString.h"
-#include "WeXterm.h"
 
 /* needed for the time being to call old routines */
 #include "model.h"
 #include "edit.h"
+
+
+#include "WeString.h"
+#include "WeXterm.h"
 
 #ifndef DEFAULT_ALTMASK
 #if defined(__linux__) || defined(__osf__)			/* a.r. */

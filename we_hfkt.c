@@ -4,6 +4,7 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "model.h"
 #include "edit.h"
 #include "WeString.h"
 #include "we_hfkt.h"

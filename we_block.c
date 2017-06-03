@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "messages.h"
+#include "model.h"
 #include "edit.h"
 #include "we_block.h"
 #include "we_progn.h"

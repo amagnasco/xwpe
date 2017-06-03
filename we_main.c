@@ -12,6 +12,7 @@
 /* includes */
 #include <signal.h>
 #include "messages.h"
+#include "model.h"
 #include "edit.h"
 #include "we_main.h"
 #include "WeProg.h"

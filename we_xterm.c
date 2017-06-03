@@ -6,6 +6,7 @@
 
 #ifndef NO_XWINDOWS
 
+#include "model.h"
 #include "edit.h"
 #include "we_unix.h"
 #include "WeString.h"

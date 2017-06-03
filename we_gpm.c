@@ -3,6 +3,7 @@
 
 Based on we_linux.c -- Created by Sebastiano Suraci */
 
+#include "model.h"
 #include "edit.h"
 #include <gpm.h>
 

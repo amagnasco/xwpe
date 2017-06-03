@@ -6,6 +6,7 @@
 
 #include "messages.h"
 #include "options.h"
+#include "model.h"
 #include "edit.h"
 #include "we_opt.h"
 #include "WeExpArr.h"
