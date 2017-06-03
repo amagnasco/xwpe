@@ -24,6 +24,7 @@ extern int cur_on;
 #define fk_getch() getch()
 #else
 #ifdef HAVE_LIBGPM
+#include <gpm.h>
 #define fk_getch() Gpm_Getc(stdin)
 #else
 #define fk_getch() fgetc(stdin)

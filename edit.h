@@ -23,10 +23,6 @@
 #include <ctype.h>
 #include <limits.h>
 
-#ifdef HAVE_LIBGPM
-#include <gpm.h>
-#endif
-
 #ifdef UNIX
 #include <unistd.h>
 #include "unixmakr.h"
