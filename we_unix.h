@@ -61,4 +61,6 @@ extern int (*e_u_system)(const char *exe);
 extern int (*e_u_kbhit)(void);
 extern void (*WpeDisplayEnd)(void);
 
+extern char e_we_sw;
+
 #endif

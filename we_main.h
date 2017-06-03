@@ -16,4 +16,6 @@ FARBE * e_ini_farbe();
 int e_switch_blst(ECNT * cn);
 void e_free_find(FIND * fd);
 
+extern char *e_msg[];
+
 #endif

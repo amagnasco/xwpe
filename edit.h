@@ -38,7 +38,7 @@
 
 extern int MAXSLNS, MAXSCOL, MENOPT;
 #define MAXEDT 35
-#endif
+#endif // #ifdef UNIX
 
 #define MAXLINES 10
 #define MAXCOLUM 120
@@ -344,17 +344,16 @@ typedef struct wpeOptionSection {
 
 int e_put_pic_xrect(PIC *pic);
 int e_get_pic_xrect(int xa, int ya, int xe, int ye, PIC *pic);
+
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
 int e_make_xrect(int xa, int ya, int xe, int ye, int sw);
 int e_make_xrect_abs(int xa, int ya, int xe, int ye, int sw);
 #else
 #define e_make_xrect(a,b,c,d,e)
 #define e_make_xrect_abs(a,b,c,d,e)
-#endif
-#endif
+#endif // #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
 
-extern char *e_msg[];
-extern char e_we_sw;
+#endif // #ifdef UNIX
 
-#endif
+#endif // #ifndef __EDIT_H
 
