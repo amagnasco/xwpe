@@ -11,7 +11,9 @@
 
 /* includes */
 #include <signal.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
 #include "model.h"
 #include "edit.h"
 #include "we_main.h"
@@ -19,7 +21,6 @@
 #include "we_prog.h"
 #include "we_fl_unix.h"
 #include "WeString.h"
-#include "options.h"
 
 #ifdef UNIX
 #include <sys/types.h>

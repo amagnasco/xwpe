@@ -4,6 +4,7 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "keys.h"
 #include "model.h"
 #include "edit.h"
 #include "we_term.h"

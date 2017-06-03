@@ -6,6 +6,7 @@
 
 #ifndef NO_XWINDOWS
 
+#include "keys.h"
 #include "model.h"
 #include "edit.h"
 #include "we_unix.h"
