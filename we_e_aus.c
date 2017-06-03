@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include <string.h>
+#include <ctype.h>
 #include "keys.h"
 #include "model.h"
 #include "edit.h"

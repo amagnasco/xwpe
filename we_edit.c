@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include <string.h>
+#include <ctype.h>
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -846,7 +847,7 @@ int e_ctrl_k(FENSTER *f)
  SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
  int c;
 
- c = e_toupper(e_getch());
+ c = toupper(e_getch());
  if (c < 32)
   c = c + 'A' - 1;
  switch (c)
@@ -945,7 +946,7 @@ int e_ctrl_o(FENSTER *f)
  int i, c;
  unsigned char cc;
 
- c = e_toupper(e_getch());
+ c = toupper(e_getch());
  if (c < 32) c = c + 'A' - 1;
  switch(c)
  {

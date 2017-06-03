@@ -4,6 +4,7 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <ctype.h>
 #include <string.h>
 #include "keys.h"
 #include "model.h"
@@ -52,7 +53,7 @@ int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f)
   for (i = x-nf; i >= n; i--)
   {
    for (j = 0; j < nf; j++)
-    if (e_toupper(s[i+j]) != e_toupper(f[j]))
+    if (toupper(s[i+j]) != toupper(f[j]))
      break;
    if (j == nf)
     return(i);
@@ -63,7 +64,7 @@ int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f)
   for (i = x < 0 ? 0 : x; i <= n - nf; i++)
   {
    for (j = 0; j < nf; j++)
-    if (e_toupper(s[i+j]) != e_toupper(f[j]))
+    if (toupper(s[i+j]) != toupper(f[j]))
      break;
    if (j == nf)
     return(i);
@@ -83,17 +84,17 @@ int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
  {
   str = malloc((n+1)*sizeof(unsigned char));
   for (i = 0; i < n; i++)
-   str[i] = e_toupper(s[i]);
+   str[i] = toupper(s[i]);
   str[n] = '\0';
  }
  else
  {
   str = malloc((x+1)*sizeof(unsigned char));
   for (i = 0; i < x; i++)
-   str[i] = e_toupper(s[i]);
+   str[i] = toupper(s[i]);
   str[x] = '\0';
  }
- for (i = 0; (ft[i] = e_toupper(f[i])) != '\0'; i++)
+ for (i = 0; (ft[i] = toupper(f[i])) != '\0'; i++)
   ;
 
  i = e_rstrstr(x, n, str, ft, nn);
