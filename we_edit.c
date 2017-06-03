@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "messages.h"
+#include "options.h"
 #include "edit.h"
 #include "we_edit.h"
 #include "makro.h"

@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "model.h"		/* exchange for D.S.  */
+#include "options.h"
 
 #ifdef XWPE_DLL
 #include <dlfcn.h>

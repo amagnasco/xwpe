@@ -18,6 +18,7 @@
 #include "we_prog.h"
 #include "we_fl_unix.h"
 #include "WeString.h"
+#include "options.h"
 
 #ifdef UNIX
 #include <sys/types.h>
