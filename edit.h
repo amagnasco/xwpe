@@ -353,11 +353,6 @@ int e_make_xrect_abs(int xa, int ya, int xe, int ye, int sw);
 #endif
 #endif
 
-#ifdef PROG
-#include "progr.h"
-#include "WeProg.h"
-#endif
-
 extern char *e_msg[];
 extern char e_we_sw;
 

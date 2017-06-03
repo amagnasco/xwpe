@@ -8,4 +8,6 @@
 
 extern int (*e_u_ini_size)(void);
 
+int e_X_sw_color(void);
+
 #endif

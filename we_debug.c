@@ -7,6 +7,7 @@
 #include "messages.h"
 #include "edit.h"
 #include "we_debug.h"
+#include "we_prog.h"
 
 #ifndef NO_XWINDOWS
 #include "WeXterm.h"

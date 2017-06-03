@@ -8,7 +8,6 @@
 #include "we_mouse.h"
 #include "we_opt.h"
 
-
 /*   we_unix.c   */
 int e_abs_refr(void);
 void e_refresh_area(int x, int y, int width, int height);

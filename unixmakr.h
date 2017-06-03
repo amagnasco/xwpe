@@ -92,8 +92,6 @@ extern char *ctree[5];
 extern char *extbyte, *altextbyte;
 #endif
 
-#define sc_txt_1(f) { if(f->c_sw) f->c_sw = e_sc_txt(f->c_sw, f->b); }
-
 #define sc_txt_2(f) 							\
 {   if(f->c_sw) 							\
     {	if(f->s->mark_begin.y == f->s->mark_end.y)                      \

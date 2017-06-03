@@ -7,6 +7,7 @@
 #include "messages.h"
 #include "edit.h"
 #include "we_block.h"
+#include "we_progn.h"
 #include <ctype.h>
 
 extern int e_undo_sw;
@@ -53,7 +54,9 @@ int e_blck_del(FENSTER *f)
   e_brk_recalc(f,y,len);
 /***********************/ 
  }
- sc_txt_1(f);
+ if (f->c_sw) {
+   f->c_sw = e_sc_txt(f->c_sw, f->b);
+ }
  e_cursor(f, 1);
  e_schirm(f, 1);
  return(0);
@@ -449,8 +452,12 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  bz->b.y = sz->mark_end.y = key-kay+y;
 
  f->save = f->ed->maxchg + 1;
- sc_txt_1(bv->f);
- sc_txt_1(bz->f);
+ if (bv->f->c_sw) {
+   bv->f->c_sw = e_sc_txt(bv->f->c_sw, bv->f->b);
+ }
+ if (bz->f->c_sw) {
+   bz->f->c_sw = e_sc_txt(bz->f->c_sw, bz->f->b);
+ }
  e_cursor(f, 1);
  e_schirm(f, 1);
  free(str);

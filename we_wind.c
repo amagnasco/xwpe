@@ -7,6 +7,8 @@
 #include "messages.h"
 #include "edit.h"
 #include "we_wind.h"
+#include "we_progn.h"
+#include "we_prog.h"
 
 #define MAXSVSTR 20
 

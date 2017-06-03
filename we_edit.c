@@ -8,6 +8,8 @@
 #include "edit.h"
 #include "we_edit.h"
 #include "makro.h"
+#include "we_progn.h"
+#include "we_prog.h"
 
 #include<sys/types.h> /*  included for digital station  */
 #include<sys/stat.h>
@@ -371,7 +373,9 @@ int e_edit(ECNT *cn, char *filename)
  }
 #endif
 #endif
- sc_txt_1(f);
+ if (f->c_sw) {
+   f->c_sw = e_sc_txt(f->c_sw, f->b);
+ }
  if (cn->mxedt > 1)
  {
   fo = cn->f[cn->mxedt-1];

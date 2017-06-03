@@ -8,6 +8,7 @@
 #include "edit.h"
 #include "we_prog.h"
 #include "WeExpArr.h"
+#include "we_fl_unix.h"
 
 #ifdef PROG
 
@@ -21,7 +22,6 @@
 int e_run_sh(FENSTER *f);
 int e_make_library(char *library, char *ofile, FENSTER *f);
 int e_p_exec(int file, FENSTER *f, PIC *pic);
-struct dirfile **e_make_prj_opt(FENSTER *f);
 
 int wfildes[2], efildes[2];
 char *wfile = NULL, *efile = NULL;

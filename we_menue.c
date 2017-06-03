@@ -7,6 +7,8 @@
 #include "messages.h"
 #include "edit.h"
 #include "we_menue.h"
+#include "we_progn.h"
+#include "we_prog.h"
 
 int             e_p_show_messages(FENSTER *f);
 int             e_p_show_watches(FENSTER *f);

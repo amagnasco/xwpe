@@ -7,6 +7,8 @@
 #include "messages.h"
 #include "edit.h"
 #include "we_fl_unix.h"
+#include "we_progn.h"
+#include "we_prog.h"
 
 #ifdef UNIX
 

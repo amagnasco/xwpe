@@ -14,6 +14,9 @@
 #include "messages.h"
 #include "edit.h"
 #include "we_main.h"
+#include "WeProg.h"
+#include "we_prog.h"
+#include "we_fl_unix.h"
 
 #ifdef UNIX
 #include <sys/types.h>

@@ -8,6 +8,7 @@
 #include "edit.h"
 #include "we_opt.h"
 #include "WeExpArr.h"
+#include "we_prog.h"
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>

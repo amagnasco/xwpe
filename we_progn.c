@@ -8,6 +8,8 @@
 #include "edit.h"
 #include "we_progn.h"
 #include "WeExpArr.h"
+#include "we_prog.h"
+#include "WeProg.h"
 
 #undef TESTSDEF
 

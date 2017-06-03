@@ -29,6 +29,7 @@ int WpeTermInit(int *argc, char **argv);
 #include "edit.h"		/*   exchange for D.S.  */
 #include "we_unix.h"
 #include "attrb.h"
+#include "we_progn.h"
 
 #ifdef NOSYMLINKS
 #define lstat(x,y)  stat(x,y)
