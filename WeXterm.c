@@ -22,7 +22,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
-#include "Xwpe.h"
 #include "WeXterm.h"
 
 /* needed for the time being to call old routines */

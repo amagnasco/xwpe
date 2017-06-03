@@ -15,7 +15,6 @@ extern "C" {
   Includes
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #include <X11/Xlib.h>
-#include "Xwpe.h"
 #include "edit.h"
 #include "we_xterm.h"
 //#include "we_unix.h"

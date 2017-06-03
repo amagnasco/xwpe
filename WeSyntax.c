@@ -19,7 +19,6 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #include <stdlib.h>
 #include <string.h>
-#include "Xwpe.h"
 #include "WeExpArr.h"
 #include "WeProg.h"
 #include "WeString.h"

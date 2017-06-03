@@ -11,7 +11,6 @@
 
 #define VERSION "1.5.29a"
 
-//#include "Xwpe.h"
 #include "WeString.h"
 #include "options.h"
 
