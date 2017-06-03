@@ -7,16 +7,4 @@
   04/27/97  Dennis      Created for xwpe reorganization.
 \*-------------------------------------------------------------------------*/
 
-typedef enum wpeMouseShape {
- WpeEditingShape, WpeDebuggingShape, WpeWorkingShape, WpeErrorShape,
- WpeSelectionShape, WpeLastShape
-} WpeMouseShape;
-
-/* Checks if programming editor is running (old variable currently used) */
-#define WpeIsProg() (e_we_sw & 2)
-
-/* Checks if x windows is running (old variable currently used) */
-#define WpeIsXwin() (e_we_sw & 1)
-
 #endif
-
