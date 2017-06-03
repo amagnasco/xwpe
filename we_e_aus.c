@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "edit.h"
+#include "WeString.h"
 #include "we_e_aus.h"
 
 /*

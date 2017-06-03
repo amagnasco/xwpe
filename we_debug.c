@@ -8,6 +8,7 @@
 #include "edit.h"
 #include "we_debug.h"
 #include "we_prog.h"
+#include "WeString.h"
 
 #ifndef NO_XWINDOWS
 #include "WeXterm.h"

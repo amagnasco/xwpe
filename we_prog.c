@@ -9,6 +9,7 @@
 #include "we_prog.h"
 #include "WeExpArr.h"
 #include "we_fl_unix.h"
+#include "WeString.h"
 
 #ifdef PROG
 

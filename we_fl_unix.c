@@ -9,6 +9,7 @@
 #include "we_fl_unix.h"
 #include "we_progn.h"
 #include "we_prog.h"
+#include "WeString.h"
 
 #ifdef UNIX
 

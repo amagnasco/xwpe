@@ -11,7 +11,7 @@
 
 #define VERSION "1.5.29a"
 
-#include "WeString.h"
+//#include "WeString.h"
 #include "options.h"
 
 #include "model.h"

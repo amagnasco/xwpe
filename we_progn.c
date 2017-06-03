@@ -10,6 +10,7 @@
 #include "WeExpArr.h"
 #include "we_prog.h"
 #include "WeProg.h"
+#include "WeString.h"
 
 #undef TESTSDEF
 

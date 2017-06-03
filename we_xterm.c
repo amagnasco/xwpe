@@ -8,6 +8,7 @@
 
 #include "edit.h"
 #include "we_unix.h"
+#include "WeString.h"
 #include "we_xterm.h"
 
 /* partial conversion in place */

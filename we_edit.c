@@ -10,6 +10,7 @@
 #include "makro.h"
 #include "we_progn.h"
 #include "we_prog.h"
+#include "WeString.h"
 
 #include<sys/types.h> /*  included for digital station  */
 #include<sys/stat.h>
