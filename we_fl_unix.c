@@ -4,6 +4,7 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <string.h>
 #include "keys.h"
 #include "messages.h"
 #include "model.h"
@@ -1115,7 +1116,7 @@ int WpeHandleFileManager(ECNT * cn)
               *(be->bf[be->b.y].s + be->b.x) = '\0';
               be->bf[be->b.y].len = be->b.x;
               be->bf[be->b.y + 1].len = e_str_len(be->bf[be->b.y + 1].s);
-              be->bf[be->b.y + 1].nrc = e_str_nrc(be->bf[be->b.y + 1].s);
+              be->bf[be->b.y + 1].nrc = strlen(be->bf[be->b.y + 1].s);
             }
             se->mark_begin.x = be->b.x;
             start = se->mark_begin.y = be->b.y;

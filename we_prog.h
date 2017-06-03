@@ -1,6 +1,7 @@
 #ifndef WE_PROG_H
 #define WE_PROG_H
 
+#include <stdlib.h>
 #include "we_edit.h"
 #include "we_hfkt.h"
 #include "we_mouse.h"

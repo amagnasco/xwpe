@@ -11,9 +11,9 @@
 
 #define VERSION "1.5.29a"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
 #include <ctype.h>
 #include <limits.h>
 

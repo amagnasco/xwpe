@@ -10,6 +10,7 @@
                                        Copyright by F.Kruse       */
 
 /* includes */
+#include <string.h>
 #include <signal.h>
 #include "keys.h"
 #include "messages.h"

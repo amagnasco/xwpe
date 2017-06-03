@@ -10,13 +10,10 @@ int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f);
 int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn);
 int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn);
 int e_str_len(unsigned char *s);
-#if 0
-int e_str_nrc(unsigned char *s);
-int e_toupper(int c);
-#else
-#define e_str_nrc(s) strlen(s)
+
+//#define e_str_nrc(s) strlen(s)
 #define e_toupper(c) toupper(c)
-#endif
+
 int e_num_kst(char *s, int num, int max, FENSTER *f, int n, int sw);
 COLOR e_s_x_clr(int f, int b);
 COLOR e_n_x_clr(int fb);

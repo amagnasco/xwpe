@@ -4,6 +4,7 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <string.h>
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
@@ -187,28 +188,6 @@ int e_str_len(unsigned char *s)
   ;
  return (i);
 }
-
-#if 0
-/*   determine number of chars in a string */
-int e_str_nrc(unsigned char *s)
-{
- int i;
-
- for (i = 0; *(s+i) != '\0'; i++)
-  ;
- return (i);
-}
-
-/*   capitalize letters (German) */
-int e_toupper(int c)
-{
- if (c >= 'a' && c <= 'z')
-  c = c - 'a' + 'A';
- else if (c >= 0xe0 && c <= 0xfe)
-  c = c - 0x20;
- return (c);
-}
-#endif
 
 /*           COLOR - fill struct with constants           */
 COLOR e_s_x_clr(int f, int b)
