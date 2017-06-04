@@ -4,8 +4,14 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <string.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
+#include "model.h"
 #include "edit.h"
+#include "we_prog.h"
+#include "we_mouse.h"
 
 #if  MOUSE
 

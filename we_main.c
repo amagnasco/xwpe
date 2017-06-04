@@ -10,9 +10,18 @@
                                        Copyright by F.Kruse       */
 
 /* includes */
+#include <string.h>
 #include <signal.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
+#include "model.h"
 #include "edit.h"
+#include "we_main.h"
+#include "WeProg.h"
+#include "we_prog.h"
+#include "we_fl_unix.h"
+#include "WeString.h"
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -313,7 +322,7 @@ int main(int argc, char **argv)
  }
  ECNT_Init(cn);
  e_ini_unix(&argc, argv);
- e_switch_screen(1);
+ (*e_u_switch_screen)(1);
  fb = e_ini_farbe();
  WpeEditor = cn;
  cn->fb = fb;

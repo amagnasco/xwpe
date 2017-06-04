@@ -17,7 +17,6 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Includes
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-#include "Xwpe.h"
 #include "WeString.h"
 #include <string.h>
 #include <stdlib.h>

@@ -4,7 +4,13 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <ctype.h>
+#include <string.h>
+#include "keys.h"
+#include "model.h"
 #include "edit.h"
+#include "WeString.h"
+#include "we_hfkt.h"
 #include <regex.h>
 
 /*        find string in text line    */
@@ -47,7 +53,7 @@ int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f)
   for (i = x-nf; i >= n; i--)
   {
    for (j = 0; j < nf; j++)
-    if (e_toupper(s[i+j]) != e_toupper(f[j]))
+    if (toupper(s[i+j]) != toupper(f[j]))
      break;
    if (j == nf)
     return(i);
@@ -58,7 +64,7 @@ int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f)
   for (i = x < 0 ? 0 : x; i <= n - nf; i++)
   {
    for (j = 0; j < nf; j++)
-    if (e_toupper(s[i+j]) != e_toupper(f[j]))
+    if (toupper(s[i+j]) != toupper(f[j]))
      break;
    if (j == nf)
     return(i);
@@ -78,17 +84,17 @@ int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
  {
   str = malloc((n+1)*sizeof(unsigned char));
   for (i = 0; i < n; i++)
-   str[i] = e_toupper(s[i]);
+   str[i] = toupper(s[i]);
   str[n] = '\0';
  }
  else
  {
   str = malloc((x+1)*sizeof(unsigned char));
   for (i = 0; i < x; i++)
-   str[i] = e_toupper(s[i]);
+   str[i] = toupper(s[i]);
   str[x] = '\0';
  }
- for (i = 0; (ft[i] = e_toupper(f[i])) != '\0'; i++)
+ for (i = 0; (ft[i] = toupper(f[i])) != '\0'; i++)
   ;
 
  i = e_rstrstr(x, n, str, ft, nn);
@@ -183,28 +189,6 @@ int e_str_len(unsigned char *s)
   ;
  return (i);
 }
-
-#if 0
-/*   determine number of chars in a string */
-int e_str_nrc(unsigned char *s)
-{
- int i;
-
- for (i = 0; *(s+i) != '\0'; i++)
-  ;
- return (i);
-}
-
-/*   capitalize letters (German) */
-int e_toupper(int c)
-{
- if (c >= 'a' && c <= 'z')
-  c = c - 'a' + 'A';
- else if (c >= 0xe0 && c <= 0xfe)
-  c = c - 0x20;
- return (c);
-}
-#endif
 
 /*           COLOR - fill struct with constants           */
 COLOR e_s_x_clr(int f, int b)

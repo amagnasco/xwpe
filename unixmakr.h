@@ -24,6 +24,7 @@ extern int cur_on;
 #define fk_getch() getch()
 #else
 #ifdef HAVE_LIBGPM
+#include <gpm.h>
 #define fk_getch() Gpm_Getc(stdin)
 #else
 #define fk_getch() fgetc(stdin)
@@ -66,7 +67,6 @@ extern char *ctree[5];
 #define e_getch() (*e_u_getch)()
 #define fk_putchar(c) (*fk_u_putchar)(c)
 #define e_d_switch_out(c) (*e_u_d_switch_out)(c)
-#define e_switch_screen(sw) (*e_u_switch_screen)(sw)
 #define e_deb_out(f) (*e_u_deb_out)(f)
 #define e_cp_X_to_buffer(f) (*e_u_cp_X_to_buffer)(f)
 #define e_copy_X_buffer(f) (*e_u_copy_X_buffer)(f)
@@ -83,8 +83,6 @@ extern char *ctree[5];
        0   Right shift
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #define bioskey() (*u_bioskey)()
-#define e_sys_ini() (*e_u_sys_ini)()
-#define e_sys_end() (*e_u_sys_end)()
 #define e_frb_menue(sw, xa, ya, f, md) (*e_frb_u_menue)(sw, xa, ya, f, md)
 #define e_pr_col_kasten(xa, ya, x, y, f, sw) \
 		(*e_pr_u_col_kasten)(xa, ya, x, y, f, sw)
@@ -94,8 +92,6 @@ extern char *ctree[5];
 #ifdef NEWSTYLE
 extern char *extbyte, *altextbyte;
 #endif
-
-#define sc_txt_1(f) { if(f->c_sw) f->c_sw = e_sc_txt(f->c_sw, f->b); }
 
 #define sc_txt_2(f) 							\
 {   if(f->c_sw) 							\

@@ -86,8 +86,8 @@ CFILES=		we_main.c we_block.c we_unix.c we_e_aus.c \
 		WeXterm.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c
 
 HFILES=		attrb.h edit.h keys.h \
-		model.h progr.h unixkeys.h unixmakr.h \
-		Xwpe.h WeString.h WeXterm.h WeProg.h WeExpArr.h
+		model.h unixkeys.h unixmakr.h \
+		WeString.h WeXterm.h WeProg.h WeExpArr.h
 
 xwpe:	$(OFILES) $(X_OFILES) $(T_OFILES)
 	$(CC) $(CFLAGS) $(DEFS) $(OFILES) $(X_OFILES) $(T_OFILES) \

@@ -4,12 +4,24 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <string.h>
+#include <ctype.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
+#include "model.h"
 #include "edit.h"
+#include "we_edit.h"
 #include "makro.h"
+#include "we_progn.h"
+#include "we_prog.h"
+#include "WeString.h"
 
-#include<sys/types.h> /*  included for digital station  */
-#include<sys/stat.h>
+#ifdef UNIX
+# include<sys/types.h> /*  included for digital station  */
+# include<sys/stat.h>
+# include <unistd.h>
+#endif
 
 int e_undo_sw = 0, e_redo_sw = 0;
 
@@ -370,7 +382,9 @@ int e_edit(ECNT *cn, char *filename)
  }
 #endif
 #endif
- sc_txt_1(f);
+ if (f->c_sw) {
+   f->c_sw = e_sc_txt(f->c_sw, f->b);
+ }
  if (cn->mxedt > 1)
  {
   fo = cn->f[cn->mxedt-1];
@@ -836,7 +850,7 @@ int e_ctrl_k(FENSTER *f)
  SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
  int c;
 
- c = e_toupper(e_getch());
+ c = toupper(e_getch());
  if (c < 32)
   c = c + 'A' - 1;
  switch (c)
@@ -935,7 +949,7 @@ int e_ctrl_o(FENSTER *f)
  int i, c;
  unsigned char cc;
 
- c = e_toupper(e_getch());
+ c = toupper(e_getch());
  if (c < 32) c = c + 'A' - 1;
  switch(c)
  {
@@ -1469,7 +1483,7 @@ int e_car_ret(BUFFER *b, SCHIRM *s)
               *(b->bf[b->b.y+1].s + i) = *(b->bf[b->b.y].s+b->b.x+i);
       *(b->bf[b->b.y+1].s+i)='\0';
       b->bf[b->b.y+1].len = e_str_len(b->bf[b->b.y+1].s);
-      b->bf[b->b.y+1].nrc = e_str_nrc(b->bf[b->b.y+1].s);
+      b->bf[b->b.y+1].nrc = strlen(b->bf[b->b.y+1].s);
       if(s->mark_begin.y > b->b.y) (s->mark_begin.y)++;
       else if(s->mark_begin.y == b->b.y && s->mark_begin.x > b->b.x)
       {  (s->mark_begin.y)++;  (s->mark_begin.x) -= (b->b.x);  }
@@ -1480,7 +1494,7 @@ int e_car_ret(BUFFER *b, SCHIRM *s)
    *(b->bf[b->b.y].s+b->b.x) = WPE_WR;
    *(b->bf[b->b.y].s+b->b.x+1) = '\0';
    b->bf[b->b.y].len = e_str_len(b->bf[b->b.y].s);
-   b->bf[b->b.y].nrc = e_str_nrc(b->bf[b->b.y].s);
+   b->bf[b->b.y].nrc = strlen(b->bf[b->b.y].s);
    sc_txt_3(b->b.y, b, 1);
 /***************************/   
    if(b->b.x>0) e_brk_recalc(b->f,b->b.y+1,1);
@@ -1659,7 +1673,7 @@ int e_del_nchar(BUFFER *b, SCHIRM *s, int x, int y, int n)
  if (y < b->mxlines)
  {
   b->bf[y].len = e_str_len(b->bf[y].s);
-  b->bf[y].nrc = e_str_nrc(b->bf[y].s);
+  b->bf[y].nrc = strlen(b->bf[y].s);
  }
  e_undo_sw--;
  sc_txt_4(y, b, 0);
@@ -1694,7 +1708,7 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
    *(b->bf[ya].s + xa + 1) = '\0';
    i = b->mx.x;
    b->bf[ya].len = e_str_len(b->bf[ya].s);
-   b->bf[ya].nrc = e_str_nrc(b->bf[ya].s);
+   b->bf[ya].nrc = strlen(b->bf[ya].s);
   }
   for (; i > 0 && *(b->bf[ya].s+i) != ' ' && *(b->bf[ya].s+i) != '-'; i--);
   if (i == 0)
@@ -1735,7 +1749,7 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
     *(b->bf[ya+1].s+j-i-1) = *(b->bf[ya].s+j);
    *(b->bf[ya+1].s+j-i-1) = WPE_WR;
    b->bf[ya+1].len = e_str_len(b->bf[ya+1].s);
-   b->bf[ya+1].nrc = e_str_nrc(b->bf[ya+1].s);
+   b->bf[ya+1].nrc = strlen(b->bf[ya+1].s);
    sc_txt_4(ya, b, 1);
   }
   else
@@ -1767,13 +1781,13 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
 */
   *(b->bf[ya].s+i+1) = '\0';
   b->bf[ya].len = e_str_len(b->bf[ya].s);
-  b->bf[ya].nrc = e_str_nrc(b->bf[ya].s);
+  b->bf[ya].nrc = strlen(b->bf[ya].s);
   if (xa > b->bf[ya].len)
   {
    xa -= (b->bf[ya].len);
    ya++;
    b->bf[ya].len = e_str_len(b->bf[ya].s);
-   b->bf[ya].nrc = e_str_nrc(b->bf[ya].s);
+   b->bf[ya].nrc = strlen(b->bf[ya].s);
    if (sch->mark_begin.y == ya && sch->mark_begin.x >= xa)
     sch->mark_begin.x += n;
    if (sch->mark_end.y == ya && sch->mark_end.x >= xa)
@@ -1796,7 +1810,7 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
  b->b.x = xa + n;
  b->b.y = ya;
  b->bf[ya].len = e_str_len(b->bf[ya].s);
- b->bf[ya].nrc = e_str_nrc(b->bf[ya].s);
+ b->bf[ya].nrc = strlen(b->bf[ya].s);
  e_undo_sw--;
  sc_txt_4(ya, b, 0);
  return(xa+n);
@@ -2249,7 +2263,7 @@ int e_make_rudo(FENSTER *f, int sw)
   (b->mxlines)++;
   b->bf[b->b.y].s = ud->u.pt;
   b->bf[b->b.y].len = e_str_len(b->bf[b->b.y].s);
-  b->bf[b->b.y].nrc = e_str_nrc(b->bf[b->b.y].s);
+  b->bf[b->b.y].nrc = strlen(b->bf[b->b.y].s);
   s->mark_begin = ud->b;
   s->mark_end.y = ud->b.y + 1;
   s->mark_end.x = 0;

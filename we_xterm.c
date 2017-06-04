@@ -6,16 +6,25 @@
 
 #ifndef NO_XWINDOWS
 
+#include <ctype.h>
+#include "keys.h"
+#include "model.h"
 #include "edit.h"
+#include "we_unix.h"
+#include "WeString.h"
+#include "we_xterm.h"
 
 /* partial conversion in place */
 #include "WeXterm.h"
+
+#ifndef TERMCAP
+# include <curses.h>
+#endif
 
 #ifndef XWPE_DLL
 #define WpeDllInit WpeXtermInit
 #endif
 
-int e_X_sw_color(void);
 int fk_show_cursor(void);
 int e_ini_size(void);
 int e_x_getch(void);
@@ -95,7 +104,7 @@ int WpeDllInit(int *argc, char **argv)
  e_u_ini_size = e_ini_size;
  e_u_setlastpic = e_setlastpic;
  WpeMouseChangeShape = (void (*)(WpeMouseShape))WpeNullFunction;
- WpeMouseRestoreShape = (void (*)(WpeMouseShape))WpeNullFunction;
+ WpeMouseRestoreShape = (void (*)(void))WpeNullFunction;
 /* WpeMouseChangeShape = WpeXMouseChangeShape;
  WpeMouseRestoreShape = WpeXMouseRestoreShape;*/
  WpeDisplayEnd = WpeNullFunction;

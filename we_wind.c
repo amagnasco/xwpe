@@ -4,8 +4,20 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <ctype.h>
+#include <string.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
+#include "model.h"
 #include "edit.h"
+#include "we_wind.h"
+#include "we_progn.h"
+#include "we_prog.h"
+
+#ifdef UNIX
+# include <unistd.h>
+#endif
 
 #define MAXSVSTR 20
 
@@ -99,10 +111,10 @@ int e_error(char *text, int sw, FARBE *f)
  do
  {
 #if  MOUSE
-  if ((i = e_toupper(e_getch())) == -1)
+  if ((i = toupper(e_getch())) == -1)
    i = e_er_mouse(xa+3, ya,(xe+xa-4)/2, ya+4);
 #else
-  i = e_toupper(e_getch());
+  i = toupper(e_getch());
 #endif
  } while (i != WPE_ESC && i != WPE_CR && i != 'O');
  WpeMouseRestoreShape();
@@ -1502,10 +1514,10 @@ int e_opt_sec_box(int xa, int ya, int num, OPTK *opt, FENSTER *f, int sw)
 	 nold = n;
       }
 #if  MOUSE
-      if( (c = e_toupper(e_getch())) == -1)
+      if( (c = toupper(e_getch())) == -1)
       c = e_m2_mouse(xa, ya, xe, ye, opt);
 #else
-      c = e_toupper(e_getch());
+      c = toupper(e_getch());
 #endif
       for (i = 0; i < ye - ya - 1; i++)
       if( c == opt[i].o) {  c = WPE_CR;  n = i;  break;  }

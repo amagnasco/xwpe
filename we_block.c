@@ -4,8 +4,13 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <string.h>
+#include "keys.h"
 #include "messages.h"
+#include "model.h"
 #include "edit.h"
+#include "we_block.h"
+#include "we_progn.h"
 #include <ctype.h>
 
 extern int e_undo_sw;
@@ -52,7 +57,9 @@ int e_blck_del(FENSTER *f)
   e_brk_recalc(f,y,len);
 /***********************/ 
  }
- sc_txt_1(f);
+ if (f->c_sw) {
+   f->c_sw = e_sc_txt(f->c_sw, f->b);
+ }
  e_cursor(f, 1);
  e_schirm(f, 1);
  return(0);
@@ -410,7 +417,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  *(bz->bf[y].s+x) = '\0';
  bz->bf[y].len = bz->bf[y].nrc = x;
  bz->bf[y+1].len = e_str_len(bz->bf[y+1].s);
- bz->bf[y+1].nrc = e_str_nrc(bz->bf[y+1].s);
+ bz->bf[y+1].nrc = strlen(bz->bf[y+1].s);
  for (i = bz->mxlines; i > y; i--)
   bz->bf[i+n] = bz->bf[i];
  (bz->mxlines) += n;
@@ -448,8 +455,12 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  bz->b.y = sz->mark_end.y = key-kay+y;
 
  f->save = f->ed->maxchg + 1;
- sc_txt_1(bv->f);
- sc_txt_1(bz->f);
+ if (bv->f->c_sw) {
+   bv->f->c_sw = e_sc_txt(bv->f->c_sw, bv->f->b);
+ }
+ if (bz->f->c_sw) {
+   bz->f->c_sw = e_sc_txt(bz->f->c_sw, bz->f->b);
+ }
  e_cursor(f, 1);
  e_schirm(f, 1);
  free(str);
@@ -554,7 +565,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
  *(buffer_dst->bf[y].s+x) = '\0';
  buffer_dst->bf[y].len = buffer_dst->bf[y].nrc = x;
  buffer_dst->bf[y+1].len = e_str_len(buffer_dst->bf[y+1].s);
- buffer_dst->bf[y+1].nrc = e_str_nrc(buffer_dst->bf[y+1].s);
+ buffer_dst->bf[y+1].nrc = strlen(buffer_dst->bf[y+1].s);
  for (i = buffer_dst->mxlines; i > y; i--)
   buffer_dst->bf[i+n] = buffer_dst->bf[i];
  (buffer_dst->mxlines) += n;

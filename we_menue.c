@@ -4,8 +4,15 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <ctype.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
+#include "model.h"
 #include "edit.h"
+#include "we_menue.h"
+#include "we_progn.h"
+#include "we_prog.h"
 
 int             e_p_show_messages(FENSTER *f);
 int             e_p_show_watches(FENSTER *f);
@@ -429,7 +436,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
 #else
       c = e_getch();
 #endif
-      c = e_toupper(c);
+      c = toupper(c);
     }
     if(c == CDO || c == CtrlN)        /* down -> submenu open */
       c = WPE_CR;
@@ -566,13 +573,13 @@ int WpeHandleSubmenu(int xa, int ya, int xe, int ye, int nm, OPTK * fopt, FENSTE
 #if MOUSE
     if(c != MBKEY)
     {
-      if((c = e_toupper(e_getch())) == -1)
+      if((c = toupper(e_getch())) == -1)
         c = e_m2_mouse(xa, ya, xe, ye, fopt);
     }
     else
       c = WPE_CR;  /* mouse released at a proper place, submenu item accepted */
 #else
-    c = e_toupper(e_getch());
+    c = toupper(e_getch());
 #endif
 
     /* check main menu shortcut keys */

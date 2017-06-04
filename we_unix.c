@@ -4,7 +4,14 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <string.h>
+#include "keys.h"
 #include "model.h"		/* exchange for D.S.  */
+#include "options.h"
+
+#ifdef UNIX
+# include <unistd.h>
+#endif
 
 #ifdef XWPE_DLL
 #include <dlfcn.h>
@@ -27,7 +34,9 @@ int WpeTermInit(int *argc, char **argv);
 #endif
 
 #include "edit.h"		/*   exchange for D.S.  */
+#include "we_unix.h"
 #include "attrb.h"
+#include "we_progn.h"
 
 #ifdef NOSYMLINKS
 #define lstat(x,y)  stat(x,y)
@@ -378,7 +387,7 @@ void e_exit(int n)
   kill(e_d_pid, 7);
 #endif
  (*WpeDisplayEnd)();
- e_switch_screen(0);
+ (*e_u_switch_screen)(0);
  if (n != 0)
  {
   printf("\nError-Exit!   Code: %d!\n", n);

@@ -4,8 +4,18 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <ctype.h>
+#include <limits.h>
+#include <string.h>
+#include "keys.h"
 #include "messages.h"
+#include "model.h"
+#include "options.h"
 #include "edit.h"
+#include "we_fl_unix.h"
+#include "we_progn.h"
+#include "we_prog.h"
+#include "WeString.h"
 
 #ifdef UNIX
 
@@ -1032,14 +1042,14 @@ int WpeHandleFileManager(ECNT * cn)
             g[0] = 2;
             fk_mouse(g);
 #endif
-            e_sys_ini();
+            (*e_u_sys_ini)();
             printf(e_msg[ERR_EXEC], filen);
             fflush(stdout);
           }
           if ((*e_u_system)(filen))
           {
             if(!WpeIsXwin())
-              e_sys_end();
+              (*e_u_sys_end)();
             e_error(e_msg[ERR_COMMAND], 0, f->fb);
           }
           else if(!WpeIsXwin())
@@ -1051,7 +1061,7 @@ int WpeHandleFileManager(ECNT * cn)
           }
           if(!WpeIsXwin())
           {
-            e_sys_end();
+            (*e_u_sys_end)();
             e_close_view(outp, 1);
             fk_cursor(0);
 #if MOUSE
@@ -1108,7 +1118,7 @@ int WpeHandleFileManager(ECNT * cn)
               *(be->bf[be->b.y].s + be->b.x) = '\0';
               be->bf[be->b.y].len = be->b.x;
               be->bf[be->b.y + 1].len = e_str_len(be->bf[be->b.y + 1].s);
-              be->bf[be->b.y + 1].nrc = e_str_nrc(be->bf[be->b.y + 1].s);
+              be->bf[be->b.y + 1].nrc = strlen(be->bf[be->b.y + 1].s);
             }
             se->mark_begin.x = be->b.x;
             start = se->mark_begin.y = be->b.y;
