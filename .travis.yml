@@ -1,9 +1,74 @@
 language: c
 
+matrix:
+  include:
+    # GCC - works on Ubuntu Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - libncurses5-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+            - libncurses5-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+         
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+            - libncurses5-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        
+    # CLANG - works on Ubuntu Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env:
+        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
+    
+    # OS X --- DOES NOT WORK
+#    - os: osx
+#      osx_image: xcode8
+#      env:
+#        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+#    - os: osx
+#      osx_image: xcode8
+#      env:
+#        - MATRIX_EVAL="brew install gcc5 && CC=gcc-5 && CXX=g++-5"
+
+#    - os: osx
+#      osx_image: xcode8
+#      env:
+#        - MATRIX_EVAL="brew install gcc && CC=gcc-6 && CXX=g++-6"
+
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y gcc
-  - sudo apt-get install libncurses5-dev
+  - eval "${MATRIX_EVAL}"
+#  - sudo apt-get -qq update
+#  - sudo apt-get install -y gcc
+#  - sudo apt-get install libncurses5-dev
   
 script:
   - ./configure
