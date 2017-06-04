@@ -68,7 +68,10 @@ maintainer was Dennis Payne, dulsi@identicalsoftware.com.
 
 As evidenced by their discussion list, xwpe-alpha has not seen active 
 development since at least 2003. This GitHub version is maintained by 
-Alessandro G. Magnasco at https://github.com/amagnasco/xwpe/.
+Alessandro G. Magnasco at https://github.com/amagnasco/xwpe/. 
+
+Contributor of the Decade award goes to Guus Bonnema, who is bravely
+trying to refactor and clean up this mess: https://github.com/gbonnema.
     
 Caveat emptor ; this software hails from last century. I can try to help
 figure out any questions or problems you might have, but purely out of 
