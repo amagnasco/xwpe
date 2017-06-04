@@ -1,0 +1,13 @@
+language: c
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y gcc
+  - sudo apt-get install libncurses5-dev
+  
+script:
+  - ./configure
+  - make
+  - sudo make install
+  - make clean
+  
