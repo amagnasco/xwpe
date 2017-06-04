@@ -1,4 +1,4 @@
-# XWPE ALPHA README #
+# XWPE-GIT README #
 
 
 ## What is xwpe? ##
