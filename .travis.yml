@@ -2,7 +2,7 @@ language: c
 
 matrix:
   include:
-    # works on Ubuntu Precise and Trusty
+    # GCC - works on Ubuntu Precise and Trusty
     - os: linux
       addons:
         apt:
@@ -36,17 +36,17 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
         
-    # works on Trusty
+    # CLANG - works on Ubuntu Precise and Trusty
     - os: linux
       addons:
         apt:
           sources:
-            - llvm-toolchain-trusty
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
           packages:
-            - clang-5.0
-            - libncurses5-dev
+            - clang-3.6
       env:
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
     
     # OS X
     - os: osx
@@ -66,9 +66,9 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - sudo apt-get -qq update
-  - sudo apt-get install -y gcc
-  - sudo apt-get install libncurses5-dev
+#  - sudo apt-get -qq update
+#  - sudo apt-get install -y gcc
+#  - sudo apt-get install libncurses5-dev
   
 script:
   - ./configure
