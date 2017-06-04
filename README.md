@@ -1,5 +1,8 @@
 # XWPE-GIT README #
 
+* Master branch [![Build Status](https://travis-ci.org/amagnasco/xwpe.svg?branch=master)](https://travis-ci.org/amagnasco/xwpe)
+* Development [![Build Status](https://travis-ci.org/amagnasco/xwpe.svg?branch=devel)](https://travis-ci.org/amagnasco/xwpe)
+* Experimental [![Build Status](https://travis-ci.org/amagnasco/xwpe.svg?branch=experimental)](https://travis-ci.org/amagnasco/xwpe)
 
 ## What is xwpe? ##
 
