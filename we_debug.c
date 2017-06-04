@@ -4,8 +4,16 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <ctype.h>
+#include <string.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
+#include "model.h"
 #include "edit.h"
+#include "we_debug.h"
+#include "we_prog.h"
+#include "WeString.h"
 
 #ifndef NO_XWINDOWS
 #include "WeXterm.h"
@@ -13,6 +21,7 @@
 
 #ifdef DEBUGGER
 
+#include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <sys/ioctl.h>
@@ -1774,10 +1783,10 @@ int e_start_debug(FENSTER *f)
   e_error(estr, 0, f->fb);
   return(-1);
  }
- e_sys_ini();
+ (*e_u_sys_ini)();
  if (e__project && (file = e_exec_deb(f, e_s_prog.exe_name )) == 0)
  {
-  e_sys_end();
+  (*e_u_sys_end)();
   return(-2);
  }
  else if (!e__project)
@@ -1794,11 +1803,11 @@ int e_start_debug(FENSTER *f)
   }
   if ((file = e_exec_deb(f, estr)) == 0)
   {
-   e_sys_end();
+   (*e_u_sys_end)();
    return(-2);
   }
  }
- e_sys_end();
+ (*e_u_sys_end)();
  e_d_p_message(e_d_msg[ERR_STARTDEBUG], f, 1);
  WpeMouseChangeShape(WpeDebuggingShape);
  if (cn->mxedt > 1)

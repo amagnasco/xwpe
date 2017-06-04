@@ -4,12 +4,20 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <string.h>
+#include "keys.h"
 #include "messages.h"
+#include "options.h"
+#include "model.h"
 #include "edit.h"
+#include "we_opt.h"
 #include "WeExpArr.h"
+#include "we_prog.h"
+#include "WeString.h"
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 int WpeReadGeneral(ECNT *cn, char *section, char *option, char *value);
 int WpeWriteGeneral(ECNT *cn, char *section, FILE *opt_file);

@@ -1,4 +1,4 @@
-AC_INIT(Xwpe.h)
+AC_INIT(we_main.c)
 
 dnl Checks for programs.
 AC_PROG_CC

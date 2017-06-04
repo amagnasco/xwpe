@@ -4,12 +4,20 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include <ctype.h>
+#include <string.h>
+#include "keys.h"
 #include "messages.h"
+#include "model.h"
 #include "edit.h"
+#include "we_edit.h"
+#include "WeString.h"
+#include "we_fl_fkt.h"
 #include "makro.h"
 #ifdef UNIX
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #endif
 #ifdef HAS_LIBZ
 #include <zlib.h>
@@ -147,7 +155,7 @@ POINT e_readin(int i, int j, FILE *fp, BUFFER *b, char *type)
    *(b->bf[j].s+i) = '\0';
   }
   b->bf[j-1].len = e_str_len(b->bf[j-1].s);
-  b->bf[j-1].nrc = e_str_nrc(b->bf[j-1].s);
+  b->bf[j-1].nrc = strlen(b->bf[j-1].s);
  }
  pkt.x = i;  pkt.y = j;
  WpeMouseRestoreShape();
@@ -730,7 +738,7 @@ int e_read_help(char *str, FENSTER *f, int sw)
   {
    strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
    f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-   f->b->bf[f->b->mxlines-1].nrc = e_str_nrc(f->b->bf[f->b->mxlines-1].s);
+   f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
   }
  }
  if (sw)
@@ -757,7 +765,7 @@ int e_read_help(char *str, FENSTER *f, int sw)
     strcpy(ud_help->str, tmp);
    strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
    f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-   f->b->bf[f->b->mxlines-1].nrc = e_str_nrc(f->b->bf[f->b->mxlines-1].s);
+   f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
   }
  }
  while(e_i_fgets(tstr, 256, fp))
@@ -767,7 +775,7 @@ int e_read_help(char *str, FENSTER *f, int sw)
   e_new_line(f->b->mxlines, f->b);
   strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
   f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-  f->b->bf[f->b->mxlines-1].nrc = e_str_nrc(f->b->bf[f->b->mxlines-1].s);
+  f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
  }
  e_i_fclose(fp);
  return(2);
@@ -1272,7 +1280,7 @@ int e_read_info(char *str, FENSTER *f, char *file)
       tstr[0] = HHD;  tstr[len+1] = HED;  tstr[len+1] = '\0';
       strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
       f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-      f->b->bf[f->b->mxlines-1].nrc = e_str_nrc(f->b->bf[f->b->mxlines-1].s);
+      f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
    }
    while(e_i_fgets(tstr, 256, fp))
    {  for(i = 0; tstr[i]; i++)
@@ -1297,7 +1305,7 @@ int e_read_info(char *str, FENSTER *f, char *file)
       e_new_line(f->b->mxlines, f->b);
       strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
       f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-      f->b->bf[f->b->mxlines-1].nrc = e_str_nrc(f->b->bf[f->b->mxlines-1].s);
+      f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
    }
    e_i_fclose(fp);
    return(2);
