@@ -12,7 +12,6 @@
 #define VERSION "1.5.29a"
 
 #ifdef UNIX
-#include <unistd.h>
 #include "unixmakr.h"
 #include "unixkeys.h"
 

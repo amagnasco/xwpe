@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 int WpeReadGeneral(ECNT *cn, char *section, char *option, char *value);
 int WpeWriteGeneral(ECNT *cn, char *section, FILE *opt_file);

@@ -18,6 +18,7 @@
 
 #ifdef PROG
 
+#include <unistd.h>
 #include <time.h>
 #include <fcntl.h>
 #include <sys/types.h>

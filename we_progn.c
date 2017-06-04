@@ -16,6 +16,10 @@
 #include "WeProg.h"
 #include "WeString.h"
 
+#ifdef UNIX
+# include <unistd.h>
+#endif
+
 #undef TESTSDEF
 
 #ifdef PROG

@@ -17,8 +17,11 @@
 #include "we_prog.h"
 #include "WeString.h"
 
-#include<sys/types.h> /*  included for digital station  */
-#include<sys/stat.h>
+#ifdef UNIX
+# include<sys/types.h> /*  included for digital station  */
+# include<sys/stat.h>
+# include <unistd.h>
+#endif
 
 int e_undo_sw = 0, e_redo_sw = 0;
 

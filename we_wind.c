@@ -15,6 +15,10 @@
 #include "we_progn.h"
 #include "we_prog.h"
 
+#ifdef UNIX
+# include <unistd.h>
+#endif
+
 #define MAXSVSTR 20
 
 int e_make_xr_rahmen(int xa, int ya, int xe, int ye, int sw);

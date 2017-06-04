@@ -17,6 +17,7 @@
 #ifdef UNIX
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #endif
 #ifdef HAS_LIBZ
 #include <zlib.h>

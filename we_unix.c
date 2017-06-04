@@ -9,6 +9,10 @@
 #include "model.h"		/* exchange for D.S.  */
 #include "options.h"
 
+#ifdef UNIX
+# include <unistd.h>
+#endif
+
 #ifdef XWPE_DLL
 #include <dlfcn.h>
 #else
