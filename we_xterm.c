@@ -17,6 +17,10 @@
 /* partial conversion in place */
 #include "WeXterm.h"
 
+#ifndef TERMCAP
+# include <curses.h>
+#endif
+
 #ifndef XWPE_DLL
 #define WpeDllInit WpeXtermInit
 #endif

@@ -9,12 +9,17 @@
 #include "model.h"
 #include "edit.h"
 #include "we_term.h"
+
 #ifdef UNIX
 
 #include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+
+#ifndef TERMCAP
+# include <curses.h>
+#endif
 
 #include<signal.h>
 #define KEYFN 42

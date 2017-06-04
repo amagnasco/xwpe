@@ -15,10 +15,6 @@
 #include "unixmakr.h"
 #include "unixkeys.h"
 
-#ifndef TERMCAP
-#include <curses.h>
-#endif
-
 extern int MAXSLNS, MAXSCOL, MENOPT;
 #define MAXEDT 35
 #endif // #ifdef UNIX
