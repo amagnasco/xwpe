@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include <ctype.h>
+#include <limits.h>
 #include <string.h>
 #include "keys.h"
 #include "messages.h"
