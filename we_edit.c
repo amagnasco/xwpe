@@ -303,7 +303,7 @@ int e_edit(ECNT *cn, char *filename)
 #endif
  if (ftype != 1)
   fp = fopen(complete_fname, "rb");
- if (fp != NULL && access(complete_fname, 2) != 0) f->ins = 8;
+ if (fp != NULL && access(complete_fname, W_OK) != 0) f->ins = 8;
 #ifdef UNIX
  if (fp != NULL)
  {

@@ -1163,7 +1163,7 @@ int e_show_nm_f(char *name, FENSTER *f, int oldn, char **oldname)
  struct dirfile *df, *fdf = NULL;
 
 #ifndef TESTSDEF
- if (!access(e_prog.project, 0))
+ if (!access(e_prog.project, F_OK))
  {
   WpeMouseChangeShape(WpeWorkingShape);
   if (e_read_var(f)) ret = -1;
