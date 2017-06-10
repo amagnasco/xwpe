@@ -1433,7 +1433,7 @@ int e_make_library(char *library, char *ofile, FENSTER *f)
  PIC *pic = NULL;
 
  ar_arg[0] = "ar";
- if (access(library, 0))
+ if (access(library, F_OK))
   ar_arg[1] = "-cr";
  else
   ar_arg[1] = "-r";
@@ -2116,7 +2116,7 @@ int e_c_project(FENSTER *f)
  if (df)
  {
   strcpy(library, df->name[0]);
-  if (access(library, 0)) exlib = 1;
+  if (access(library, F_OK)) exlib = 1;
   else stat(library, lbuf);
   freedf(df);
  }
@@ -2799,7 +2799,7 @@ int e_new_message(FENSTER *f)
    e_switch_window(f->ed->edt[i], f->ed->f[f->ed->mxedt]);
    e_close_window(f->ed->f[f->ed->mxedt]);
   }
- if (access("Messages", 0) == 0)
+ if (access("Messages", F_OK) == 0)
   remove("Messages");
  if (e_edit(f->ed, "Messages"))
   return(WPE_ESC);

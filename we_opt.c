@@ -1013,7 +1013,7 @@ int e_save_opt(FENSTER *f)
  strcpy(str_line, cn->optfile);
  for (i = strlen(str_line); i > 0 && str_line[i] != DIRC; i--);
  str_line[i] = '\0';
- if (access(str_line, 0)) mkdir(str_line, 0700);
+ if (access(str_line, F_OK)) mkdir(str_line, 0700);
  free(str_line);
  fp = fopen(cn->optfile, "w");
  if (fp == NULL)

@@ -2481,7 +2481,7 @@ int e_d_goto_break(char *file, int line, FENSTER *f)
  free(ftmp.datnam);
  if (i <= 0)
  {
-  if (access(file, 0))
+  if (access(file, F_OK))
   {
    sprintf(str, e_d_msg[ERR_CANTFILE], file);
    return(e_error(str, 0, f->fb));

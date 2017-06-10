@@ -268,10 +268,13 @@ int e_write(int xa, int ya, int xe, int ye, FENSTER *f, int backup)
  if (f->ins == 8)
   return(WPE_ESC);
  ptmp = e_mkfilename(f->dirct, f->datnam);
- if ((backup == WPE_BACKUP) && (access(ptmp, 0) == 0))
+// F_OK means: test for existance and has the value zero.
+// Use R_OK, W_OK and X_OK for Read, Write or execute permissions
+// FIXME: man page discourage use of access: switch to real user and test open, then switch back.
+ if ((backup == WPE_BACKUP) && (access(ptmp, F_OK) == 0))
  {
   tmp = e_bakfilename(ptmp);
-  if (access(tmp, 0) == 0)
+  if (access(tmp, F_OK) == 0)
    remove(tmp);
   WpeRenameCopy(ptmp, tmp, f, 1);
   free(tmp);
@@ -559,7 +562,7 @@ int e_mkdir_path(char *path)
  if (i > 0)
  {
   tmp[i] = '\0';
-  if (access(tmp, 0))
+  if (access(tmp, F_OK))
   {
    e_mkdir_path(tmp);
    mkdir(tmp, 0700);
@@ -644,19 +647,19 @@ IFILE *e_i_fopen(char *path, char *stat)
  }
  strcpy(tmp2, path);
  strcat(tmp2, ".gz");
- if (access(tmp2, 0))
+ if (access(tmp2, F_OK))
  {
   strcpy(tmp2, path);
   strcat(tmp2, ".Z");
-  if (access(tmp2, 0))
+  if (access(tmp2, F_OK))
   {
    strcpy(tmp2, path);
    strcat(tmp2, ".info.gz");
-   if (access(tmp2, 0))
+   if (access(tmp2, F_OK))
    {
     strcpy(tmp2, path);
     strcat(tmp2, ".info.Z");
-    if (access(tmp2, 0))
+    if (access(tmp2, F_OK))
     {
      free(fp);
      free(tmp2);

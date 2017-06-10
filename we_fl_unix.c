@@ -1100,7 +1100,7 @@ int WpeHandleFileManager(ECNT * cn)
               c = cold;
               break;
             }
-            if(access(filen, 2) != 0)
+            if(access(filen, W_OK) != 0)
               f->ins = 8;
             e_close_window(f);
             e_switch_window(winnum, fe);
@@ -2554,7 +2554,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
     sprintf(ntmp, "%s%c%s", newname, DIRC, dd->name[i]);
     ret = 'Y';
 
-    if(access(ntmp, 0) == 0)
+    if(access(ntmp, F_OK) == 0)
     {
       if(f->ed->flopt & FM_MOVE_PROMPT)
       {
@@ -2698,7 +2698,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
  else
  {
   /* check whether file exist */
-  if (access(newname, 0) == 0)
+  if (access(newname, F_OK) == 0)
   {
    if (f->ed->flopt & FM_MOVE_OVERWRITE)
    {
