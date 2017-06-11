@@ -3,7 +3,6 @@
 
 #include "we_block.h"
 #include "we_wind.h"
-#include "we_edit.h"
 #include "we_fl_fkt.h"
 #include "we_mouse.h"
 #include "we_opt.h"

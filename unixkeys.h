@@ -4,6 +4,9 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#ifndef UNIXKEYS_H
+#define UNIXKEYS_H
+
 #ifndef LIBRARY_DIR
 #define LIBRARY_DIR "/usr/local/lib/xwpe"
 #endif
@@ -67,6 +70,7 @@ extern char RE1, RE2, RE3, RE4, RE5, RE6, WBT;
 #define DGZ 25       /*  ctrl y  */
 
 #define WPE_CR 13
+//extern const unsigned char WPE_WR;
 #define WPE_WR 10
 #define WPE_ESC 27
 #define WPE_DC 8
@@ -78,3 +82,4 @@ extern char RE1, RE2, RE3, RE4, RE5, RE6, WBT;
 #define SCUP CUP+512
 #define SCDO CDO+512
 
+#endif // ifndef UNIXKEYS_H

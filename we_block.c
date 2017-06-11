@@ -11,6 +11,7 @@
 #include "edit.h"
 #include "we_block.h"
 #include "we_progn.h"
+#include "we_edit.h"
 #include <ctype.h>
 
 extern int e_undo_sw;
@@ -34,7 +35,7 @@ int e_blck_del(FENSTER *f)
  {
   return(0);
  }
- if (f->ins == 8)
+ if (f->ins == (char) 8)
   return(WPE_ESC);
  if (s->mark_begin.y == s->mark_end.y)
  {
@@ -88,7 +89,7 @@ int e_blck_dup(char *dup, FENSTER *f)
  {
   return(0);
  }
- strncpy(dup, &b->bf[s->mark_begin.y].s[s->mark_begin.x], i);
+ strncpy(dup, (const char *)&b->bf[s->mark_begin.y].s[s->mark_begin.x], i);
  dup[i]=0;
  return(i);
 }
