@@ -1269,7 +1269,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
 {
  int a_indent = b->cn->autoindent;
  int line, x, k, char_to_ins;
- char *str;
+ unsigned char *str;
  int do_auto_indent = 0;
  int first_nospace_k;
 
@@ -1329,7 +1329,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
  if (!do_auto_indent)
  {
   /* insert TAB char */
-  str = malloc(sizeof(char));
+  str = malloc(sizeof(unsigned char));
   str[0] = '\t';
   char_to_ins = 1;
  }
@@ -1354,7 +1354,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
    /* indent to x with spaces */
    /* insert chars */
    k = x - b->b.x;
-   str = malloc(k * sizeof(char));
+   str = malloc(k * sizeof(unsigned char));
    for (x = 0; x < k; x++)
     str[x] = ' ';
    char_to_ins = k;
@@ -1364,7 +1364,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
    /* indent to x + a_indent with spaces */
    /* insert chars */
    k = x + a_indent - b->b.x;
-   str = malloc(k * sizeof(char));
+   str = malloc(k * sizeof(unsigned char));
    for (x = 0; x < k; x++)
     str[x] = ' ';
    char_to_ins = k;
@@ -1372,7 +1372,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
   else
   {
    /* insert TAB char */
-   str = malloc(sizeof(char));
+   str = malloc(sizeof(unsigned char));
    str[0] = '\t';
    char_to_ins = 1;
   }
@@ -1401,7 +1401,7 @@ int e_del_a_ind(BUFFER *b, SCHIRM *s)
    }
    if (i != j)
    {
-    char *str = malloc(i * sizeof(char));
+    unsigned char *str = malloc(i * sizeof(unsigned char));
     e_del_nchar(b, s, 0, b->b.y, j);
     for (j = 0; j < i; j++)
      str[j] = ' ';
@@ -1483,7 +1483,7 @@ int e_car_ret(BUFFER *b, SCHIRM *s)
               *(b->bf[b->b.y+1].s + i) = *(b->bf[b->b.y].s+b->b.x+i);
       *(b->bf[b->b.y+1].s+i)='\0';
       b->bf[b->b.y+1].len = e_str_len(b->bf[b->b.y+1].s);
-      b->bf[b->b.y+1].nrc = strlen(b->bf[b->b.y+1].s);
+      b->bf[b->b.y+1].nrc = strlen((const char *)b->bf[b->b.y+1].s);
       if(s->mark_begin.y > b->b.y) (s->mark_begin.y)++;
       else if(s->mark_begin.y == b->b.y && s->mark_begin.x > b->b.x)
       {  (s->mark_begin.y)++;  (s->mark_begin.x) -= (b->b.x);  }
@@ -1494,7 +1494,7 @@ int e_car_ret(BUFFER *b, SCHIRM *s)
    *(b->bf[b->b.y].s+b->b.x) = WPE_WR;
    *(b->bf[b->b.y].s+b->b.x+1) = '\0';
    b->bf[b->b.y].len = e_str_len(b->bf[b->b.y].s);
-   b->bf[b->b.y].nrc = strlen(b->bf[b->b.y].s);
+   b->bf[b->b.y].nrc = strlen((const char *)b->bf[b->b.y].s);
    sc_txt_3(b->b.y, b, 1);
 /***************************/   
    if(b->b.x>0) e_brk_recalc(b->f,b->b.y+1,1);
@@ -1673,7 +1673,7 @@ int e_del_nchar(BUFFER *b, SCHIRM *s, int x, int y, int n)
  if (y < b->mxlines)
  {
   b->bf[y].len = e_str_len(b->bf[y].s);
-  b->bf[y].nrc = strlen(b->bf[y].s);
+  b->bf[y].nrc = strlen((const char *)b->bf[y].s);
  }
  e_undo_sw--;
  sc_txt_4(y, b, 0);
@@ -1861,7 +1861,7 @@ int e_put_char(int c, BUFFER *b, SCHIRM *s)
 }
 
 /*   search right (left end of word) */
-int e_su_lblk(int xa, char *s)
+int e_su_lblk(int xa, unsigned char *s)
 {
  int len = strlen(s);
 
@@ -1875,7 +1875,7 @@ int e_su_lblk(int xa, char *s)
 }
 
 /*     Search left (left end of word)     */
-int e_su_rblk(int xa, char *s)
+int e_su_rblk(int xa, unsigned char *s)
 {
  int len = strlen(s);
 
@@ -2110,6 +2110,25 @@ Undo *e_remove_undo(Undo *ud, int sw)
  return(ud);
 }
 
+/**
+ * Function to add undo information to the list of things to undo.
+ * What the function does depends on the value of the integer sw.
+ *
+ * sw  action
+ * --  ------
+ *  d	Uses d to remember delete characters in a block
+ *  c	Uses c to remember a copy of a block
+ *  v   Guess: ?? paste block TODO: verify meaning
+ *  a	Guess: ?? add characters TODO: verify meaning
+ *  l	Guess: ?? Delete line TODO: verify meaning
+ *  r	Uses r to remember deleted characters on one line
+ *  p	Guess: ?? put char over another char (replace) TODO: verify meaning
+ *  y	Guess: ?? redo a previous undo TODO: verify meaning
+ *  s	Guess: ?? replace a string of characters TODO: verify meaning
+ *  
+ *  Remark: the **global** e_undo_sw is a disabler for this function.
+ *  if e_undo_sw is true, this function does nothing.
+ */
 int e_add_undo(int sw, BUFFER *b, int x, int y, int n)
 {
  Undo *next;

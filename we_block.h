@@ -1,7 +1,6 @@
 #ifndef WE_BLOCK_H
 #define WE_BLOCK_H
 
-#include "we_edit.h"
 #include "we_fl_unix.h"
 #include "we_opt.h"
 #include "we_debug.h"

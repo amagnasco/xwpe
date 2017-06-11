@@ -136,7 +136,7 @@ typedef struct undo {
 typedef struct STR {
  unsigned char *s;
  int len; /* Length of string not counting '\n' at the end */
- int nrc;
+ size_t nrc;
  /*int size;*/ /* Memory allocated for the string */
 } STRING;
 
@@ -226,7 +226,7 @@ typedef struct CNT {
  int maxcol, tabn;
  int maxchg, numundo;
  int flopt, edopt;
- int mxedt;           /* max number of exiting windows */
+ int mxedt;           /* max number of editing windows */
  int curedt;          /* currently active window */
  int edt[MAXEDT + 1]; /* 1 <= window IDs <= MAXEDT, arbitrary order */
  int autoindent;
