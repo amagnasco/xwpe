@@ -23,7 +23,7 @@ AC_PATH_XTRA
 # AC_PATH_XTRA does not give an error by default
 # but X11 is optional for us, so we set a HAVE_X11 if X is available
 # Remark that HAVE_LIBX11 is not an AM defined constant, but compiletime defined
-AM_CONDITIONAL([HAVE_X11],[test "X$no_x" = "Xyes"])
+AM_CONDITIONAL([HAVE_X11],[test "X$no_x" != "Xyes"])
 
 # Checks for libraries.
 

@@ -4793,7 +4793,7 @@ fi
 # AC_PATH_XTRA does not give an error by default
 # but X11 is optional for us, so we set a HAVE_X11 if X is available
 # Remark that HAVE_LIBX11 is not an AM defined constant, but compiletime defined
- if test "X$no_x" = "Xyes"; then
+ if test "X$no_x" != "Xyes"; then
   HAVE_X11_TRUE=
   HAVE_X11_FALSE='#'
 else

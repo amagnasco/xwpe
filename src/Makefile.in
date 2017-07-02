@@ -123,11 +123,43 @@ am_wpe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
 	WeExpArr.$(OBJEXT) WeLinux.$(OBJEXT) we_gpm.$(OBJEXT)
 wpe_OBJECTS = $(am_wpe_OBJECTS)
 wpe_LDADD = $(LDADD)
-xwe_SOURCES = xwe.c
-xwe_OBJECTS = xwe.$(OBJEXT)
+am__xwe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
+	we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c we_menue.c \
+	we_mouse.c we_opt.c we_wind.c we_term.c we_prog.c we_progn.c \
+	we_debug.c we_xterm.c WeString.c WeXterm.c WeSyntax.c \
+	WeExpArr.c WeLinux.c we_gpm.c
+@HAVE_X11_TRUE@am_xwe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_unix.$(OBJEXT) we_e_aus.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_edit.$(OBJEXT) we_fl_fkt.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_fl_unix.$(OBJEXT) we_hfkt.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_menue.$(OBJEXT) we_mouse.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_opt.$(OBJEXT) we_wind.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_term.$(OBJEXT) we_prog.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_progn.$(OBJEXT) we_debug.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_xterm.$(OBJEXT) WeString.$(OBJEXT) \
+@HAVE_X11_TRUE@	WeXterm.$(OBJEXT) WeSyntax.$(OBJEXT) \
+@HAVE_X11_TRUE@	WeExpArr.$(OBJEXT) WeLinux.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_gpm.$(OBJEXT)
+xwe_OBJECTS = $(am_xwe_OBJECTS)
 xwe_LDADD = $(LDADD)
-xwpe_SOURCES = xwpe.c
-xwpe_OBJECTS = xwpe.$(OBJEXT)
+am__xwpe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
+	we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c we_menue.c \
+	we_mouse.c we_opt.c we_wind.c we_term.c we_prog.c we_progn.c \
+	we_debug.c we_xterm.c WeString.c WeXterm.c WeSyntax.c \
+	WeExpArr.c WeLinux.c we_gpm.c
+@HAVE_X11_TRUE@am_xwpe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_unix.$(OBJEXT) we_e_aus.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_edit.$(OBJEXT) we_fl_fkt.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_fl_unix.$(OBJEXT) we_hfkt.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_menue.$(OBJEXT) we_mouse.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_opt.$(OBJEXT) we_wind.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_term.$(OBJEXT) we_prog.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_progn.$(OBJEXT) we_debug.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_xterm.$(OBJEXT) WeString.$(OBJEXT) \
+@HAVE_X11_TRUE@	WeXterm.$(OBJEXT) WeSyntax.$(OBJEXT) \
+@HAVE_X11_TRUE@	WeExpArr.$(OBJEXT) WeLinux.$(OBJEXT) \
+@HAVE_X11_TRUE@	we_gpm.$(OBJEXT)
+xwpe_OBJECTS = $(am_xwpe_OBJECTS)
 xwpe_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -157,8 +189,9 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(we_SOURCES) $(wpe_SOURCES) xwe.c xwpe.c
-DIST_SOURCES = $(we_SOURCES) $(wpe_SOURCES) xwe.c xwpe.c
+SOURCES = $(we_SOURCES) $(wpe_SOURCES) $(xwe_SOURCES) $(xwpe_SOURCES)
+DIST_SOURCES = $(we_SOURCES) $(wpe_SOURCES) $(am__xwe_SOURCES_DIST) \
+	$(am__xwpe_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -322,6 +355,20 @@ include_HEADERS = attrb.h edit.h keys.h \
 		model.h unixkeys.h unixmakr.h \
 		WeString.h WeXterm.h WeProg.h WeExpArr.h
 
+@HAVE_X11_TRUE@xwpe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
+@HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
+@HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c we_term.c \
+@HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c we_xterm.c WeString.c \
+@HAVE_X11_TRUE@		WeXterm.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c 
+
+#xwpe_CFLAGS = @X_CFLAGS@
+#xwpe_LDFLAGS = @X_LIBS@ -lX11
+@HAVE_X11_TRUE@xwe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
+@HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
+@HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c we_term.c \
+@HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c we_xterm.c WeString.c \
+@HAVE_X11_TRUE@		WeXterm.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c 
+
 all: all-am
 
 .SUFFIXES:
@@ -443,8 +490,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_unix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_wind.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_xterm.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xwe.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xwpe.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -687,20 +732,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-includeHEADERS
 
 .PRECIOUS: Makefile
 
-@HAVE_X11_TRUE@	xwpe_SOURCES =	we_main.c we_block.c we_unix.c we_e_aus.c \
-@HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
-@HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c we_term.c \
-@HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c we_xterm.c WeString.c \
-@HAVE_X11_TRUE@		WeXterm.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c 
-@HAVE_X11_TRUE@	xwpe_CFLAGS = @X_CFLAGS@
-@HAVE_X11_TRUE@	xwpe_LDFLAGS = @X_LIBS@ -lX11
-@HAVE_X11_TRUE@	xwe_SOURCES =	we_main.c we_block.c we_unix.c we_e_aus.c \
-@HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
-@HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c we_term.c \
-@HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c we_xterm.c WeString.c \
-@HAVE_X11_TRUE@		WeXterm.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c 
-@HAVE_X11_TRUE@	xwe_CFLAGS = @X_CFLAGS@
-@HAVE_X11_TRUE@	xwe_LDFLAGS = @X_LIBS@ -lX11
+#xwe_CFLAGS = @X_CFLAGS@
+#xwe_LDFLAGS = @X_LIBS@ -lX11
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
