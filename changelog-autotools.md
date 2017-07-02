@@ -19,6 +19,7 @@ contents for obsolete macros.
   way users can distinguish older from newer macro files
   We have no specific macro's to start with, but one may be necessary in future.
 * Added config.h for defines of constants.
+* Removed defines and if[n]def for DJGPP completely.
 
 Changes necessary to get compile error free:
 

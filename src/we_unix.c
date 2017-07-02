@@ -28,9 +28,7 @@ int WpeTermInit(int *argc, char **argv);
 #include <signal.h>
 #include <locale.h>
 #ifndef TERMCAP
-#ifndef DJGPP
 #include<curses.h>
-#endif
 #endif
 
 #include "edit.h"		/*   exchange for D.S.  */

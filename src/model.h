@@ -12,27 +12,14 @@
 /*  System Definition   */
 
 #define UNIX
-#undef DJGPP
 
 /*  Effects of #Defines (do not change)  */
 
 #define CHECKHEADER
 
-#ifdef DJGPP
-#define NODEBUGGER
-#undef NOPROG
-#define NO_XWINDOWS
-#define NOPRINTER
-#define NONEWSTYLE
-#define MOUSE 1
-#ifndef UNIX
-#define UNIX
-#endif
-#endif
-
 /*  XWindow Definitions  */
 
-#if defined(DJGPP) || !defined(NO_XWINDOWS)  || defined (HAVE_LIBGPM)
+#if !defined(NO_XWINDOWS)  || defined (HAVE_LIBGPM)
 #define MOUSE   1        /*  activate mouse  */
 #else
 #define MOUSE   0        /*  deactivate mouse  */

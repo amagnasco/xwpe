@@ -273,15 +273,10 @@ int WpeMouseInFileDirList(int k, int sw, FENSTER * f)
       sprintf(tmp, "%s%s", cn->f[i]->dirct, b->dd->name[b->dw->nf - b->cd->anz]);
     else
       sprintf(tmp, "%s/%s", cn->f[i]->dirct, b->dd->name[b->dw->nf - b->cd->anz]);
-#ifndef DJGPP
     if(k == -2)
       e_copy(b->dd->name[b->dw->nf - b->cd->anz], tmp, f);
     else if(k == -4)
       e_link(b->dd->name[b->dw->nf - b->cd->anz], tmp, f);
-#else
-    if(k == -4)
-      e_copy(b->dd->name[b->dw->nf - b->cd->anz], tmp, f);
-#endif
     else
       e_rename(b->dd->name[b->dw->nf - b->cd->anz], tmp, f);
     freedf(b->cd);
@@ -300,15 +295,10 @@ int WpeMouseInFileDirList(int k, int sw, FENSTER * f)
       sprintf(tmp, "%s%s", cn->f[i]->dirct, b->df->name[b->fw->nf]);
     else
       sprintf(tmp, "%s/%s", cn->f[i]->dirct, b->df->name[b->fw->nf]);
-#ifndef DJGPP
     if(k == -2)
       e_copy(b->df->name[b->fw->nf], tmp, f);
     else if(k == -4)
       e_link(b->df->name[b->fw->nf], tmp, f);
-#else
-    if(k == -4)
-      e_copy(b->df->name[b->fw->nf], tmp, f);
-#endif
     else
       e_rename(b->df->name[b->fw->nf], tmp, f);
     freedf(b->df);
@@ -1067,10 +1057,8 @@ void e_opt_eck_mouse(o)
    PIC *pic;
    e_std_rahmen(o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
-#if !defined(DJGPP)
    if(!WpeIsXwin()) pic = e_open_view(o->xa, o->ya, o->xe, o->ye, 0, 2);
    else 
-#endif
 	pic = e_open_view(o->xa, o->ya, o->xe-2, o->ye-1, 0, 2);
 #else
    pic = e_open_view(o->xa, o->ya, o->xe, o->ye, 0, 2);

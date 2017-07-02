@@ -31,10 +31,6 @@
 #include "attrb.h"
 #endif
 
-#ifdef DJGPP
-#include <dpmi.h>
-#endif
-
 /* externals */
 extern char *info_file;
 extern char *e_tmp_dir;

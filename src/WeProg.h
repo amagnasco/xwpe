@@ -59,17 +59,8 @@ void WpeSyntaxReadFile(ECNT *cn);
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Macros and Machine specific information
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-#ifdef DJGPP
-
-#define WpeSyntaxGetPersonal(filename)                                      \
- sprintf(filename, "./%s", SYNTAX_FILE)
-
-#else
-
 #define WpeSyntaxGetPersonal(filename)                                      \
  sprintf(filename, "%s/%s/%s", getenv("HOME"), XWPE_HOME, SYNTAX_FILE)
-
-#endif
 
 #define WpeSyntaxGetSystem(filename)                                        \
  sprintf(filename, "%s/%s", LIBRARY_DIR, SYNTAX_FILE)

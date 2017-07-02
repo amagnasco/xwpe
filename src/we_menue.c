@@ -103,7 +103,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
 #endif
   mainmenu[2].position = -3;
   mainmenu[2].width = 27;
-#if !defined(NO_XWINDOWS) && !defined(DJGPP)
+#if !defined(NO_XWINDOWS) 
   if(WpeIsXwin())
     mainmenu[2].no_of_items = 9;
   else
@@ -265,13 +265,6 @@ int WpeHandleMainmenu(int n, FENSTER *f)
 #endif
     mainmenu[MENOPT - 2].position = -14;
   mainmenu[MENOPT - 2].width = 28;
-#ifdef DJGPP
-#ifdef PROG
-  mainmenu[MENOPT - 2].no_of_items = 10;
-#else
-  mainmenu[MENOPT - 2].no_of_items = 8;
-#endif
-#else
 #ifdef UNIX
 #ifdef PROG
   if(WpeIsProg())
@@ -285,7 +278,6 @@ int WpeHandleMainmenu(int n, FENSTER *f)
     mainmenu[MENOPT - 2].no_of_items = !WpeIsXwin()? 8 : 7;
 #else
   mainmenu[MENOPT - 2].no_of_items = !WpeIsXwin()? 7 : 6;
-#endif
 #endif
   if((mainmenu[MENOPT - 2].menuitems = malloc(mainmenu[MENOPT - 2].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
@@ -306,9 +298,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   mainmenu[MENOPT - 2].menuitems[2] = WpeFillSubmenuItem("Tile           Shift F4", 0, 'T', e_ed_tile);
   mainmenu[MENOPT - 2].menuitems[3] = WpeFillSubmenuItem("Cascade        Shift F5", 1, 'A', e_ed_cascade);
   mainmenu[MENOPT - 2].menuitems[6] = WpeFillSubmenuItem("List All          Alt 0", 0, 'L', e_list_all_win);
-#ifndef DJGPP
   if(!WpeIsXwin())
-#endif
     mainmenu[MENOPT - 2].menuitems[7] = WpeFillSubmenuItem("Output    Alt F5 / ^G P", 0, 'O', e_u_deb_out);
 #ifdef PROG
   if(WpeIsProg())
@@ -330,7 +320,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
 #endif
     mainmenu[MENOPT - 1].position = -22;
   mainmenu[MENOPT - 1].width = 27;
-#if defined(PROG) && !defined(DJGPP)
+#if defined(PROG) 
   mainmenu[MENOPT - 1].no_of_items = 8;
 #else
   mainmenu[MENOPT - 1].no_of_items = 6;
@@ -338,7 +328,7 @@ int WpeHandleMainmenu(int n, FENSTER *f)
   if((mainmenu[MENOPT - 1].menuitems = malloc(mainmenu[MENOPT - 1].no_of_items * sizeof(OPTK))) == NULL)
     e_error(e_msg[ERR_LOWMEM], 1, f->fb);
   mainmenu[MENOPT - 1].menuitems[0] = WpeFillSubmenuItem("Editor              F1", 0, 'E', e_help);
-#if defined(PROG) && !defined(DJGPP)
+#if defined(PROG) 
   mainmenu[MENOPT - 1].menuitems[1] = WpeFillSubmenuItem("Topic Search       ^F1", 0, 'T', e_topic_search);
   mainmenu[MENOPT - 1].menuitems[2] = WpeFillSubmenuItem("FUnction Index  Alt F1", 1, 'U', e_funct_in);
 /*   mainmenu[MENOPT-1].menuitems[2] = WpeFillSubmenuItem("Functions      Alt F1", 0, 'F', e_funct); */

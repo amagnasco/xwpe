@@ -2085,16 +2085,11 @@ struct dirfile *WpeGraphicalDirTree(struct dirfile *cd, struct dirfile *dd, ECNT
     for(i = 0; i < cd->anz; i++)
     {
       if(!i)
-#ifndef DJGPP
       {
         if(*cd->name[0] == DIRC && *(cd->name[0] + 1) == '\0')
           strcpy(str, "Root");
         else
           strcpy(str, *(cd->name + i));
-#else
-      {
-        strcpy(str, *(cd->name + i));
-#endif
       }
       else
       {

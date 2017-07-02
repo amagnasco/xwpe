@@ -335,10 +335,8 @@ char *e_new_qual(char *s, char *ns, char *sb)
   ;
  if (i < 0 || s[i] == DIRC)
   strcpy(sb, s);
-#if !defined(DJGPP)
  else if (i == 0 || s[i-1] == DIRC)
   strcpy(sb, s);
-#endif
  else
  {
   for (j = 0; j < i; j++)
