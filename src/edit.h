@@ -9,8 +9,6 @@
                      Header file for FK-editor
 */
 
-#define VERSION "1.5.29a"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -12,6 +12,7 @@
 /* includes */
 #include <string.h>
 #include <signal.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -26,6 +27,7 @@
 #ifdef UNIX
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include "attrb.h"
 #endif
 
