@@ -27,12 +27,8 @@
 
 /*  Programming Environment  */
 
-#ifndef NOPROG
 #define PROG
-#ifndef NODEBUGGER
 #define DEBUGGER
-#endif
-#endif
 
 /*  Newstyle only for XWindow   */
 #if !defined(NO_XWINDOWS) && !defined(NONEWSTYLE)
