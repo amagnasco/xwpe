@@ -36,6 +36,17 @@ Known Bugs
 
 Changes
 
+1.6.0
+
+* Changed configure.in to work with newer version autotools (2.69 and on)
+* Solved some compiler warnings due to old code and -Wall for gcc
+* Started using defined constants in stead of values (F_OK, R_OK)
+* Slowly replacing globally included edit.h into targeted header files (one
+per c module)
+* Repair bug in message when immediately running out of memory
+* Updated .gitignore
+* Started using markdown for readme files.
+
 1.5.30a
 * Some additional comments
 * Fedora core 4 compile fix
