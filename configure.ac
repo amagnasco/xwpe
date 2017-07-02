@@ -1,5 +1,11 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
+#
+# Normally use autoreconf or autoreconf --install -v to process this file
+# autoreconf calls all necessary autotools including autoconf, autoheader, automake etc.
+# if autoreconf runs successfully and without warnings, you can use ./configure to
+# finalize the configuration.
+#
 
 AC_PREREQ([2.69])
 AC_INIT([XWindows Programming Editor], [1.6.0], [github@github.com/amagnasco])
@@ -24,6 +30,7 @@ AC_PATH_XTRA
 # but X11 is optional for us, so we set a HAVE_X11 if X is available
 # Remark that HAVE_LIBX11 is not an AM defined constant, but defined in config.h
 AM_CONDITIONAL([HAVE_X11],[test "X$no_x" != "Xyes"])
+
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 	AC_DEFINE([NO_XWINDOWS], [], [X11 library is not available])
@@ -32,13 +39,6 @@ fi
 # Checks for libraries.
 
 AC_CHECK_LIB([ncurses], [tgetent])
-#PKG_CHECK_MODULES([CURSES], [ncurses],,[
-#  AC_CHECK_LIB([ncurses], [tgetent], [CURSES_LIBS=-lncurses],
-#    [AC_CHECK_LIB([curses], [tgetent], [CURSES_LIBS=-lcurses],
-#      AC_MSG_ERROR([No ncurses library found]))])
-#])
-#AC_SUBST([CURSES_LIBS])
-
 AC_CHECK_LIB([X11], [XQueryPointer])
 AC_CHECK_LIB([SM], [main])
 AC_CHECK_LIB([ICE], [main])
@@ -49,6 +49,11 @@ AC_CHECK_LIB([z], [main])
 
 # Define specific variables
 AC_DEFINE([PRNTCMD], ["lpr"], [The print command to be used.])
+
+# for we_fl_unix.c
+if man -s 1 ls > /dev/null 2> /dev/null; then
+ AC_DEFINE([MAN_S_OPT], [], [Is using man -s option possible?])
+fi
 
 # Checks for header files.
 AC_PATH_X

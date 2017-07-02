@@ -124,6 +124,9 @@
    slash. */
 #define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
 
+/* Is using man -s option possible? */
+#define MAN_S_OPT /**/
+
 /* X11 library is not available */
 /* #undef NO_XWINDOWS */
 

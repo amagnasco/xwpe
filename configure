@@ -4801,6 +4801,7 @@ else
   HAVE_X11_FALSE=
 fi
 
+
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 
@@ -4854,13 +4855,6 @@ _ACEOF
   LIBS="-lncurses $LIBS"
 
 fi
-
-#PKG_CHECK_MODULES([CURSES], [ncurses],,[
-#  AC_CHECK_LIB([ncurses], [tgetent], [CURSES_LIBS=-lncurses],
-#    [AC_CHECK_LIB([curses], [tgetent], [CURSES_LIBS=-lcurses],
-#      AC_MSG_ERROR([No ncurses library found]))])
-#])
-#AC_SUBST([CURSES_LIBS])
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XQueryPointer in -lX11" >&5
 $as_echo_n "checking for XQueryPointer in -lX11... " >&6; }
@@ -5070,6 +5064,13 @@ fi
 
 $as_echo "#define PRNTCMD \"lpr\"" >>confdefs.h
 
+
+# for we_fl_unix.c
+if man -s 1 ls > /dev/null 2> /dev/null; then
+
+$as_echo "#define MAN_S_OPT /**/" >>confdefs.h
+
+fi
 
 # Checks for header files.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for X" >&5
