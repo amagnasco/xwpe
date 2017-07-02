@@ -124,6 +124,9 @@
    slash. */
 #define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
 
+/* X11 library is not available */
+/* #undef NO_XWINDOWS */
+
 /* Name of package */
 #define PACKAGE "xwindows-programming-editor"
 

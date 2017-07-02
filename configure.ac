@@ -22,8 +22,12 @@ AC_PATH_XTRA
 
 # AC_PATH_XTRA does not give an error by default
 # but X11 is optional for us, so we set a HAVE_X11 if X is available
-# Remark that HAVE_LIBX11 is not an AM defined constant, but compiletime defined
+# Remark that HAVE_LIBX11 is not an AM defined constant, but defined in config.h
 AM_CONDITIONAL([HAVE_X11],[test "X$no_x" != "Xyes"])
+# Many code blocks depend on NO_XWINDOWS being defined or not defined
+if test "X${no_x}" = "Xyes"; then
+	AC_DEFINE([NO_XWINDOWS], [], [X11 library is not available])
+fi
 
 # Checks for libraries.
 

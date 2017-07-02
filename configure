@@ -4792,7 +4792,7 @@ fi
 
 # AC_PATH_XTRA does not give an error by default
 # but X11 is optional for us, so we set a HAVE_X11 if X is available
-# Remark that HAVE_LIBX11 is not an AM defined constant, but compiletime defined
+# Remark that HAVE_LIBX11 is not an AM defined constant, but defined in config.h
  if test "X$no_x" != "Xyes"; then
   HAVE_X11_TRUE=
   HAVE_X11_FALSE='#'
@@ -4801,6 +4801,12 @@ else
   HAVE_X11_FALSE=
 fi
 
+# Many code blocks depend on NO_XWINDOWS being defined or not defined
+if test "X${no_x}" = "Xyes"; then
+
+$as_echo "#define NO_XWINDOWS /**/" >>confdefs.h
+
+fi
 
 # Checks for libraries.
 

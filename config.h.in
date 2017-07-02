@@ -123,6 +123,9 @@
    slash. */
 #undef LSTAT_FOLLOWS_SLASHED_SYMLINK
 
+/* X11 library is not available */
+#undef NO_XWINDOWS
+
 /* Name of package */
 #undef PACKAGE
 
