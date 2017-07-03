@@ -8,9 +8,9 @@ we_prog.o: we_prog.c /usr/include/stdc-predef.h /usr/include/ctype.h \
  /usr/include/string.h \
  /usr/lib/gcc/x86_64-redhat-linux/6.3.1/include/stddef.h \
  /usr/include/bits/string.h /usr/include/bits/string2.h \
- /usr/include/stdlib.h ../config.h keys.h messages.h options.h model.h \
- edit.h /usr/include/stdio.h /usr/include/libio.h \
- /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/include/stdlib.h ../config.h keys.h messages.h options.h edit.h \
+ /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h \
+ /usr/include/wchar.h \
  /usr/lib/gcc/x86_64-redhat-linux/6.3.1/include/stdarg.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
  /usr/include/bits/stdio.h /usr/include/bits/waitflags.h \
@@ -24,7 +24,7 @@ we_prog.o: we_prog.c /usr/include/stdc-predef.h /usr/include/ctype.h \
  /usr/lib/gcc/x86_64-redhat-linux/6.3.1/include/syslimits.h \
  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
- /usr/include/bits/posix2_lim.h unixmakr.h /usr/include/gpm.h \
+ /usr/include/bits/posix2_lim.h model.h unixmakr.h /usr/include/gpm.h \
  /usr/include/paths.h /usr/include/sys/ioctl.h /usr/include/bits/ioctls.h \
  /usr/include/asm/ioctls.h /usr/include/asm-generic/ioctls.h \
  /usr/include/linux/ioctl.h /usr/include/asm/ioctl.h \
@@ -89,8 +89,6 @@ messages.h:
 
 options.h:
 
-model.h:
-
 edit.h:
 
 /usr/include/stdio.h:
@@ -148,6 +146,8 @@ edit.h:
 /usr/include/linux/limits.h:
 
 /usr/include/bits/posix2_lim.h:
+
+model.h:
 
 unixmakr.h:
 

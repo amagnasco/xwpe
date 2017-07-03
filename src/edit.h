@@ -14,6 +14,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <limits.h>
+#include "model.h"
 
 #ifdef UNIX
 #include "unixmakr.h"

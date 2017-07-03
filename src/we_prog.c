@@ -10,7 +10,6 @@
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
-#include "model.h"
 #include "edit.h"
 #include "we_prog.h"
 #include "WeExpArr.h"
@@ -26,6 +25,8 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <signal.h>
+
+#define CHECKHEADER	// moved from model.h, only in use in we_prog.c
 
 int e_run_sh(FENSTER *f);
 int e_make_library(char *library, char *ofile, FENSTER *f);

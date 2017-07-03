@@ -13,9 +13,10 @@
 
 #define UNIX
 
-/*  Effects of #Defines (do not change)  */
+/*  Programming Environment  */
 
-#define CHECKHEADER
+#define PROG
+#define DEBUGGER
 
 /*  XWindow Definitions  */
 
@@ -24,11 +25,6 @@
 #else
 #define MOUSE   0        /*  deactivate mouse  */
 #endif
-
-/*  Programming Environment  */
-
-#define PROG
-#define DEBUGGER
 
 /*  Newstyle only for XWindow   */
 #if !defined(NO_XWINDOWS) 
