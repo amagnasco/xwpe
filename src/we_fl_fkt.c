@@ -19,7 +19,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-#ifdef HAS_LIBZ
+#ifdef HAVE_LIBZ
 #include <zlib.h>
 #endif
 #ifdef DEFPGC
@@ -532,7 +532,7 @@ struct help_ud
  int x, y, sw;
 } *ud_help;
 
-#ifdef HAS_LIBZ
+#ifdef HAVE_LIBZ
 typedef gzFile IFILE;
 
 #define e_i_fgets(s, n, p) gzgets(p, s, n)
@@ -573,7 +573,7 @@ int e_mkdir_path(char *path)
 IFILE *e_i_fopen(char *path, char *stat)
 {
  char *tmp2;
-#ifdef HAS_LIBZ
+#ifdef HAVE_LIBZ
  IFILE *fp;
 
  if (!path) {  return(NULL);  }
@@ -697,7 +697,7 @@ IFILE *e_i_fopen(char *path, char *stat)
 #endif
 }
 
-#ifndef HAS_LIBZ
+#ifndef HAVE_LIBZ
 int e_i_fclose(IFILE *fp)
 {
  int ret = fclose(fp->fp);
