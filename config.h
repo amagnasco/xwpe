@@ -1,6 +1,12 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* copied from old configure.in. Use is unclear. */
+/* #undef DEFPGC */
+
+/* copied from old configure.in. Use is unclear. */
+/* #undef DEFTPUTS */
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
 

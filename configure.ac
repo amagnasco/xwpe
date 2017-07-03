@@ -69,4 +69,20 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strchr strdup strrchr strstr])
 
+#
+# Next 2 if-eval statements plus defines are copied from old configure.in
+#      Both result in redefinition of functions. The reason is unclear.
+#
+if eval 'grep -s "[[ 	]]putc[[ 	(]]" /usr/include/*.h > /dev/null'; then
+ :;
+else
+ AC_DEFINE([DEFPGC], [], [copied from old configure.in. Use is unclear.])
+fi
+
+if eval 'grep -s "[[ 	]]tputs[[ 	(]]" /usr/include/*.h > /dev/null'; then
+ :;
+else
+ AC_DEFINE([DEFTPUTS], [], [copied from old configure.in. Use is unclear.])
+fi
+
 AC_OUTPUT
