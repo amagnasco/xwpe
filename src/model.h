@@ -31,7 +31,7 @@
 #define DEBUGGER
 
 /*  Newstyle only for XWindow   */
-#if !defined(NO_XWINDOWS) && !defined(NONEWSTYLE)
+#if !defined(NO_XWINDOWS) 
 #define NEWSTYLE
 #endif
 
