@@ -570,11 +570,11 @@ int e_mkdir_path(char *path)
  return(0);
 }
 
-IFILE *e_i_fopen(char *path, char *stat)
+IFILE e_i_fopen(char *path, char *stat)
 {
  char *tmp2;
 #ifdef HAVE_LIBZ
- IFILE *fp;
+ IFILE fp;
 
  if (!path) {  return(NULL);  }
  if ((fp = gzopen(path, stat))) {  return(fp);  }
@@ -709,7 +709,7 @@ int e_i_fclose(IFILE *fp)
 
 int e_read_help(char *str, FENSTER *f, int sw)
 {
- IFILE *fp;
+ IFILE fp;
  char *ptmp, tstr[256];
  int i;
 
@@ -1109,9 +1109,9 @@ int e_mk_info_mrk(char *str)
  return(0);
 }
 
-IFILE *e_info_jump(char *str, char **path, IFILE *fp)
+IFILE e_info_jump(char *str, char **path, IFILE fp)
 {
- IFILE *fpn;
+ IFILE fpn;
  int i, j, n, anz = 0;
  char *ptmp, *fstr, tstr[256], nfl[128];
  struct FL_INFO{  char *name; int line;  } **files = malloc(1);
@@ -1235,7 +1235,7 @@ char *e_mk_info_path(char *path, char *file)
 
 int e_read_info(char *str, FENSTER *f, char *file)
 {
-   IFILE *fp = NULL;
+   IFILE fp = NULL;
    char *path = NULL, *ptmp, tstr[256], fstr[128];
    int i, len, sw = 0, bsw = 0;
    if(!str) str = "Top";

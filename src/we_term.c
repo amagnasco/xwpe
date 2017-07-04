@@ -9,6 +9,7 @@
 #include "model.h"
 #include "edit.h"
 #include "we_term.h"
+#include "we_gpm.h"
 
 #ifdef UNIX
 

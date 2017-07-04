@@ -6,5 +6,10 @@ config.status
 *.log
 *.pdf
 *.swp
+.deps*
+src/we
+src/wpe
+src/xwpe
+src/xwe
 autom4te*
 *~

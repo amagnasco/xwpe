@@ -1,3 +1,6 @@
+
+#include "config.h"
+
 #ifdef HAVE_LIBGPM
 /* we_gpm.c -- GPM routines for xwpe.
 
