@@ -6,7 +6,7 @@ config.status
 *.log
 *.pdf
 *.swp
-.deps*
+src/.deps*
 src/we
 src/wpe
 src/xwpe

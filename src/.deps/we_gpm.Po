@@ -1,3 +1,0 @@
-we_gpm.o: we_gpm.c /usr/include/stdc-predef.h
-
-/usr/include/stdc-predef.h:
