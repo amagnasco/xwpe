@@ -6,6 +6,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "model.h"
@@ -542,7 +543,9 @@ typedef struct
 {
  FILE *fp;
  int sw;
-} IFILE;
+} ifile_s;
+
+typedef ifile_s *IFILE;
 
 #define e_i_fgets(s, n, p) fgets(s, n, p->fp)
 #endif
@@ -625,7 +628,7 @@ IFILE e_i_fopen(char *path, char *stat)
  extern char *e_tmp_dir;
  char *tmp, *command;
  int len;
- IFILE *fp = malloc(sizeof(IFILE));
+ IFILE fp = malloc(sizeof(IFILE));
 
  if (!fp) return(NULL);
  if (!path) {  free(fp); return(NULL);  }
@@ -698,7 +701,7 @@ IFILE e_i_fopen(char *path, char *stat)
 }
 
 #ifndef HAVE_LIBZ
-int e_i_fclose(IFILE *fp)
+int e_i_fclose(IFILE fp)
 {
  int ret = fclose(fp->fp);
 

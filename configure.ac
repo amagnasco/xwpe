@@ -10,9 +10,10 @@
 AC_PREREQ([2.69])
 AC_INIT([XWindows Programming Editor], [1.6.0], [github@github.com/amagnasco])
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/keys.h])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_AUX_DIR([build-aux])
+AM_INIT_AUTOMAKE
 AC_CONFIG_FILES([Makefile src/Makefile])
 
 # Checks for programs.
