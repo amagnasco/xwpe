@@ -40,9 +40,9 @@ int e_x_system(const char *exe);
 int e_x_cp_X_to_buffer(FENSTER *f);
 int e_x_copy_X_buffer(FENSTER *f);
 int e_x_paste_X_buffer(FENSTER *f);
-int e_x_change(PIC *pic);
+int e_x_change(view *pic);
 int e_x_repaint_desk(FENSTER *f);
-void e_setlastpic(PIC *pic);
+void e_setlastpic(view *pic);
 int e_make_xr_rahmen(int xa, int ya, int xe, int ye, int sw);
 int e_x_kbhit(void);
 
@@ -76,7 +76,7 @@ extern char *altschirm;
 extern char *extbyte, *altextbyte;
 #endif
 int old_cursor_x = 0, old_cursor_y = 0, cur_on = 1;
-extern PIC *e_X_l_pic;
+extern view *e_X_l_pic;
 
 extern struct mouse e_mouse;
 
@@ -467,7 +467,7 @@ int e_x_refresh()
    return(0);
 }
 
-int e_x_change(PIC *pic)
+int e_x_change(view *pic)
 {
  XEvent report;
  XExposeEvent *expose_report;
@@ -786,9 +786,9 @@ int e_x_kbhit()
  }
 }
 
-void e_setlastpic(PIC *pic)
+void e_setlastpic(view *pic)
 {
- extern PIC *e_X_l_pic;
+ extern view *e_X_l_pic;
 
  e_X_l_pic = pic;
 }
@@ -858,8 +858,8 @@ int e_x_repaint_desk(FENSTER *f)
 {
  ECNT *cn = f->ed;
  int i, g[4];
- extern PIC *e_X_l_pic;
- PIC *sv_pic = NULL, *nw_pic = NULL;
+ extern view *e_X_l_pic;
+ view *sv_pic = NULL, *nw_pic = NULL;
 
  if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->pic)
  {

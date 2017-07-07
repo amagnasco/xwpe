@@ -1054,7 +1054,7 @@ void e_opt_eck_mouse(o)
 {
    int g[4];
    int xold, yold, x, y, xa;
-   PIC *pic;
+   view *pic;
    e_std_rahmen(o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
    if(!WpeIsXwin()) pic = e_open_view(o->xa, o->ya, o->xe, o->ye, 0, 2);

@@ -493,7 +493,7 @@ int WpeHandleFileManager(ECNT * cn)
   int             g[4], cold = AltN;
   char            filen[128], *ftmp, *dtp = NULL, *ftp = NULL, *svdir = NULL;
   char           *dirtmp = NULL;
-  PIC            *outp = NULL;
+  view            *outp = NULL;
   FILE           *fp;
   struct stat     buf;
   char            dtmd;
@@ -2209,7 +2209,7 @@ int WpeQuitWastebasket(FENSTER * f)
 
 int WpeRemoveDir(char *dirct, char *file, FENSTER * f, int rec)
 {
-  PIC            *pic = NULL;
+  view            *pic = NULL;
   char           *tmp;
   int             i, ret, svmode = f->ed->flopt;
   struct dirfile *dd;
@@ -2466,7 +2466,7 @@ int WpeRenameCopyDir(char *dirct, char *file, char *newname, FENSTER *f,
   int             i, ret, mode;
   struct dirfile *dd;
   struct stat     buf;
-  PIC            *pic = NULL;
+  view            *pic = NULL;
 
   if(rec > MAXREC)
     return(0);
@@ -3029,7 +3029,7 @@ int WpeDirDelOptions(FENSTER * f)
 
 int WpeShell(FENSTER * f)
 {
-  PIC            *outp = NULL;
+  view            *outp = NULL;
   int             g[4];
 
   if (!WpeIsXwin())

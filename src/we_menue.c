@@ -471,7 +471,7 @@ int WpeHandleSubmenu(int xa, int ya, int xe, int ye, int nm, OPTK * fopt, FENSTE
   extern struct mouse e_mouse;
   extern int      e_mn_men;
 #endif
-  PIC            *pic;
+  view            *pic;
   int             i, n = 0, nold = 1, c = 0;
   extern OPT      opt[];
 

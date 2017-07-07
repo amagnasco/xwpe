@@ -54,7 +54,7 @@ WpeOptionSection WpeSectionRead[] = {
 /*    About WE      */
 int e_about_WE(FENSTER *f)
 {
- PIC *pic = NULL;
+ view *pic = NULL;
  int xa = 10, ya = 4, xe = xa + 50, ye = ya + 13;
  char tmp[40];
 
@@ -144,8 +144,8 @@ int e_repaint_desk(FENSTER *f)
  ECNT *cn = f->ed;
  int i, g[4];
 #ifndef NO_XWINDOWS
- extern PIC *e_X_l_pic;
- PIC *sv_pic = NULL, *nw_pic = NULL;
+ extern view *e_X_l_pic;
+ view *sv_pic = NULL, *nw_pic = NULL;
 
  if (WpeIsXwin())
  {
@@ -203,7 +203,7 @@ int e_repaint_desk(FENSTER *f)
 /*    write system information   */
 int e_sys_info(FENSTER *f)
 {
- PIC *pic = NULL;
+ view *pic = NULL;
  char tmp[80];
  int xa = 10, ya = 5, xe = xa + 60, ye = ya + 8;
 
@@ -261,7 +261,7 @@ int e_ad_colors(FENSTER *f)
 int e_ad_colors_md(FENSTER *f, int md)
 {
  int sw = 0, xa = 0, ya = 1, xe = xa + 79, ye = ya + 22;
- PIC *pic;
+ view *pic;
 
  pic = e_std_kst(xa, ya, xe, ye, "Adjust Colors", 1, f->fb->er.fb,
    f->fb->et.fb, f->fb->es.fb);
@@ -1409,7 +1409,7 @@ int e_opt_move(W_OPTSTR *o)
 {
  int xa = o->xa, ya = o->ya, xe = o->xe, ye = o->ye;
  int c = 0;
- PIC *pic;
+ view *pic;
 
  e_std_rahmen(o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE

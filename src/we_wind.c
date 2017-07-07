@@ -75,7 +75,7 @@ char **StringToStringArray(char *str, int *maxLen, int minWidth, int *anzahl)
       Print error message        */
 int e_error(char *text, int sw, FARBE *f)
 {
- PIC *pic = NULL;
+ view *pic = NULL;
  int len, i, xa, xe, ya = 8, ye = 14;
  char *header = NULL;
 
@@ -197,9 +197,9 @@ int e_pr_filetype(FENSTER *f)
 }
 
 /*   open section of screen and save background  */
-PIC *e_open_view(int xa, int ya, int xe, int ye, int col, int sw)
+view *e_open_view(int xa, int ya, int xe, int ye, int col, int sw)
 {
- PIC *pic = malloc(sizeof(PIC));
+ view *pic = malloc(sizeof(view));
  int i, j;
 
  if (pic == NULL) return(NULL);
@@ -262,7 +262,7 @@ PIC *e_open_view(int xa, int ya, int xe, int ye, int col, int sw)
 }
 
 /*   close screen section - refresh background  */
-int e_close_view(PIC *pic, int sw)
+int e_close_view(view *pic, int sw)
 {
  int i, j;
 #ifndef NO_XWINDOWS
@@ -520,20 +520,20 @@ int e_size_move(FENSTER *f)
 }
 
 /*       Standard Box                                  */
-PIC *e_std_kst(int xa, int ya, int xe, int ye, char *name, int sw, int fr,
+view *e_std_kst(int xa, int ya, int xe, int ye, char *name, int sw, int fr,
   int ft, int fes)
 {
- PIC *pic = e_open_view(xa, ya, xe, ye, ft, 1);
+ view *pic = e_open_view(xa, ya, xe, ye, ft, 1);
  if (pic == NULL) return (NULL);
  e_std_rahmen(xa, ya, xe, ye, name, sw, fr, fes);
  return(pic);
 }
 
-PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb)
+view *e_change_pic(int xa, int ya, int xe, int ye, view *pic, int sw, int frb)
 {
    int i, j;
    int box = 2, ax, ay, ex, ey;
-   PIC *newpic;
+   view *newpic;
    if(sw<0) {  sw = -sw; box = 1;  }
    if (pic == NULL)
    {  newpic = e_open_view(xa, ya, xe, ye, frb, box);
@@ -547,7 +547,7 @@ PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb)
    }
    else
    {
-      newpic = malloc(sizeof(PIC));
+      newpic = malloc(sizeof(view));
       if(newpic == NULL)  return(NULL);
       newpic->a.x = xa;
       newpic->a.y = ya;
@@ -646,9 +646,9 @@ PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb)
    return(newpic);
 }
 
-PIC *e_ed_kst(FENSTER *f, PIC *pic, int sw)
+view *e_ed_kst(FENSTER *f, view *pic, int sw)
 {
-   PIC *newpic = e_change_pic(f->a.x, f->a.y, f->e.x,
+   view *newpic = e_change_pic(f->a.x, f->a.y, f->e.x,
 				f->e.y, pic, sw, f->fb->er.fb);
    e_ed_rahmen(f, sw);
    return(newpic);
@@ -1418,7 +1418,7 @@ int e_schr_nchar_wsv(char *str, int x, int y, int n, int max, int col,
 }
 #endif
 
-int e_mess_win(char *header, char *str, PIC **pic, FENSTER *f)
+int e_mess_win(char *header, char *str, view **pic, FENSTER *f)
 {
  ECNT *cn = f->ed;
  extern int (*e_u_kbhit)(void);
@@ -1491,7 +1491,7 @@ int e_mess_win(char *header, char *str, PIC **pic, FENSTER *f)
 
 int e_opt_sec_box(int xa, int ya, int num, OPTK *opt, FENSTER *f, int sw)
 {
-   PIC *pic;
+   view *pic;
    int n, nold, max = 0, i, c = 0, xe, ye = ya + num + 1;
    for(i = 0; i < num; i++)
    if((n = strlen(opt[i].t)) > max) max = n;
@@ -1584,7 +1584,7 @@ int e_list_all_win(FENSTER *f)
 }
 
 #ifdef NEWSTYLE
-int e_get_pic_xrect(int xa, int ya, int xe, int ye, PIC *pic)
+int e_get_pic_xrect(int xa, int ya, int xe, int ye, view *pic)
 {
  int i = xa, j, ebbg;
 
@@ -1595,7 +1595,7 @@ int e_get_pic_xrect(int xa, int ya, int xe, int ye, PIC *pic)
  return(i);
 }
 
-int e_put_pic_xrect(PIC *pic)
+int e_put_pic_xrect(view *pic)
 {
  int i = 0, j;
  int ebbg = (pic->e.x - pic->a.x + 1) * 2 * (pic->e.y - pic->a.y + 1);

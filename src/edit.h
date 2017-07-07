@@ -65,11 +65,11 @@ typedef struct CLR {
  int fb;
 } COLOR;
 
-typedef struct PICSTR {
+typedef struct view_struct {
  char *p;
  POINT a;
  POINT e;
-} PIC;
+} view;
 
 typedef struct FND {
  char search[80], replace[80];
@@ -201,7 +201,7 @@ typedef struct FNST {
  POINT se;
  char zoom;
  FARBE *fb;       /* color scheme */
- PIC *pic;        /* picture save below the box ??? */
+ view *pic;        /* picture save below the box ??? */
  char *dirct;     /* working/actual directory */
  char *datnam;    /* window header text */
  int winnum;      /* ID number in parents structure ??? */
@@ -309,7 +309,7 @@ typedef struct {
  int fbs, fbz, fwt, fws;
  int tn, sn, pn, bn, wn, nn;
  char *name;
- PIC *pic;
+ view *pic;
  W_O_TXTSTR **tstr;
  W_O_SSWSTR **sstr;
  W_O_PSWSTR **pstr;
@@ -326,8 +326,8 @@ typedef struct wpeOptionSection {
 
 #ifdef UNIX
 
-int e_put_pic_xrect(PIC *pic);
-int e_get_pic_xrect(int xa, int ya, int xe, int ye, PIC *pic);
+int e_put_pic_xrect(view *pic);
+int e_get_pic_xrect(int xa, int ya, int xe, int ye, view *pic);
 
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
 int e_make_xrect(int xa, int ya, int xe, int ye, int sw);

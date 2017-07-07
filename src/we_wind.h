@@ -42,25 +42,25 @@ int e_error(char *text, int sw, FARBE *f);
 int e_message(int sw, char *str, FENSTER *f);
 void e_firstl(FENSTER *f, int sw);
 int e_pr_filetype(FENSTER *f);
-PIC *e_open_view(int xa, int ya, int xe, int ye, int col, int sw);
-int e_close_view(PIC *pic, int sw);
+view *e_open_view(int xa, int ya, int xe, int ye, int col, int sw);
+int e_close_view(view *pic, int sw);
 void e_pr_line(int y, FENSTER *f);
 void e_std_rahmen(int xa, int ya, int xe, int ye, char *name, int sw,
   int frb, int fes);
 void e_ed_rahmen(FENSTER *f, int sw);
 int e_schirm(FENSTER *f, int sw);
 int e_size_move(FENSTER *f);
-PIC *e_std_kst(int xa, int ya, int xe, int ye, char *name, int sw, int fr,
+view *e_std_kst(int xa, int ya, int xe, int ye, char *name, int sw, int fr,
   int ft, int fes);
-PIC *e_ed_kst(FENSTER *f, PIC *pic, int sw);
+view *e_ed_kst(FENSTER *f, view *pic, int sw);
 int e_close_window(FENSTER *f);
 void e_switch_window(int num, FENSTER *f);
 int e_ed_zoom(FENSTER *f);
 int e_ed_cascade(FENSTER *f);
 int e_ed_tile(FENSTER *f);
 int e_ed_next(FENSTER *f);
-int e_mess_win(char *header, char *str, PIC **pic, FENSTER *f);
-PIC *e_change_pic(int xa, int ya, int xe, int ye, PIC *pic, int sw, int frb);
+int e_mess_win(char *header, char *str, view **pic, FENSTER *f);
+view *e_change_pic(int xa, int ya, int xe, int ye, view *pic, int sw, int frb);
 struct dirfile *e_add_df(char *str, struct dirfile *df);
 int e_schr_nchar_wsv(char *str, int x, int y, int n, int max, int col,
   int csw);
