@@ -14,7 +14,7 @@ AC_CONFIG_SRCDIR([src/keys.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
 
 # Checks for programs.
 AC_PROG_CC			# define CC as the current compiler
