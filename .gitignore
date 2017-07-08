@@ -1,6 +1,7 @@
 Makefile
 configure.scan
 config.status
+config.h
 *.o
 *.bak
 *.log
