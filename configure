@@ -636,6 +636,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+PRNTCMD
 HAVE_X11_FALSE
 HAVE_X11_TRUE
 X_EXTRA_LIBS
@@ -13405,7 +13406,6 @@ $as_echo "#define NO_XWINDOWS /**/" >>confdefs.h
 fi
 
 # Checks for libraries.
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for tgetent in -lncurses" >&5
 $as_echo_n "checking for tgetent in -lncurses... " >&6; }
 if ${ac_cv_lib_ncurses_tgetent+:} false; then :
@@ -13574,8 +13574,6 @@ _ACEOF
 
 fi
 
-
-# Checks for libraries: copied from old configure.in
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lgpm" >&5
 $as_echo_n "checking for main in -lgpm... " >&6; }
 if ${ac_cv_lib_gpm_main+:} false; then :
@@ -13655,10 +13653,92 @@ _ACEOF
 fi
 
 
-# Define specific variables
+# Check printer command: empty if necessary
+# Extract the first word of "lpr", so it can be a program name with args.
+set dummy lpr; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_PRNTCMD+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$PRNTCMD"; then
+  ac_cv_prog_PRNTCMD="$PRNTCMD" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_PRNTCMD="lpr"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
 
-$as_echo "#define PRNTCMD \"lpr\"" >>confdefs.h
+fi
+fi
+PRNTCMD=$ac_cv_prog_PRNTCMD
+if test -n "$PRNTCMD"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PRNTCMD" >&5
+$as_echo "$PRNTCMD" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
 
+	# preferred value for printer
+# Extract the first word of "lp", so it can be a program name with args.
+set dummy lp; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_PRNTCMD+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$PRNTCMD"; then
+  ac_cv_prog_PRNTCMD="$PRNTCMD" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_PRNTCMD="lp"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+PRNTCMD=$ac_cv_prog_PRNTCMD
+if test -n "$PRNTCMD"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PRNTCMD" >&5
+$as_echo "$PRNTCMD" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+	# fallback value for printer
+if test -n "${PRNTCMD}"; then
+
+cat >>confdefs.h <<_ACEOF
+#define PRNTCMD "${PRNTCMD}"
+_ACEOF
+
+else
+
+$as_echo "#define PRNTCMD \"\"" >>confdefs.h
+
+fi
 
 # for we_fl_unix.c
 if man -s 1 ls > /dev/null 2> /dev/null; then
@@ -14309,7 +14389,7 @@ $as_echo "#define realloc rpl_realloc" >>confdefs.h
 fi
 
 
-for ac_func in symlink tparm
+for ac_func in symlink tparm mkdtemp tempnam
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"

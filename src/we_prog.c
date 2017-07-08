@@ -2252,6 +2252,9 @@ gt_library:
    else libsw = 1;
   }
  }
+#ifndef RANLIB
+#   warning "RANLIB should be defined: we are using libtool. LT_INIT defines RANLIB."
+#endif
 #ifdef RANLIB
  if (libsw && library[0] != '\0')
  {
