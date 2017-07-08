@@ -8,7 +8,7 @@
 #define UNIXKEYS_H
 
 #ifndef LIBRARY_DIR
-#define LIBRARY_DIR "/usr/local/lib/xwpe"
+#error "LIBRARY_DIR is not defined. Must be a compile time define containing path to xwpe library directory."
 #endif
 
 #ifndef INFO_DIR

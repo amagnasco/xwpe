@@ -1,4 +1,5 @@
 bin_PROGRAMS = wpe we 
+AM_CPPFLAGS = -DLIBRARY_DIR=\"@libdir@/xwpe\"
 lib_LTLIBRARIES = libxwpe-x11.la libxwpe-term.la
 libxwpe_x11_la_SOURCES = we_xterm.c WeXterm.c
 libxwpe_term_la_SOURCES = we_term.c

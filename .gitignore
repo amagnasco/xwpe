@@ -7,6 +7,9 @@ config.status
 *.pdf
 *.swp
 src/.deps*
+src/.libs*
+*.la
+*.lo
 src/we
 src/wpe
 src/xwpe
