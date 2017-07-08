@@ -414,8 +414,6 @@ include_HEADERS = attrb.h edit.h keys.h \
 @HAVE_X11_TRUE@		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c 
 
 @HAVE_X11_TRUE@xwpe_LDADD = libxwpe-x11.la libxwpe-term.la
-#xwpe_CFLAGS = @X_CFLAGS@
-#xwpe_LDFLAGS = @X_LIBS@ -lX11
 @HAVE_X11_TRUE@xwe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
 @HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
 @HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c \
@@ -855,8 +853,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-includeHEADERS \
 
 .PRECIOUS: Makefile
 
-#xwe_CFLAGS = @X_CFLAGS@
-#xwe_LDFLAGS = @X_LIBS@ -lX11
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
