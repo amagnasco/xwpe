@@ -39,18 +39,21 @@ if test "X${no_x}" = "Xyes"; then
 fi
 
 # Checks for libraries.
-
 AC_CHECK_LIB([ncurses], [tgetent])
 AC_CHECK_LIB([X11], [XQueryPointer])
 AC_CHECK_LIB([SM], [main])
 AC_CHECK_LIB([ICE], [main])
-
-# Checks for libraries: copied from old configure.in
 AC_CHECK_LIB([gpm], [main])
 AC_CHECK_LIB([z], [main])
 
-# Define specific variables
-AC_DEFINE([PRNTCMD], ["lpr"], [The print command to be used.])
+# Check printer command: empty if necessary
+AC_CHECK_PROG([PRNTCMD], [lpr], [lpr])	# preferred value for printer
+AC_CHECK_PROG([PRNTCMD], [lp], [lp])	# fallback value for printer
+if test -n "${PRNTCMD}"; then
+	AC_DEFINE_UNQUOTED([PRNTCMD], ["${PRNTCMD}"], [Copy print command found to config.h])
+else
+	AC_DEFINE([PRNTCMD], [""], [Empty print command if no command found])
+fi
 
 # for we_fl_unix.c
 if man -s 1 ls > /dev/null 2> /dev/null; then
