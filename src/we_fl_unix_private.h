@@ -1,6 +1,8 @@
 #ifndef WE_FL_UNIX_PRIVATE_H
 #define WE_FL_UNIX_PRIVATE_H
 
+#include "config.h"
+
 /* This include is for the header of we_fl_unix only, no other header or source file */
 
 /*   we_fl_unix.c   */
@@ -41,7 +43,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw);
 int WpeCopyFileCont(char *oldfile, char *newfile, FENSTER *f);
 
 int WpeDirDelOptions(FENSTER *f);
-#ifndef NOSYMLINKS
+#ifdef HAVE_SYMLINK
 int WpeLinkFile(char *fl, char *ln, int sw, FENSTER *f);
 int WpeRenameLink(char *old, char *ln, char *fl, FENSTER *f);
 #endif

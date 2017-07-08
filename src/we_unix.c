@@ -36,10 +36,10 @@ int WpeTermInit(int *argc, char **argv);
 #include "attrb.h"
 #include "we_progn.h"
 
-#ifdef NOSYMLINKS
-#define lstat(x,y)  stat(x,y)
-#undef S_ISLNK
-#define S_ISLNK(x)  0
+#ifndef HAVE_SYMLINK
+#  define lstat(x,y)  stat(x,y)
+#  undef S_ISLNK
+#  define S_ISLNK(x)  0
 #endif
 
 

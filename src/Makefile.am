@@ -26,15 +26,11 @@ xwpe_SOURCES =	we_main.c we_block.c we_unix.c we_e_aus.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c 
 xwpe_LDADD =	libxwpe-x11.la libxwpe-term.la
-#xwpe_CFLAGS = @X_CFLAGS@
-#xwpe_LDFLAGS = @X_LIBS@ -lX11
 xwe_SOURCES =	we_main.c we_block.c we_unix.c we_e_aus.c \
 		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c 
 xwe_LDADD =	libxwpe-x11.la libxwpe-term.la
-#xwe_CFLAGS = @X_CFLAGS@
-#xwe_LDFLAGS = @X_LIBS@ -lX11
 endif
 

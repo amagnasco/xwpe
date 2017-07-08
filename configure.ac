@@ -1,10 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-# Normally use autoreconf or autoreconf --install -v to process this file
+# Normally use autoreconf or autoreconf -i -v to process this file
 # autoreconf calls all necessary autotools including autoconf, autoheader, automake etc.
-# if autoreconf runs successfully and without warnings, you can use ./configure to
-# finalize the configuration.
+# if autoreconf runs successfully, you can use ./configure to finalize the configuration.
+# However, mark any warning autoreconf gives. They are not to be ignored.
 #
 
 AC_PREREQ([2.69])
@@ -69,6 +69,7 @@ AC_FUNC_FORK
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
+AC_CHECK_FUNCS([symlink]) 
 AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strchr strdup strrchr strstr])
 
 #

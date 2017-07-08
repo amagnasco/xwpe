@@ -26,16 +26,16 @@
 struct dirfile *e_make_win_list(FENSTER * f);
 extern char    *e_tmp_dir;
 
-#ifdef NOSYMLINKS
-#define readlink(x, y, z) -1
-#define WpeRenameLink(x, y, z, f) 0
-#define WpeLinkFile(x, y, sw, f) link(x, y)
-#define lstat(x,y)  stat(x,y)
-#undef S_ISLNK
-#define S_ISLNK(x)  0
+#ifndef HAVE_SYMLINK
+#  define readlink(x, y, z) -1
+#  define WpeRenameLink(x, y, z, f) 0
+#  define WpeLinkFile(x, y, sw, f) link(x, y)
+#  define lstat(x,y)  stat(x,y)
+#  undef S_ISLNK
+#  define S_ISLNK(x)  0
 #else
-#include <unistd.h>
-#endif
+#  include <unistd.h>
+#endif  // #ifndef HAVE_SYMLINK
 
 #define WPE_PATHMAX 2048
 
@@ -50,7 +50,7 @@ int SpecialError(char *text, int sw, FARBE *f, char *file, int line)
 }
 
 #define e_error(text, sw, f) SpecialError(text, sw, f, __FILE__, __LINE__)
-#endif
+#endif  // #ifdef DEBUG
 
 
 /* setup the file-manager structures 
@@ -2847,7 +2847,7 @@ int WpeCopyFileCont(char *oldfile, char *newfile, FENSTER *f)
   return(0);
 }
 
-#ifndef NOSYMLINKS
+#ifdef HAVE_SYMLINK
 /* Link a file according to the required mode
    sw != 0 -> symbolic link
    sw == 0 -> hard link
@@ -2891,7 +2891,7 @@ int WpeRenameLink(char *old, char *ln, char *fl, FENSTER *f)
       return(0);
   }
 }
-#endif
+#endif	// #ifdef HAVE_SYMLINK
 
 int e_rename(char *file, char *newname, FENSTER * f)
 {
