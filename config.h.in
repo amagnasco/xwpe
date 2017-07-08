@@ -58,6 +58,9 @@
 /* Define to 1 if you have the `mkdir' function. */
 #undef HAVE_MKDIR
 
+/* Define to 1 if you have the `mkdtemp' function. */
+#undef HAVE_MKDTEMP
+
 /* Define to 1 if you have the `mkfifo' function. */
 #undef HAVE_MKFIFO
 
@@ -112,6 +115,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the `tempnam' function. */
+#undef HAVE_TEMPNAM
 
 /* Define to 1 if you have the <termios.h> header file. */
 #undef HAVE_TERMIOS_H
@@ -168,7 +174,7 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* The print command to be used. */
+/* Empty print command if no command found */
 #undef PRNTCMD
 
 /* Define to 1 if you have the ANSI C header files. */
