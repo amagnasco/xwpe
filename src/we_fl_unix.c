@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "model.h"
