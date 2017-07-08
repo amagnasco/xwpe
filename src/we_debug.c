@@ -6,6 +6,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -71,10 +72,11 @@ extern BUFFER *e_p_w_buffer;
 extern char *att_no;
 extern char *e_tmp_dir;
 
-#ifdef NOTPARM
+#ifndef HAVE_TPARM
 char *tparm();
 char *tgoto();
 #endif
+
 #ifdef DEFTPUTS
 int tputs();
 #endif
