@@ -69,7 +69,7 @@ AC_FUNC_FORK
 AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([symlink tparm]) 
+AC_CHECK_FUNCS([symlink tparm mkdtemp tempnam]) 
 AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strchr strdup strrchr strstr])
 
 #
