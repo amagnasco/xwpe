@@ -20,9 +20,10 @@ char *getcwd(char *dir, int n);
 
 extern int cur_on;
 
-#ifdef DEFPGC
-#define getc(fp) fgetc((fp))
-#endif
+// Disabled DEFPGC because getc() is part of <stdio.h>
+//#ifdef DEFPGC
+//#define getc(fp) fgetc((fp))
+//#endif
 //#ifdef NCURSES
 #if FALSE
 #define fk_getch() getch()

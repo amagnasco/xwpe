@@ -81,9 +81,10 @@ char *tparm();
 char *tgoto();
 #endif
 
-#ifdef DEFTPUTS
-int tputs();
-#endif
+// Disabled DEFTPUTS because it is part if stdio.h
+//#ifdef DEFTPUTS
+//int tputs();
+//#endif
 
 char *npipe[5] = {  NULL, NULL, NULL, NULL, NULL  };
 
