@@ -143,9 +143,17 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libxwpe_term_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libxwpe_term_la_LDFLAGS) $(LDFLAGS) \
+	-o $@
 libxwpe_x11_la_LIBADD =
 am_libxwpe_x11_la_OBJECTS = we_xterm.lo WeXterm.lo
 libxwpe_x11_la_OBJECTS = $(am_libxwpe_x11_la_OBJECTS)
+libxwpe_x11_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libxwpe_x11_la_LDFLAGS) $(LDFLAGS) -o \
+	$@
 @HAVE_X11_TRUE@am__EXEEXT_1 = xwpe$(EXEEXT) xwe$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_we_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) we_unix.$(OBJEXT) \
@@ -389,7 +397,9 @@ top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -DLIBRARY_DIR=\"@libdir@/xwpe\" -DRANLIB=\"@RANLIB@\"
 lib_LTLIBRARIES = libxwpe-x11.la libxwpe-term.la
 libxwpe_x11_la_SOURCES = we_xterm.c WeXterm.c
+libxwpe_x11_la_LDFLAGS = -version-info 0:0:0
 libxwpe_term_la_SOURCES = we_term.c
+libxwpe_term_la_LDFLAGS = -version-info 0:0:0
 wpe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
 		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
@@ -492,10 +502,10 @@ clean-libLTLIBRARIES:
 	}
 
 libxwpe-term.la: $(libxwpe_term_la_OBJECTS) $(libxwpe_term_la_DEPENDENCIES) $(EXTRA_libxwpe_term_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libxwpe_term_la_OBJECTS) $(libxwpe_term_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libxwpe_term_la_LINK) -rpath $(libdir) $(libxwpe_term_la_OBJECTS) $(libxwpe_term_la_LIBADD) $(LIBS)
 
 libxwpe-x11.la: $(libxwpe_x11_la_OBJECTS) $(libxwpe_x11_la_DEPENDENCIES) $(EXTRA_libxwpe_x11_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libxwpe_x11_la_OBJECTS) $(libxwpe_x11_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libxwpe_x11_la_LINK) -rpath $(libdir) $(libxwpe_x11_la_OBJECTS) $(libxwpe_x11_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \

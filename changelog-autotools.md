@@ -5,6 +5,8 @@ contents for obsolete macros.
 
 * Moved `configure.in` and handmade `Makefile.in` to `*.in.old`
 * Remark: using autoconf version 2.69 in stead of 2.13
+* Using libtool. This makes library handling portable.
+* Added version numbers to xwpe libraries in Makefile.am
 * Created `Makefile.am` to use subdirs. Created src subdirectory for sources.
 * Added man subdir for manpages
 * Created `Makefile.am` in src to do the source compile. 
