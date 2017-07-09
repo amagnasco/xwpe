@@ -11280,6 +11280,7 @@ CC=$lt_save_CC
 # Only expand once:
 
 				# working with libtool
+		# At least version 2.4 for libtool
 am__api_version='1.15'
 
 # Find a good install program.  We prefer a C program (faster),

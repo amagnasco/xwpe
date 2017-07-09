@@ -15,6 +15,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 LT_INIT				# working with libtool
+LT_PREREQ([2.4.0])		# At least version 2.4 for libtool
 AM_INIT_AUTOMAKE
 
 # Checks for programs.
