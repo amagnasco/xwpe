@@ -4,12 +4,15 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "config.h"
+
 #ifdef NOSTRSTR
 char *strstr(char *s1, char *s2);
 char *getcwd(char *dir, int n);
 #endif
 
-#ifdef NCURSES
+//#ifdef NCURSES
+#ifdef HAVE_LIBNCURSES
 #define e_putp(s) 1
 #else
 #define e_putp(s) tputs((s), 1, fk_u_putchar)
@@ -20,7 +23,8 @@ extern int cur_on;
 #ifdef DEFPGC
 #define getc(fp) fgetc((fp))
 #endif
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
 #define fk_getch() getch()
 #else
 #ifdef HAVE_LIBGPM

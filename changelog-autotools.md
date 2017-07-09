@@ -33,3 +33,13 @@ Changes necessary to get compile error free:
 * Removed duplicate definition of VERSION from edit.h (is now in `config.h`)
 * Added several `AC_CHECK_LIB` (ncurses, SM and ICE).
   Decided to support ncurses only (not the older curses or termlib alone)
+* The old define NCURSES was never set in Makefile.in or configure.in. This means, that
+  every test for #ifdef NCURSES results in false i.e. same as #if FALSE, while every test for
+  #ifndef NCURSES results in true, i.e. same as #if TRUE. Replacing the tests for NCURSES was
+  different than for the other defines. I had to judge every test separately, I could not do a
+  global change like with the other defines.
+* The old defines for CURSES and TERMCAP had special semantics. `CURSES` was defined in configure
+  if and only if either ncurses lib or curses lib was present. If `CURSES` was not set, then
+  automatically TERMCAP was set, irrespective of the presence of the termcap lib or termlib lib.
+  This implies that *every* test for `CURSES` or for `TERMCAP` has to be studied separately and
+  treated carefully to change it to the correct `HAVE_XXXLIB`.

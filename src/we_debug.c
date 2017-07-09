@@ -6,6 +6,9 @@
 
 #include <ctype.h>
 #include <string.h>
+#if defined HAVE_LIBNCURSES || HAVE_LIBCURSES
+#  include <curses.h>
+#endif
 #include "config.h"
 #include "keys.h"
 #include "messages.h"
@@ -30,7 +33,8 @@
 #include <sys/stat.h>
 #include <signal.h>
 
-#ifndef TERMCAP
+//#ifndef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 /* Because term.h defines "buttons" it messes up we_gpm.c if in edit.h */
 #include <term.h>
 #endif

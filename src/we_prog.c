@@ -10,6 +10,9 @@
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
+#  include "curses.h"
+#endif
 #include "edit.h"
 #include "we_prog.h"
 #include "WeExpArr.h"

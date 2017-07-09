@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
@@ -18,7 +19,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-#ifndef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 # include <curses.h>
 #endif
 
@@ -59,9 +60,9 @@ extern int MAXSLNS;
 extern int MAXSCOL;
 
 
-#ifndef NCURSES
+//#ifndef NCURSES : always TRUE
 char *key_f[KEYFN], *key_key;
-#endif
+//#endif
 char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, cur_attr;
 char *att_so, *att_ul, *att_rv, *att_bl, *att_dm, *att_bo;
 char *ratt_no, *ratt_so, *ratt_ul, *ratt_rv, *ratt_bl, *ratt_dm, *ratt_bo;
@@ -71,7 +72,8 @@ extern char *att_no;
 char *col_fg, *col_bg, *spc_st, *spc_in, *spc_bg, *spc_nd;
 
 extern int col_num;
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
 chtype sp_chr[NSPCHR];
 #else
 char *sp_chr[NSPCHR];
@@ -79,7 +81,8 @@ char *sp_chr[NSPCHR];
 
 extern int cur_x, cur_y;
 extern struct termios otermio, ntermio, ttermio;
-#ifdef TERMCAP
+//#ifdef TERMCAP
+#if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 char area[315];
 char *ap = area;
 char tcbuf[1024];
@@ -99,14 +102,15 @@ char *tgoto();
 #define tparm1(a,b) tparm((a), (b), 0, 0, 0, 0, 0, 0, 0, 0)
 #define tparm2(a,b,c) tparm((a), (b), (c), 0, 0, 0, 0, 0, 0, 0)
 
-#ifdef NCURSES
+//#ifdef NCURSES
+#ifdef FALSE
 #define term_move(x,y) move(y, x)
 #define term_refresh() refresh()
 #else
 #define term_move(x,y) e_putp(tparm2(cur_rc, y, x))
 #define term_refresh() fflush(stdout)
 #endif
-#endif
+#endif // (#else) #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 
 int WpeDllInit(int *argc, char **argv)
 {
@@ -214,7 +218,8 @@ char *init_key(char *key)
  return(keystr);
 }
 
-#ifndef NCURSES
+//#ifndef NCURSES
+#if TRUE
 char *init_kkey(char *key)
 {
  char *tmp;
@@ -263,7 +268,8 @@ char *init_spchr(char c)
 
 int init_cursor()
 {
-#ifndef TERMCAP
+//#ifndef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
    if (!(cur_rc = init_key("cup")))
     return(-1);
    if ((col_fg = init_key("setaf")) && (col_bg = init_key("setab")))
@@ -303,7 +309,8 @@ int init_cursor()
    sav_cur = init_key("sc");
    res_cur = init_key("rc");
 
-#ifndef NCURSES
+//#ifndef NCURSES
+#if FALSE
    key_f[0] = init_kkey("kf1");
    key_f[1] = init_kkey("kf2");
    key_f[2] = init_kkey("kf3");
@@ -348,7 +355,7 @@ int init_cursor()
    key_f[41] = init_kkey("kext");
 #endif
 
-#else
+#else // #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 
    if(!(cur_rc = init_key("cm"))) return(-1);
    if((col_fg = init_key("Sf")) && (col_bg = init_key("Sb")))
@@ -423,7 +430,8 @@ int init_cursor()
    key_f[40] = init_kkey("kF");
    key_f[41] = init_kkey("@1");
 #endif
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
    sp_chr[0] = 0;
    sp_chr[1] = ACS_ULCORNER;
    sp_chr[2] = ACS_URCORNER;
@@ -437,7 +445,7 @@ int init_cursor()
    sp_chr[10] = ACS_S9;
    sp_chr[11] = ACS_DIAMOND;
    sp_chr[12] = ' ';
-#else
+#else // #else #ifdef NCURSES (i.e. FALSE)
    sp_chr[0] = "";
    if(!(sp_chr[1] = init_spchr('l'))) sp_chr[1] = "+";
    if(!(sp_chr[2] = init_spchr('k'))) sp_chr[2] = "+";
@@ -458,7 +466,8 @@ int init_cursor()
 int e_t_initscr()
 {
  int ret, i, k;
-#ifndef TERMCAP
+//#ifndef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
  WINDOW * stdscr;
 #endif
 
@@ -476,15 +485,17 @@ int e_t_initscr()
   WpeExit(1);
  }
 */
-#ifndef TERMCAP
+//#ifndef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
  if ((stdscr=initscr())==(WINDOW *)ERR) exit(27);
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
  cbreak();
  noecho();
  nonl();
  intrflush(stdscr,FALSE);
  keypad(stdscr,TRUE);
-#endif
+#endif // #if NCURSES i.e. FALSE
  if (has_colors())
  {
   start_color();
@@ -499,7 +510,7 @@ int e_t_initscr()
    }
   }
  }
-#endif
+#endif // #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
  e_begscr();
  schirm = malloc(2 * MAXSCOL * MAXSLNS);
  altschirm = malloc(2 * MAXSCOL * MAXSLNS);
@@ -533,15 +544,17 @@ int e_begscr()
  int cols, lns;
 
  kbdflgs = fcntl( 0, F_GETFL, 0 );
-#ifndef TERMCAP
-#ifndef NCURSES
+//#ifndef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
+//#ifndef NCURSES
+#if TRUE
  setupterm((char *)0, 1, (int *)0);
 #endif
  if ((lns = tigetnum("lines")) > 0)
   MAXSLNS = lns;
  if ((cols = tigetnum("cols")) > 0)
   MAXSCOL = cols;
-#else
+#else // #if defined HAVE_LIBNCURSES || define HAVE_LIBCURSES
  if ((tc_screen = getenv("TERM")) == NULL)
   e_exitm("Environment variable TERM not defined!", 1);
  if ((tgetent(tcbuf, tc_screen)) != 1)
@@ -558,7 +571,8 @@ int e_begscr()
 
 void e_endwin()
 {
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
  endwin();
 #else
  fk_putp(ratt_bo);
@@ -573,7 +587,8 @@ int fk_t_cursor(int x)
 
 int fk_t_putchar(int c)
 {
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
  addch(c);
  return c;
 #else
@@ -584,7 +599,8 @@ int fk_t_putchar(int c)
 int fk_attrset(int a)
 {
  if(cur_attr == a) return(0);
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
  switch(a)
  {  case 0:  attrset(A_NORMAL);  break;
     case 1:  attrset(A_STANDOUT);  break;
@@ -623,7 +639,8 @@ void fk_colset(int c)
  if (cur_attr == c) return;
  cur_attr = c;
  bg = c / 16;
-#ifdef TERMCAP
+//#ifdef TERMCAP
+#if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
  if ((c %= 16) >= col_num)
  {
   fk_putp(att_bo);
@@ -636,14 +653,15 @@ void fk_colset(int c)
   e_putp(tgoto(col_fg, 0, c));
   e_putp(tgoto(col_bg, 0, bg));
  }
-#else
-#ifdef NCURSES
+#else // #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
+//#ifdef NCURSES
+#if FALSE
  if (c & 8)
   attrset(A_BOLD);
  else
   attrset(A_NORMAL);
  color_set((bg * 8) + c % 8, NULL);
-#else
+#else // #ifdef NCURSES i.e. FALSE
  if ((c %= 16) >= col_num)
  {
   fk_putp(att_bo);
@@ -656,8 +674,8 @@ void fk_colset(int c)
   e_putp(tparm1(col_fg, c));
   e_putp(tparm1(col_bg, bg));
  }
-#endif
-#endif
+#endif // #ifdef NCURSES i.e. FALSE
+#endif // #ifdef TERMCAP : !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 }
 
 int e_t_refresh()
@@ -682,12 +700,13 @@ int e_t_refresh()
     else
      fk_colset(e_gt_col(j, i));
     c = e_gt_char(j, i);
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
     if (c < NSPCHR)
      addch(sp_chr[c]);
     else
      addch(c);
-#else
+#else // #ifdef NCURSES : i.e. false
     if (c < NSPCHR)
      e_putp(sp_chr[c]);
     else
@@ -734,7 +753,8 @@ int e_t_kbhit()
  return (ret == 1 ? c : 0);
 }
 
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
 int e_t_getch()
 {
  int c, bk;
@@ -844,7 +864,7 @@ int e_t_getch()
  return(c);
 }
 
-#else
+#else // #ifdef NCURSES : i.e. FALSE
 int e_t_getch()
 {
  int c, c2, pshift, bk;
@@ -987,14 +1007,15 @@ int e_find_key(int c, int j, int sw)
    }
    return(0);
 }
-#endif
+#endif // #ifdef NCURSES i.e. FALSE
 
 int fk_t_locate(int x, int y)
 {
  if (col_num > 0) 
  {
   fk_colset(e_gt_col(cur_x, cur_y));
-#ifdef NCURSES
+//#ifdef NCURSES
+#if FALSE
   /* Causes problems.  Reason unknown. - Dennis */
   /*mvaddch(cur_y,cur_x,e_gt_char(cur_x, cur_y));*/
 #else
@@ -1040,7 +1061,8 @@ int e_t_switch_screen(int sw)
 
 int e_t_deb_out(FENSTER *f)
 {
-#ifndef NCURSES
+//#ifndef NCURSES
+#if TRUE
  if (!swt_scr || !beg_scr)
 #endif
   return(e_error("Your terminal don\'t use begin/end cup", 0, f->fb));

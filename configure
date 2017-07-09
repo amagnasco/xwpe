@@ -13451,6 +13451,162 @@ _ACEOF
 
 fi
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lcurses" >&5
+$as_echo_n "checking for main in -lcurses... " >&6; }
+if ${ac_cv_lib_curses_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcurses  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_curses_main=yes
+else
+  ac_cv_lib_curses_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_curses_main" >&5
+$as_echo "$ac_cv_lib_curses_main" >&6; }
+if test "x$ac_cv_lib_curses_main" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBCURSES 1
+_ACEOF
+
+  LIBS="-lcurses $LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -ltermlib" >&5
+$as_echo_n "checking for main in -ltermlib... " >&6; }
+if ${ac_cv_lib_termlib_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltermlib  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_termlib_main=yes
+else
+  ac_cv_lib_termlib_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_termlib_main" >&5
+$as_echo "$ac_cv_lib_termlib_main" >&6; }
+if test "x$ac_cv_lib_termlib_main" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBTERMLIB 1
+_ACEOF
+
+  LIBS="-ltermlib $LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -ltermcap" >&5
+$as_echo_n "checking for main in -ltermcap... " >&6; }
+if ${ac_cv_lib_termcap_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltermcap  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_termcap_main=yes
+else
+  ac_cv_lib_termcap_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_termcap_main" >&5
+$as_echo "$ac_cv_lib_termcap_main" >&6; }
+if test "x$ac_cv_lib_termcap_main" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBTERMCAP 1
+_ACEOF
+
+  LIBS="-ltermcap $LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -ltinfo" >&5
+$as_echo_n "checking for main in -ltinfo... " >&6; }
+if ${ac_cv_lib_tinfo_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltinfo  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_tinfo_main=yes
+else
+  ac_cv_lib_tinfo_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tinfo_main" >&5
+$as_echo "$ac_cv_lib_tinfo_main" >&6; }
+if test "x$ac_cv_lib_tinfo_main" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBTINFO 1
+_ACEOF
+
+  LIBS="-ltinfo $LIBS"
+
+fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XQueryPointer in -lX11" >&5
 $as_echo_n "checking for XQueryPointer in -lX11... " >&6; }
 if ${ac_cv_lib_X11_XQueryPointer+:} false; then :
@@ -14418,7 +14574,8 @@ done
 # Next 2 if-eval statements plus defines are copied from old configure.in
 #      Both result in redefinition of functions. The reason is unclear.
 #
-if eval 'grep -s "[ 	]putc[ 	(]" /usr/include/*.h > /dev/null'; then
+#if eval 'grep -s "[[ 	]]putc[[ 	(]]" /usr/include/*.h > /dev/null'; then
+if eval 'grep -s "\bputc\b\s*(" /usr/include/*.h > /dev/null'; then
  :;
 else
 
@@ -14426,7 +14583,8 @@ $as_echo "#define DEFPGC /**/" >>confdefs.h
 
 fi
 
-if eval 'grep -s "[ 	]tputs[ 	(]" /usr/include/*.h > /dev/null'; then
+#if eval 'grep -s "[[ 	]]tputs[[ 	(]]" /usr/include/*.h > /dev/null'; then
+if eval 'grep -s "\btputs\b\s*(" /usr/include/*.h > /dev/null'; then
  :;
 else
 

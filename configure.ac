@@ -40,6 +40,10 @@ fi
 
 # Checks for libraries.
 AC_CHECK_LIB([ncurses], [tgetent])
+AC_CHECK_LIB([curses], [main])
+AC_CHECK_LIB([termlib], [main])
+AC_CHECK_LIB([termcap], [main])
+AC_CHECK_LIB([tinfo], [main])
 AC_CHECK_LIB([X11], [XQueryPointer])
 AC_CHECK_LIB([SM], [main])
 AC_CHECK_LIB([ICE], [main])
@@ -79,13 +83,15 @@ AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strc
 # Next 2 if-eval statements plus defines are copied from old configure.in
 #      Both result in redefinition of functions. The reason is unclear.
 #
-if eval 'grep -s "[[ 	]]putc[[ 	(]]" /usr/include/*.h > /dev/null'; then
+#if eval 'grep -s "[[ 	]]putc[[ 	(]]" /usr/include/*.h > /dev/null'; then
+if eval 'grep -s "\bputc\b\s*(" /usr/include/*.h > /dev/null'; then
  :;
 else
  AC_DEFINE([DEFPGC], [], [copied from old configure.in. Use is unclear.])
 fi
 
-if eval 'grep -s "[[ 	]]tputs[[ 	(]]" /usr/include/*.h > /dev/null'; then
+#if eval 'grep -s "[[ 	]]tputs[[ 	(]]" /usr/include/*.h > /dev/null'; then
+if eval 'grep -s "\btputs\b\s*(" /usr/include/*.h > /dev/null'; then
  :;
 else
  AC_DEFINE([DEFTPUTS], [], [copied from old configure.in. Use is unclear.])

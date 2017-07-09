@@ -12,6 +12,9 @@
 #include "messages.h"
 #include "model.h"
 #include "options.h"
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
+#  include "curses.h"
+#endif
 #include "edit.h"
 #include "we_fl_unix.h"
 #include "we_progn.h"

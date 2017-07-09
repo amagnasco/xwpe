@@ -17,7 +17,8 @@
 /* partial conversion in place */
 #include "WeXterm.h"
 
-#ifndef TERMCAP
+//#ifndef TERMCAP
+#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 # include <curses.h>
 #endif
 
