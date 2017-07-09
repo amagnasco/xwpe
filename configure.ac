@@ -7,7 +7,7 @@
 # However, mark any warning autoreconf gives. They are not to be ignored.
 #
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.68])
 AC_INIT([XWindows Programming Editor], [1.6.0], [github@github.com/amagnasco])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([src/keys.h])
