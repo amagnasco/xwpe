@@ -72,7 +72,7 @@ before_install:
 #  - sudo apt-get install libncurses5-dev
   
 script:
-  - autoreconf -iv
+  - autoreconf -ivf
   - ./configure
   - make
   - sudo make install
