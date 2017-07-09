@@ -66,6 +66,7 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
+  - autoconf --version
 #  - sudo apt-get -qq update
 #  - sudo apt-get install -y gcc
 #  - sudo apt-get install libncurses5-dev
