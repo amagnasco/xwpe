@@ -1490,7 +1490,7 @@ int e_system(char *estr, ECNT *cn)
  ret = system(estr);
  if (!WpeIsXwin())
  {
-  printf(e_msg[ERR_HITCR]);
+  printf("%s", e_msg[ERR_HITCR]);
   fflush(stdout);
   fk_getch();
  }
