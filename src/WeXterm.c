@@ -25,6 +25,8 @@
 
 #include <string.h>
 
+#include "config.h"
+
 /* needed for the time being to call old routines */
 #include "model.h"
 #include "edit.h"

@@ -37,6 +37,8 @@ AM_CONDITIONAL([HAVE_X11], [test "X$no_x" != "Xyes"])
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 	AC_DEFINE([NO_XWINDOWS], [], [X11 library is not available])
+else
+	AC_DEFINE([SELECTION], [], [Use X Selection events instead of XStoreBytes])
 fi
 
 # Checks for libraries.

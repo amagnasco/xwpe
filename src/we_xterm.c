@@ -7,6 +7,7 @@
 #ifndef NO_XWINDOWS
 
 #include <ctype.h>
+#include "config.h"
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
@@ -963,7 +964,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  *(b0->bf[0].s) = WPE_WR;
  *(b0->bf[0].s+1) = '\0';
  b0->bf[0].len = 0;
-#if SELECTION
+#if defined SELECTION
  if (WpeXInfo.selection)
  {
   str = WpeStrdup(WpeXInfo.selection);
@@ -1024,7 +1025,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  s0->mark_begin.x = s0->mark_begin.y = 0;
  s0->mark_end.y = b0->mxlines-1;
  s0->mark_end.x = b0->bf[b0->mxlines-1].len;
-#if SELECTION
+#if defined SELECTION
  if (WpeXInfo.selection)
   free(str);
  else
@@ -1047,7 +1048,7 @@ int e_x_paste_X_buffer(FENSTER *f)
  int i, j, n;
 
  e_edt_copy(f);
-#if SELECTION
+#if defined SELECTION
  if (WpeXInfo.selection)
  {
   free(WpeXInfo.selection);
@@ -1062,7 +1063,7 @@ int e_x_paste_X_buffer(FENSTER *f)
   if (s0->mark_end.x < s0->mark_begin.x)
    return(0);
   n = s0->mark_end.x - s0->mark_begin.x;
-#if SELECTION
+#if defined SELECTION
   WpeXInfo.selection = malloc(n + 1);
   strncpy(WpeXInfo.selection, b0->bf[s0->mark_begin.y].s+s0->mark_begin.x,
     n);
@@ -1088,7 +1089,7 @@ int e_x_paste_X_buffer(FENSTER *f)
  for (j = 0; j < s0->mark_end.x; j++, n++)
   WpeXInfo.selection[n] = b0->bf[i].s[j];
  WpeXInfo.selection[n] = 0;
-#if SELECTION
+#if defined SELECTION
  XSetSelectionOwner(WpeXInfo.display, WpeXInfo.selection_atom,
    WpeXInfo.window, CurrentTime);
 #else

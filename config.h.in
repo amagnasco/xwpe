@@ -183,6 +183,9 @@
 /* Empty print command if no command found */
 #undef PRNTCMD
 
+/* Use X Selection events instead of XStoreBytes */
+#undef SELECTION
+
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 

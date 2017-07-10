@@ -13404,6 +13404,10 @@ if test "X${no_x}" = "Xyes"; then
 
 $as_echo "#define NO_XWINDOWS /**/" >>confdefs.h
 
+else
+
+$as_echo "#define SELECTION /**/" >>confdefs.h
+
 fi
 
 # Checks for libraries.
