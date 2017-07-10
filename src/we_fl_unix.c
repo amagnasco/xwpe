@@ -3440,7 +3440,7 @@ int e_ed_man(char *str, FENSTER * f)
 		printf("System call command %s failed with code 127\n%s\n%s\n%s\n", 
 			command, 
 			"This could mean one of two things:",
-			"1. No shell was available (should never happen unless using chroot)"
+			"1. No shell was available (should never happen unless using chroot)",
 			"2. The command returned 127.\n");
 		break;
 	} else if (ret != 0) {

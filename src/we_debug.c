@@ -1410,10 +1410,13 @@ int e_mk_brk_main(FENSTER *f, int sw)
    else if (e_deb_type == 1)
    {
     sprintf(eing, "e main\n");
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_mk_brk_main]: write to debugger failed for %s.\n", eing);
+    }
     if (e_d_dum_read() == -1) return(-1);
     sprintf(eing, "b\n");
-    int n = strlen(eing);
+    n = strlen(eing);
     if (n != write(rfildes[1], eing, n)) {
 	printf("[e_mk_brk_main]: Write to debugger failed for %s.\n", eing);
     }
@@ -1926,7 +1929,11 @@ int e_run_debug(FENSTER *f)
   if (e_d_dum_read() == -1) return(-1);
   if (e_deb_type == 3)
   {
-   write(rfildes[1], "sm\n", 3);
+   char *cstr = "sm\n";
+   int n = strlen(cstr);
+   if (n != write(rfildes[1], cstr, n)) {
+	printf("[e_run_debug]: write to debugger failed for %s.\n", cstr);
+   }
    if (e_d_dum_read() == -1) return(-1);
   }
   if (e_make_breakpoint(cn->f[cn->mxedt], 1) == -1) return(-1);
@@ -2107,7 +2114,10 @@ int e_d_goto_func(FENSTER *f, int flag)
  e_d_nstack = 0;
  if (*str)
  {
-  write(rfildes[1], str, strlen(str));
+  int n = strlen(str);
+  if (n != write(rfildes[1], str, n)) {
+	printf("[e_d_goto_func]: write to debugger failed for %s.\n", str);
+  }
   ret=e_read_output(f);
   /* Executing Finish twice may not work properly. */
  }
@@ -2406,7 +2416,11 @@ int e_d_pr_sig(char *str, FENSTER *f)
   e_d_out_str[i][0] = '\0';
  if (e_deb_type != 1 && e_deb_type != 3)
  {
-  write(rfildes[1], "where\n", 6);
+  char *cstr = "where\n";
+  int n = strlen(cstr);
+  if (n != write(rfildes[1], cstr, n)) {
+	printf("[e_d_pr_sig]: write to debugger failed for %s.\n", cstr);
+  }
   for (i = 0; ((ret = e_d_line_read(wfildes[0], str, 256, 0, 1)) == 0 &&
     (line = e_make_line_num(str, file)) < 0) || ret == 2; i++)
   {
@@ -2425,7 +2439,11 @@ int e_d_pr_sig(char *str, FENSTER *f)
  }
  else
  {
-  write(rfildes[1], "t\n", 2);
+  char *cstr = "t\n";
+  int n = strlen(cstr);
+  if (n != write(rfildes[1], cstr, n)) {
+	printf("[e_d_pr_sig]: write to debugger failed for %s.\n", cstr);
+  }
   for (i = 0; ((ret = e_d_line_read(wfildes[0], str, 256, 0, 1)) == 0 &&
     (line = e_make_line_num2(str, file)) < 0) || ret == 2; i++)
   {
