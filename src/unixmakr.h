@@ -11,6 +11,12 @@ char *strstr(char *s1, char *s2);
 char *getcwd(char *dir, int n);
 #endif
 
+
+/**
+ * tputs is necessary to add padding for termcap or terminfo 
+ * capabilities. For curses or ncurses this function is not 
+ * necessary
+ */
 //#ifdef NCURSES
 #ifdef HAVE_LIBNCURSES
 #define e_putp(s) 1
