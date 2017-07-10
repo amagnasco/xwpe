@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <string.h>
+#include <signal.h>
 #include "config.h"
 #include "keys.h"
 #include "messages.h"
@@ -3429,7 +3430,23 @@ int e_ed_man(char *str, FENSTER * f)
 #else
     sprintf(command, " man %s %s > \'%s\' 2> /dev/null", nstr, hstr, tstr);
 #endif
-    system(command);
+    int ret = system(command);
+	if (WIFSIGNALED(ret) && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+		printf("System call command %s resulted in an interrupt.\n%s\n", 
+			command,
+			"Program will quit executing commands.\n");
+		break;
+	} else if (ret == 127) {
+		printf("System call command %s failed with code 127\n%s\n%s\n%s\n", 
+			command, 
+			"This could mean one of two things:",
+			"1. No shell was available (should never happen unless using chroot)"
+			"2. The command returned 127.\n");
+		break;
+	} else if (ret != 0) {
+		printf("System call command %s failed. Return code = %i.\n", command, ret);
+		break;
+	}
     chmod(tstr, 0400);
     f->ed->dtmd = DTMD_HELP;
     e_edit(f->ed, tstr);

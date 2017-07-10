@@ -438,7 +438,9 @@ int e_d_getchar()
     return(c);
   }
   else
-   write(rfildes[1], &c, 1);
+   if (write(rfildes[1], &c, 1) < 1) {
+	printf("[e_d_getchar] writing 1 character failed.\n");
+   }
  }
 /*   if (WpeIsXwin() || e_deb_mode)   */
  fcntl(fd, F_SETFL, kbdflgs & ~O_NONBLOCK);
@@ -465,12 +467,19 @@ int e_d_quit_basic(FENSTER *f)
   return 0;
  if (rfildes[1] >= 0)
  {
+  char *cstr = 0;
   if (e_deb_type == 0 || e_deb_type == 3)
-   write(rfildes[1], "q\ny\n", 4);
+   cstr = "q\ny\n";
   else if (e_deb_type == 1)
-   write(rfildes[1], "q\n", 2);
+   cstr = "q\n";
   else if (e_deb_type == 2)
-   write(rfildes[1], "quit\n", 5);
+   cstr = "quit\n";
+  if (cstr) {
+    int n = strlen(cstr);
+    if (n != write(rfildes[1], cstr, n)) {
+  	printf("[e_d_is_watch] failed to write %i characters: %s.\n", n, cstr);
+    }
+  }
  }
  kbdflgs = fcntl(0, F_GETFL, 0 );
  fcntl(0, F_SETFL, kbdflgs & ~O_NONBLOCK);
@@ -737,7 +746,10 @@ int e_d_p_watches(FENSTER *f, int sw)
   /* Send command to debugger */
   if(e_d_swtch)
   {
-   write(rfildes[1], str1, strlen(str1));
+   int n = strlen(str1);
+   if (n != write(rfildes[1], str1, n)) {
+      printf("[e_d_p_watches]: write to debugger failed for '%s'.\n", str1);
+   }
   }
 
   /* If no debugger or no response, give message of no symbol in context */
@@ -912,12 +924,20 @@ int e_d_p_stack(FENSTER *f, int sw)
  s = cn->f[is]->s;
  if (!e_d_swtch)
   return(0);
+ int n;
+ char *cstr = 0;
  if (e_deb_type == 0)
-  write(rfildes[1], "bt\n", 3);
+  cstr = "bt\n";
  else if (e_deb_type == 1 || e_deb_type == 3)
-  write(rfildes[1], "t\n", 2);
+  cstr = "t\n";
  else if (e_deb_type == 2)
-  write(rfildes[1], "where\n", 6);
+  cstr = "where\n";
+ if (cstr) {
+   n = strlen(cstr);
+   if (n != write(rfildes[1], cstr, n)) {
+      printf("[e_d_p_stack]: write of debugger command failed: %s", cstr);
+   }
+ }
  while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 2)
   e_d_error(str);
  if (ret == -1)
@@ -1048,7 +1068,11 @@ int e_make_stack(FENSTER *f)
 	 sprintf(str, "%s %d\n",
 	 e_deb_type != 3 ? "down" : "up", e_d_nstack - dif);
       if(dif != e_d_nstack)
-      {  write(rfildes[1], str, strlen(str));
+      {  
+	 int n = strlen(str);
+         if (n != write(rfildes[1], str, n)) {
+		printf("[e_make_stack]: write to debugger failed: %s.\n", str);
+	 }
 	 while((ret = e_d_line_read(wfildes[0], str, 128, 0, 0)) == 0 || ret == 2)
 	    if( ret == 2) e_d_error(str);
 	 if(ret == -1) return(ret);
@@ -1229,14 +1253,22 @@ int e_remove_breakpoints(FENSTER *f)
 
  if (e_d_swtch)
  {
+  int n;
+  char *cstr = 0;
   if (!e_deb_type)
-   write(rfildes[1], "d\ny\n", 4);
+   cstr = "d\ny\n";
   else if (e_deb_type == 1)
-   write(rfildes[1], "D\n", 2);
+   cstr = "D\n";
   else if (e_deb_type == 2)
-   write(rfildes[1], "delete all\n", 11);
+   cstr = "delete all\n";
   else if (e_deb_type == 3)
-   write(rfildes[1], "db *\n", 2);
+   cstr = "db *\n";
+  if (cstr) {
+    n = strlen(cstr);
+    if (n != write(rfildes[1], cstr, n)) {
+  	printf("[e_remove_breakpoints]: Write to debugger failed for %s.\n", cstr);
+    }
+  }
  }
  for (i = 0; i < e_d_nbrpts; i++)
   free(e_d_sbrpts[i]);
@@ -1280,11 +1312,17 @@ int e_mk_brk_main(FENSTER *f, int sw)
    else if (e_deb_type == 1)
    {
     sprintf(eing, "e main\n");
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_mk_brk_main]: write to debugger failed for %s.\n", eing);
+    }
     if (e_d_dum_read() == -1) return(-1);
     sprintf(eing, "%d d\n", e_d_ybrpts[sw-1]);
    }
-   write(rfildes[1], eing, strlen(eing));
+   int n = strlen(eing);
+   if (n != write(rfildes[1], eing, n)) {
+	printf("[e_mk_brk_main]: Write to debugger failed for: %s.\n", eing);
+   }
    if (e_d_dum_read() == -1) return(-1);
   }
   free(e_d_sbrpts[sw-1]);
@@ -1326,7 +1364,10 @@ int e_mk_brk_main(FENSTER *f, int sw)
    if (e_deb_type == 0)
    {
     sprintf(eing, "b main\n");
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[]: Write to debugger failed for %s.\n", eing);
+    }
     while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
       strncmp(str, "Breakpoint", 10))
      ;
@@ -1338,7 +1379,10 @@ int e_mk_brk_main(FENSTER *f, int sw)
    else if (e_deb_type == 2)
    {
     sprintf(eing, "stop in main\n");
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_mk_brk_main]: Write to debugger failed for %s.\n", eing);
+    }
     while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
       str[0] != '(')
      ;
@@ -1350,7 +1394,10 @@ int e_mk_brk_main(FENSTER *f, int sw)
    else if (e_deb_type == 3)
    {
     sprintf(eing, "b main\n");
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_mk_brk_main]: Write to debugger failed for %s.\n", eing);
+    }
     while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
       strncmp(str, "Added:", 6))
      ;
@@ -1366,7 +1413,10 @@ int e_mk_brk_main(FENSTER *f, int sw)
     write(rfildes[1], eing, strlen(eing));
     if (e_d_dum_read() == -1) return(-1);
     sprintf(eing, "b\n");
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_mk_brk_main]: Write to debugger failed for %s.\n", eing);
+    }
     if ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == -1)
      return(ret);
     if (ret == 2) e_d_error(str);
@@ -1415,11 +1465,17 @@ int e_make_breakpoint(FENSTER *f, int sw)
     else if (e_deb_type == 1)
     {
      sprintf(eing, "e %s\n", e_d_sbrpts[i]);
-     write(rfildes[1], eing, strlen(eing));
+     int n = strlen(eing);
+     if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+     }
      if (e_d_dum_read() == -1) return(-1);
      sprintf(eing, "%d d\n", e_d_ybrpts[i]);
     }
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+    }
     if (e_d_dum_read() == -1) return(-1);
    }
    free(e_d_sbrpts[i]);
@@ -1463,7 +1519,10 @@ int e_make_breakpoint(FENSTER *f, int sw)
     if (e_deb_type == 0)
     {
      sprintf(eing, "b %s:%d\n", f->datnam, b->b.y + 1);
-     write(rfildes[1], eing, strlen(eing));
+     int n = strlen(eing);
+     if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+     }
      while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
        strncmp(str, "Breakpoint", 10))
       ;
@@ -1475,7 +1534,10 @@ int e_make_breakpoint(FENSTER *f, int sw)
     else if (e_deb_type == 2)
     {
      sprintf(eing, "stop at \"%s\":%d\n", f->datnam, b->b.y + 1);
-     write(rfildes[1], eing, strlen(eing));
+     int n = strlen(eing);
+     if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+     }
      while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
        str[0] != '(')
       ;
@@ -1487,7 +1549,10 @@ int e_make_breakpoint(FENSTER *f, int sw)
     else if (e_deb_type == 3)
     {
      sprintf(eing, "b %s:%d\n", f->datnam, b->b.y + 1);
-     write(rfildes[1], eing, strlen(eing));
+     int n = strlen(eing);
+     if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+     }
      while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
        strncmp(str, "Added:", 6))
       ;
@@ -1500,10 +1565,16 @@ int e_make_breakpoint(FENSTER *f, int sw)
     else if (e_deb_type == 1)
     {
      sprintf(eing, "e %s\n", f->datnam);
-     write(rfildes[1], eing, strlen(eing));
+     int n = strlen(eing);
+     if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+     }
      if (e_d_dum_read() == -1) return(-1);
      sprintf(eing, "%d b\n", b->b.y + 1);
-     write(rfildes[1], eing, strlen(eing));
+     n = strlen(eing);
+     if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+     }
      if (e_d_dum_read() == -1) return(-1);
     }
    }
@@ -1519,7 +1590,10 @@ int e_make_breakpoint(FENSTER *f, int sw)
    for (i = 0; i < e_d_nbrpts; i++)
    {
     sprintf(eing, "b %s:%d\n", e_d_sbrpts[i], e_d_ybrpts[i]);
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+    }
     while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
       strncmp(str, "Breakpoint", 10))
      ;
@@ -1534,7 +1608,10 @@ int e_make_breakpoint(FENSTER *f, int sw)
    for (i = 0; i < e_d_nbrpts; i++)
    {
     sprintf(eing, "stop at \"%s\":%d\n", e_d_sbrpts[i], e_d_ybrpts[i]);
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+    }
     while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
       str[0] != '(')
      ;
@@ -1549,7 +1626,10 @@ int e_make_breakpoint(FENSTER *f, int sw)
    for (i = 0; i < e_d_nbrpts; i++)
    {
     sprintf(eing, "b %s:%d\n", f->datnam, b->b.y + 1);
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+    }
     while ((ret = e_d_line_read(wfildes[0], str, 256, 0, 0)) == 0 &&
       strncmp(str, "Added:", 6))
      ;
@@ -1565,10 +1645,16 @@ int e_make_breakpoint(FENSTER *f, int sw)
    for (i = 0; i < e_d_nbrpts; i++)
    {
     sprintf(eing, "e %s\n", e_d_sbrpts[i]);
-    write(rfildes[1], eing, strlen(eing));
+    int n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+    }
     if (e_d_dum_read() == -1) return(-1);
     sprintf(eing, "%d b\n", e_d_ybrpts[i]);
-    write(rfildes[1], eing, strlen(eing));
+    n = strlen(eing);
+    if (n != write(rfildes[1], eing, n)) {
+	printf("[e_make_breakpoint]: Write to debugger failed for %s.\n", eing);
+    }
     if (e_d_dum_read() == -1) return(-1);
    }
   }
@@ -1679,7 +1765,9 @@ int e_exec_deb(FENSTER *f, char *prog)
     e_error(e_p_msg[ERR_PIPEOPEN], 0, f->fb);
     return(0);
    }
-   fgets(e_d_tty, 80, fpp);
+   if (!fgets(e_d_tty, 80, fpp)) {
+	printf("[e_exec_deb]: reading 80 chars from tty failed.\n");
+   }
    pclose(fpp);
   }
   return(wfildes[1]);
@@ -1902,7 +1990,10 @@ int e_deb_run(FENSTER *f)
  e_d_nstack = 0;
  e_d_delbreak(f);
  e_d_switch_out(1);
- write(rfildes[1], eing, strlen(eing));
+ int n = strlen(eing);
+ if (n != write(rfildes[1], eing, n)) {
+	printf("[e_deb_run]: write to debugger failed for %s.\n", eing);
+ }
  if (e_deb_type == 0 || ((e_deb_type == 2  || e_deb_type == 3) && !prsw))
  {
   while((ret = e_d_line_read(wfildes[0], eing, 256, 0, 0)) == 2 ||
@@ -1959,11 +2050,18 @@ int e_d_step_next(FENSTER *f, int sw)
  }
  e_d_delbreak(f);
  e_d_switch_out(1);
- if (sw && e_deb_type == 0) write(rfildes[1], "n\n", 2);
- else if (sw && (e_deb_type == 1 || e_deb_type == 3)) write(rfildes[1], "S\n", 2);
- else if (sw && e_deb_type == 2) write(rfildes[1], "next\n", 5);
- else if (e_deb_type == 2) write(rfildes[1], "step\n", 5);
- else write(rfildes[1], "s\n", 2);
+ char *cstr = 0;
+ if (sw && e_deb_type == 0) cstr = "n\n";
+ else if (sw && (e_deb_type == 1 || e_deb_type == 3)) cstr = "S\n";
+ else if (sw && e_deb_type == 2) cstr = "next\n";
+ else if (e_deb_type == 2) cstr = "step\n";
+ else cstr = "s\n";
+ if (cstr) {
+ 	int n = strlen(cstr);
+	if (n != write(rfildes[1], cstr, n)) {
+		printf("[e_d_step_next]: Write to debugger for %s failed.\n", cstr);
+	}
+ }
  e_d_nstack = 0;
  return(e_read_output(f));
 }
@@ -2422,7 +2520,11 @@ int e_make_line_num(char *str, char *file)
    ;
   if ((!str[i]) || (num = atoi(str+i+1)) < 0)
    return(-1);
-  write(rfildes[1], "e\n", 2);
+  char *cstr = "e\n";
+  n = strlen(cstr);
+  if (n != write(rfildes[1], cstr, n)) {
+	printf("[e_make_line_num]: Write to debugger failed for %s.\n", cstr);
+  }
   while ((i = e_d_line_read(wfildes[0], str, 256, 0, 0)) ==  2)
    e_d_error(str);
   if (i < 0)

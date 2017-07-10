@@ -1088,13 +1088,13 @@ int e_opt_read(ECNT *cn)
    str_line = (char *)realloc(str_line, sz * sizeof(char));
   }
   str_line[0] = 0;
-  fgets(str_line, sz, fp);
-  while ((!feof(fp)) &&
+  char *read_result = fgets(str_line, sz, fp);
+  while ((read_result != NULL && !feof(fp)) &&
     ((str_line[0] == 0) || (str_line[strlen(str_line) - 1] != '\n')))
   {
    sz += 255;
    str_line = (char *)realloc(str_line, sz * sizeof(char));
-   fgets(str_line + sz - 256, 256, fp);
+   read_result = fgets(str_line + sz - 256, 256, fp);
   }
   i = strlen(str_line);
   if (i && (str_line[i - 1] == '\n'))

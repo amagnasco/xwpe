@@ -1844,14 +1844,18 @@ int e_read_var(FENSTER *f)
  p_v_n = 0;
  if (!(p_v = malloc(sizeof(struct proj_var *))))
  {  fclose(fp);  e_error(e_msg[ERR_LOWMEM], 0, f->fb);  return(-1);  }
- while (fgets(str, 256, fp))
+ while (!feof(fp) && fgets(str, 256, fp))
  {
   for (i = 0; isspace(str[i]); i++);
   if (!str[i]) continue;
   else if (str[i] == '#')
   {
    while (str[strlen(str)-1] != '\n')
-   {  fgets(str, 256, fp);  }
+   {  
+	if (!fgets(str, 256, fp)) {  
+		break;
+	}
+   }
    continue;
   }
   sp1 = str + i;
@@ -1964,7 +1968,12 @@ int e_install(FENSTER *f)
   string = e_expand_var(string, f);
   if (p_v_n) p_v_n--;
   e_d_p_message(string, f, 1);
-  system(string);
+  int ret = system(string);
+  if (WIFSIGNALED(ret) && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+	// ignore interrupt
+  } else if (ret != 0) {
+        // ignore return status of child (or 127 if shell was not available)
+  }
   free(string);
  }
  fclose(fp);

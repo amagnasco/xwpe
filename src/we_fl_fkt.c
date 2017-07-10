@@ -6,6 +6,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <signal.h>
 #include "config.h"
 #include "keys.h"
 #include "messages.h"
@@ -241,7 +242,20 @@ int e_quit(FENSTER *f)
  if (WpeQuitWastebasket(cn->f[0]))
   return(0);
  sprintf(tmp, "rm -rf %s&", e_tmp_dir);
- system(tmp);
+ int ret = system(tmp);
+	if (WIFSIGNALED(ret) && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+		printf("System call command %s resulted in an interrupt.\n", 
+			tmp);
+	} else if (ret == 127) {
+		printf("System call command %s failed with code 127\n%s\n%s\n%s\n", 
+			tmp, 
+			"This could mean one of two things:",
+			"1. No shell was available (should never happen unless using chroot)"
+			"2. The command returned 127.\n");
+	} else if (ret != 0) {
+		printf("System call command %s failed. Return code = %i.\n", tmp, ret);
+	}
+ 
 #endif
 #if  MOUSE
  g[0] = 2;
@@ -690,7 +704,20 @@ IFILE e_i_fopen(char *path, char *stat)
  e_mkdir_path(tmp);
  sprintf(command, "gunzip < %s > %s", tmp2, tmp);
  free(tmp2);
- system(command);
+ int ret = system(command);
+	if (WIFSIGNALED(ret) && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+		printf("System call command %s resulted in an interrupt.\n%s\n", 
+			command,
+			"Program will quit executing commands.\n");
+	} else if (ret == 127) {
+		printf("System call command %s failed with code 127\n%s\n%s\n%s\n", 
+			command, 
+			"This could mean one of two things:",
+			"1. No shell was available (should never happen unless using chroot)"
+			"2. The command returned 127.\n");
+	} else if (ret != 0) {
+		printf("System call command %s failed. Return code = %i.\n", command, ret);
+	}
  free(command);  
  fp->fp = fopen(tmp, stat);
  free(tmp);
