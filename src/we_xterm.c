@@ -537,7 +537,7 @@ int e_x_getch()
  XSelectionEvent se;
  KeySym keysym;
  int charcount;
- unsigned char buffer[BUFSIZE];
+ char buffer[BUFSIZE];
  int c, root_x, root_y, x, y;
  unsigned int key_b;
  XSizeHints size_hints;
@@ -732,7 +732,7 @@ int e_x_getch()
      {
       se.property = report.xselectionrequest.property;
       XChangeProperty(se.display, se.requestor, se.property, se.target, 8,
-        PropModeReplace, WpeXInfo.selection, strlen(WpeXInfo.selection));
+        PropModeReplace, WpeXInfo.selection, strlen((const char *)WpeXInfo.selection));
      }
      else
       se.property = None;
@@ -758,7 +758,7 @@ int e_x_kbhit()
  XEvent report;
  KeySym keysym;
  int charcount;
- unsigned char buffer[BUFSIZE];
+ char buffer[BUFSIZE];
  int c;
  unsigned int key_b;
 
@@ -956,7 +956,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  XEvent report;
  Atom type;
  int format;
- long nitems, bytes_left;
+ unsigned long nitems, bytes_left;
 
  for (i = 1; i < b0->mxlines; i++)
   free(b0->bf[i].s);
@@ -967,8 +967,8 @@ int e_x_cp_X_to_buffer(FENSTER *f)
 #if defined SELECTION
  if (WpeXInfo.selection)
  {
-  str = WpeStrdup(WpeXInfo.selection);
-  n = strlen(str);
+  str = (unsigned char *)WpeStrdup((const char *)WpeXInfo.selection);
+  n = strlen((const char *)str);
  }
  else
  {
@@ -994,7 +994,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
    /* Specified property does not exit*/
    return 0;
   }
-  n = strlen(str);
+  n = strlen((const char *)str);
  }
 #else
  str = XFetchBytes(WpeXInfo.display, &n);
@@ -1065,7 +1065,7 @@ int e_x_paste_X_buffer(FENSTER *f)
   n = s0->mark_end.x - s0->mark_begin.x;
 #if defined SELECTION
   WpeXInfo.selection = malloc(n + 1);
-  strncpy(WpeXInfo.selection, b0->bf[s0->mark_begin.y].s+s0->mark_begin.x,
+  strncpy((char *)WpeXInfo.selection, (char *)b0->bf[s0->mark_begin.y].s+s0->mark_begin.x,
     n);
   WpeXInfo.selection[n] = 0;
   XSetSelectionOwner(WpeXInfo.display, WpeXInfo.selection_atom,
