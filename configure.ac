@@ -102,5 +102,5 @@ AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strc
 # AC_DEFINE([DEFTPUTS], [], [copied from old configure.in. Use is unclear.])
 #fi
 
-AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile])
 AC_OUTPUT
