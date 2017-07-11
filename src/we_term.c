@@ -534,7 +534,9 @@ int e_t_initscr()
  ntermio.c_cc[VSWTCH] = 0;
 #endif
  tcsetattr(0, TCSADRAIN, &ntermio);
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
  if (spc_in) e_putp(spc_in);
+#endif
  return(0);
 }
 
@@ -1044,15 +1046,19 @@ int e_t_switch_screen(int sw)
  if (sw && beg_scr) 
  {
   term_refresh();
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
   if (sav_cur)
    e_putp(sav_cur);
   e_putp(beg_scr);
+#endif
  }
  else if (!sw && swt_scr)
  {
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
   e_putp(swt_scr);
   if (res_cur)
    e_putp(res_cur);
+#endif
   term_refresh();
  }
  else
@@ -1095,7 +1101,9 @@ int e_t_d_switch_out(int sw)
  if (sw && e_d_switch_screen(0))
  {
   term_move(0, 0);
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
   e_putp(att_no);
+#endif
   for(i = 0; i < MAXSLNS; i++)
    for (j = 0; j < MAXSCOL; j++)
     e_d_putchar(' ');
