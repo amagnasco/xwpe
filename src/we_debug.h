@@ -6,7 +6,7 @@
 
 #ifdef DEBUGGER
 int e_deb_inp(FENSTER *f);
-int e_e_line_read(int n, signed char *s, int max);
+int e_e_line_read(int n, char *s, int max);
 int e_d_dum_read(void);
 int e_d_p_exec(FENSTER *f);
 int e_d_getchar(void);

@@ -262,7 +262,7 @@ int e_debug_switch(FENSTER *f, int c)
 }
 
 /*  Input Routines   */
-int e_e_line_read(int n, signed char *s, int max)
+int e_e_line_read(int n, char *s, int max)
 {
  int i, ret = 0;
 
@@ -286,7 +286,7 @@ int e_e_line_read(int n, signed char *s, int max)
  return(2);
 }
 
-int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
+int e_d_line_read(int n, char *s, int max, int sw, int esw)
 {
  static char wt = 0, esc_sv = 0, str[12];
  int i, j, ret = 0, kbdflgs;
@@ -366,7 +366,6 @@ int e_d_p_exec(FENSTER *f)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
  int ret, i, is, j;
  char str[512];
 
@@ -376,7 +375,6 @@ int e_d_p_exec(FENSTER *f)
  {  e_edit(cn, "Messages");  i = cn->mxedt;  }
  f = cn->f[i];
  b = cn->f[i]->b;
- s = cn->f[i]->s;
  if (b->bf[b->mxlines-1].len != 0)
   e_new_line(b->mxlines, b);
  for (j = 0, i = is = b->mxlines-1;
@@ -461,7 +459,7 @@ int e_d_is_watch(int c, FENSTER *f)
 
 int e_d_quit_basic(FENSTER *f)
 {
- int i, kbdflgs;
+ int kbdflgs;
 
  if (!e_d_swtch)
   return 0;
@@ -523,11 +521,16 @@ int e_d_quit_basic(FENSTER *f)
   {
    e_d_switch_out(1);
    fk_locate(MAXSCOL, MAXSLNS);
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
    e_putp("\r\n");
    e_putp(att_no);
+#endif
    e_d_switch_out(0);
   }
  }
+ // FIXME: check whether return zero is intended. This function had no return.
+ // FIXME: function return code is not used!
+ return 0;
 }
 
 int e_d_quit(FENSTER *f)
@@ -690,8 +693,7 @@ int e_d_p_watches(FENSTER *f, int sw)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
- int iw, i, k = 0, l, ret;
+ int iw, k = 0, l, ret;
  char str1[256], *str; /* is 256 always large enough? */
  char *str2;
 
@@ -718,14 +720,13 @@ int e_d_p_watches(FENSTER *f, int sw)
  }
  f = cn->f[iw];
  b = cn->f[iw]->b;
- s = cn->f[iw]->s;
  
  /* free all lines of BUFFER b */
  e_p_red_buffer(b);
  free(b->bf[0].s);
  b->mxlines=0;
 
- for (i = 0, l = 0; l < e_d_nwtchs; l++)
+ for (l = 0; l < e_d_nwtchs; l++)
  {
   str = str1;
   
@@ -848,7 +849,7 @@ int e_p_show_watches(FENSTER *f)
 /***  reinitialize watches from prj  ***/
 int e_d_reinit_watches(FENSTER * f,char * prj)
 {
- int i,e,g,q,y,r;
+ int i,e,g,q,r;
  char * prj2;
 
  for(i = f->ed->mxedt; i > 0; i--)
@@ -863,7 +864,6 @@ int e_d_reinit_watches(FENSTER * f,char * prj)
  prj2=malloc(sizeof(char)*(g+1));
  strcpy(prj2,prj);
  q=0;
- y=0;
  r=0;
  while(q<g) 
  {
