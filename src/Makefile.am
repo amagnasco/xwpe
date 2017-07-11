@@ -1,4 +1,5 @@
 bin_PROGRAMS = wpe we 
+AM_CFLAGS = -g -Wall
 AM_CPPFLAGS = -DLIBRARY_DIR=\"@libdir@/xwpe\"
 AM_CPPFLAGS += -DRANLIB=\"@RANLIB@\"
 lib_LTLIBRARIES = libxwpe-x11.la libxwpe-term.la
