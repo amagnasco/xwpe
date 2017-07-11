@@ -18,7 +18,7 @@ char *getcwd(char *dir, int n);
  * necessary
  */
 //#ifdef NCURSES
-#ifdef HAVE_LIBNCURSES
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #define e_putp(s) 1
 #else
 #define e_putp(s) tputs((s), 1, fk_u_putchar)
@@ -31,7 +31,7 @@ extern int cur_on;
 //#define getc(fp) fgetc((fp))
 //#endif
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #define fk_getch() getch()
 #else
 #ifdef HAVE_LIBGPM

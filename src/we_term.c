@@ -19,7 +19,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 # include <curses.h>
 #endif
 
@@ -61,8 +61,9 @@ extern int MAXSCOL;
 
 
 //#ifndef NCURSES : always TRUE
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 char *key_f[KEYFN], *key_key;
-//#endif
+#endif
 char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, cur_attr;
 char *att_so, *att_ul, *att_rv, *att_bl, *att_dm, *att_bo;
 char *ratt_no, *ratt_so, *ratt_ul, *ratt_rv, *ratt_bl, *ratt_dm, *ratt_bo;
@@ -73,7 +74,7 @@ char *col_fg, *col_bg, *spc_st, *spc_in, *spc_bg, *spc_nd;
 
 extern int col_num;
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 chtype sp_chr[NSPCHR];
 #else
 char *sp_chr[NSPCHR];
@@ -103,7 +104,7 @@ char *tgoto();
 #define tparm2(a,b,c) tparm((a), (b), (c), 0, 0, 0, 0, 0, 0, 0)
 
 //#ifdef NCURSES
-#ifdef FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #define term_move(x,y) move(y, x)
 #define term_refresh() refresh()
 #else
@@ -219,7 +220,7 @@ char *init_key(char *key)
 }
 
 //#ifndef NCURSES
-#if TRUE
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 char *init_kkey(char *key)
 {
  char *tmp;
@@ -310,7 +311,7 @@ int init_cursor()
    res_cur = init_key("rc");
 
 //#ifndef NCURSES
-#if FALSE
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
    key_f[0] = init_kkey("kf1");
    key_f[1] = init_kkey("kf2");
    key_f[2] = init_kkey("kf3");
@@ -431,7 +432,7 @@ int init_cursor()
    key_f[41] = init_kkey("@1");
 #endif
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
    sp_chr[0] = 0;
    sp_chr[1] = ACS_ULCORNER;
    sp_chr[2] = ACS_URCORNER;
@@ -489,13 +490,13 @@ int e_t_initscr()
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
  if ((stdscr=initscr())==(WINDOW *)ERR) exit(27);
 //#ifdef NCURSES
-#if FALSE
+//#if FALSE
  cbreak();
  noecho();
  nonl();
  intrflush(stdscr,FALSE);
  keypad(stdscr,TRUE);
-#endif // #if NCURSES i.e. FALSE
+//#endif // #if NCURSES i.e. FALSE
  if (has_colors())
  {
   start_color();
@@ -547,9 +548,9 @@ int e_begscr()
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 //#ifndef NCURSES
-#if TRUE
- setupterm((char *)0, 1, (int *)0);
-#endif
+//#if TRUE
+// setupterm((char *)0, 1, (int *)0);
+//#endif
  if ((lns = tigetnum("lines")) > 0)
   MAXSLNS = lns;
  if ((cols = tigetnum("cols")) > 0)
@@ -572,7 +573,7 @@ int e_begscr()
 void e_endwin()
 {
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
  endwin();
 #else
  fk_putp(ratt_bo);
@@ -588,7 +589,7 @@ int fk_t_cursor(int x)
 int fk_t_putchar(int c)
 {
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
  addch(c);
  return c;
 #else
@@ -600,7 +601,7 @@ int fk_attrset(int a)
 {
  if(cur_attr == a) return(0);
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
  switch(a)
  {  case 0:  attrset(A_NORMAL);  break;
     case 1:  attrset(A_STANDOUT);  break;
@@ -655,7 +656,7 @@ void fk_colset(int c)
  }
 #else // #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
  if (c & 8)
   attrset(A_BOLD);
  else
@@ -701,7 +702,7 @@ int e_t_refresh()
      fk_colset(e_gt_col(j, i));
     c = e_gt_char(j, i);
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
     if (c < NSPCHR)
      addch(sp_chr[c]);
     else
@@ -754,7 +755,7 @@ int e_t_kbhit()
 }
 
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 int e_t_getch()
 {
  int c, bk;
@@ -1015,7 +1016,7 @@ int fk_t_locate(int x, int y)
  {
   fk_colset(e_gt_col(cur_x, cur_y));
 //#ifdef NCURSES
-#if FALSE
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
   /* Causes problems.  Reason unknown. - Dennis */
   /*mvaddch(cur_y,cur_x,e_gt_char(cur_x, cur_y));*/
 #else
@@ -1062,7 +1063,7 @@ int e_t_switch_screen(int sw)
 int e_t_deb_out(FENSTER *f)
 {
 //#ifndef NCURSES
-#if TRUE
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
  if (!swt_scr || !beg_scr)
 #endif
   return(e_error("Your terminal don\'t use begin/end cup", 0, f->fb));
