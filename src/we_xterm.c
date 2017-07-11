@@ -474,7 +474,7 @@ int e_x_change(view *pic)
  XEvent report;
  XExposeEvent *expose_report;
  KeySym keysym;
- unsigned char buffer[BUFSIZE];
+ char buffer[BUFSIZE];
  int charcount;
  unsigned int key_b;
  XSizeHints size_hints;
