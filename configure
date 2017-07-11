@@ -14595,7 +14595,7 @@ done
 # AC_DEFINE([DEFTPUTS], [], [copied from old configure.in. Use is unclear.])
 #fi
 
-ac_config_files="$ac_config_files Makefile src/Makefile man/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile man/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -15614,6 +15614,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "man/Makefile") CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
