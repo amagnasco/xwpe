@@ -21,7 +21,7 @@
 #include "unixkeys.h"
 
 extern int MAXSLNS, MAXSCOL, MENOPT;
-#define MAXEDT 35
+#define MAXEDT 35	// Maximum number of editting windows
 #endif // #ifdef UNIX
 
 #define MAXLINES 10
