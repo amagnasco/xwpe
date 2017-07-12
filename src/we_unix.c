@@ -121,7 +121,6 @@ int e_ini_unix(int *argc, char **argv)
  extern OPT opt[];
  int i, debug;
  struct sigaction act;
- int (*initfunc)(int *argc, char **argv);
 
  setlocale(LC_ALL, "");
  u_fb = NULL;
