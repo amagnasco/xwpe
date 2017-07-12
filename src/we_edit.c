@@ -405,7 +405,7 @@ int e_eingabe(ECNT *e)
  SCHIRM *s = e->f[e->mxedt]->s;
  FENSTER *f = e->f[e->mxedt];
  int ret, c = 0;
- unsigned char cc;
+ char cc;
 
  fk_cursor(1);
  while (c != WPE_ESC)
@@ -947,7 +947,7 @@ int e_ctrl_o(FENSTER *f)
  BUFFER *b = f->ed->f[f->ed->mxedt]->b;
  SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
  int i, c;
- unsigned char cc;
+ char cc;
 
  c = toupper(e_getch());
  if (c < 32) c = c + 'A' - 1;
@@ -1195,10 +1195,10 @@ int e_chr_sp(int x, BUFFER *b, FENSTER *f)
   if (*(b->bf[b->b.y].s + i) == WPE_TAB)
    j += (f->ed->tabn - ((j + i) % f->ed->tabn) - 1);
 #ifdef UNIX
-  else if (!WpeIsXwin() && ((unsigned char) *(b->bf[b->b.y].s + i)) > 126)
+  else if (!WpeIsXwin() && ((char) *(b->bf[b->b.y].s + i)) > 126)
   {
    j++;
-   if (((unsigned char) *(b->bf[b->b.y].s + i)) < 128 + ' ')
+   if (((char) *(b->bf[b->b.y].s + i)) < 128 + ' ')
     j++;
   }
   else if (*(b->bf[b->b.y].s + i) < ' ')
@@ -1269,7 +1269,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
 {
  int a_indent = b->cn->autoindent;
  int line, x, k, char_to_ins;
- unsigned char *str;
+ char *str;
  int do_auto_indent = 0;
  int first_nospace_k;
 
@@ -1329,7 +1329,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
  if (!do_auto_indent)
  {
   /* insert TAB char */
-  str = malloc(sizeof(unsigned char));
+  str = malloc(sizeof(char));
   str[0] = '\t';
   char_to_ins = 1;
  }
@@ -1354,7 +1354,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
    /* indent to x with spaces */
    /* insert chars */
    k = x - b->b.x;
-   str = malloc(k * sizeof(unsigned char));
+   str = malloc(k * sizeof(char));
    for (x = 0; x < k; x++)
     str[x] = ' ';
    char_to_ins = k;
@@ -1364,7 +1364,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
    /* indent to x + a_indent with spaces */
    /* insert chars */
    k = x + a_indent - b->b.x;
-   str = malloc(k * sizeof(unsigned char));
+   str = malloc(k * sizeof(char));
    for (x = 0; x < k; x++)
     str[x] = ' ';
    char_to_ins = k;
@@ -1372,7 +1372,7 @@ int e_tab_a_ind(BUFFER *b, SCHIRM *s)
   else
   {
    /* insert TAB char */
-   str = malloc(sizeof(unsigned char));
+   str = malloc(sizeof(char));
    str[0] = '\t';
    char_to_ins = 1;
   }
@@ -1401,7 +1401,7 @@ int e_del_a_ind(BUFFER *b, SCHIRM *s)
    }
    if (i != j)
    {
-    unsigned char *str = malloc(i * sizeof(unsigned char));
+    char *str = malloc(i * sizeof(char));
     e_del_nchar(b, s, 0, b->b.y, j);
     for (j = 0; j < i; j++)
      str[j] = ' ';
@@ -1436,7 +1436,7 @@ int e_del_a_ind(BUFFER *b, SCHIRM *s)
 int e_car_a_ind(BUFFER *b, SCHIRM *s)
 {
  int i, j, k;
- unsigned char *str;
+ char *str;
 
  if (b->b.y == 0)
   return(0);
@@ -1526,10 +1526,10 @@ void e_cursor(FENSTER *f, int sw)
  {
   if (*(b->bf[b->b.y].s + i) == WPE_TAB)
    j += (f->ed->tabn - ((j + i) % f->ed->tabn) - 1);
-  else if (!WpeIsXwin() && ((unsigned char) *(b->bf[b->b.y].s + i)) > 126)
+  else if (!WpeIsXwin() && ((char) *(b->bf[b->b.y].s + i)) > 126)
   {
    j++;
-   if (((unsigned char) *(b->bf[b->b.y].s + i)) < 128 + ' ') j++;
+   if (((char) *(b->bf[b->b.y].s + i)) < 128 + ' ') j++;
   }
   else if (*(b->bf[b->b.y].s + i) < ' ') j++;
   if (f->dtmd == DTMD_HELP)
@@ -1681,7 +1681,7 @@ int e_del_nchar(BUFFER *b, SCHIRM *s, int x, int y, int n)
 }
 
 /*   insert N chars in buffer */
-int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
+int e_ins_nchar(BUFFER *b, SCHIRM *sch, char *s, int xa, int ya,
   int n)
 {
  FENSTER *f = WpeEditor->f[WpeEditor->mxedt];
@@ -1846,7 +1846,7 @@ int e_new_line(int yd, BUFFER *b)
 /*     Overwriting of a character       */
 int e_put_char(int c, BUFFER *b, SCHIRM *s)
 {
- unsigned char cc = c;
+ char cc = c;
 
  if (b->b.x == b->bf[b->b.y].len)
   e_ins_nchar(b, s, &cc, b->b.x, b->b.y, 1);
@@ -1861,7 +1861,7 @@ int e_put_char(int c, BUFFER *b, SCHIRM *s)
 }
 
 /*   search right (left end of word) */
-int e_su_lblk(int xa, unsigned char *s)
+int e_su_lblk(int xa, char *s)
 {
  int len = strlen(s);
 
@@ -1875,7 +1875,7 @@ int e_su_lblk(int xa, unsigned char *s)
 }
 
 /*     Search left (left end of word)     */
-int e_su_rblk(int xa, unsigned char *s)
+int e_su_rblk(int xa, char *s)
 {
  int len = strlen(s);
 
