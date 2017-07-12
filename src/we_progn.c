@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -47,214 +48,243 @@ extern char *e_p_msg[];
 		   c == '|' || c == '&' || c == '!' || c == ':' ||    \
 		   c == '?' || c == '.' )
 
-#define e_mk_col(str, l, n, frb, cs, n_nd, n_bg)			\
-{									\
- if (n < l)								\
- {	 								\
-  if (n == cs->special_column) 						\
-  {	 								\
-   int ii;								\
-   for (ii = 0; cs->special_comment[ii] &&				\
-     cs->special_comment[ii] != toupper(str[n]); ii++)			\
-    ;	  								\
-   if (cs->special_comment[ii])						\
-    mcsw = 7;								\
-  }									\
-  if (mcsw == 6 && (isalnum(str[n]) || str[n] == '_'))			\
-   frb = FRB1;								\
-  else if(mcsw == 7) frb = FRB4;					\
-  else if(mcsw == 3 && (isalnum(str[n]) || str[n] == '.')) frb = FRB2;	\
-  else if(mcsw == 5)							\
-  {	 								\
-   if (str[n] == cs->begin_comment[0])					\
-   {	 								\
-    int jj;								\
-    for (jj = 1; cs->begin_comment[jj] &&				\
-      str[n+jj] == cs->begin_comment[jj]; jj++)				\
-     ;									\
-    if (!cs->begin_comment[jj]) 					\
-    {  mcsw = 4;  n_bg = n+jj-1;  frb = FRB4;  }			\
-   }									\
-   if (mcsw == 5 && str[n] == cs->line_comment[0])			\
-   {	 								\
-    int jj;								\
-    for (jj = 1; cs->line_comment[jj] &&				\
-      str[n+jj] == cs->line_comment[jj]; jj++);				\
-    if (!cs->line_comment[jj]) {  mcsw = 7;  frb = FRB4;  }		\
-   }									\
-   if (mcsw == 5) frb = FRB3;						\
-  }									\
-  else if (mcsw == 1)							\
-  {	 								\
-   if (str[n] == cs->string_constant && !bssw) mcsw = 0;		\
-   frb = FRB2;								\
-  }									\
-  else if (mcsw == 2)							\
-  {	 								\
-   if (str[n] == cs->char_constant && !bssw) mcsw = 0;			\
-   frb = FRB2;								\
-  }									\
-  else if (mcsw == 4)							\
-  {	 								\
-   if (n_nd < n-n_bg && str[n] == cs->end_comment[n_nd])		\
-   {	 								\
-    int jj;								\
-    for (jj = 1; jj <= n_nd && n-jj >= 0 &&				\
-      str[n-jj] == cs->end_comment[n_nd-jj]; jj++);			\
-    if (jj > n_nd) mcsw = svmsw;					\
-   }									\
-   frb = FRB4;								\
-  }									\
-  else									\
-  {									\
-   if (n >= cs->comment_column) {  mcsw = 7;  frb = FRB4;  }		\
-   else if (isdigit(str[n]))						\
-   {	 								\
-    if (n == 0 || (!isalnum(str[n-1]) && str[n-1] != '_'))		\
-    {  mcsw = 3;  frb = FRB2;  }					\
-    else frb = FRB5;							\
-   }									\
-   else if (isalpha(str[n]))						\
-   {	 								\
-    if(cs->insensitive && (n == 0 || (!isalnum(str[n-1]) &&		\
-      str[n-1] != '_')))						\
-    {	   								\
-     int ii, jj;							\
-     int kk = strlen(cs->line_comment);					\
-     if ((WpeStrnccmp(cs->line_comment, str + n, kk) == 0) &&		\
-       (!isalnum(str[n +kk])) && (str[n + kk] != '_'))			\
-     {			    						\
-      mcsw = 7;								\
-      frb = FRB4;							\
-     }		 							\
-     else								\
-     {									\
-      for (ii = 0; cs->reserved_word[ii] &&				\
-        cs->reserved_word[ii][0] < toupper(str[n]);  			\
-        ii++); 								\
-      for ( ; cs->reserved_word[ii] &&					\
-        cs->reserved_word[ii][0] == toupper(str[n]); 			\
-        ii++)								\
-      {									\
-       for (jj = 0; cs->reserved_word[ii][jj] &&			\
-         cs->reserved_word[ii][jj] == toupper(str[n+jj]);		\
-         jj++);								\
-       if (!cs->reserved_word[ii][jj] && !isalnum(str[n+jj]) &&		\
-         str[n+jj] != '_')						\
-       {  mcsw = 6;  frb = FRB1;  break;  }				\
-      }			    						\
-     }									\
-    }									\
-    else if (!cs->insensitive && (n == 0 || (!isalnum(str[n-1]) &&	\
-      str[n-1] != '_')))						\
-    {	   								\
-     int ii, jj;							\
-     int kk = strlen(cs->line_comment);					\
-     if ((strncmp(cs->line_comment, str + n, kk) == 0) &&		\
-       (!isalnum(str[n +kk])) && (str[n + kk] != '_'))			\
-     {			    						\
-      mcsw = 7;								\
-      frb = FRB4;							\
-     }		 							\
-     else								\
-     {									\
-      for (ii = 0; cs->reserved_word[ii] &&				\
-        cs->reserved_word[ii][0] < str[n]; ii++);			\
-      for( ; cs->reserved_word[ii] &&					\
-        cs->reserved_word[ii][0] == str[n]; ii++)			\
-      {	   								\
-       for (jj = 0; cs->reserved_word[ii][jj] &&			\
-         cs->reserved_word[ii][jj] == str[n+jj]; jj++);			\
-       if (!cs->reserved_word[ii][jj] && !isalnum(str[n+jj]) &&		\
-         str[n+jj] != '_')						\
-       {  mcsw = 6;  frb = FRB1;  break;  }				\
-      }			    						\
-     }									\
-    }									\
-    if (!mcsw) frb = FRB5;						\
-   }									\
-   else if (isspace(str[n]))						\
-   {  mcsw = 0;  frb = FRB5;  }						\
-   else 								\
-   {	 								\
-    if (str[n] == cs->string_constant)					\
-    {  mcsw = 1;  frb = FRB2;  }					\
-    else if (str[n] == cs->char_constant)				\
-    {  mcsw = 2;  frb = FRB2;  }					\
-    else if (str[n] == cs->preproc_cmd)					\
-    {  svmsw = mcsw = 5;  frb = FRB3;  }				\
-    else								\
-    {	 								\
-     mcsw = 0;								\
-     if (str[n] == cs->begin_comment[0])				\
-     {	 								\
-      int jj;								\
-      for(jj = 1; cs->begin_comment[jj] &&				\
-        str[n+jj] == cs->begin_comment[jj]; jj++);			\
-      if (!cs->begin_comment[jj]) 					\
-      {  mcsw = 4;  n_bg = n+jj-1;  frb = FRB4;  }			\
-     }									\
-     if (!mcsw && str[n] == cs->line_comment[0])			\
-     {	 								\
-      int jj;								\
-      for (jj = 1; cs->line_comment[jj] &&				\
-        str[n+jj] == cs->line_comment[jj]; jj++);			\
-      if (!cs->line_comment[jj]) {  mcsw = 7;  frb = FRB4; }		\
-     }									\
-     if (cs->long_operator && !mcsw)					\
-     {									\
-      if(cs->insensitive)						\
-      {									\
-       int ii, jj;							\
-       for (ii = 0; cs->long_operator[ii] &&				\
-         cs->long_operator[ii][0] < str[n]; ii++);			\
-       for ( ; cs->long_operator[ii] &&					\
-         cs->long_operator[ii][0] == str[n]; ii++)			\
-       {								\
-        for (jj = 0; cs->long_operator[ii][jj] &&			\
-          cs->long_operator[ii][jj] == toupper(str[n+jj]); jj++);	\
-        if (!cs->long_operator[ii][jj])		 			\
-        {  mcsw = 6;  frb = FRB1;  break;  }				\
-       }								\
-      }									\
-      else								\
-      {	 								\
-       int ii, jj;							\
-       for (ii = 0; cs->long_operator[ii] &&				\
-         cs->long_operator[ii][0] < str[n]; ii++);			\
-       for ( ; cs->long_operator[ii] &&					\
-         cs->long_operator[ii][0] == str[n]; ii++)			\
-       {								\
-        for (jj = 0; cs->long_operator[ii][jj] &&			\
-          cs->long_operator[ii][jj] == str[n+jj]; jj++);		\
-        if (!cs->long_operator[ii][jj])		 			\
-        {  mcsw = 6;  frb = FRB1;  break;  }				\
-       }								\
-      }									\
-     }									\
-     if (!mcsw)								\
-     {	 								\
-      int jj;								\
-      for (jj = 0; cs->single_operator[jj] &&				\
-        str[n] != cs->single_operator[jj]; jj++);			\
-      if (!cs->single_operator[jj]) frb = FRB5;				\
-      else frb = FRB1;							\
-     }									\
-    }									\
-   }									\
-  }									\
-  if (str[n] == cs->quoting_char) bssw = !bssw;				\
-  else bssw = 0;							\
- }									\
- else									\
- {	 								\
-  if ((mcsw == 7) || (mcsw == 4)) frb = FRB4;				\
-  else if ((mcsw == 1) || (mcsw == 2)) frb = FRB2;			\
-  else if (mcsw == 5) frb = FRB3;					\
-  else									\
-   frb = FRB5;								\
- }	   								\
+/*************************************************************************/
+/**
+ * e_mk_col
+ *
+ * This function was copied 1 on 1 from a define (yes, really, > 200 lines in a define....).
+ * The code was left unchanged except for n_bg, frb, mscw and bssw that were turned
+ * into pointers.
+ * These variables needed to be dereferenced to access the contents or to change the contents.
+ *
+ * Due to the read-write variables no return was necessary.
+ *
+ * The read-write variables are:
+ *
+ * int * frb:	a reference to syntax
+ * int * n_bg:
+ * int * mcsw:
+ * int * bssw:
+ *
+ * The variable s hidden in a macro FRB1 .. FRB5 refers to an element of a screen.
+ *
+ * SCHIRM *s:	reference to an element of s->fb
+ *
+ * This function is in desparate need of refactoring. But testing first.
+ *
+ */
+void e_mk_col(unsigned char *str, int l, int n, int *frb,
+		struct wpeSyntaxRule *cs, int n_nd, int *n_bg, int *mcsw, int *bssw, int *svmsw,
+		SCHIRM *s)
+{
+ if (n < l)
+ {
+  if (n == cs->special_column)
+  {
+   int ii;
+   for (ii = 0; cs->special_comment[ii] &&
+     cs->special_comment[ii] != toupper(str[n]); ii++)
+    ;
+   if (cs->special_comment[ii])
+    *mcsw = 7;
+  }
+  if (*mcsw == 6 && (isalnum(str[n]) || str[n] == '_'))
+   *frb = FRB1;
+  else if(*mcsw == 7) *frb = FRB4;
+  else if(*mcsw == 3 && (isalnum(str[n]) || str[n] == '.')) *frb = FRB2;
+  else if(*mcsw == 5)
+  {
+   if (str[n] == cs->begin_comment[0])
+   {
+    int jj;
+    for (jj = 1; cs->begin_comment[jj] &&
+      str[n+jj] == cs->begin_comment[jj]; jj++)
+     ;
+    if (!cs->begin_comment[jj])
+    {  *mcsw = 4;  *n_bg = n+jj-1;  *frb = FRB4;  }
+   }
+   if (*mcsw == 5 && str[n] == cs->line_comment[0])
+   {
+    int jj;
+    for (jj = 1; cs->line_comment[jj] &&
+      str[n+jj] == cs->line_comment[jj]; jj++);
+    if (!cs->line_comment[jj]) {  *mcsw = 7;  *frb = FRB4;  }
+   }
+   if (*mcsw == 5) *frb = FRB3;
+  }
+  else if (*mcsw == 1)
+  {
+   if (str[n] == cs->string_constant && !*bssw) *mcsw = 0;
+   *frb = FRB2;
+  }
+  else if (*mcsw == 2)
+  {
+   if (str[n] == cs->char_constant && !*bssw) *mcsw = 0;
+   *frb = FRB2;
+  }
+  else if (*mcsw == 4)
+  {
+   if (n_nd < n-*n_bg && str[n] == cs->end_comment[n_nd])
+   {
+    int jj;
+    for (jj = 1; jj <= n_nd && n-jj >= 0 &&
+      str[n-jj] == cs->end_comment[n_nd-jj]; jj++);
+    if (jj > n_nd) *mcsw = *svmsw;
+   }
+   *frb = FRB4;
+  }
+  else
+  {
+   if (n >= cs->comment_column) {  *mcsw = 7;  *frb = FRB4;  }
+   else if (isdigit(str[n]))
+   {
+    if (n == 0 || (!isalnum(str[n-1]) && str[n-1] != '_'))
+    {  *mcsw = 3;  *frb = FRB2;  }
+    else *frb = FRB5;
+   }
+   else if (isalpha(str[n]))
+   {
+    if(cs->insensitive && (n == 0 || (!isalnum(str[n-1]) &&
+      str[n-1] != '_')))
+    {
+     int ii, jj;
+     int kk = strlen(cs->line_comment);
+     if ((WpeStrnccmp(cs->line_comment, str + n, kk) == 0) &&
+       (!isalnum(str[n +kk])) && (str[n + kk] != '_'))
+     {
+      *mcsw = 7;
+      *frb = FRB4;
+     }
+     else
+     {
+      for (ii = 0; cs->reserved_word[ii] &&
+        cs->reserved_word[ii][0] < toupper(str[n]);
+        ii++);
+      for ( ; cs->reserved_word[ii] &&
+        cs->reserved_word[ii][0] == toupper(str[n]);
+        ii++)
+      {
+       for (jj = 0; cs->reserved_word[ii][jj] &&
+         cs->reserved_word[ii][jj] == toupper(str[n+jj]);
+         jj++);
+       if (!cs->reserved_word[ii][jj] && !isalnum(str[n+jj]) &&
+         str[n+jj] != '_')
+       {  *mcsw = 6;  *frb = FRB1;  break;  }
+      }
+     }
+    }
+    else if (!cs->insensitive && (n == 0 || (!isalnum(str[n-1]) &&
+      str[n-1] != '_')))
+    {
+     int ii, jj;
+     int kk = strlen(cs->line_comment);
+     if ((strncmp(cs->line_comment, str + n, kk) == 0) &&
+       (!isalnum(str[n +kk])) && (str[n + kk] != '_'))
+     {
+      *mcsw = 7;
+      *frb = FRB4;
+     }
+     else
+     {
+      for (ii = 0; cs->reserved_word[ii] &&
+        cs->reserved_word[ii][0] < str[n]; ii++);
+      for( ; cs->reserved_word[ii] &&
+        cs->reserved_word[ii][0] == str[n]; ii++)
+      {
+       for (jj = 0; cs->reserved_word[ii][jj] &&
+         cs->reserved_word[ii][jj] == str[n+jj]; jj++);
+       if (!cs->reserved_word[ii][jj] && !isalnum(str[n+jj]) &&
+         str[n+jj] != '_')
+       {  *mcsw = 6;  *frb = FRB1;  break;  }
+      }
+     }
+    }
+    if (!*mcsw) *frb = FRB5;
+   }
+   else if (isspace(str[n]))
+   {  *mcsw = 0;  *frb = FRB5;  }
+   else
+   {
+    if (str[n] == cs->string_constant)
+    {  *mcsw = 1;  *frb = FRB2;  }
+    else if (str[n] == cs->char_constant)
+    {  *mcsw = 2;  *frb = FRB2;  }
+    else if (str[n] == cs->preproc_cmd)
+    {  *svmsw = *mcsw = 5;  *frb = FRB3;  }
+    else
+    {
+     *mcsw = 0;
+     if (str[n] == cs->begin_comment[0])
+     {
+      int jj;
+      for(jj = 1; cs->begin_comment[jj] &&
+        str[n+jj] == cs->begin_comment[jj]; jj++);
+      if (!cs->begin_comment[jj])
+      {  *mcsw = 4;  *n_bg = n+jj-1;  *frb = FRB4;  }
+     }
+     if (!*mcsw && str[n] == cs->line_comment[0])
+     {
+      int jj;
+      for (jj = 1; cs->line_comment[jj] &&
+        str[n+jj] == cs->line_comment[jj]; jj++);
+      if (!cs->line_comment[jj]) {  *mcsw = 7;  *frb = FRB4; }
+     }
+     if (cs->long_operator && !*mcsw)
+     {
+      if(cs->insensitive)
+      {
+       int ii, jj;
+       for (ii = 0; cs->long_operator[ii] &&
+         cs->long_operator[ii][0] < str[n]; ii++);
+       for ( ; cs->long_operator[ii] &&
+         cs->long_operator[ii][0] == str[n]; ii++)
+       {
+        for (jj = 0; cs->long_operator[ii][jj] &&
+          cs->long_operator[ii][jj] == toupper(str[n+jj]); jj++);
+        if (!cs->long_operator[ii][jj])
+        {  *mcsw = 6;  *frb = FRB1;  break;  }
+       }
+      }
+      else
+      {
+       int ii, jj;
+       for (ii = 0; cs->long_operator[ii] &&
+         cs->long_operator[ii][0] < str[n]; ii++);
+       for ( ; cs->long_operator[ii] &&
+         cs->long_operator[ii][0] == str[n]; ii++)
+       {
+        for (jj = 0; cs->long_operator[ii][jj] &&
+          cs->long_operator[ii][jj] == str[n+jj]; jj++);
+        if (!cs->long_operator[ii][jj])
+        {  *mcsw = 6;  *frb = FRB1;  break;  }
+       }
+      }
+     }
+     if (!*mcsw)
+     {
+      int jj;
+      for (jj = 0; cs->single_operator[jj] &&
+        str[n] != cs->single_operator[jj]; jj++);
+      if (!cs->single_operator[jj]) *frb = FRB5;
+      else *frb = FRB1;
+     }
+    }
+   }
+  }
+  if (str[n] == cs->quoting_char) *bssw = !*bssw;
+  else *bssw = 0;
+ }
+ else
+ {
+  if ((*mcsw == 7) || (*mcsw == 4)) *frb = FRB4;
+  else if ((*mcsw == 1) || (*mcsw == 2)) *frb = FRB2;
+  else if (*mcsw == 5) *frb = FRB3;
+  else
+   *frb = FRB5;
+ }
 }
+
+/*************************************************************************/
 
 int e_scfbol(int n, int mcsw, unsigned char *str, WpeSyntaxRule *cs)
 {
@@ -497,7 +527,7 @@ void e_pr_c_line(int y, FENSTER *f)
  if (j > s->c.x)
   i--;
  for (k = 0; k < i; k++)
-  e_mk_col(b->bf[y].s, b->bf[y].len, k, frb, f->c_st, n_nd, n_bg);
+  e_mk_col(b->bf[y].s, b->bf[y].len, k, &frb, f->c_st, n_nd, &n_bg, &mcsw, &bssw, &svmsw, s);
 #ifdef DEBUGGER
  for (j = 1; j <= s->brp[0]; j++)
   if (s->brp[j] == y)
@@ -507,7 +537,7 @@ void e_pr_c_line(int y, FENSTER *f)
   }
  for (j = s->c.x; i < b->bf[y].len && j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1; i++, j++)
  {
-  e_mk_col(b->bf[y].s, b->bf[y].len, i, frb, f->c_st, n_nd, n_bg);
+  e_mk_col(b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg, &mcsw, &bssw, &svmsw, s);
   if ( y == s->da.y && i >= s->da.x && i < s->de.x )
    frb = s->fb->dy.fb;
   else if (fsw)
@@ -517,7 +547,7 @@ void e_pr_c_line(int y, FENSTER *f)
 #else
  for (j = s->c.x; i < b->bf[y].len && j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1; i++, j++)
  {
-  e_mk_col(b->bf[y].s, b->bf[y].len, i, frb, f->c_st, n_nd, n_bg);
+  e_mk_col(b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg, &mcsw, &bssw, &svmsw, s);
   if ( y == s->fa.y && i >= s->fa.x && i < s->fe.x )
    frb = s->fb->ek.fb;
 #endif
@@ -572,7 +602,7 @@ void e_pr_c_line(int y, FENSTER *f)
      *(b->bf[y].s + i), frb);
  }
 
- e_mk_col(b->bf[y].s, b->bf[y].len, i, frb, f->c_st, n_nd, n_bg);
+ e_mk_col(b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg, &mcsw, &bssw, &svmsw, s);
 
  if ((i == b->bf[y].len) && (f->ed->edopt & ED_SHOW_ENDMARKS) &&
    (DTMD_ISMARKABLE(f->dtmd)) && (j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1))
@@ -782,7 +812,7 @@ char *e_sh_spl3(sp, str, fp, n)
      char *str;
      E_AFILE *fp;
      int *n;
-{   
+{
     int brk = 1;
     while(*++sp != '}' || brk > 1)
     { if(!sp[0] || sp[0] == '\n')
@@ -824,7 +854,7 @@ char *e_sh_spl5(sp, str, fp, n)
      char *str;
      E_AFILE *fp;
      int *n;
-{   
+{
     int brk = 1;
     while(*++sp != ')' || brk > 1)
     { if(!sp[0] || sp[0] == '\n')
@@ -866,7 +896,7 @@ char *e_sh_spl4(sp, str, fp, n)
      char *str;
      E_AFILE *fp;
      int *n;
-{   
+{
     int brk = 0;
     while((*++sp != ',' && *sp != ';' && *sp != '(') || brk)
     { if(!sp[0] || sp[0] == '\n')
@@ -1128,7 +1158,7 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
 	       }
 	    }
 	    else if(*sp == '(') sp++;
-	    else if(*sp == '*') 
+	    else if(*sp == '*')
             {  while (*sp == '*') sp++;  continue;  }
 	    else if(*sp == ';') {  sp++;  com = 2;  n--;  break;  }
 	    else if(*sp == '{')
@@ -1570,7 +1600,7 @@ int e_mbt_str(BUFFER *b, int *ii, int *jj, unsigned char c, int n, int sw,
  }
  *ii = i;
  *jj = j;
- return(0);  
+ return(0);
 }
 
 int e_mbt_cnd(BUFFER *b, int *ii, int *jj, int n, int sw, int *cmnd)
@@ -1607,7 +1637,7 @@ int e_mbt_cnd(BUFFER *b, int *ii, int *jj, int n, int sw, int *cmnd)
  }
  *ii = i;
  *jj = j+1;
- return(0);  
+ return(0);
 }
 
 int e_mk_beauty(int sw, int ndif, FENSTER *f)
@@ -1681,7 +1711,7 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
    for (k = b->bf[i-1].len-1; k >= 0 && isspace(b->bf[i-1].s[k]); k--);
    if (k >= 0) e_del_nchar(b, s, k + 1, i-1, b->bf[i-1].len-1-k);
    e_del_nchar(b, s, 0, i, j);
-   if (b->bf[i].len > 0 && b->bf[i].s[0] != '#' && 
+   if (b->bf[i].len > 0 && b->bf[i].s[0] != '#' &&
      (b->bf[i].s[0] != '/' || b->bf[i].s[1] != '*'))
    {
     if ((cmnd == 0 && (!cm_sv || b->bf[i].s[0] != '{')) ||
