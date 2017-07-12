@@ -227,8 +227,6 @@ int e_quit(FENSTER *f)
 #endif
  ECNT *cn = f->ed;
 #ifdef DEBUGGER
- extern int rfildes[], e_d_swtch;
-
  e_d_quit_basic(f);
 #endif
  for (i = cn->mxedt; i > 0; i--)
@@ -396,10 +394,12 @@ int freedf(struct dirfile *df)
  if (df == NULL) return(-1);
  if(df->name)
  {
-  for (; df->anz > 0; (df->anz)--)
-   if (*(df->name+df->anz-1))
-    free(*(df->name+df->anz-1));
-   free(df->name);
+  for (; df->anz > 0; (df->anz)--) {
+    if (*(df->name+df->anz-1)) {
+      free(*(df->name+df->anz-1));
+    }
+  }
+  free(df->name);
  }
  free(df);
  df = NULL;
@@ -848,9 +848,13 @@ int e_help_ret(FENSTER *f)
 	 return(0);
       }
       else if(b->bf[b->b.y].s[i] == HNF)
-      {  for(i++; i < b->bf[b->b.y].len && b->bf[b->b.y].s[i] != HED; i++);
+      {  for(i++; i < b->bf[b->b.y].len && b->bf[b->b.y].s[i] != HED; i++) {
+		;
+	 }
 	 for(i++, j = 0; j+i < b->bf[b->b.y].len
-			&& (str[j] = b->bf[b->b.y].s[j+i]) != HED; j++);
+			&& (str[j] = b->bf[b->b.y].s[j+i]) != HED; j++) {
+		;
+	 }
 	 str[j] = '\0';
 	 if((next = malloc(sizeof(struct help_ud))) != NULL)
 	 {  next->str = malloc(4 * sizeof(char));
@@ -872,7 +876,9 @@ int e_help_ret(FENSTER *f)
       }
       else if(b->bf[b->b.y].s[i] == HFB)
       {  for(j = i+1; j < b->bf[b->b.y].len
-			&& (str[j-i-1] = b->bf[b->b.y].s[j]) != HED; j++);
+			&& (str[j-i-1] = b->bf[b->b.y].s[j]) != HED; j++) {
+		;
+	 }
 	 str[j-i-1] = '\0';
 	 return(e_ed_man(str, f));
       }
