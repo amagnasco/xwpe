@@ -34,6 +34,9 @@ AC_PATH_XTRA
 # Remark that HAVE_LIBX11 is not an AM defined constant, but defined in config.h
 AM_CONDITIONAL([HAVE_X11], [test "X$no_x" != "Xyes"])
 
+# Specific defines
+AC_DEFINE([UNUSED(X)], [(void)(X)], [Define for arguments in a header that are not going to be used.])
+
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 	AC_DEFINE([NO_XWINDOWS], [], [X11 library is not available])

@@ -13399,6 +13399,11 @@ else
 fi
 
 
+# Specific defines
+
+$as_echo "#define UNUSED(X) (void)(X)" >>confdefs.h
+
+
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 

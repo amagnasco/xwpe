@@ -115,6 +115,8 @@ char *tgoto();
 
 int WpeDllInit(int *argc, char **argv)
 {
+ UNUSED(argc);
+ UNUSED(argv);
  fk_u_cursor = fk_t_cursor;
  fk_u_locate = fk_t_locate;
  e_u_d_switch_out = e_t_d_switch_out;
@@ -1033,6 +1035,7 @@ int fk_t_locate(int x, int y)
 
 int fk_t_mouse(int *g)
 {
+ UNUSED(g);
  return(0);
 }
 
