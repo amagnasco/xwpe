@@ -213,15 +213,16 @@ int e_sys_info(FENSTER *f)
  e_pr_str(xa+3, ya+2, " Current File: ", f->fb->nt.fb, 0, 0, 0, 0);
  e_pr_str(xa+3, ya+4, " Current Directory: ", f->fb->nt.fb, 0, 0, 0, 0);
  e_pr_str(xa+3, ya+6, " Number of Files: ", f->fb->nt.fb, 0, 0, 0, 0);
- if(strcmp(f->datnam, "Clipboard") != 0)
- if(strcmp(f->dirct, f->ed->dirct) == 0)
-  e_pr_str(xa+23, ya+2, f->datnam, f->fb->nt.fb, 0, 0, 0, 0);
- else
- {
-  strcpy(tmp, f->dirct);
-  strcat(tmp, DIRS);
-  strcat(tmp, f->datnam);
-  e_pr_str(xa+23, ya+2, tmp, f->fb->nt.fb, 0, 0, 0, 0);
+ if(strcmp(f->datnam, "Clipboard") != 0) {
+   if(strcmp(f->dirct, f->ed->dirct) == 0)
+      e_pr_str(xa+23, ya+2, f->datnam, f->fb->nt.fb, 0, 0, 0, 0);
+   else
+   {
+     strcpy(tmp, f->dirct);
+     strcat(tmp, DIRS);
+     strcat(tmp, f->datnam);
+     e_pr_str(xa+23, ya+2, tmp, f->fb->nt.fb, 0, 0, 0, 0);
+   }
  }
  e_pr_str(xa+23, ya+4, f->ed->dirct, f->fb->nt.fb, 0, 0, 0, 0);
  e_pr_str(xa+23, ya+6,
@@ -827,7 +828,7 @@ int WpeReadColor(ECNT *cn, char *section, char *option, char *value)
 
 int WpeWriteColor(ECNT *cn, char *section, FILE *opt_file)
 {
- FARBE *fb;
+ FARBE *fb = u_fb;	// make sure it has a default. Should be overwritten.
 
  if (WpeStrccmp("Term", section + strlen(OPT_SECTION_COLOR) + 1) == 0)
   fb = u_fb;
