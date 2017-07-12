@@ -1,5 +1,5 @@
 bin_PROGRAMS = wpe we 
-AM_CFLAGS = -g -Wall
+AM_CFLAGS = -Wall -Wextra
 AM_CPPFLAGS = -DLIBRARY_DIR=\"@libdir@/xwpe\"
 AM_CPPFLAGS += -DRANLIB=\"@RANLIB@\"
 AM_CPPFLAGS += -DDATADIR=\"@datadir@/xwpe\"
