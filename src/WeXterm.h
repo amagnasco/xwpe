@@ -40,7 +40,11 @@ typedef struct wpeXStruct {
  int altmask;
  int colors[16];
  WpeMouseShape shape_list[2];
+#ifdef SELECTION
+ unsigned char *selection;
+#else
  char *selection;
+#endif
 } WpeXStruct;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\

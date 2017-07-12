@@ -82,25 +82,5 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([symlink tparm mkdtemp tempnam]) 
 AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strchr strdup strrchr strstr])
 
-#
-# Next 2 if-eval statements plus defines are copied from old configure.in
-#      Both result in redefinition of functions. The reason is unclear.
-#
-##### Disabling these 2 grep-statements: they don't work reliably and both
-##### defines (putc and tputs) are part of stdio.h
-##### old: if eval 'grep -s "[[ 	]]putc[[ 	(]]" /usr/include/*.h > /dev/null'; then
-#if eval 'grep -s "\bputc\b\s*(" /usr/include/*.h > /dev/null'; then
-# :;
-#else
-# AC_DEFINE([DEFPGC], [], [copied from old configure.in. Use is unclear.])
-#fi
-
-#### old: if eval 'grep -s "[[ 	]]tputs[[ 	(]]" /usr/include/*.h > /dev/null'; then
-#if eval 'grep -s "\btputs\b\s*(" /usr/include/*.h > /dev/null'; then
-# :;
-#else
-# AC_DEFINE([DEFTPUTS], [], [copied from old configure.in. Use is unclear.])
-#fi
-
-AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile])
 AC_OUTPUT

@@ -6,6 +6,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -97,14 +98,14 @@ int e_error(char *text, int sw, FARBE *f)
  }
  if (sw < 2)
  {
-  e_pr_str((xe + xa - e_str_len((unsigned char *)text))/2,
+  e_pr_str((xe + xa - e_str_len((char *)text))/2,
     ya + 2, text, f->nt.fb, 0, 0, 0, 0);
   e_pr_str((xe + xa - 4)/2, ya + 4, " OK ", f->nz.fb, 1, -1,
     f->ns.fb, f->nt.fb);
  }
  else
  {
-  e_pr_str((xe + xa - e_str_len((unsigned char *)text))/2,
+  e_pr_str((xe + xa - e_str_len((char *)text))/2,
     ya + 2, text, 112, 0, 0, 0, 0);
   e_pr_str((xe + xa - 4)/2, ya + 4, " OK ", 32, 1, -1, 46, 112);
  }

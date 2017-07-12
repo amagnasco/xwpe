@@ -24,7 +24,7 @@
 #include "WeString.h"
 #include "WeSyntax.h"
 
-unsigned char *WpeCReservedWord[] = {
+char *WpeCReservedWord[] = {
  "auto", "break", "case", "char", "const", "continue", "default", "do",
  "double", "else", "enum", "extern", "float", "for", "goto", "if", "int",
  "long", "register", "return", "short", "signed", "sizeof", "static",
@@ -32,9 +32,7 @@ unsigned char *WpeCReservedWord[] = {
  "while", NULL
 };
 
-#define WpeCLongOperator NULL
-
-unsigned char *WpeCxxReservedWord[] = {
+char *WpeCxxReservedWord[] = {
  "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case",
  "catch", "char", "class", "compl", "const", "const_cast", "continue",
  "default", "delete", "do", "double", "dynamic_cast", "else", "enum",
@@ -47,12 +45,14 @@ unsigned char *WpeCxxReservedWord[] = {
  "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", NULL
 };
 
-#define WpeCxxLongOperator NULL
+#define WpeCLongOperator NULL
 
 WpeSyntaxRule WpeCSyntaxRule = {
  WpeCReservedWord, WpeCLongOperator, "~^()[]{}<>+-/*%=|&!.?:,;", "/*", "*/",
  "", '\"', '\'', '#', '\\', '\\', '\0', -1, 1000, -1, ""
 };
+
+#define WpeCxxLongOperator NULL
 
 WpeSyntaxRule WpeCxxSyntaxRule = {
  WpeCxxReservedWord, WpeCxxLongOperator, "~^()[]{}<>+-/*%=|&!.?:,;", "/*",

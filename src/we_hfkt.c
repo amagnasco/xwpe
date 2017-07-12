@@ -14,7 +14,7 @@
 #include <regex.h>
 
 /*        find string in text line    */
-int e_strstr(int x, int n, unsigned char *s, unsigned char *f)
+int e_strstr(int x, int n, char *s, char *f)
 {
  int i, j, nf = strlen(f);
 
@@ -44,7 +44,7 @@ int e_strstr(int x, int n, unsigned char *s, unsigned char *f)
 }
 
 /*        Find string in line (ignoring case)   */
-int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f)
+int e_ustrstr(int x, int n, char *s, char *f)
 {
  int i, j, nf = strlen(f);
 
@@ -74,22 +74,22 @@ int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f)
 }
 
 /*   find string in text line (including control chars), case insensitive */
-int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
+int e_urstrstr(int x, int n, char *s, char *f, int *nn)
 {
  int i;
- unsigned char *str;
- unsigned char *ft = malloc((strlen(f)+1)*sizeof(unsigned char));
+ char *str;
+ char *ft = malloc((strlen(f)+1)*sizeof(char));
 
  if (x <= n)
  {
-  str = malloc((n+1)*sizeof(unsigned char));
+  str = malloc((n+1)*sizeof(char));
   for (i = 0; i < n; i++)
    str[i] = toupper(s[i]);
   str[n] = '\0';
  }
  else
  {
-  str = malloc((x+1)*sizeof(unsigned char));
+  str = malloc((x+1)*sizeof(char));
   for (i = 0; i < x; i++)
    str[i] = toupper(s[i]);
   str[x] = '\0';
@@ -104,13 +104,13 @@ int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
 }
 
 /*   find string in text line (including control chars) */
-int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
+int e_rstrstr(int x, int n, char *s, char *f, int *nn)
 {
  regex_t *regz;
  regmatch_t *matches = NULL;
  int start, end, i, len;
  int res;
- unsigned char old;
+ char old;
 
  regz = malloc(sizeof(regex_t));
  if (regcomp(regz,f,REG_EXTENDED))
@@ -180,8 +180,11 @@ int e_num_kst(char *s, int num, int max, FENSTER *f, int n, int sw)
  return(num);
 }
 
-/*   determine string length */
-int e_str_len(unsigned char *s)
+/**
+ * determine string length where string ends with \0 or cr (character code 10).
+ *
+ */
+int e_str_len(char *s)
 {
  int i;
 

@@ -360,9 +360,12 @@ int fl_wnd_mouse(sw, k, fw)
 	 {  xa = e_mouse.x; ya = e_mouse.y; xdif = e_mouse.x - fw->xa;
 	    if(fw->srcha >= 0) c = fw->srcha;
 	    else
-	    {  for(c = 0; *(fw->df->name[fw->nf]+c)
+	    {
+		for(c = 0; *(fw->df->name[fw->nf]+c)
 			&& ( *(fw->df->name[fw->nf]+c) <= 32
-			  || *(fw->df->name[fw->nf]+c) >= 127); c++);
+			  || *(fw->df->name[fw->nf]+c) >= 127); c++) {
+			;
+		}
 	       if(!WpeIsXwin()) c += 3;
 	    }
 	    for(MLEN = 1; *(fw->df->name[fw->nf]+c+MLEN)
@@ -376,7 +379,10 @@ int fl_wnd_mouse(sw, k, fw)
 	       if(fw->srcha < 0)
 	       {  FLBFFR *b = (FLBFFR *)fw->f->b;
 		  if(b->cd->anz > fw->nf)
-		  {  while (e_mshit() != 0);
+		  {
+		     while (e_mshit() != 0) {
+			;
+		     }
 		     free (file);  free (bgrd);  return(WPE_CR);
 		  }
 		  for(c = 0; *(fw->df->name[fw->nf]+c)
@@ -407,7 +413,10 @@ int fl_wnd_mouse(sw, k, fw)
 	    else return(WPE_CR);
 	 }
       }
-      else {  while (e_mshit() != 0);
+      else {
+	      while (e_mshit() != 0) {
+		;
+	      }
 	      fw->nf = e_mouse.y - fw->ya + fw->ia;  return(0);  }
    }
    else return(MBKEY);
@@ -1058,7 +1067,7 @@ void e_opt_eck_mouse(o)
    e_std_rahmen(o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
    if(!WpeIsXwin()) pic = e_open_view(o->xa, o->ya, o->xe, o->ye, 0, 2);
-   else 
+   else
 	pic = e_open_view(o->xa, o->ya, o->xe-2, o->ye-1, 0, 2);
 #else
    pic = e_open_view(o->xa, o->ya, o->xe, o->ye, 0, 2);

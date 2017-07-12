@@ -241,7 +241,6 @@ int e_run(FENSTER *f)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
  char estr[256];
  int len, ret;
 
@@ -290,9 +289,12 @@ int e_run(FENSTER *f)
  else
 #endif
   ret = e_system(estr, cn);
+ if (ret != 0) {
+    // FIXME: ignored error return
+    ;
+ }
  f = cn->f[cn->mxedt];
  b = cn->f[cn->mxedt]->b;
- s = cn->f[cn->mxedt]->s;
 
  sprintf(estr, e_p_msg[ERR_RETCODE], ret);
  print_to_end_of_buffer(b, estr, b->mx.x);
@@ -549,7 +551,7 @@ int e_show_error(int n, FENSTER *f)
  BUFFER *b = cn->f[cn->mxedt]->b;
  int i, j, bg = 0;
  char *filename;
- unsigned char *cp;
+ char *cp;
 
  if (!err_li || n >= err_num || n < 0)
   return(1);
@@ -1476,13 +1478,11 @@ int e_system(char *estr, ECNT *cn)
 #endif
  int ret;
  view *outp;
- FENSTER *f;
 
 #if  MOUSE
  g[0] = 2;
  fk_mouse(g);
 #endif
- f = cn->f[cn->mxedt-1];
  outp = e_open_view(0,0,MAXSCOL-1,MAXSLNS-1,cn->fb->ws,1);
  fk_locate(0,0);
  fk_cursor(1);
@@ -1573,7 +1573,6 @@ int e_d_p_message(char *str, FENSTER *f, int sw)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
  int i;
 
  if (str[0] == '\0' || str[0] == '\n')
@@ -1594,8 +1593,7 @@ int e_d_p_message(char *str, FENSTER *f, int sw)
 /* b - buffer */
  b = cn->f[i]->b;
 
-/* s - content of window */
- s = cn->f[i]->s;
+/* s - content of window ---> not currently used */
 
  print_to_end_of_buffer(b, str, b->mx.x);
 
@@ -1703,6 +1701,10 @@ int e_run_sh(FENSTER *f)
  else
 #endif
  ret = e_system(estr, f->ed);
+ if (ret != 0) {
+    // FIXME: ignored error return
+    ;
+ }
  WpeMouseRestoreShape();
  return(0);
 }
@@ -3146,7 +3148,7 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
       x = 0;
      else
      {
-      for (m = 0; b->bf[iy].s + m < (unsigned char *)cp; m++);
+      for (m = 0; b->bf[iy].s + m < cp; m++);
       x -= m;
      }
      err_li[k].srch = malloc((strlen(cmp)+2)*sizeof(char));

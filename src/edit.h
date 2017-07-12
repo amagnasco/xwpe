@@ -133,7 +133,7 @@ typedef struct undo {
 }  Undo;
 
 typedef struct STR {
- unsigned char *s;
+ char *s;
  int len; /* Length of string not counting '\n' at the end */
  size_t nrc;
  /*int size;*/ /* Memory allocated for the string */
