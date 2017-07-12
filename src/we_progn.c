@@ -73,7 +73,7 @@ extern char *e_p_msg[];
  * This function is in desparate need of refactoring. But testing first.
  *
  */
-void e_mk_col(unsigned char *str, int l, int n, int *frb,
+void e_mk_col(char *str, int l, int n, int *frb,
 		struct wpeSyntaxRule *cs, int n_nd, int *n_bg, int *mcsw, int *bssw, int *svmsw,
 		SCHIRM *s)
 {
@@ -286,7 +286,7 @@ void e_mk_col(unsigned char *str, int l, int n, int *frb,
 
 /*************************************************************************/
 
-int e_scfbol(int n, int mcsw, unsigned char *str, WpeSyntaxRule *cs)
+int e_scfbol(int n, int mcsw, char *str, WpeSyntaxRule *cs)
 {
  int bssw = 0, svmsw = 0, nla = 0, i, j;
 
@@ -978,7 +978,10 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
       else if(*sp == '#')
       {  if(!(sp = e_sh_spl1(sp, str, fp, &n))) goto b_end;
 	 if(!strncmp(sp, "define", 6))
-	 {  while(isalpha(*++sp));
+	 {
+	    while(isalpha(*++sp)) {
+		;
+	    }
 	    if(isspace(*sp) && !(sp = e_sh_spl1(sp, str, fp, &n))) goto b_end;
 	    if(!strncmp(sp, name, len) && !isalnum1(sp[len]))
 	    {  if(*first)
@@ -990,7 +993,10 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
 	 }
 #ifndef TESTSDEF
 	 else if(!strncmp(sp, "include", 7))
-	 {  while(isalpha(*++sp));
+	 {
+	    while(isalpha(*++sp)) {
+		;
+	    }
 	    if(isspace(*sp) && !(sp = e_sh_spl1(sp, str, fp, &n))) goto b_end;
 	    for(i = 1; (word[i-1] = sp[i])
 			&& sp[i] != '\"' && sp[i] != '>'; i++);
@@ -1009,15 +1015,24 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
       }
       else if(!strncmp(sp, "extern", 6)) continue;
       else if(!strncmp(sp, "typedef", 7))
-      {  while(!isspace(*++sp));
+      {
+	 while(!isspace(*++sp)) {
+		;
+	 }
 	 if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	 if(!strncmp(sp, "struct", 6) || !strncmp(sp, "class", 5) ||
 		!strncmp(sp, "union", 5))
-	 {  while(!isspace(*++sp));
+	 {
+	    while(!isspace(*++sp)) {
+		;
+	    }
 	    if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	    if(*sp == ';') {  sp++;  com = 2;  n--;  continue;  }
 	    if(!strncmp(sp, name, len) && !isalnum1(sp[len]))
-	    {  while(!isspace(*++sp));
+	    {
+		while(!isspace(*++sp)) {
+			;
+		}
 	       if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	       if(*sp == '{')
 	       {  if(*first)
@@ -1030,7 +1045,10 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
 	 }
 	 while(1)
 	 {  if(isalpha1(*sp))
-	    {  for(w = word; isalnum1(*w = *sp); w++, sp++);
+	    {
+		for(w = word; isalnum1(*w = *sp); w++, sp++) {
+			;
+		}
 	       *w = '\0';
 	       if(isspace(*sp) && !(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	       if(*sp == ';')
@@ -1054,11 +1072,17 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
       }
       else if(!strncmp(sp, "struct", 6) || !strncmp(sp, "class", 5) ||
 		!strncmp(sp, "union", 5))
-      {  while(!isspace(*++sp));
+      {
+	 while(!isspace(*++sp)) {
+		;
+	 }
 	 if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	 if(*sp == ';') {  sp++;  com = 2;  n--;  continue;  }
 	 if(!strncmp(sp, name, len) && !isalnum1(sp[len]))
-	 {  while(!isspace(*++sp));
+	 {
+	    while(!isspace(*++sp)) {
+		;
+	    }
 	    if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	    if(*sp == '{')
 	    {  if(*first)
@@ -1069,7 +1093,10 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
 	    }
 	 }
 	 else if(*sp != '{')
-	 {  while(!isspace(*++sp));
+	 {
+	    while(!isspace(*++sp)) {
+		;
+	    }
 	    if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	 }
 	 if(*sp == ';') {  sp++;  com = 2;  n--;  continue;  }

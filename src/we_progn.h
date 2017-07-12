@@ -17,7 +17,7 @@ int e_p_beautify(FENSTER *f);
 
 /*   we_progn.c  */
 
-int e_scfbol(int n, int mcsw, unsigned char *str, struct wpeSyntaxRule *cs);
+int e_scfbol(int n, int mcsw, char *str, struct wpeSyntaxRule *cs);
 int e_sc_all(FENSTER *f, int sw);
 int e_program_opt(FENSTER *f);
 void e_pr_c_line(int y, FENSTER *f);
