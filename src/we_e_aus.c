@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include <ctype.h>
+#include "config.h"
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
@@ -145,7 +146,7 @@ int e_schr_nchar(char *s, int x, int y, int n, int max, int frb)
  e_pr_char(x, y, ' ', frb);
  for (i = 1, j = 0; i < max-1 && s[n+j] !='\0'; i++, j++)
  {
-  if ((unsigned char) s[n+j] < ' ')
+  if ((char) s[n+j] < ' ')
   {
    e_pr_char(x+i, y, '^', frb);
    i++;
@@ -281,7 +282,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
  int c, i, ja = 0, jc, l = strlen(s);
  int jd;
  int sond = 0, first = 1;
- unsigned char *tmp = malloc(max+1);
+ char *tmp = malloc(max+1);
 
  fk_cursor(1);
  strcpy(tmp, s);
@@ -418,7 +419,10 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
   {
    if (l < max)
    {
-    for (i = l; i >= jc; i--) tmp[i+1] = tmp[i];tmp[jc] = c;
+    for (i = l; i >= jc; i--) {
+	tmp[i+1] = tmp[i];
+    }
+    tmp[jc] = c;
     l++; jc++;
    }
   }
