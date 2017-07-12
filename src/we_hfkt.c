@@ -77,8 +77,8 @@ int e_ustrstr(int x, int n, char *s, char *f)
 int e_urstrstr(int x, int n, char *s, char *f, int *nn)
 {
  int i;
- unsigned char *str;
- unsigned char *ft = malloc((strlen(f)+1)*sizeof(char));
+ char *str;
+ char *ft = malloc((strlen(f)+1)*sizeof(char));
 
  if (x <= n)
  {
