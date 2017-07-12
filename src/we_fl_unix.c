@@ -2764,8 +2764,9 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
      if (tmp)
       free(tmp);
      allocate_size += 4;
-     if ((tmp = malloc(allocate_size)) == NULL)
-      e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
+     if ((tmp = malloc(allocate_size)) == NULL) {
+        e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
+     }
 
       ln = readlink(file, tmp, allocate_size-1);
     } while (!(ln < allocate_size-1));
@@ -3420,6 +3421,7 @@ int e_ed_man(char *str, FENSTER * f)
   }
   nstr[j] = '\0';
 
+  b = f->b;
   while(1)
   {
 #ifdef MAN_S_OPT
