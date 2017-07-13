@@ -121,7 +121,9 @@ int e_ini_unix(int *argc, char **argv)
  extern OPT opt[];
  int i, debug;
  struct sigaction act;
+#ifdef XWPE_DLL
  int (*initfunc)(int *argc, char **argv);
+#endif
 
  setlocale(LC_ALL, "");
  u_fb = NULL;
@@ -336,6 +338,7 @@ void WpeSignalUnknown(int sig)
 
 void WpeSignalChild(int sig)
 {
+ UNUSED(sig);
  int statloc;
 
  wait(&statloc);
@@ -347,7 +350,7 @@ void e_err_save()
 {
  ECNT *cn = WpeEditor;
  int i;
- long maxname;
+ unsigned long maxname;
  FENSTER *f;
  BUFFER *b;
 
@@ -365,7 +368,7 @@ void e_err_save()
    {
     /* Check if file system could have an autosave or emergency save file
        >12 check is to eliminate dos file systems */
-    if ((maxname = pathconf(f->dirct, _PC_NAME_MAX) >= strlen(f->datnam) + 4) &&
+    if (((maxname = pathconf(f->dirct, _PC_NAME_MAX)) >= strlen(f->datnam) + 4) &&
       (maxname > 12))
     {
      strcat(f->datnam, ".ESV");
@@ -498,7 +501,8 @@ struct dirfile *e_find_files(char *sufile, int sw)
  struct dirent  *dp;
  struct stat     buf;
  struct stat     lbuf;
- int             i, n, cexist, sizeStmp, sizeSdir;
+ int             i, n, cexist, sizeSdir;
+ unsigned int    sizeStmp;
 
  df->name = NULL;
  df->anz = 0;
@@ -588,7 +592,8 @@ struct dirfile *e_find_dir(char *sufile, int sw)
  DIR            *dirp;
  struct dirent  *dp;
  struct stat     buf;
- int             i, n, sizeStmp, sizeSdir;
+ int             i, n, sizeSdir;
+ unsigned int    sizeStmp;
 
  df->name = NULL;
  df->anz = 0;
