@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include <ctype.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"

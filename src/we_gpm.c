@@ -6,6 +6,7 @@
 
 Based on we_linux.c -- Created by Sebastiano Suraci */
 
+#include "config.h"
 #include "model.h"
 #include "edit.h"
 #include <gpm.h>
