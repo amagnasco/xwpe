@@ -17,7 +17,7 @@
 /*        find string in text line    */
 int e_strstr(int x, int n, unsigned char *s, unsigned char *f)
 {
- int i, j, nf = strlen(f);
+ int i, j, nf = strlen((const char *)f);
 
  if (x > n)
  {
@@ -47,7 +47,7 @@ int e_strstr(int x, int n, unsigned char *s, unsigned char *f)
 /*        Find string in line (ignoring case)   */
 int e_ustrstr(int x, int n, unsigned char *s, unsigned char *f)
 {
- int i, j, nf = strlen(f);
+ int i, j, nf = strlen((const char *)f);
 
  if(x > n)
  {
@@ -79,7 +79,7 @@ int e_urstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
 {
  int i;
  unsigned char *str;
- unsigned char *ft = malloc((strlen(f)+1)*sizeof(unsigned char));
+ unsigned char *ft = malloc((strlen((const char *)f)+1)*sizeof(unsigned char));
 
  if (x <= n)
  {
@@ -114,7 +114,7 @@ int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
  unsigned char old;
 
  regz = malloc(sizeof(regex_t));
- if (regcomp(regz,f,REG_EXTENDED))
+ if (regcomp(regz,(const char *)f,REG_EXTENDED))
  {
   free(regz);
   return (-1);
@@ -128,7 +128,7 @@ int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
   start = 0;
  old = s[end];/* Save char */
  s[end] = '\0';
- res=regexec(regz,&s[start],len,matches,REG_NOTBOL|REG_NOTEOL);
+ res=regexec(regz,(const char *)&s[start],len,matches,REG_NOTBOL|REG_NOTEOL);
  s[end] = old;/* Restore char */
  regfree(regz);
  free(regz);
@@ -137,7 +137,7 @@ int e_rstrstr(int x, int n, unsigned char *s, unsigned char *f, int *nn)
   free(matches);
   return (-1); /* Can't find any occurences */
  }
- start=strlen(s);
+ start=strlen((const char *)s);
  end=0;
 
  for (i=0;i<len;i++)
