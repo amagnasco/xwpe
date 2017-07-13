@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include <string.h>
+#include <errno.h>
 #include "config.h"
 #include "keys.h"
 #include "model.h"
@@ -67,7 +68,7 @@ char *key_f[KEYFN], *key_key;
 char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, cur_attr;
 char *att_so, *att_ul, *att_rv, *att_bl, *att_dm, *att_bo;
 char *ratt_no, *ratt_so, *ratt_ul, *ratt_rv, *ratt_bl, *ratt_dm, *ratt_bo;
-char *beg_scr, *swt_scr, *sav_cur, *res_cur; 
+char *beg_scr, *swt_scr, *sav_cur, *res_cur;
 extern char *altschirm;
 extern char *att_no;
 char *col_fg, *col_bg, *spc_st, *spc_in, *spc_bg, *spc_nd;
@@ -475,19 +476,22 @@ int e_t_initscr()
 #endif
 
  ret = tcgetattr(1, &otermio); /* save old settings */
-/*
  if(ret)
  {
-  printf("Error in Terminal Initialisation Code: %d\n", ret);
+  int errno_save = errno;	// save errno before it is overwritten
+  const int max_desc = 1024;
+  char err_desc[max_desc];
+  strerror_r(errno_save, err_desc, max_desc);
+  printf("Error in Terminal Initialisation Code nr %d with description: %s\n",
+	errno_save, err_desc);
   printf("c_iflag = %o, c_oflag = %o, c_cflag = %o,\n",
     otermio.c_iflag, otermio.c_oflag, otermio.c_cflag);
   printf("c_lflag = %o, c_line = %o, c_cc = {\"\\%o\\%o\\%o\\%o\\%o\\%o\\%o\\%o\"}\n",
-    otermio.c_lflag, otermio.c_line, otermio.c_cc[0], otermio.c_cc[1], 
-    otermio.c_cc[2], otermio.c_cc[3], otermio.c_cc[4], otermio.c_cc[5], 
+    otermio.c_lflag, otermio.c_line, otermio.c_cc[0], otermio.c_cc[1],
+    otermio.c_cc[2], otermio.c_cc[3], otermio.c_cc[4], otermio.c_cc[5],
     otermio.c_cc[6], otermio.c_cc[7]);
   WpeExit(1);
  }
-*/
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
  if ((stdscr=initscr())==(WINDOW *)ERR) exit(27);
@@ -733,7 +737,7 @@ int e_t_sys_ini()
  tcgetattr(0, &ttermio);
  svflgs = fcntl( 0, F_GETFL, 0 );
  e_endwin();
- return(0);   
+ return(0);
 }
 
 int e_t_sys_end()
@@ -816,7 +820,7 @@ int e_t_getch()
  }
  else if ( c == WPE_TAB )
  {
-  bk = bioskey(); 
+  bk = bioskey();
   if ( bk & 3)
    c = WPE_BTAB;
   else
@@ -884,11 +888,11 @@ int e_t_getch()
    return(ENTF);
   else if ( c == WPE_TAB )
   {
-   bk = bioskey(); 
-   if (bk & 3) 
-    return (WPE_BTAB); 
+   bk = bioskey();
+   if (bk & 3)
+    return (WPE_BTAB);
    else
-    return (WPE_TAB); 
+    return (WPE_TAB);
   }
   else
    return(c);
@@ -1016,7 +1020,7 @@ int e_find_key(int c, int j, int sw)
 
 int fk_t_locate(int x, int y)
 {
- if (col_num > 0) 
+ if (col_num > 0)
  {
   fk_colset(e_gt_col(cur_x, cur_y));
 //#ifdef NCURSES
@@ -1046,7 +1050,7 @@ int e_t_switch_screen(int sw)
  if (sw == sav_sw)
   return(0);
  sav_sw = sw;
- if (sw && beg_scr) 
+ if (sw && beg_scr)
  {
   term_refresh();
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
