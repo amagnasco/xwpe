@@ -17,4 +17,5 @@ src/xwpe
 src/xwe
 build-aux*
 autom4te*
+libtool*
 *~
