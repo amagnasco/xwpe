@@ -53,11 +53,11 @@ int e_d_swtch = 0, rfildes[2], ofildes, e_d_pid = 0;
 int e_d_nbrpts = 0, e_d_zwtchs = 0, *e_d_ybrpts, *e_d_nrbrpts;
 
 /* number of watch expressions in Watches window */
-int e_d_nwtchs = 0; 
+int e_d_nwtchs = 0;
 
 /* e_d_nrwtchs[i] is the y coordinate (count starts at 0) of the first line of
    the i-th watch in the Watches window */
-int *e_d_nrwtchs; 
+int *e_d_nrwtchs;
 
 char **e_d_swtchs; /* e_d_swtchs[i] is the i-th watch expression (a char*) */
 
@@ -262,6 +262,23 @@ int e_debug_switch(FENSTER *f, int c)
 }
 
 /*  Input Routines   */
+/**
+ * function e_e_line_read
+ *
+ * Reads one line until new line, end of string ('\0') or EOF.
+ *
+ * FIXME: find out when, why and from what source this line is read.
+ *
+ * Returns
+ * 	-1 if the read is unsuccessful
+ * 	1  if e_deb_type == 1 && the last char read == '*'
+ * 	   if e_deb_type == 2 && the last char read == space && (dbx) prefixes the string
+ * 	   if e_deb_type == 3 && the last char read == '>'
+ * 	   if e_deb_type == 0 && the last char read == space && (dbg) prefixes the string
+ * 	2  otherwise
+ *
+ *  FIXME: find out what the returns mean exactly
+ */
 int e_e_line_read(int n, signed char *s, int max)
 {
  int i, ret = 0;
@@ -286,6 +303,12 @@ int e_e_line_read(int n, signed char *s, int max)
  return(2);
 }
 
+/**
+ * function e_d_line_read
+ *
+ * FIXME: what does this line read routine do exactly? What does it return?
+ *
+*/
 int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
 {
  static char wt = 0, esc_sv = 0, str[12];
@@ -637,15 +660,15 @@ int e_make_watches(FENSTER *f)
    e_d_swtchs = realloc(e_d_swtchs, e_d_nwtchs * sizeof(char *));
    e_d_nrwtchs = realloc(e_d_nrwtchs, e_d_nwtchs * sizeof(int));
   }
-  
+
   /*
-    move watch number y and following up one position so that we can insert 
-    at position y 
+    move watch number y and following up one position so that we can insert
+    at position y
   */
   for (i = e_d_nwtchs - 1; i > y; i--)
   {
    e_d_swtchs[i] = e_d_swtchs[i-1];
-   
+
    /* The following instruction is pointless as e_d_nrwtchs[i] is invalidated
       by inserting the new watch and has to be recomputed by e_d_p_watches()
    */
@@ -683,7 +706,7 @@ int e_edit_watches(FENSTER *f)
 }
 
 /* Among other things, e_d_p_watches() must recompute e_d_nrwtchs when
-   called from e_edit_watches(), 
+   called from e_edit_watches(),
    but has code paths that don't do this ==> possible BUG
 */
 int e_d_p_watches(FENSTER *f, int sw)
@@ -719,7 +742,7 @@ int e_d_p_watches(FENSTER *f, int sw)
  f = cn->f[iw];
  b = cn->f[iw]->b;
  s = cn->f[iw]->s;
- 
+
  /* free all lines of BUFFER b */
  e_p_red_buffer(b);
  free(b->bf[0].s);
@@ -728,7 +751,7 @@ int e_d_p_watches(FENSTER *f, int sw)
  for (i = 0, l = 0; l < e_d_nwtchs; l++)
  {
   str = str1;
-  
+
   /* Create appropriate command for the debugger */
   if (e_deb_type == 0 || e_deb_type == 3)
   {
@@ -854,9 +877,9 @@ int e_d_reinit_watches(FENSTER * f,char * prj)
  for(i = f->ed->mxedt; i > 0; i--)
  {
   if (!strcmp(f->ed->f[i]->datnam, "Watches"))
-  {  
+  {
    e_remove_all_watches(f->ed->f[f->ed->edt[i]]);
-   break; 
+   break;
   }
  }
  g=strlen(prj);
@@ -865,26 +888,26 @@ int e_d_reinit_watches(FENSTER * f,char * prj)
  q=0;
  y=0;
  r=0;
- while(q<g) 
+ while(q<g)
  {
   e=q;
   while(prj2[e]!=';' && e<g) e++;
   prj2[e]='\0';
   q=e+1;
   r++;
- } 
+ }
  e_d_nwtchs=r;
  e_d_swtchs = (char **) malloc(e_d_nwtchs * sizeof(char *));
- e_d_nrwtchs =(int *) malloc(e_d_nwtchs * sizeof(int));   
+ e_d_nrwtchs =(int *) malloc(e_d_nwtchs * sizeof(int));
 
  for(e=0,q=0;e<r;e++)
  {
   e_d_swtchs[e] = malloc(strlen(prj2+q)+1);
-  strcpy(e_d_swtchs[e], prj2+q); 
+  strcpy(e_d_swtchs[e], prj2+q);
   q+=strlen(prj2+q)+1;
- } 
+ }
  free(prj2);
- e_d_p_watches(f, 1);   
+ e_d_p_watches(f, 1);
  return 0;
 }
 /***************************************/
@@ -1068,7 +1091,7 @@ int e_make_stack(FENSTER *f)
 	 sprintf(str, "%s %d\n",
 	 e_deb_type != 3 ? "down" : "up", e_d_nstack - dif);
       if(dif != e_d_nstack)
-      {  
+      {
 	 int n = strlen(str);
          if (n != write(rfildes[1], str, n)) {
 		printf("[e_make_stack]: write to debugger failed: %s.\n", str);
@@ -1103,12 +1126,12 @@ int e_brk_schirm(FENSTER *f)
   if(!strcmp(f->datnam,e_d_sbrpts[i]))
   {
    for(n=1;n<= (s->brp[0]);n++) if(e_d_ybrpts[i]==(s->brp[n])) break;
-   if(n>s->brp[0]) 
+   if(n>s->brp[0])
    {
-    /****  New break, not in schirm  ****/   
+    /****  New break, not in schirm  ****/
     (s->brp[0])++;
     s->brp = realloc(s->brp, (s->brp[0]+1) * sizeof(int));
-    s->brp[s->brp[0]] = e_d_ybrpts[i]-1; 
+    s->brp[s->brp[0]] = e_d_ybrpts[i]-1;
    }
   }
  }
@@ -1130,22 +1153,22 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
    strcpy(prj2,prj);
    q=0;
    r=0;
-   while(q<g) 
+   while(q<g)
    {
      e=q;
      while(prj2[e]!=';' && e<g) e++;
      prj2[e]='\0';
      q=e+1;
      r++;
-   } 
-/**** for sure ****/   
+   }
+/**** for sure ****/
    e_d_nbrpts=0;
-   
-/**** allocate memory for breakpoints ****/   
+
+/**** allocate memory for breakpoints ****/
    e_d_sbrpts = malloc(sizeof(char *) * r);
    e_d_ybrpts = malloc(sizeof(int) * r);
    e_d_nrbrpts = malloc(sizeof(int) * r);
-   
+
    name=prj2;
    for(q=0;q<r;q++)
    {
@@ -1164,12 +1187,12 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
 	   e_d_sbrpts[e_d_nbrpts]=malloc(sizeof(char)*(strlen(name)+1));
 	   strcpy(e_d_sbrpts[e_d_nbrpts],name);
 	   e_d_nbrpts++;
-	   
+
 /**** needed to keep schirm in sync ****/
-	   
+
 	   for(g = f->ed->mxedt; g > 0; g--)
             if(!strcmp(f->ed->f[g]->datnam, name))
-            {  
+            {
               e_brk_schirm(f->ed->f[g]);
             }
          }
@@ -1203,7 +1226,7 @@ int e_brk_recalc(FENSTER *f, int start, int len)
  {
   for (n = 0; n < e_d_nbrpts; n++)
    if ((!strcmp(f->datnam, e_d_sbrpts[n])) &&
-     (e_d_ybrpts[n] <= (rend + 1)) && (e_d_ybrpts[n] >= (start + 1))) 
+     (e_d_ybrpts[n] <= (rend + 1)) && (e_d_ybrpts[n] >= (start + 1)))
    {
     b->b.y = e_d_ybrpts[n] - 1;
     e_make_breakpoint(f, 0);
@@ -1218,18 +1241,18 @@ int e_brk_recalc(FENSTER *f, int start, int len)
   return 1;
  br_lines = (int*)malloc(sizeof(int) * count);
  for (n = 0, count = 0; n < e_d_nbrpts; n++)
-  if ((!strcmp(f->datnam, e_d_sbrpts[n])) && (e_d_ybrpts[n] >= (start + 1))) 
+  if ((!strcmp(f->datnam, e_d_sbrpts[n])) && (e_d_ybrpts[n] >= (start + 1)))
   {
    br_lines[count++] = e_d_ybrpts[n];
   }
 
 /**** moving breakpoints ****/
- for(n = 0; n < count; n++) 
+ for(n = 0; n < count; n++)
  {
   b->b.y = br_lines[n] - 1;
   e_make_breakpoint(f, 0);
  }
- for(n = 0; n < count; n++) 
+ for(n = 0; n < count; n++)
  {
   b->b.y = br_lines[n] + len - 1;
   e_make_breakpoint(f, 0);

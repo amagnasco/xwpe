@@ -53,8 +53,7 @@ extern char *e_p_msg[];
  * e_mk_col
  *
  * This function was copied 1 on 1 from a define (yes, really, > 200 lines in a define....).
- * The code was left unchanged except for n_bg, frb, mscw and bssw that were turned
- * into pointers.
+ * The code was left unchanged except for n_bg, frb, mscw and bssw that were turned into pointers.
  * These variables needed to be dereferenced to access the contents or to change the contents.
  *
  * Due to the read-write variables no return was necessary.
@@ -68,7 +67,7 @@ extern char *e_p_msg[];
  *
  * The variable s hidden in a macro FRB1 .. FRB5 refers to an element of a screen.
  *
- * SCHIRM *s:	reference to an element of s->fb
+ * SCHIRM *s:	reference to an element of f->s
  *
  * This function is in desparate need of refactoring. But testing first.
  *
