@@ -157,7 +157,7 @@ POINT e_readin(int i, int j, FILE *fp, BUFFER *b, char *type)
    *(b->bf[j].s+i) = '\0';
   }
   b->bf[j-1].len = e_str_len(b->bf[j-1].s);
-  b->bf[j-1].nrc = strlen(b->bf[j-1].s);
+  b->bf[j-1].nrc = strlen((const char *)b->bf[j-1].s);
  }
  pkt.x = i;  pkt.y = j;
  WpeMouseRestoreShape();
@@ -227,8 +227,6 @@ int e_quit(FENSTER *f)
 #endif
  ECNT *cn = f->ed;
 #ifdef DEBUGGER
- extern int rfildes[], e_d_swtch;
-
  e_d_quit_basic(f);
 #endif
  for (i = cn->mxedt; i > 0; i--)
@@ -396,9 +394,10 @@ int freedf(struct dirfile *df)
  if (df == NULL) return(-1);
  if(df->name)
  {
-  for (; df->anz > 0; (df->anz)--)
+  for (; df->anz > 0; (df->anz)--) {
    if (*(df->name+df->anz-1))
     free(*(df->name+df->anz-1));
+   }
    free(df->name);
  }
  free(df);
@@ -767,9 +766,9 @@ int e_read_help(char *str, FENSTER *f, int sw)
    ;
   if (ptmp && !sw)
   {
-   strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
+   strcpy((char *)f->b->bf[f->b->mxlines-1].s, tstr);
    f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-   f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
+   f->b->bf[f->b->mxlines-1].nrc = strlen((const char *)f->b->bf[f->b->mxlines-1].s);
   }
  }
  if (sw)
@@ -794,9 +793,9 @@ int e_read_help(char *str, FENSTER *f, int sw)
    tmp[i] = HED;  tmp[i+1] = '\0';
    if ((ud_help->str = malloc((strlen(tmp)+1)*sizeof(char))) != NULL)
     strcpy(ud_help->str, tmp);
-   strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
+   strcpy((char *)f->b->bf[f->b->mxlines-1].s, tstr);
    f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-   f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
+   f->b->bf[f->b->mxlines-1].nrc = strlen((const char *)f->b->bf[f->b->mxlines-1].s);
   }
  }
  while(e_i_fgets(tstr, 256, fp))
@@ -804,9 +803,9 @@ int e_read_help(char *str, FENSTER *f, int sw)
   for(i = 0; tstr[i]; i++)
   if (tstr[i] == HFE)  {  e_i_fclose(fp);  return(0);  }
   e_new_line(f->b->mxlines, f->b);
-  strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
+  strcpy((char *)f->b->bf[f->b->mxlines-1].s, tstr);
   f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-  f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
+  f->b->bf[f->b->mxlines-1].nrc = strlen((const char *)f->b->bf[f->b->mxlines-1].s);
  }
  e_i_fclose(fp);
  return(2);
@@ -816,7 +815,7 @@ int e_help_ret(FENSTER *f)
 {
  BUFFER *b = f->b;
  int i, j;
- char str[126];
+ unsigned char str[126];
  struct help_ud *next;
 
    for(i = b->b.x; i >= 0 && b->bf[b->b.y].s[i] != HED; i--)
@@ -826,8 +825,8 @@ int e_help_ret(FENSTER *f)
 			&& (str[j-i] = b->bf[b->b.y].s[j]) != HED; j++);
 	 str[j-i+1] = '\0';
 	 if((next = malloc(sizeof(struct help_ud))) != NULL)
-	 {  next->str = malloc((strlen(str)+1) * sizeof(char));
-	    if(next->str) strcpy(next->str, str);
+	 {  next->str = malloc((strlen((const char *)str)+1) * sizeof(char));
+	    if(next->str) strcpy(next->str, (const char *)str);
             if(ud_help && ud_help->file)
             {  next->file = malloc((strlen(ud_help->file)+1) * sizeof(char));
                if(next->file) strcpy(next->file, ud_help->file);
@@ -841,22 +840,24 @@ int e_help_ret(FENSTER *f)
 	    ud_help = next;
 	 }
          if(ud_help->sw) e_read_info(str, f, ud_help->file);
-	 else e_read_help(str, f, 0);
+	 else e_read_help((char *)str, f, 0);
 	 b = f->b; b->b.x = b->b.y = 0;
 	 e_cursor(f, 1);
 	 e_schirm(f, 1);
 	 return(0);
       }
       else if(b->bf[b->b.y].s[i] == HNF)
-      {  for(i++; i < b->bf[b->b.y].len && b->bf[b->b.y].s[i] != HED; i++);
+      {  for(i++; i < b->bf[b->b.y].len && b->bf[b->b.y].s[i] != HED; i++) {
+		;
+	 }
 	 for(i++, j = 0; j+i < b->bf[b->b.y].len
 			&& (str[j] = b->bf[b->b.y].s[j+i]) != HED; j++);
 	 str[j] = '\0';
 	 if((next = malloc(sizeof(struct help_ud))) != NULL)
 	 {  next->str = malloc(4 * sizeof(char));
 	    if(next->str) strcpy(next->str, "Top");
-            next->file = malloc((strlen(str)+1) * sizeof(char));
-            if(next->file) strcpy(next->file, str);
+            next->file = malloc((strlen((const char *)str)+1) * sizeof(char));
+            if(next->file) strcpy(next->file, (const char *)str);
             next->sw = 1;
 	    next->next = ud_help;
             next->x = b->b.x;
@@ -872,7 +873,9 @@ int e_help_ret(FENSTER *f)
       }
       else if(b->bf[b->b.y].s[i] == HFB)
       {  for(j = i+1; j < b->bf[b->b.y].len
-			&& (str[j-i-1] = b->bf[b->b.y].s[j]) != HED; j++);
+			&& (str[j-i-1] = b->bf[b->b.y].s[j]) != HED; j++) {
+		;
+	 }
 	 str[j-i-1] = '\0';
 	 return(e_ed_man(str, f));
       }
@@ -959,6 +962,7 @@ int e_help_next(FENSTER *f, int sw)
 
 int e_help_free(FENSTER *f)
 {
+ UNUSED(f);
  struct help_ud *next, *last = ud_help;
 
  while (last)
@@ -1309,9 +1313,9 @@ int e_read_info(char *str, FENSTER *f, char *file)
    {  if(!sw && !WpeStrnccmp(tstr, "* Menu:", 7)) sw = 1;
       for(i = len = strlen(tstr); i >= 0; i--) tstr[i+1] = tstr[i];
       tstr[0] = HHD;  tstr[len+1] = HED;  tstr[len+1] = '\0';
-      strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
+      strcpy((char *)f->b->bf[f->b->mxlines-1].s, tstr);
       f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-      f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
+      f->b->bf[f->b->mxlines-1].nrc = strlen((const char *)f->b->bf[f->b->mxlines-1].s);
    }
    while(e_i_fgets(tstr, 256, fp))
    {  for(i = 0; tstr[i]; i++)
@@ -1334,9 +1338,9 @@ int e_read_info(char *str, FENSTER *f, char *file)
       }
       e_mk_info_mrk(tstr);
       e_new_line(f->b->mxlines, f->b);
-      strcpy(f->b->bf[f->b->mxlines-1].s, tstr);
+      strcpy((char *)f->b->bf[f->b->mxlines-1].s, tstr);
       f->b->bf[f->b->mxlines-1].len = e_str_len(f->b->bf[f->b->mxlines-1].s);
-      f->b->bf[f->b->mxlines-1].nrc = strlen(f->b->bf[f->b->mxlines-1].s);
+      f->b->bf[f->b->mxlines-1].nrc = strlen((const char *)f->b->bf[f->b->mxlines-1].s);
    }
    e_i_fclose(fp);
    return(2);
@@ -1489,9 +1493,9 @@ int e_hp_ret(FENSTER *f)
 int e_topic_search(FENSTER *f)
 {
  int x, y;
- char *s;
+ unsigned char *s;
  BUFFER *b;
- char item[100], *ptr=item;
+ unsigned char item[100], *ptr=item;
 
  if (!DTMD_ISTEXT(f->ed->f[f->ed->mxedt]->dtmd))
   return(0);

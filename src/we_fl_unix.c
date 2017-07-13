@@ -3385,7 +3385,7 @@ int WpeFindWindow(FENSTER * f)
 
 
 
-int e_ed_man(char *str, FENSTER * f)
+int e_ed_man(unsigned char *str, FENSTER * f)
 {
   char            command[256], tstr[_POSIX_PATH_MAX];
   char            cc, hstr[80], nstr[10];

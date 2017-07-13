@@ -47,5 +47,5 @@ int WpeDirDelOptions(FENSTER *f);
 int WpeLinkFile(char *fl, char *ln, int sw, FENSTER *f);
 int WpeRenameLink(char *old, char *ln, char *fl, FENSTER *f);
 #endif
-int e_ed_man(char *str, FENSTER *f);
+int e_ed_man(unsigned char *str, FENSTER *f);
 #endif
