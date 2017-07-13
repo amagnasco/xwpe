@@ -1862,6 +1862,7 @@ int e_put_char(int c, BUFFER *b, SCHIRM *s)
 }
 
 /*   search right (left end of word) */
+/** FIXME: is unsigned char * really necessary? Do we expect value > 127? */
 int e_su_lblk(int xa, unsigned char *s)
 {
  int len = strlen(s);
@@ -1876,6 +1877,7 @@ int e_su_lblk(int xa, unsigned char *s)
 }
 
 /*     Search left (left end of word)     */
+/** FIXME: is unsigned char * really necessary? Do we expect value > 127? */
 int e_su_rblk(int xa, unsigned char *s)
 {
  int len = strlen(s);

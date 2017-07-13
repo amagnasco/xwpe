@@ -47,6 +47,7 @@ int e_puts(char *s, int xa, int ya, int frb)
 void e_pr_str(int x, int y, char *str, int col, int b2, int n2, int col2,
   int col3)
 {
+ UNUSED(col3);
  int i, sw = 0;
 
  if (n2 < 0)
@@ -282,7 +283,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
  int c, i, ja = 0, jc, l = strlen(s);
  int jd;
  int sond = 0, first = 1;
- unsigned char *tmp = malloc(max+1);
+ char *tmp = malloc(max+1);
 
  fk_cursor(1);
  strcpy(tmp, s);
@@ -340,8 +341,8 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
 #endif
   if (c == CRI || (!sond && c == CtrlF)) {  if(jc < l) jc++;  }
   else if (c == CLE || (!sond && c == CtrlB)) {  if(jc > 0) jc--;  }
-  else if (c == CCLE && jc > 0) jc = e_su_rblk(jc, tmp);
-  else if (c == CCRI && jc < l) jc = e_su_lblk(jc, tmp);
+  else if (c == CCLE && jc > 0) jc = e_su_rblk(jc, (unsigned char *)tmp);
+  else if (c == CCRI && jc < l) jc = e_su_lblk(jc, (unsigned char *)tmp);
   else if (c == POS1 || (!sond && c == CtrlA)) jc = 0;
   else if (c == ENDE || (!sond && c == CtrlE)) jc = l;
   else if (c == AltJ || c == F9) sond = !sond;
@@ -387,7 +388,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
   }
   else if (!sond && c == CtrlT)
   {
-   c = e_su_lblk(jc, tmp) - jc;
+   c = e_su_lblk(jc, (unsigned char *)tmp) - jc;
    {
     for (i = jc; i <= l-c; i++)
      tmp[i] = tmp[i+c];
@@ -397,7 +398,7 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
   else if (!sond && c == CtrlO)
   {
    if ((c = e_getch()) != CtrlT && toupper(c) != 'T') continue;
-   c = jc - e_su_rblk(jc, tmp);
+   c = jc - e_su_rblk(jc, (unsigned char *)tmp);
    {
     for( i = jc-c; i <= l-c; i++)
     tmp[i] = tmp[i+c];
@@ -419,7 +420,10 @@ int e_schreib_leiste(char *s, int x, int y, int n, int max, int ft, int fs)
   {
    if (l < max)
    {
-    for (i = l; i >= jc; i--) tmp[i+1] = tmp[i];tmp[jc] = c;
+    for (i = l; i >= jc; i--) {
+	tmp[i+1] = tmp[i];
+    }
+    tmp[jc] = c;
     l++; jc++;
    }
   }
