@@ -241,7 +241,6 @@ int e_run(FENSTER *f)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
  char estr[256];
  int len, ret;
 
@@ -292,7 +291,6 @@ int e_run(FENSTER *f)
   ret = e_system(estr, cn);
  f = cn->f[cn->mxedt];
  b = cn->f[cn->mxedt]->b;
- s = cn->f[cn->mxedt]->s;
 
  sprintf(estr, e_p_msg[ERR_RETCODE], ret);
  print_to_end_of_buffer(b, estr, b->mx.x);
@@ -475,6 +473,7 @@ int e_print_arg(FILE *fp, char *s, char **argv, int n)
 
 int e_p_exec(int file, FENSTER *f, view *pic)
 {
+ UNUSED(file);
  ECNT *cn = f->ed;
  BUFFER *b = cn->f[cn->mxedt]->b;
  int ret = 0, i = 0, is, fd, stat_loc;
@@ -618,7 +617,7 @@ int e_show_error(int n, FENSTER *f)
  }
  else
  {
-  cp = strstr(b->bf[b->b.y].s, err_li[n].srch+1);
+  cp = (unsigned char *)strstr((const char *)b->bf[b->b.y].s, err_li[n].srch+1);
   for (i = 0; b->bf[b->b.y].s + i < cp; i++);
   if (err_li[n].srch[0] == 'B')
   {
@@ -638,6 +637,16 @@ int e_show_error(int n, FENSTER *f)
  return(0);
 }
 
+/**
+ * function e_pure_bin
+ *
+ * Finds the first character following the 
+ * last '/' before the specified character.
+ *
+ * For example in a pathspecification find the filename, without directory
+ * using ch = ':'.
+ *
+ */
 int e_pure_bin(char *str, int ch)
 {
  int i;
@@ -723,14 +732,14 @@ int e_make_error_list(FENSTER *f)
    if (!(ret = e_p_cmp_mess(tststr, b, &i, &k, ret)))
    {
     int ip, in;
-    ip = e_pure_bin(e_s_prog.compiler, ' ');
-    in = e_pure_bin(b->bf[i].s, ':');
+    ip = e_pure_bin((char *)e_s_prog.compiler, ' ');
+    in = e_pure_bin((char *)b->bf[i].s, ':');
     sprintf(file, "%s:", e_s_prog.compiler+ip);
-    if (!strncmp(file, b->bf[i].s+in, strlen(file)))
+    if (!strncmp(file, (const char *)b->bf[i].s+in, strlen(file)))
      ret = -2;
-    else if (!strncmp("ld:", b->bf[i].s+in, 3))
+    else if (!strncmp("ld:", (const char *)b->bf[i].s+in, 3))
      ret = -2;
-    else if (!strncmp("as:", b->bf[i].s+in, 3))
+    else if (!strncmp("as:", (const char *)b->bf[i].s+in, 3))
      ret = -2;
    }
   }
@@ -966,6 +975,7 @@ int e_add_arg(char ***arg, char *str, int n, int argc)
 
 int e_ini_prog(ECNT *cn)
 {
+ UNUSED(cn);
  int i;
 
  e_prog.num = 4;
@@ -1476,13 +1486,11 @@ int e_system(char *estr, ECNT *cn)
 #endif
  int ret;
  view *outp;
- FENSTER *f;
 
 #if  MOUSE
  g[0] = 2;
  fk_mouse(g);
 #endif
- f = cn->f[cn->mxedt-1];
  outp = e_open_view(0,0,MAXSCOL-1,MAXSLNS-1,cn->fb->ws,1);
  fk_locate(0,0);
  fk_cursor(1);
@@ -1536,7 +1544,7 @@ int print_to_end_of_buffer(BUFFER * b,char * str,int wrap_limit)
    b->bf[i].s = realloc(b->bf[i].s, j + 2);
   else
    b->bf[i].s = realloc(b->bf[i].s, j + 1);
-  strncpy(b->bf[i].s,str + k,j);
+  strncpy((char *)b->bf[i].s,str + k,j);
 
 /* if this is not end of string, then we created substring
  if *(b->bf[i].s+j) is not '\0' then it is soft break is not written to file */
@@ -1573,7 +1581,6 @@ int e_d_p_message(char *str, FENSTER *f, int sw)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
  int i;
 
  if (str[0] == '\0' || str[0] == '\n')
@@ -1594,8 +1601,7 @@ int e_d_p_message(char *str, FENSTER *f, int sw)
 /* b - buffer */
  b = cn->f[i]->b;
 
-/* s - content of window */
- s = cn->f[i]->s;
+/* s - content of window -----> not used */
 
  print_to_end_of_buffer(b, str, b->mx.x);
 
@@ -1703,6 +1709,7 @@ int e_run_sh(FENSTER *f)
  else
 #endif
  ret = e_system(estr, f->ed);
+ UNUSED(ret);		// FIXME: can we use the return code from executing the program?
  WpeMouseRestoreShape();
  return(0);
 }
@@ -2756,6 +2763,7 @@ int e_p_edit_df(FLWND *fw, int sw)
 
 int e_p_del_df(FLWND *fw, int sw)
 {
+ UNUSED(sw);
  int i;
 
  if (fw->nf > fw->df->anz-2)
@@ -2841,7 +2849,7 @@ int e_p_show_messages(FENSTER *f)
  if (f->b->mxlines == 0)
  {
   e_new_line(0, f->b);
-  e_ins_nchar(f->b, f->s, "No Messages", 0, 0, 11);
+  e_ins_nchar(f->b, f->s, (unsigned char *)"No Messages", 0, 0, 11);
   e_schirm(f, 1);
  }
  return(0);
@@ -3107,7 +3115,7 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
    }
   }
  }
- e_p_comp_mess(tmp[0], b->bf[i].s, b->bf[i].s, search, file, cmp, &y, &x);
+ e_p_comp_mess(tmp[0], (char *)b->bf[i].s, (char *)b->bf[i].s, search, file, cmp, &y, &x);
  iy = i;
  iorig = i;
  do
@@ -3118,7 +3126,7 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
    while (b->bf[i].s[b->bf[i].len-1] == '\\')
     i++;
    i++;
-   e_p_comp_mess(tmp[1], b->bf[i].s, b->bf[i].s, search, file, cmp, &y, &x);
+   e_p_comp_mess(tmp[1], (char *)b->bf[i].s, (char *)b->bf[i].s, search, file, cmp, &y, &x);
    iy = i;
   }
   do
@@ -3128,9 +3136,9 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
     while (b->bf[i].s[b->bf[i].len-1] == '\\')
      i++;
     i++;
-    l = e_p_comp_mess(tmp[2], b->bf[i].s, b->bf[i].s, search, file, cmp, &y, &x);
+    l = e_p_comp_mess(tmp[2], (char *)b->bf[i].s, (char *)b->bf[i].s, search, file, cmp, &y, &x);
     if (!l && n > 3)
-     l = e_p_comp_mess(tmp[3], b->bf[i].s, b->bf[i].s, search, file, cmp, &y, &x);
+     l = e_p_comp_mess(tmp[3], (char *)b->bf[i].s, (char *)b->bf[i].s, search, file, cmp, &y, &x);
    }
    else
     l = 1;
@@ -3141,7 +3149,7 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
     err_li[k].line = y;
     if (search[0] == 'P')
     {
-     cp = strstr(b->bf[iy].s, cmp);
+     cp = strstr((const char *)b->bf[iy].s, cmp);
      if (!cp)
       x = 0;
      else
@@ -3172,10 +3180,10 @@ int e_p_cmp_mess(char *srch, BUFFER *b, int *ii, int *kk, int ret)
      for (ret = -1, m = 0; ret && m < wnum; m++)
      {
       if (wn[m] == -1 && !(b->cn->edopt & ED_MESSAGES_STOP_AT) &&
-        strstr(b->bf[i].s, wtxt[m]))
+        strstr((const char *)b->bf[i].s, wtxt[m]))
        ret = 0;
       else if (wn[m] > -1 && !(b->cn->edopt & ED_MESSAGES_STOP_AT) &&
-        !strncmp(b->bf[i].s+wn[m], wtxt[m], strlen(wtxt[m])))
+        !strncmp((const char *)b->bf[i].s+wn[m], wtxt[m], strlen(wtxt[m])))
        ret = 0;
      }
     }
