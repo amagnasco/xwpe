@@ -213,16 +213,17 @@ int e_sys_info(FENSTER *f)
  e_pr_str(xa+3, ya+2, " Current File: ", f->fb->nt.fb, 0, 0, 0, 0);
  e_pr_str(xa+3, ya+4, " Current Directory: ", f->fb->nt.fb, 0, 0, 0, 0);
  e_pr_str(xa+3, ya+6, " Number of Files: ", f->fb->nt.fb, 0, 0, 0, 0);
- if(strcmp(f->datnam, "Clipboard") != 0)
- if(strcmp(f->dirct, f->ed->dirct) == 0)
-  e_pr_str(xa+23, ya+2, f->datnam, f->fb->nt.fb, 0, 0, 0, 0);
- else
- {
-  strcpy(tmp, f->dirct);
-  strcat(tmp, DIRS);
-  strcat(tmp, f->datnam);
-  e_pr_str(xa+23, ya+2, tmp, f->fb->nt.fb, 0, 0, 0, 0);
- }
+ if(strcmp(f->datnam, "Clipboard") != 0) {
+	 if(strcmp(f->dirct, f->ed->dirct) == 0)
+	  e_pr_str(xa+23, ya+2, f->datnam, f->fb->nt.fb, 0, 0, 0, 0);
+	 else
+	 {
+	  strcpy(tmp, f->dirct);
+	  strcat(tmp, DIRS);
+	  strcat(tmp, f->datnam);
+	  e_pr_str(xa+23, ya+2, tmp, f->fb->nt.fb, 0, 0, 0, 0);
+	 }
+	}
  e_pr_str(xa+23, ya+4, f->ed->dirct, f->fb->nt.fb, 0, 0, 0, 0);
  e_pr_str(xa+23, ya+6,
    WpeNumberToString(f->ed->mxedt, WpeNumberOfPlaces(f->ed->mxedt), tmp),
@@ -640,6 +641,7 @@ char *WpeValueToString(const char *value)
 
 int WpeReadGeneral(ECNT *cn, char *section, char *option, char *value)
 {
+ UNUSED(section);
  if (WpeStrccmp("Data", option) == 0)
   cn->dtmd = atoi(value);
  else if (WpeStrccmp("Autosave", option) == 0)
@@ -671,6 +673,7 @@ int WpeReadGeneral(ECNT *cn, char *section, char *option, char *value)
 
 int WpeWriteGeneral(ECNT *cn, char *section, FILE *opt_file)
 {
+ UNUSED(section);
  fprintf(opt_file, "Version : %s\n", VERSION);
  fprintf(opt_file, "Data : %d\n", cn->dtmd);
  fprintf(opt_file, "Autosave : %d\n", cn->autosv);
@@ -827,7 +830,8 @@ int WpeReadColor(ECNT *cn, char *section, char *option, char *value)
 
 int WpeWriteColor(ECNT *cn, char *section, FILE *opt_file)
 {
- FARBE *fb;
+ UNUSED(cn);
+ FARBE *fb = 0;
 
  if (WpeStrccmp("Term", section + strlen(OPT_SECTION_COLOR) + 1) == 0)
   fb = u_fb;
@@ -877,6 +881,8 @@ int WpeWriteColor(ECNT *cn, char *section, FILE *opt_file)
 
 int WpeReadProgramming(ECNT *cn, char *section, char *option, char *value)
 {
+ UNUSED(cn);
+ UNUSED(section);
  if (WpeStrccmp("Arguments", option) == 0)
   e_prog.arguments = WpeStrdup(value);
  else if (WpeStrccmp("Project", option) == 0)
@@ -892,6 +898,8 @@ int WpeReadProgramming(ECNT *cn, char *section, char *option, char *value)
 
 int WpeWriteProgramming(ECNT *cn, char *section, FILE *opt_file)
 {
+ UNUSED(cn);
+ UNUSED(section);
  fprintf(opt_file, "Arguments : %s\n", e_prog.arguments);
  fprintf(opt_file, "Project : %s\n", e_prog.project);
  fprintf(opt_file, "Exedir : %s\n", e_prog.exedir);
@@ -902,6 +910,7 @@ int WpeWriteProgramming(ECNT *cn, char *section, FILE *opt_file)
 
 int WpeReadLanguage(ECNT *cn, char *section, char *option, char *value)
 {
+ UNUSED(cn);
  int i, j;
  char *strtmp;
 
@@ -977,6 +986,7 @@ int WpeReadLanguage(ECNT *cn, char *section, char *option, char *value)
 
 int WpeWriteLanguage(ECNT *cn, char *section, FILE *opt_file)
 {
+ UNUSED(cn);
  int i, j;
  char *str_tmp;
 
@@ -1515,7 +1525,7 @@ int e_get_opt_sw(int c, int x, int y, W_OPTSTR *o)
       }
    for(i = 0; i < o->bn; i++)
    {  if(e_get_sw_cmp(o->bstr[i]->x, o->bstr[i]->y, x, y,
-         c ? xmin : strlen(o->bstr[i]->header), ymin, c))
+         c ? xmin : (int) strlen(o->bstr[i]->header), ymin, c))
       {  xmin = o->bstr[i]->x;  ymin = o->bstr[i]->y;
          ret = o->bstr[i]->sw;
       }
