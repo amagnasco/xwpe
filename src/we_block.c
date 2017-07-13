@@ -419,7 +419,7 @@ void e_move_block(int x, int y, BUFFER *bv, BUFFER *bz, FENSTER *f)
  *(bz->bf[y].s+x) = '\0';
  bz->bf[y].len = bz->bf[y].nrc = x;
  bz->bf[y+1].len = e_str_len(bz->bf[y+1].s);
- bz->bf[y+1].nrc = strlen(bz->bf[y+1].s);
+ bz->bf[y+1].nrc = strlen((const char *)bz->bf[y+1].s);
  for (i = bz->mxlines; i > y; i--)
   bz->bf[i+n] = bz->bf[i];
  (bz->mxlines) += n;
@@ -567,7 +567,7 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
  *(buffer_dst->bf[y].s+x) = '\0';
  buffer_dst->bf[y].len = buffer_dst->bf[y].nrc = x;
  buffer_dst->bf[y+1].len = e_str_len(buffer_dst->bf[y+1].s);
- buffer_dst->bf[y+1].nrc = strlen(buffer_dst->bf[y+1].s);
+ buffer_dst->bf[y+1].nrc = strlen((const char *)buffer_dst->bf[y+1].s);
  for (i = buffer_dst->mxlines; i > y; i--)
   buffer_dst->bf[i+n] = buffer_dst->bf[i];
  (buffer_dst->mxlines) += n;
@@ -610,7 +610,6 @@ void e_copy_block(int x, int y, BUFFER *buffer_src, BUFFER *buffer_dst,
 /*   delete block marks   */
 int e_blck_hide(FENSTER *f)
 {
- BUFFER *b;
  SCHIRM *s;
  int i;
 
@@ -620,7 +619,6 @@ int e_blck_hide(FENSTER *f)
   return(0);
  e_switch_window(f->ed->edt[i], f);
  f = f->ed->f[f->ed->mxedt];
- b = f->b;
  s = f->s;
  s->mark_begin = e_set_pnt(0, 0);
  s->mark_end = e_set_pnt(0, 0);
@@ -816,7 +814,7 @@ int e_blck_to_left(FENSTER *f)
  BUFFER *b;
  SCHIRM *s;
  int n = f->ed->tabn/2, i, j, k, l, m, nn;
- char *tstr = malloc((n+2)*sizeof(char));
+ unsigned char *tstr = malloc((n+2)*sizeof(char));
 
  for(i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT(f->ed->f[i]->dtmd); i--);
  if(i <= 0) return(0);
@@ -864,7 +862,7 @@ int e_blck_to_right(FENSTER *f)
  BUFFER *b;
  SCHIRM *s;
  int n = f->ed->tabn/2, i, j;
- char *tstr = malloc((n+1)*sizeof(char));
+ unsigned char *tstr = malloc((n+1)*sizeof(char));
 
  for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT(f->ed->f[i]->dtmd); i--)
   ;
@@ -955,16 +953,16 @@ int e_rep_search(FENSTER *f)
    if ((fd->sw & 32) == 0)
    {
     if ((fd->sw & 128) != 0)
-     ret = e_strstr(ret, end, b->bf[j].s, fd->search);
+     ret = e_strstr(ret, end, b->bf[j].s, (unsigned char *)fd->search);
     else
-     ret = e_ustrstr(ret, end, b->bf[j].s, fd->search);
+     ret = e_ustrstr(ret, end, b->bf[j].s, (unsigned char *)fd->search);
    }
    else
    {
     if ((fd->sw & 128) != 0)
-     ret = e_rstrstr(ret, end, b->bf[j].s, fd->search, &(fd->sn));
+     ret = e_rstrstr(ret, end, b->bf[j].s, (unsigned char *)fd->search, &(fd->sn));
     else
-     ret = e_urstrstr(ret, end, b->bf[j].s, fd->search, &(fd->sn));
+     ret = e_urstrstr(ret, end, b->bf[j].s, (unsigned char *)fd->search, &(fd->sn));
    }
    if ((fd->sw & 4) == 0 && j == jend && ret > iend)
     break;
@@ -1004,7 +1002,6 @@ int e_rep_search(FENSTER *f)
 int e_goto_line(FENSTER *f)
 {
  int i, num;
- SCHIRM *s;
  BUFFER *b;
 
  for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT(f->ed->f[i]->dtmd); i--)
@@ -1013,7 +1010,7 @@ int e_goto_line(FENSTER *f)
   return(0);
  e_switch_window(f->ed->edt[i], f);
  f = f->ed->f[f->ed->mxedt];
- b = f->b;  s = f->s;
+ b = f->b;
  if ((num = e_num_kst("Goto Line Number", b->b.y+1, b->mxlines, f, 0, AltG)) > 0)
   b->b.y = num - 1;
  else if (num == 0)
@@ -1108,7 +1105,7 @@ int e_replace(FENSTER *f)
  SCHIRM *s;
  BUFFER *b;
  FIND *fd = &(f->ed->fd);
- int i, ret, c, ym, rep=0, found=0;
+ int i, ret, c, rep=0, found=0;
  char strTemp[80];
  W_OPTSTR *o = e_init_opt_kst(f);
 
@@ -1182,11 +1179,7 @@ int e_replace(FENSTER *f)
    found++;
    if (f->a.y < 11)
    {
-    s->c.y = b->b.y - 1; ym = 15;
-   }
-   else
-   {
-    ym = 1;
+    s->c.y = b->b.y - 1; 
    }
    e_schirm(f, 1);
    c = 'Y';
