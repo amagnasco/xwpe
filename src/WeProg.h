@@ -19,7 +19,7 @@ extern "C" {
   New Types
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 typedef struct wpeSyntaxRule {
- unsigned char **reserved_word;  /* Reserved words */
+ char **reserved_word;  /* Reserved words */
  unsigned char **long_operator;  /* Operators longer than a single character*/
  unsigned char *single_operator; /* Single character operators */
  unsigned char *begin_comment;   /* Comments begin with this string */
