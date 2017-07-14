@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -362,7 +363,9 @@ int fl_wnd_mouse(sw, k, fw)
 	    else
 	    {  for(c = 0; *(fw->df->name[fw->nf]+c)
 			&& ( *(fw->df->name[fw->nf]+c) <= 32
-			  || *(fw->df->name[fw->nf]+c) >= 127); c++);
+			  || *(fw->df->name[fw->nf]+c) >= 127); c++) {
+			;
+		}
 	       if(!WpeIsXwin()) c += 3;
 	    }
 	    for(MLEN = 1; *(fw->df->name[fw->nf]+c+MLEN)
@@ -376,7 +379,9 @@ int fl_wnd_mouse(sw, k, fw)
 	       if(fw->srcha < 0)
 	       {  FLBFFR *b = (FLBFFR *)fw->f->b;
 		  if(b->cd->anz > fw->nf)
-		  {  while (e_mshit() != 0);
+		  {  while (e_mshit() != 0) {
+			;
+		     }
 		     free (file);  free (bgrd);  return(WPE_CR);
 		  }
 		  for(c = 0; *(fw->df->name[fw->nf]+c)
@@ -407,7 +412,9 @@ int fl_wnd_mouse(sw, k, fw)
 	    else return(WPE_CR);
 	 }
       }
-      else {  while (e_mshit() != 0);
+      else {  while (e_mshit() != 0) {
+		;
+	      }
 	      fw->nf = e_mouse.y - fw->ya + fw->ia;  return(0);  }
    }
    else return(MBKEY);
@@ -889,6 +896,7 @@ int e_opt_ck_mouse(xa, ya, md)
      int ya;
      int md;
 {
+   UNUSED(md);
    extern struct mouse e_mouse;
    if(e_mouse.x < xa-2 || e_mouse.x > xa+25
 			|| e_mouse.y < ya-1 || e_mouse.y > ya+18) return(WPE_CR);
@@ -1122,5 +1130,5 @@ int e_opt_mouse(W_OPTSTR *o)
  else return(-1);
 }
 
-#endif
+#endif // #if MOUSE
 

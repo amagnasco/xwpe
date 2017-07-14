@@ -13399,6 +13399,11 @@ else
 fi
 
 
+# Specific defines
+
+$as_echo "#define UNUSED(X) (void)(X)" >>confdefs.h
+
+
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 
@@ -14575,27 +14580,7 @@ fi
 done
 
 
-#
-# Next 2 if-eval statements plus defines are copied from old configure.in
-#      Both result in redefinition of functions. The reason is unclear.
-#
-##### Disabling these 2 grep-statements: they don't work reliably and both
-##### defines (putc and tputs) are part of stdio.h
-##### old: if eval 'grep -s "[[ 	]]putc[[ 	(]]" /usr/include/*.h > /dev/null'; then
-#if eval 'grep -s "\bputc\b\s*(" /usr/include/*.h > /dev/null'; then
-# :;
-#else
-# AC_DEFINE([DEFPGC], [], [copied from old configure.in. Use is unclear.])
-#fi
-
-#### old: if eval 'grep -s "[[ 	]]tputs[[ 	(]]" /usr/include/*.h > /dev/null'; then
-#if eval 'grep -s "\btputs\b\s*(" /usr/include/*.h > /dev/null'; then
-# :;
-#else
-# AC_DEFINE([DEFTPUTS], [], [copied from old configure.in. Use is unclear.])
-#fi
-
-ac_config_files="$ac_config_files Makefile src/Makefile man/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile man/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -15614,6 +15599,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "man/Makefile") CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

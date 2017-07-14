@@ -53,11 +53,11 @@ int e_d_swtch = 0, rfildes[2], ofildes, e_d_pid = 0;
 int e_d_nbrpts = 0, e_d_zwtchs = 0, *e_d_ybrpts, *e_d_nrbrpts;
 
 /* number of watch expressions in Watches window */
-int e_d_nwtchs = 0; 
+int e_d_nwtchs = 0;
 
 /* e_d_nrwtchs[i] is the y coordinate (count starts at 0) of the first line of
    the i-th watch in the Watches window */
-int *e_d_nrwtchs; 
+int *e_d_nrwtchs;
 
 char **e_d_swtchs; /* e_d_swtchs[i] is the i-th watch expression (a char*) */
 
@@ -262,7 +262,25 @@ int e_debug_switch(FENSTER *f, int c)
 }
 
 /*  Input Routines   */
-int e_e_line_read(int n, signed char *s, int max)
+/**
+ * function e_e_line_read
+ *
+ * Reads one line until new line, end of string ('\0') or EOF.
+ *
+ * FIXME: find out when, why and from what source this line is read.
+ * TODO: Must the string s really be signed char *? Replaced with char *. check & test.
+ *
+ * Returns
+ * 	-1 if the read is unsuccessful
+ * 	1  if e_deb_type == 1 && the last char read == '*'
+ * 	   if e_deb_type == 2 && the last char read == space && (dbx) prefixes the string
+ * 	   if e_deb_type == 3 && the last char read == '>'
+ * 	   if e_deb_type == 0 && the last char read == space && (dbg) prefixes the string
+ * 	2  otherwise
+ *
+ *  FIXME: find out what the returns mean exactly
+ */
+int e_e_line_read(int n, char *s, int max)
 {
  int i, ret = 0;
 
@@ -279,14 +297,23 @@ int e_e_line_read(int n, signed char *s, int max)
   return(1);
  if (e_deb_type == 3 && s[i] == '>')
   return(1);
- else if (e_deb_type == 2 && i > 4 && s[i] == ' ' && !strncmp(s+i-5, "(dbx)", 5))
+ else if (e_deb_type == 2 && i > 4 && s[i] == ' ' 
+		&& !strncmp((const char *)s+i-5, "(dbx)", 5))
   return(1);
- else if (e_deb_type == 0 && i > 4 && s[i] == ' ' && !strncmp(s+i-5, "(gdb)", 5))
+ else if (e_deb_type == 0 && i > 4 && s[i] == ' ' 
+		&& !strncmp((const char *)s+i-5, "(gdb)", 5))
   return(1);
  return(2);
 }
 
-int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
+/**
+ * function e_d_line_read
+ *
+ * FIXME: what does this line read routine do exactly? What does it return?
+ * TODO: Must the string s really be signed char *? Replaced with char *. check & test.
+ *
+*/
+int e_d_line_read(int n, char *s, int max, int sw, int esw)
 {
  static char wt = 0, esc_sv = 0, str[12];
  int i, j, ret = 0, kbdflgs;
@@ -322,7 +349,7 @@ int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
   {  str[0] = 0;  wt = 0;   return(1);  }
   else if(e_deb_type == 0)
   {
-   if(i > 5 && !strncmp(s+i-6, "(gdb) ", 6))
+   if(i > 5 && !strncmp((const char *)s+i-6, "(gdb) ", 6))
    {  str[0] = 0;  wt = 0;   return(1);  }
    else if(i < 6)
    {
@@ -333,7 +360,7 @@ int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
   }
   else if (e_deb_type == 2)
   {
-   if(i > 5 && !strncmp(s+i-6, "(dbx) ", 6))
+   if(i > 5 && !strncmp((const char *)s+i-6, "(dbx) ", 6))
    {  str[0] = 0;  wt = 0;   return(1);  }
    else if(i < 6)
    {
@@ -366,7 +393,6 @@ int e_d_p_exec(FENSTER *f)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
  int ret, i, is, j;
  char str[512];
 
@@ -376,7 +402,6 @@ int e_d_p_exec(FENSTER *f)
  {  e_edit(cn, "Messages");  i = cn->mxedt;  }
  f = cn->f[i];
  b = cn->f[i]->b;
- s = cn->f[i]->s;
  if (b->bf[b->mxlines-1].len != 0)
   e_new_line(b->mxlines, b);
  for (j = 0, i = is = b->mxlines-1;
@@ -459,12 +484,17 @@ int e_d_is_watch(int c, FENSTER *f)
   return(0);
 }
 
-int e_d_quit_basic(FENSTER *f)
+/** 
+ * Remark: return changed to void: no return was given and no one tested return. 
+ *
+ * */
+void e_d_quit_basic(FENSTER *f)
 {
- int i, kbdflgs;
+ UNUSED(f);
+ int kbdflgs;
 
  if (!e_d_swtch)
-  return 0;
+  return;
  if (rfildes[1] >= 0)
  {
   char *cstr = 0;
@@ -523,8 +553,10 @@ int e_d_quit_basic(FENSTER *f)
   {
    e_d_switch_out(1);
    fk_locate(MAXSCOL, MAXSLNS);
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
    e_putp("\r\n");
    e_putp(att_no);
+#endif
    e_d_switch_out(0);
   }
  }
@@ -637,15 +669,15 @@ int e_make_watches(FENSTER *f)
    e_d_swtchs = realloc(e_d_swtchs, e_d_nwtchs * sizeof(char *));
    e_d_nrwtchs = realloc(e_d_nrwtchs, e_d_nwtchs * sizeof(int));
   }
-  
+
   /*
-    move watch number y and following up one position so that we can insert 
-    at position y 
+    move watch number y and following up one position so that we can insert
+    at position y
   */
   for (i = e_d_nwtchs - 1; i > y; i--)
   {
    e_d_swtchs[i] = e_d_swtchs[i-1];
-   
+
    /* The following instruction is pointless as e_d_nrwtchs[i] is invalidated
       by inserting the new watch and has to be recomputed by e_d_p_watches()
    */
@@ -683,15 +715,14 @@ int e_edit_watches(FENSTER *f)
 }
 
 /* Among other things, e_d_p_watches() must recompute e_d_nrwtchs when
-   called from e_edit_watches(), 
+   called from e_edit_watches(),
    but has code paths that don't do this ==> possible BUG
 */
 int e_d_p_watches(FENSTER *f, int sw)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
- int iw, i, k = 0, l, ret;
+ int iw, k = 0, l, ret;
  char str1[256], *str; /* is 256 always large enough? */
  char *str2;
 
@@ -718,17 +749,16 @@ int e_d_p_watches(FENSTER *f, int sw)
  }
  f = cn->f[iw];
  b = cn->f[iw]->b;
- s = cn->f[iw]->s;
- 
+
  /* free all lines of BUFFER b */
  e_p_red_buffer(b);
  free(b->bf[0].s);
  b->mxlines=0;
 
- for (i = 0, l = 0; l < e_d_nwtchs; l++)
+ for (l = 0; l < e_d_nwtchs; l++)
  {
   str = str1;
-  
+
   /* Create appropriate command for the debugger */
   if (e_deb_type == 0 || e_deb_type == 3)
   {
@@ -820,10 +850,8 @@ int e_d_p_watches(FENSTER *f, int sw)
 
  e_new_line(b->mxlines, b);
  fk_cursor(1);
-/* if (b->b.y > i || sw) b->b.y = i;*/
  if (sw && iw != cn->mxedt) e_switch_window(cn->edt[iw], cn->f[cn->mxedt]);
  else e_rep_win_tree(cn);
-/* e_d_switch_out(0);   */
  return(0);
 }
 
@@ -848,43 +876,42 @@ int e_p_show_watches(FENSTER *f)
 /***  reinitialize watches from prj  ***/
 int e_d_reinit_watches(FENSTER * f,char * prj)
 {
- int i,e,g,q,y,r;
+ int i,e,g,q,r;
  char * prj2;
 
  for(i = f->ed->mxedt; i > 0; i--)
  {
   if (!strcmp(f->ed->f[i]->datnam, "Watches"))
-  {  
+  {
    e_remove_all_watches(f->ed->f[f->ed->edt[i]]);
-   break; 
+   break;
   }
  }
  g=strlen(prj);
  prj2=malloc(sizeof(char)*(g+1));
  strcpy(prj2,prj);
  q=0;
- y=0;
  r=0;
- while(q<g) 
+ while(q<g)
  {
   e=q;
   while(prj2[e]!=';' && e<g) e++;
   prj2[e]='\0';
   q=e+1;
   r++;
- } 
+ }
  e_d_nwtchs=r;
  e_d_swtchs = (char **) malloc(e_d_nwtchs * sizeof(char *));
- e_d_nrwtchs =(int *) malloc(e_d_nwtchs * sizeof(int));   
+ e_d_nrwtchs =(int *) malloc(e_d_nwtchs * sizeof(int));
 
  for(e=0,q=0;e<r;e++)
  {
   e_d_swtchs[e] = malloc(strlen(prj2+q)+1);
-  strcpy(e_d_swtchs[e], prj2+q); 
+  strcpy(e_d_swtchs[e], prj2+q);
   q+=strlen(prj2+q)+1;
- } 
+ }
  free(prj2);
- e_d_p_watches(f, 1);   
+ e_d_p_watches(f, 1);
  return 0;
 }
 /***************************************/
@@ -1068,7 +1095,7 @@ int e_make_stack(FENSTER *f)
 	 sprintf(str, "%s %d\n",
 	 e_deb_type != 3 ? "down" : "up", e_d_nstack - dif);
       if(dif != e_d_nstack)
-      {  
+      {
 	 int n = strlen(str);
          if (n != write(rfildes[1], str, n)) {
 		printf("[e_make_stack]: write to debugger failed: %s.\n", str);
@@ -1103,12 +1130,12 @@ int e_brk_schirm(FENSTER *f)
   if(!strcmp(f->datnam,e_d_sbrpts[i]))
   {
    for(n=1;n<= (s->brp[0]);n++) if(e_d_ybrpts[i]==(s->brp[n])) break;
-   if(n>s->brp[0]) 
+   if(n>s->brp[0])
    {
-    /****  New break, not in schirm  ****/   
+    /****  New break, not in schirm  ****/
     (s->brp[0])++;
     s->brp = realloc(s->brp, (s->brp[0]+1) * sizeof(int));
-    s->brp[s->brp[0]] = e_d_ybrpts[i]-1; 
+    s->brp[s->brp[0]] = e_d_ybrpts[i]-1;
    }
   }
  }
@@ -1130,22 +1157,22 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
    strcpy(prj2,prj);
    q=0;
    r=0;
-   while(q<g) 
+   while(q<g)
    {
      e=q;
      while(prj2[e]!=';' && e<g) e++;
      prj2[e]='\0';
      q=e+1;
      r++;
-   } 
-/**** for sure ****/   
+   }
+/**** for sure ****/
    e_d_nbrpts=0;
-   
-/**** allocate memory for breakpoints ****/   
+
+/**** allocate memory for breakpoints ****/
    e_d_sbrpts = malloc(sizeof(char *) * r);
    e_d_ybrpts = malloc(sizeof(int) * r);
    e_d_nrbrpts = malloc(sizeof(int) * r);
-   
+
    name=prj2;
    for(q=0;q<r;q++)
    {
@@ -1164,12 +1191,12 @@ int e_d_reinit_brks(FENSTER * f,char * prj)
 	   e_d_sbrpts[e_d_nbrpts]=malloc(sizeof(char)*(strlen(name)+1));
 	   strcpy(e_d_sbrpts[e_d_nbrpts],name);
 	   e_d_nbrpts++;
-	   
+
 /**** needed to keep schirm in sync ****/
-	   
+
 	   for(g = f->ed->mxedt; g > 0; g--)
             if(!strcmp(f->ed->f[g]->datnam, name))
-            {  
+            {
               e_brk_schirm(f->ed->f[g]);
             }
          }
@@ -1203,7 +1230,7 @@ int e_brk_recalc(FENSTER *f, int start, int len)
  {
   for (n = 0; n < e_d_nbrpts; n++)
    if ((!strcmp(f->datnam, e_d_sbrpts[n])) &&
-     (e_d_ybrpts[n] <= (rend + 1)) && (e_d_ybrpts[n] >= (start + 1))) 
+     (e_d_ybrpts[n] <= (rend + 1)) && (e_d_ybrpts[n] >= (start + 1)))
    {
     b->b.y = e_d_ybrpts[n] - 1;
     e_make_breakpoint(f, 0);
@@ -1218,18 +1245,18 @@ int e_brk_recalc(FENSTER *f, int start, int len)
   return 1;
  br_lines = (int*)malloc(sizeof(int) * count);
  for (n = 0, count = 0; n < e_d_nbrpts; n++)
-  if ((!strcmp(f->datnam, e_d_sbrpts[n])) && (e_d_ybrpts[n] >= (start + 1))) 
+  if ((!strcmp(f->datnam, e_d_sbrpts[n])) && (e_d_ybrpts[n] >= (start + 1)))
   {
    br_lines[count++] = e_d_ybrpts[n];
   }
 
 /**** moving breakpoints ****/
- for(n = 0; n < count; n++) 
+ for(n = 0; n < count; n++)
  {
   b->b.y = br_lines[n] - 1;
   e_make_breakpoint(f, 0);
  }
- for(n = 0; n < count; n++) 
+ for(n = 0; n < count; n++)
  {
   b->b.y = br_lines[n] + len - 1;
   e_make_breakpoint(f, 0);
@@ -1297,6 +1324,7 @@ int e_remove_breakpoints(FENSTER *f)
 
 int e_mk_brk_main(FENSTER *f, int sw)
 {
+ UNUSED(f);
  int i, ret;
  char eing[128], str[256];
 

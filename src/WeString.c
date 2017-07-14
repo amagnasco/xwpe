@@ -17,6 +17,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Includes
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+#include "config.h"
 #include "WeString.h"
 #include <string.h>
 #include <stdlib.h>

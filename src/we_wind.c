@@ -6,6 +6,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -683,7 +684,7 @@ int e_close_window(FENSTER *f)
  ECNT *cn = f->ed;
  FENSTER *f0 = f->ed->f[0];
  int c = 0;
- long maxname;
+ unsigned long maxname;
  char text[256];
 
  f = cn->f[cn->mxedt];
@@ -757,7 +758,7 @@ int e_close_window(FENSTER *f)
   }
   /* Check if file system could have an autosave or emergency save file
      >12 check is to eliminate dos file systems */
-  if ((maxname = pathconf(f->dirct, _PC_NAME_MAX) >= strlen(f->datnam) + 4) &&
+  if (((maxname = pathconf(f->dirct, _PC_NAME_MAX)) >= strlen(f->datnam) + 4) &&
     (maxname > 12))
   {
    remove(e_make_postf(text, f->datnam, ".ASV"));
@@ -1251,7 +1252,7 @@ void e_std_rahmen(int xa, int ya, int xe, int ye, char *name, int sw, int frb,
 
  if (name)
  {
-  if (strlen(name) < xe - xa - 14)
+  if (strlen(name) < (unsigned int)(xe - xa - 14))
    e_pr_str((xa+xe-strlen(name))/2, ya, name, frb, 0, 0, 0, 0);
   else
   {

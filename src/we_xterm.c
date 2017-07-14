@@ -408,8 +408,8 @@ int e_x_refresh()
     		WpeXInfo.font_height*(i+1) - WpeXInfo.font->max_bounds.descent,
 							schirm + x, 1);
 #else
-	 if (   oldback != WpeXInfo.colors[schirm[x+1] / 16]  	/* a.r. */
-	     || oldfore != WpeXInfo.colors[schirm[x+1] % 16]
+	 if (   oldback != (unsigned) WpeXInfo.colors[schirm[x+1] / 16]  	/* a.r. */
+	     || oldfore != (unsigned) WpeXInfo.colors[schirm[x+1] % 16]
 	     || i != oldI
 	     || j > oldJ+1	/* is there a more elegant solution? */
 	     || stringcount >= STRBUFSIZE
@@ -537,7 +537,7 @@ int e_x_getch()
  XSelectionEvent se;
  KeySym keysym;
  int charcount;
- unsigned char buffer[BUFSIZE];
+ char buffer[BUFSIZE];
  int c, root_x, root_y, x, y;
  unsigned int key_b;
  XSizeHints size_hints;
@@ -586,13 +586,14 @@ int e_x_getch()
     }
     break;
    case ClientMessage:
+    // Atoms are defined as unsigned long, hence a cast to unsigned
     if (report.xclient.message_type == WpeXInfo.protocol_atom &&
       ((report.xclient.format == 8 &&
-        report.xclient.data.b[0] == WpeXInfo.delete_atom) ||
+        (unsigned)report.xclient.data.b[0] == WpeXInfo.delete_atom) ||
       (report.xclient.format == 16 &&
-        report.xclient.data.s[0] == WpeXInfo.delete_atom) ||
+        (unsigned)report.xclient.data.s[0] == WpeXInfo.delete_atom) ||
       (report.xclient.format == 32 &&
-        report.xclient.data.l[0] == WpeXInfo.delete_atom)))
+        (unsigned)report.xclient.data.l[0] == WpeXInfo.delete_atom)))
     {
      e_quit(WpeEditor->f[WpeEditor->mxedt]);
     }
@@ -732,7 +733,7 @@ int e_x_getch()
      {
       se.property = report.xselectionrequest.property;
       XChangeProperty(se.display, se.requestor, se.property, se.target, 8,
-        PropModeReplace, WpeXInfo.selection, strlen(WpeXInfo.selection));
+        PropModeReplace, WpeXInfo.selection, strlen((const char *)WpeXInfo.selection));
      }
      else
       se.property = None;
@@ -758,7 +759,7 @@ int e_x_kbhit()
  XEvent report;
  KeySym keysym;
  int charcount;
- unsigned char buffer[BUFSIZE];
+ char buffer[BUFSIZE];
  int c;
  unsigned int key_b;
 
@@ -956,7 +957,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
  XEvent report;
  Atom type;
  int format;
- long nitems, bytes_left;
+ unsigned long nitems, bytes_left;
 
  for (i = 1; i < b0->mxlines; i++)
   free(b0->bf[i].s);
@@ -967,8 +968,8 @@ int e_x_cp_X_to_buffer(FENSTER *f)
 #if defined SELECTION
  if (WpeXInfo.selection)
  {
-  str = WpeStrdup(WpeXInfo.selection);
-  n = strlen(str);
+  str = (unsigned char *)WpeStrdup((const char *)WpeXInfo.selection);
+  n = strlen((const char *)str);
  }
  else
  {
@@ -994,7 +995,7 @@ int e_x_cp_X_to_buffer(FENSTER *f)
    /* Specified property does not exit*/
    return 0;
   }
-  n = strlen(str);
+  n = strlen((const char *)str);
  }
 #else
  str = XFetchBytes(WpeXInfo.display, &n);
@@ -1045,7 +1046,8 @@ int e_x_paste_X_buffer(FENSTER *f)
 {
  BUFFER *b0 = f->ed->f[0]->b;
  SCHIRM *s0 = f->ed->f[0]->s;
- int i, j, n;
+ int i, n;
+ unsigned int j;
 
  e_edt_copy(f);
 #if defined SELECTION
@@ -1065,7 +1067,7 @@ int e_x_paste_X_buffer(FENSTER *f)
   n = s0->mark_end.x - s0->mark_begin.x;
 #if defined SELECTION
   WpeXInfo.selection = malloc(n + 1);
-  strncpy(WpeXInfo.selection, b0->bf[s0->mark_begin.y].s+s0->mark_begin.x,
+  strncpy((char *)WpeXInfo.selection, (char *)b0->bf[s0->mark_begin.y].s+s0->mark_begin.x,
     n);
   WpeXInfo.selection[n] = 0;
   XSetSelectionOwner(WpeXInfo.display, WpeXInfo.selection_atom,
@@ -1086,7 +1088,7 @@ int e_x_paste_X_buffer(FENSTER *f)
    WpeXInfo.selection[n] = b0->bf[i].s[j];
  }
  WpeXInfo.selection = realloc(WpeXInfo.selection, (n + s0->mark_end.x + 1)*sizeof(char));
- for (j = 0; j < s0->mark_end.x; j++, n++)
+ for (j = 0; j < (unsigned)s0->mark_end.x; j++, n++)
   WpeXInfo.selection[n] = b0->bf[i].s[j];
  WpeXInfo.selection[n] = 0;
 #if defined SELECTION

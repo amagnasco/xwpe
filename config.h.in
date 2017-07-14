@@ -189,6 +189,9 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define for arguments in a header that are not going to be used. */
+#undef UNUSED
+
 /* Version number of package */
 #undef VERSION
 

@@ -19,12 +19,13 @@
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #include <stdlib.h>
 #include <string.h>
+#include "config.h"
 #include "WeExpArr.h"
 #include "WeProg.h"
 #include "WeString.h"
 #include "WeSyntax.h"
 
-unsigned char *WpeCReservedWord[] = {
+char *WpeCReservedWord[] = {
  "auto", "break", "case", "char", "const", "continue", "default", "do",
  "double", "else", "enum", "extern", "float", "for", "goto", "if", "int",
  "long", "register", "return", "short", "signed", "sizeof", "static",
@@ -32,9 +33,7 @@ unsigned char *WpeCReservedWord[] = {
  "while", NULL
 };
 
-#define WpeCLongOperator NULL
-
-unsigned char *WpeCxxReservedWord[] = {
+char *WpeCxxReservedWord[] = {
  "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case",
  "catch", "char", "class", "compl", "const", "const_cast", "continue",
  "default", "delete", "do", "double", "dynamic_cast", "else", "enum",
@@ -47,6 +46,7 @@ unsigned char *WpeCxxReservedWord[] = {
  "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq", NULL
 };
 
+#define WpeCLongOperator NULL
 #define WpeCxxLongOperator NULL
 
 WpeSyntaxRule WpeCSyntaxRule = {
@@ -58,10 +58,6 @@ WpeSyntaxRule WpeCxxSyntaxRule = {
  WpeCxxReservedWord, WpeCxxLongOperator, "~^()[]{}<>+-/*%=|&!.?:,;", "/*",
  "*/", "//", '\"', '\'', '#', '\\', '\\', '\0', -1, 1000, -1, ""
 };
-
-/*WpeSyntaxExt WpeCSyntaxExt   = { ".c", &WpeCSyntaxRule };
-WpeSyntaxExt WpeCxxSyntaxExt = { ".C", &WpeCxxSyntaxRule };
-WpeSyntaxExt WpeHSyntaxExt   = { ".h", &WpeCxxSyntaxRule };*/
 
 /* Definition of all programming language syntax (Note: This is an expandable
   array and must be destroyed with WpeExpArrayDestroy()) */
@@ -88,10 +84,11 @@ void WpeSyntaxReadFile(ECNT *cn)
  int i, k;
 
  WpeSyntaxDef = (WpeSyntaxExt **)WpeExpArrayCreate(0, sizeof(WpeSyntaxExt *), 4);
- WpeSyntaxGetPersonal(tmp);
+ sprintf(tmp, "%s/%s/%s", getenv("HOME"), XWPE_HOME, SYNTAX_FILE);
+
  if ((syntax_file = fopen(tmp, "r")) == NULL)
  {
-  WpeSyntaxGetSystem(tmp);
+  sprintf(tmp, "%s/%s", DATADIR, SYNTAX_FILE);
   if ((syntax_file = fopen(tmp, "r")) == NULL)
   {
    /* C Syntax (".c" extension) */

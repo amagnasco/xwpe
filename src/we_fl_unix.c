@@ -1123,7 +1123,7 @@ int WpeHandleFileManager(ECNT * cn)
               *(be->bf[be->b.y].s + be->b.x) = '\0';
               be->bf[be->b.y].len = be->b.x;
               be->bf[be->b.y + 1].len = e_str_len(be->bf[be->b.y + 1].s);
-              be->bf[be->b.y + 1].nrc = strlen(be->bf[be->b.y + 1].s);
+              be->bf[be->b.y + 1].nrc = strlen((const char *)be->bf[be->b.y + 1].s);
             }
             se->mark_begin.x = be->b.x;
             start = se->mark_begin.y = be->b.y;
@@ -1558,16 +1558,16 @@ int WpeGrepFile(char *file, char *string, int sw)
     if((sw & 32) == 0)
     {
       if((sw & 128) != 0)
-        ret = e_strstr(0, strlen(str), str, string);
+        ret = e_strstr(0, strlen(str), (unsigned char *)str, (unsigned char *)string);
       else
-        ret = e_ustrstr(0, strlen(str), str, string);
+        ret = e_ustrstr(0, strlen(str), (unsigned char *)str, (unsigned char *)string);
     }
     else
     {
       if((sw & 128) != 0)
-        ret = e_rstrstr(0, strlen(str), str, string, &nn);
+        ret = e_rstrstr(0, strlen(str), (unsigned char *)str, (unsigned char *)string, &nn);
       else
-        ret = e_urstrstr(0, strlen(str), str, string, &nn);
+        ret = e_urstrstr(0, strlen(str), (unsigned char *)str, (unsigned char *)string, &nn);
     }
     if(   ret >= 0 
        && (   !(sw & 64) 
@@ -1752,6 +1752,8 @@ char *WpeAssemblePath(char *pth, struct dirfile *cd, struct dirfile *dd, int n,
   int             i = 0, k = 0, j = 0, t;
   char           *adir= NULL;  /* assembled directory */
   int             totall = 0;
+
+  UNUSED(pth);
 
 #ifdef UNIX
   if (!strcmp(cd->name[0], "Wastebasket"))
@@ -2764,8 +2766,9 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
      if (tmp)
       free(tmp);
      allocate_size += 4;
-     if ((tmp = malloc(allocate_size)) == NULL)
-      e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
+     if ((tmp = malloc(allocate_size)) == NULL) {
+        e_error(e_msg[ERR_LOWMEM], 1, f->ed->fb);
+     }
 
       ln = readlink(file, tmp, allocate_size-1);
     } while (!(ln < allocate_size-1));
@@ -2796,7 +2799,7 @@ int WpeRenameCopy(char *file, char *newname, FENSTER *f, int sw)
 int WpeCopyFileCont(char *oldfile, char *newfile, FENSTER *f)
 {
   struct stat     buf;
-  int             ret;
+  size_t          ret;
   char           *buffer;
   FILE           *fpo, *fpn;
 
@@ -2846,7 +2849,7 @@ int WpeCopyFileCont(char *oldfile, char *newfile, FENSTER *f)
   free(buffer);
 
   /* Well, we just created the file, so theoretically this 
-     should succed. Of course this is a racing condition !!! */
+     should succeed. Of course this is a racing condition !!! */
   if(chmod(newfile, buf.st_mode))
     e_error(e_msg[ERR_CHGPERM], 0, f->ed->fb);
   return(0);
@@ -3364,33 +3367,12 @@ int WpeFindWindow(FENSTER * f)
   return(ret);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int e_ed_man(char *str, FENSTER * f)
+int e_ed_man(unsigned char *str, FENSTER * f)
 {
   char            command[256], tstr[_POSIX_PATH_MAX];
   char            cc, hstr[80], nstr[10];
   int             mdsv = f->ed->dtmd, bg, i, j = 0;
-  BUFFER         *b;
+  BUFFER         *b = 0;
 
   if(!str)
     return(0);
@@ -3399,7 +3381,7 @@ int e_ed_man(char *str, FENSTER * f)
     return(0);
   for(i = f->ed->mxedt; i >= 0; i--)
   {
-    if(!strcmp(f->ed->f[i]->datnam, str))
+    if(!strcmp(f->ed->f[i]->datnam, (const char *)str))
     {
       e_switch_window(f->ed->edt[i], f);
       return(0);
@@ -3462,9 +3444,9 @@ int e_ed_man(char *str, FENSTER * f)
   }
   if(b->mxlines == 1 && b->bf[0].len == 0)
   {
-    e_ins_nchar(f->b, f->s, "No manual entry for ", 0, 0, 20);
-    e_ins_nchar(f->b, f->s, hstr, b->b.x, b->b.y, strlen(hstr));
-    e_ins_nchar(f->b, f->s, ".", b->b.x, b->b.y, 1);
+    e_ins_nchar(f->b, f->s, (unsigned char *)"No manual entry for ", 0, 0, 20);
+    e_ins_nchar(f->b, f->s, (unsigned char *)hstr, b->b.x, b->b.y, strlen(hstr));
+    e_ins_nchar(f->b, f->s, (unsigned char *)".", b->b.x, b->b.y, 1);
   }
   for(i = 0; i < b->mxlines; i++)
     if(b->bf[i].len == 0 && (i == 0 || b->bf[i - 1].len == 0))
@@ -3477,8 +3459,8 @@ int e_ed_man(char *str, FENSTER * f)
     bg = 0;
   for(i = 0;
       i < b->mxlines &&
-      WpeStrnccmp(b->bf[i].s + bg, "\017SEE\005 \017ALSO\005", 12) &&
-      WpeStrnccmp(b->bf[i].s + bg, "SEE ALSO", 8);
+      WpeStrnccmp((const char *)b->bf[i].s + bg, (const char *)"\017SEE\005 \017ALSO\005", 12) &&
+      WpeStrnccmp((const char *)b->bf[i].s + bg, (const char *)"SEE ALSO", 8);
       i++);
   if(i < b->mxlines)
     for(bg = 0, i++; i < b->mxlines && b->bf[i].len > 0 && bg >= 0; i++)
@@ -3507,11 +3489,11 @@ int e_ed_man(char *str, FENSTER * f)
         else
         {
           cc = HFB;
-          e_ins_nchar(b, f->s, &cc, bg, i, 1);
+          e_ins_nchar(b, f->s, (unsigned char *)&cc, bg, i, 1);
           j++;
         }
         cc = HED;
-        e_ins_nchar(b, f->s, &cc, j, i, 1);
+        e_ins_nchar(b, f->s, (unsigned char *)&cc, j, i, 1);
         j++;
         if(b->bf[i].s[j])
           j++;
@@ -3537,7 +3519,7 @@ int e_funct(FENSTER * f)
  if (e_add_arguments(str, "Function", f, 0, AltF, &f->ed->hdf))
  {
   f->ed->hdf = e_add_df(str, f->ed->hdf);
-  e_ed_man(str, f);
+  e_ed_man((unsigned char *)str, f);
  }
  return(0);
 }
@@ -3867,7 +3849,7 @@ int e_data_eingabe(ECNT * cn)
        ((c == AltA || c == EINFG) && (f->ins > 3 && f->ins < 7)))
     {
       if(f->ins == 1)
-        e_ed_man(fw->df->name[fw->nf], f);
+        e_ed_man((unsigned char *)fw->df->name[fw->nf], f);
       else if(f->ins == 2)
       {
         e_edit(f->ed, fw->df->name[fw->nf]);

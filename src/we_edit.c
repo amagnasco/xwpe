@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include <ctype.h>
+#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
@@ -1708,7 +1709,7 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
    *(b->bf[ya].s + xa + 1) = '\0';
    i = b->mx.x;
    b->bf[ya].len = e_str_len(b->bf[ya].s);
-   b->bf[ya].nrc = strlen(b->bf[ya].s);
+   b->bf[ya].nrc = strlen((const char *)b->bf[ya].s);
   }
   for (; i > 0 && *(b->bf[ya].s+i) != ' ' && *(b->bf[ya].s+i) != '-'; i--);
   if (i == 0)
@@ -1749,7 +1750,7 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
     *(b->bf[ya+1].s+j-i-1) = *(b->bf[ya].s+j);
    *(b->bf[ya+1].s+j-i-1) = WPE_WR;
    b->bf[ya+1].len = e_str_len(b->bf[ya+1].s);
-   b->bf[ya+1].nrc = strlen(b->bf[ya+1].s);
+   b->bf[ya+1].nrc = strlen((const char *)b->bf[ya+1].s);
    sc_txt_4(ya, b, 1);
   }
   else
@@ -1781,13 +1782,13 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
 */
   *(b->bf[ya].s+i+1) = '\0';
   b->bf[ya].len = e_str_len(b->bf[ya].s);
-  b->bf[ya].nrc = strlen(b->bf[ya].s);
+  b->bf[ya].nrc = strlen((const char *)b->bf[ya].s);
   if (xa > b->bf[ya].len)
   {
    xa -= (b->bf[ya].len);
    ya++;
    b->bf[ya].len = e_str_len(b->bf[ya].s);
-   b->bf[ya].nrc = strlen(b->bf[ya].s);
+   b->bf[ya].nrc = strlen((const char *)b->bf[ya].s);
    if (sch->mark_begin.y == ya && sch->mark_begin.x >= xa)
     sch->mark_begin.x += n;
    if (sch->mark_end.y == ya && sch->mark_end.x >= xa)
@@ -1810,7 +1811,7 @@ int e_ins_nchar(BUFFER *b, SCHIRM *sch, unsigned char *s, int xa, int ya,
  b->b.x = xa + n;
  b->b.y = ya;
  b->bf[ya].len = e_str_len(b->bf[ya].s);
- b->bf[ya].nrc = strlen(b->bf[ya].s);
+ b->bf[ya].nrc = strlen((const char *)b->bf[ya].s);
  e_undo_sw--;
  sc_txt_4(ya, b, 0);
  return(xa+n);
@@ -1861,9 +1862,10 @@ int e_put_char(int c, BUFFER *b, SCHIRM *s)
 }
 
 /*   search right (left end of word) */
+/** FIXME: is unsigned char * really necessary? Do we expect value > 127? */
 int e_su_lblk(int xa, unsigned char *s)
 {
- int len = strlen(s);
+ int len = strlen((const char *)s);
 
  if (xa >= len)
   xa = len - 1;
@@ -1875,9 +1877,10 @@ int e_su_lblk(int xa, unsigned char *s)
 }
 
 /*     Search left (left end of word)     */
+/** FIXME: is unsigned char * really necessary? Do we expect value > 127? */
 int e_su_rblk(int xa, unsigned char *s)
 {
- int len = strlen(s);
+ int len = strlen((const char *)s);
 
  if (xa <= 0)
   return(xa);
@@ -2052,7 +2055,7 @@ void e_mouse_bar(int x, int y, int n, int sw, int frb)
 int e_autosave(FENSTER *f)
 {
  char *tmp, *str;
- long maxname;
+ unsigned long maxname;
 
  f->save = 1;
  if (!(f->ed->autosv & 2)) return(0);
@@ -2266,10 +2269,10 @@ int e_make_rudo(FENSTER *f, int sw)
   if (*((char*)ud->u.pt) == '\n' && ud->a.x == 1) e_car_ret(b, s);
   else if (*((char*)ud->u.pt + ud->a.x - 1) == '\n')
   {
-   e_ins_nchar(b, s, ((char *)ud->u.pt), ud->b.x, ud->b.y, ud->a.x-1);
+   e_ins_nchar(b, s, ((unsigned char *)ud->u.pt), ud->b.x, ud->b.y, ud->a.x-1);
    e_car_ret(b, s);
   }
-  else e_ins_nchar(b, s, ((char *)ud->u.pt), ud->b.x, ud->b.y, ud->a.x);
+  else e_ins_nchar(b, s, ((unsigned char *)ud->u.pt), ud->b.x, ud->b.y, ud->a.x);
   e_undo_sw = 0;
   s->mark_begin = ud->b;
   s->mark_end.y = ud->b.y;
@@ -2282,7 +2285,7 @@ int e_make_rudo(FENSTER *f, int sw)
   (b->mxlines)++;
   b->bf[b->b.y].s = ud->u.pt;
   b->bf[b->b.y].len = e_str_len(b->bf[b->b.y].s);
-  b->bf[b->b.y].nrc = strlen(b->bf[b->b.y].s);
+  b->bf[b->b.y].nrc = strlen((const char *)b->bf[b->b.y].s);
   s->mark_begin = ud->b;
   s->mark_end.y = ud->b.y + 1;
   s->mark_end.x = 0;

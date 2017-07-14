@@ -6,6 +6,7 @@
 
 Based on we_linux.c -- Created by Sebastiano Suraci */
 
+#include "config.h"
 #include "model.h"
 #include "edit.h"
 #include <gpm.h>
@@ -41,6 +42,7 @@ int WpeGpmMouseInit(void)
 
 int WpeGpmHandler(Gpm_Event *ep, void *data)
 {
+ UNUSED(data);
  extern struct mouse e_mouse;
 
  GPM_DRAWPOINTER(ep);
