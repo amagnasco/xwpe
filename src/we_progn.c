@@ -147,8 +147,8 @@ void e_mk_col(unsigned char *str, int l, int n, int *frb,
       str[n-1] != '_')))
     {
      int ii, jj;
-     int kk = strlen(cs->line_comment);
-     if ((WpeStrnccmp(cs->line_comment, str + n, kk) == 0) &&
+     int kk = strlen((const char *)cs->line_comment);
+     if ((WpeStrnccmp((char *)cs->line_comment, (const char *)str + n, kk) == 0) &&
        (!isalnum(str[n +kk])) && (str[n + kk] != '_'))
      {
       *mcsw = 7;
@@ -176,8 +176,8 @@ void e_mk_col(unsigned char *str, int l, int n, int *frb,
       str[n-1] != '_')))
     {
      int ii, jj;
-     int kk = strlen(cs->line_comment);
-     if ((strncmp(cs->line_comment, str + n, kk) == 0) &&
+     int kk = strlen((const char *)cs->line_comment);
+     if ((strncmp((const char *)cs->line_comment, (const char *)str + n, kk) == 0) &&
        (!isalnum(str[n +kk])) && (str[n + kk] != '_'))
      {
       *mcsw = 7;
@@ -503,7 +503,7 @@ void e_pr_c_line(int y, FENSTER *f)
  SCHIRM *s = f->s;
  int i, j, k, frb = 0;
  int mcsw = f->c_sw[y], svmsw = f->c_sw[y] == 5 ? 5 : 0, bssw = 0;
- int n_bg = -1, n_nd = strlen(f->c_st->end_comment)-1;
+ int n_bg = -1, n_nd = strlen((const char *)f->c_st->end_comment)-1;
 #ifdef DEBUGGER
  int fsw = 0;
 #endif
@@ -977,7 +977,9 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
       else if(*sp == '#')
       {  if(!(sp = e_sh_spl1(sp, str, fp, &n))) goto b_end;
 	 if(!strncmp(sp, "define", 6))
-	 {  while(isalpha(*++sp));
+	 {  while(isalpha(*++sp)) {
+		;
+	    }
 	    if(isspace(*sp) && !(sp = e_sh_spl1(sp, str, fp, &n))) goto b_end;
 	    if(!strncmp(sp, name, len) && !isalnum1(sp[len]))
 	    {  if(*first)
@@ -989,7 +991,9 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
 	 }
 #ifndef TESTSDEF
 	 else if(!strncmp(sp, "include", 7))
-	 {  while(isalpha(*++sp));
+	 {  while(isalpha(*++sp)) {
+		;
+	    }
 	    if(isspace(*sp) && !(sp = e_sh_spl1(sp, str, fp, &n))) goto b_end;
 	    for(i = 1; (word[i-1] = sp[i])
 			&& sp[i] != '\"' && sp[i] != '>'; i++);
@@ -1008,15 +1012,21 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
       }
       else if(!strncmp(sp, "extern", 6)) continue;
       else if(!strncmp(sp, "typedef", 7))
-      {  while(!isspace(*++sp));
+      {  while(!isspace(*++sp)) {
+		;
+	 }
 	 if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	 if(!strncmp(sp, "struct", 6) || !strncmp(sp, "class", 5) ||
 		!strncmp(sp, "union", 5))
-	 {  while(!isspace(*++sp));
+	 {  while(!isspace(*++sp)) {
+		;
+	    }
 	    if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	    if(*sp == ';') {  sp++;  com = 2;  n--;  continue;  }
 	    if(!strncmp(sp, name, len) && !isalnum1(sp[len]))
-	    {  while(!isspace(*++sp));
+	    {  while(!isspace(*++sp)) {
+		;
+	       }
 	       if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	       if(*sp == '{')
 	       {  if(*first)
@@ -1029,7 +1039,9 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
 	 }
 	 while(1)
 	 {  if(isalpha1(*sp))
-	    {  for(w = word; isalnum1(*w = *sp); w++, sp++);
+	    {  for(w = word; isalnum1(*w = *sp); w++, sp++) {
+		;
+	       }
 	       *w = '\0';
 	       if(isspace(*sp) && !(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	       if(*sp == ';')
@@ -1053,11 +1065,15 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
       }
       else if(!strncmp(sp, "struct", 6) || !strncmp(sp, "class", 5) ||
 		!strncmp(sp, "union", 5))
-      {  while(!isspace(*++sp));
+      {  while(!isspace(*++sp)) {
+		;
+	 }
 	 if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	 if(*sp == ';') {  sp++;  com = 2;  n--;  continue;  }
 	 if(!strncmp(sp, name, len) && !isalnum1(sp[len]))
-	 {  while(!isspace(*++sp));
+	 {  while(!isspace(*++sp)) {
+		;
+	    }
 	    if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	    if(*sp == '{')
 	    {  if(*first)
@@ -1068,7 +1084,9 @@ int e_find_def(name, startfile, mode, file, num, xn, nold, oldfile, df, first)
 	    }
 	 }
 	 else if(*sp != '{')
-	 {  while(!isspace(*++sp));
+	 {  while(!isspace(*++sp)) {
+		;
+	    }
 	    if(!(sp = e_sh_spl2(sp, str, fp, &n))) goto b_end;
 	 }
 	 if(*sp == ';') {  sp++;  com = 2;  n--;  continue;  }
@@ -1247,7 +1265,7 @@ int e_show_nm_f(char *name, FENSTER *f, int oldn, char **oldname)
  f = f->ed->f[f->ed->mxedt];
  for (i = num, j = x+1-(len = strlen(name)); i >= 0; )
  {
-  for (len = strlen(name); j >= 0 && strncmp(name, f->b->bf[i].s+j, len);
+  for (len = strlen(name); j >= 0 && strncmp(name, (const char *)f->b->bf[i].s+j, len);
     j--)
    ;
   if (j < 0 && i >= 0)
@@ -1270,7 +1288,7 @@ int e_show_nm_f(char *name, FENSTER *f, int oldn, char **oldname)
 struct {
  int num;
  char *str, *file;
-}  sh_df = {  -1, NULL  };
+}  sh_df = {  -1, NULL, NULL  };
 
 int e_sh_def(FENSTER *f)
 {
@@ -1380,15 +1398,17 @@ int e_nxt_brk(FENSTER *f)
     }
     else if (f->b->bf[i].s[j] == '/' && f->b->bf[i].s[j+1] == '/')
      break;
-    else if (f->b->bf[i].s[j] == '#' && ispelse(f->b->bf[i].s))
+    else if (f->b->bf[i].s[j] == '#'
+		&& ( !strncmp((const char *)f->b->bf[i].s, "#else", 5) 
+			|| !strncmp((const char *)f->b->bf[i].s, "#elif", 5)  ) )
     {
      for (nif = 1, i++; i < f->b->mxlines-1; i++)
      {
       for (j = 0; isspace(f->b->bf[i].s[j]); j++)
        ;
-      if (ispendif(f->b->bf[i].s+j))
+      if ( !strncmp((const char *)f->b->bf[i].s+j, "#endif", 6) )
        nif--;
-      else if(ispif(f->b->bf[i].s+j))
+      else if ( !strncmp((const char *)f->b->bf[i].s+j, "#if", 3) )
        nif++;
       if (!nif)
        break;
@@ -1493,15 +1513,17 @@ int e_nxt_brk(FENSTER *f)
       }
      }
     }
-    else if (f->b->bf[i].s[j] == '#' && ispelse(f->b->bf[i].s))
+     else if (f->b->bf[i].s[j] == '#'
+		&& ( !strncmp((const char *)f->b->bf[i].s, "#else", 5) 
+			|| !strncmp((const char *)f->b->bf[i].s, "#elif", 5)  ) )
     {
      for (nif = 1, i--; i > 0; i--)
      {
       for (j = 0; isspace(f->b->bf[i].s[j]); j++)
        ;
-      if (ispendif(f->b->bf[i].s+j))
+      if ( !strncmp((const char *)f->b->bf[i].s+j, "#endif", 6) )
        nif++;
-      else if (ispif(f->b->bf[i].s+j))
+      else if ( !strncmp((const char *)f->b->bf[i].s+j, "#if", 3) )
        nif--;
       if (!nif)
        break;
@@ -1591,7 +1613,7 @@ int e_mbt_str(BUFFER *b, int *ii, int *jj, unsigned char c, int n, int sw,
    if (j < m)
    {
     str = e_mbt_mk_sp(str, n+b->cn->autoindent, sw, &m);
-    e_ins_nchar(b, b->f->s, str, 0, i, m);
+    e_ins_nchar(b, b->f->s, (unsigned char *)str, 0, i, m);
    }
    j = -1;
    free(str);
@@ -1623,7 +1645,7 @@ int e_mbt_cnd(BUFFER *b, int *ii, int *jj, int n, int sw, int *cmnd)
     if (j < m && (b->bf[i].s[0] != '*' || b->bf[i].s[1] != '/'))
     {
      str = e_mbt_mk_sp(str, n+b->cn->autoindent, sw, &m);
-     e_ins_nchar(b, b->f->s, str, 0, i, m);
+     e_ins_nchar(b, b->f->s, (unsigned char *)str, 0, i, m);
     }
     j = -1;
     free(str);
@@ -1718,13 +1740,13 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     {
      tstr = e_mbt_mk_sp(tstr, !cmnd ? n+b->cn->autoindent : b->cn->autoindent,
        (sw & 4) ? 0 : f->ed->tabn, &m);
-     e_ins_nchar(b, s, tstr, 0, i, m);
+     e_ins_nchar(b, s, (unsigned char *)tstr, 0, i, m);
      j = m;
      tstr = e_mbt_mk_sp(tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
     }
     else
     {
-     e_ins_nchar(b, s, tstr, 0, i, m);
+     e_ins_nchar(b, s, (unsigned char *)tstr, 0, i, m);
      j = m;
      if (cmnd == 0) cmnd = 1;
     }
@@ -1742,7 +1764,9 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     e_mbt_cnd(b, &i, &j, n, (sw & 4) ? 0 : f->ed->tabn, &cmnd);
    else if (b->bf[i].s[j] == '/' && b->bf[i].s[j+1] == '/') break;
    else if (b->bf[i].s[j] == ';') {  cmnd = cbrk ? 0 : 1;  nstrct = 0;  }
-   else if (b->bf[i].s[j] == '#' && ispif(b->bf[i].s))
+   else if (b->bf[i].s[j] == '#' && 
+			( !strncmp((const char *)b->bf[i].s, "#if", 3) 
+				|| !strncmp((const char *)b->bf[i].s, "#ifdef", 6) ))
    {
     nif++;
     ifvekb = realloc(ifvekb, (nif+1)*sizeof(int));
@@ -1751,7 +1775,9 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     ifvekr[nif] = cbrk;
     cmnd = 2;
    }
-   else if (b->bf[i].s[j] == '#' && nif > 0 && ispelse(b->bf[i].s))
+   else if (b->bf[i].s[j] == '#' && nif > 0 
+				&& ( !strncmp((const char *)b->bf[i].s, "#else", 5) 
+					|| !strncmp((const char *)b->bf[i].s, "#elif", 5)  ) )
    {
     brk = ifvekb[nif];
     cbrk = ifvekr[nif];
@@ -1759,7 +1785,8 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     tstr = e_mbt_mk_sp(tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
     cmnd = 2;
    }
-   else if (b->bf[i].s[j] == '#' && ispendif(b->bf[i].s))
+   else if (b->bf[i].s[j] == '#' 
+		&& ( !strncmp((const char *)b->bf[i].s, "#endif", 6)  ) )
    {  nif--;  cmnd = 2;  }
    else if (b->bf[i].s[j] == '#')
    {
@@ -1789,7 +1816,7 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
       (b->bf[i].s[k+1] != '*' && b->bf[i].s[k+1] != '/')))
     {
      e_del_nchar(b, s, j+1, i, k-j-1);
-     e_ins_nchar(b, s, bstr, j+1, i, ndif-1);
+     e_ins_nchar(b, s, (unsigned char *)bstr, j+1, i, ndif-1);
     }
     if (nstrct == 1)
     {
@@ -1842,14 +1869,14 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     for (k = j - 1; k >= 0 && isspace(b->bf[i].s[k]); k--);
     e_del_nchar(b, s, k+1, i, j-1-k);
     if (k > 0)
-    {  e_ins_nchar(b, s, bstr, k+1, i, ndif-1);  j = k+ndif+1;  }
+    {  e_ins_nchar(b, s, (unsigned char *)bstr, k+1, i, ndif-1);  j = k+ndif+1;  }
     else
-    {  e_ins_nchar(b, s, tstr, k+1, i, m);  j = k+m+2;  }
+    {  e_ins_nchar(b, s, (unsigned char *)tstr, k+1, i, m);  j = k+m+2;  }
     n = nvek[brk];
     tstr = e_mbt_mk_sp(tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
    }
    else if (((j == 0 || !isalnum1(b->bf[i].s[j-1])) &&
-     (iscase(b->bf[i].s+j) || isstatus(b->bf[i].s+j))) ||
+     (iscase((const char *)b->bf[i].s+j) || isstatus((const char *)b->bf[i].s+j))) ||
      (nstrct > 1 && isalnum1(b->bf[i].s[j])))
    {
     if (vkcs[nic])
@@ -1859,13 +1886,13 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
      for (k = j - 1; k >= 0 && isspace(b->bf[i].s[k]); k--);
      e_del_nchar(b, s, k+1, i, j-1-k);
      if (k > 0)
-     {  e_ins_nchar(b, s, bstr, k+1, i, ndif-1);  j = k+ndif+1;  }
+     {  e_ins_nchar(b, s, (unsigned char *)bstr, k+1, i, ndif-1);  j = k+ndif+1;  }
      else
-     {  e_ins_nchar(b, s, tstr, k+1, i, m);  j = k+m+2;  }
+     {  e_ins_nchar(b, s, (unsigned char *)tstr, k+1, i, m);  j = k+m+2;  }
     }
     else
     {  brk++;  vkcs[nic] = 1;  }
-    if (nstrct < 2 || isstatus(b->bf[i].s+j))
+    if (nstrct < 2 || isstatus((const char *)b->bf[i].s+j))
     {
      for (j++; j < b->bf[i].len && b->bf[i].s[j] != ':'; j++);
      for (k = j + 1; k < b->bf[i].len && isspace(b->bf[i].s[k]); k++);
@@ -1873,7 +1900,7 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
        (b->bf[i].s[k+1] != '*' && b->bf[i].s[k+1] != '/')))
      {
       e_del_nchar(b, s, j+1, i, k-j-1);
-      e_ins_nchar(b, s, bstr, j+1, i, ndif-1);
+      e_ins_nchar(b, s, (unsigned char *)bstr, j+1, i, ndif-1);
       for (n = k = 0; k < j; k++)
       {
        if (b->bf[i].s[k] == '\t')
@@ -1884,7 +1911,7 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
      }
     }
     else if (nstrct == 2)
-     e_ins_nchar(b, s, bstr, j, i, ndif);
+     e_ins_nchar(b, s, (unsigned char *)bstr, j, i, ndif);
     else
      j--;
     n += ndif;
@@ -1895,7 +1922,7 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     nstrct = 0;
    }
    else if ((j == 0 || !isalnum1(b->bf[i].s[j-1])) &&
-     (!strncmp(b->bf[i].s+j, "switch", 6) && !isalnum1(b->bf[i].s[j+6])))
+     (!strncmp((const char *)b->bf[i].s+j, "switch", 6) && !isalnum1(b->bf[i].s[j+6])))
    {
     nic++;
     vkcb = realloc(vkcb, (nic+1)*sizeof(int));
@@ -1904,8 +1931,8 @@ int e_mk_beauty(int sw, int ndif, FENSTER *f)
     vkcb[nic] = brk;
    }
    else if ((j == 0 || !isalnum1(b->bf[i].s[j-1])) &&
-     ((!strncmp(b->bf[i].s+j, "class", 5) && !isalnum1(b->bf[i].s[j+5])) ||
-     (!strncmp(b->bf[i].s+j, "struct", 6) && !isalnum1(b->bf[i].s[j+6]))))
+     ((!strncmp((const char *)b->bf[i].s+j, "class", 5) && !isalnum1(b->bf[i].s[j+5])) ||
+     (!strncmp((const char *)b->bf[i].s+j, "struct", 6) && !isalnum1(b->bf[i].s[j+6]))))
     nstrct = 1;
    else if (cmnd == 1 && !isspace(f->b->bf[i].s[j]))
     cmnd = 0;
