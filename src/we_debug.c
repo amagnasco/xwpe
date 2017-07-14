@@ -268,6 +268,7 @@ int e_debug_switch(FENSTER *f, int c)
  * Reads one line until new line, end of string ('\0') or EOF.
  *
  * FIXME: find out when, why and from what source this line is read.
+ * TODO: Must the string s really be signed char *? Replaced with char *. check & test.
  *
  * Returns
  * 	-1 if the read is unsuccessful
@@ -279,7 +280,7 @@ int e_debug_switch(FENSTER *f, int c)
  *
  *  FIXME: find out what the returns mean exactly
  */
-int e_e_line_read(int n, signed char *s, int max)
+int e_e_line_read(int n, char *s, int max)
 {
  int i, ret = 0;
 
@@ -296,9 +297,11 @@ int e_e_line_read(int n, signed char *s, int max)
   return(1);
  if (e_deb_type == 3 && s[i] == '>')
   return(1);
- else if (e_deb_type == 2 && i > 4 && s[i] == ' ' && !strncmp(s+i-5, "(dbx)", 5))
+ else if (e_deb_type == 2 && i > 4 && s[i] == ' ' 
+		&& !strncmp((const char *)s+i-5, "(dbx)", 5))
   return(1);
- else if (e_deb_type == 0 && i > 4 && s[i] == ' ' && !strncmp(s+i-5, "(gdb)", 5))
+ else if (e_deb_type == 0 && i > 4 && s[i] == ' ' 
+		&& !strncmp((const char *)s+i-5, "(gdb)", 5))
   return(1);
  return(2);
 }
@@ -307,9 +310,10 @@ int e_e_line_read(int n, signed char *s, int max)
  * function e_d_line_read
  *
  * FIXME: what does this line read routine do exactly? What does it return?
+ * TODO: Must the string s really be signed char *? Replaced with char *. check & test.
  *
 */
-int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
+int e_d_line_read(int n, char *s, int max, int sw, int esw)
 {
  static char wt = 0, esc_sv = 0, str[12];
  int i, j, ret = 0, kbdflgs;
@@ -345,7 +349,7 @@ int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
   {  str[0] = 0;  wt = 0;   return(1);  }
   else if(e_deb_type == 0)
   {
-   if(i > 5 && !strncmp(s+i-6, "(gdb) ", 6))
+   if(i > 5 && !strncmp((const char *)s+i-6, "(gdb) ", 6))
    {  str[0] = 0;  wt = 0;   return(1);  }
    else if(i < 6)
    {
@@ -356,7 +360,7 @@ int e_d_line_read(int n, signed char *s, int max, int sw, int esw)
   }
   else if (e_deb_type == 2)
   {
-   if(i > 5 && !strncmp(s+i-6, "(dbx) ", 6))
+   if(i > 5 && !strncmp((const char *)s+i-6, "(dbx) ", 6))
    {  str[0] = 0;  wt = 0;   return(1);  }
    else if(i < 6)
    {
@@ -389,7 +393,6 @@ int e_d_p_exec(FENSTER *f)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
  int ret, i, is, j;
  char str[512];
 
@@ -399,7 +402,6 @@ int e_d_p_exec(FENSTER *f)
  {  e_edit(cn, "Messages");  i = cn->mxedt;  }
  f = cn->f[i];
  b = cn->f[i]->b;
- s = cn->f[i]->s;
  if (b->bf[b->mxlines-1].len != 0)
   e_new_line(b->mxlines, b);
  for (j = 0, i = is = b->mxlines-1;
@@ -482,12 +484,17 @@ int e_d_is_watch(int c, FENSTER *f)
   return(0);
 }
 
-int e_d_quit_basic(FENSTER *f)
+/** 
+ * Remark: return changed to void: no return was given and no one tested return. 
+ *
+ * */
+void e_d_quit_basic(FENSTER *f)
 {
- int i, kbdflgs;
+ UNUSED(f);
+ int kbdflgs;
 
  if (!e_d_swtch)
-  return 0;
+  return;
  if (rfildes[1] >= 0)
  {
   char *cstr = 0;
@@ -546,8 +553,10 @@ int e_d_quit_basic(FENSTER *f)
   {
    e_d_switch_out(1);
    fk_locate(MAXSCOL, MAXSLNS);
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
    e_putp("\r\n");
    e_putp(att_no);
+#endif
    e_d_switch_out(0);
   }
  }
@@ -713,8 +722,7 @@ int e_d_p_watches(FENSTER *f, int sw)
 {
  ECNT *cn = f->ed;
  BUFFER *b;
- SCHIRM *s;
- int iw, i, k = 0, l, ret;
+ int iw, k = 0, l, ret;
  char str1[256], *str; /* is 256 always large enough? */
  char *str2;
 
@@ -741,14 +749,13 @@ int e_d_p_watches(FENSTER *f, int sw)
  }
  f = cn->f[iw];
  b = cn->f[iw]->b;
- s = cn->f[iw]->s;
 
  /* free all lines of BUFFER b */
  e_p_red_buffer(b);
  free(b->bf[0].s);
  b->mxlines=0;
 
- for (i = 0, l = 0; l < e_d_nwtchs; l++)
+ for (l = 0; l < e_d_nwtchs; l++)
  {
   str = str1;
 
@@ -843,10 +850,8 @@ int e_d_p_watches(FENSTER *f, int sw)
 
  e_new_line(b->mxlines, b);
  fk_cursor(1);
-/* if (b->b.y > i || sw) b->b.y = i;*/
  if (sw && iw != cn->mxedt) e_switch_window(cn->edt[iw], cn->f[cn->mxedt]);
  else e_rep_win_tree(cn);
-/* e_d_switch_out(0);   */
  return(0);
 }
 
@@ -871,7 +876,7 @@ int e_p_show_watches(FENSTER *f)
 /***  reinitialize watches from prj  ***/
 int e_d_reinit_watches(FENSTER * f,char * prj)
 {
- int i,e,g,q,y,r;
+ int i,e,g,q,r;
  char * prj2;
 
  for(i = f->ed->mxedt; i > 0; i--)
@@ -886,7 +891,6 @@ int e_d_reinit_watches(FENSTER * f,char * prj)
  prj2=malloc(sizeof(char)*(g+1));
  strcpy(prj2,prj);
  q=0;
- y=0;
  r=0;
  while(q<g)
  {
@@ -1320,6 +1324,7 @@ int e_remove_breakpoints(FENSTER *f)
 
 int e_mk_brk_main(FENSTER *f, int sw)
 {
+ UNUSED(f);
  int i, ret;
  char eing[128], str[256];
 

@@ -6,11 +6,12 @@
 
 #ifdef DEBUGGER
 int e_deb_inp(FENSTER *f);
-int e_e_line_read(int n, signed char *s, int max);
+int e_e_line_read(int n, char *s, int max);
 int e_d_dum_read(void);
 int e_d_p_exec(FENSTER *f);
 int e_d_getchar(void);
-int e_d_quit_basic(FENSTER *f);
+/** return changed to void: no return was given and no one tested return. */
+void e_d_quit_basic(FENSTER *f);
 int e_d_quit(FENSTER *f);
 int e_d_add_watch(char *str, FENSTER *f);
 int e_remove_all_watches(FENSTER *f);
