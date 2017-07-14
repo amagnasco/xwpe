@@ -1066,7 +1066,7 @@ void e_opt_eck_mouse(o)
    e_std_rahmen(o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
    if(!WpeIsXwin()) pic = e_open_view(o->xa, o->ya, o->xe, o->ye, 0, 2);
-   else 
+   else
 	pic = e_open_view(o->xa, o->ya, o->xe-2, o->ye-1, 0, 2);
 #else
    pic = e_open_view(o->xa, o->ya, o->xe, o->ye, 0, 2);
@@ -1119,13 +1119,17 @@ int e_opt_mouse(W_OPTSTR *o)
   return(-1);
  else if (e_mouse.y == o->ya)
  {
-  if (e_mouse.x == o->xa+3)
-  {  while(e_mshit());  return(WPE_ESC);  }
-  else
-  {  e_opt_eck_mouse(o);  return(-1);  }
- }
- while (e_mshit())
+  if (e_mouse.x == o->xa+3) {
+	 while(e_mshit()) {
+		;
+     	}
+     	return(WPE_ESC);
+  } else {
+	e_opt_eck_mouse(o);  return(-1);  }
+  }
+ while (e_mshit()) {
   ;
+ }
  if ((c = e_get_opt_sw(0, e_mouse.x, e_mouse.y, o))) return(c);
  else return(-1);
 }
