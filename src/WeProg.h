@@ -49,23 +49,12 @@ typedef struct wpeSyntaxExt {
 /* Necessary for the time being */
 extern WpeSyntaxExt **WpeSyntaxDef;
 
-
-/* WeSyntax.h *\
-void WpeSyntaxGetPersonal(char *filename);
-void WpeSyntaxGetSystem(char *filename,);                                  */
+/* WeSyntax.h */
 void WpeSyntaxReadFile(ECNT *cn);
-
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Macros and Machine specific information
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-#define WpeSyntaxGetPersonal(filename)                                      \
- sprintf(filename, "%s/%s/%s", getenv("HOME"), XWPE_HOME, SYNTAX_FILE)
-
-#define WpeSyntaxGetSystem(filename)                                        \
- sprintf(filename, "%s/%s", DATADIR, SYNTAX_FILE)
-
 
 #ifdef __cplusplus
 }

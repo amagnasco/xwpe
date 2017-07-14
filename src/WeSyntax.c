@@ -89,10 +89,11 @@ void WpeSyntaxReadFile(ECNT *cn)
  int i, k;
 
  WpeSyntaxDef = (WpeSyntaxExt **)WpeExpArrayCreate(0, sizeof(WpeSyntaxExt *), 4);
- WpeSyntaxGetPersonal(tmp);
+ sprintf(tmp, "%s/%s/%s", getenv("HOME"), XWPE_HOME, SYNTAX_FILE);
+
  if ((syntax_file = fopen(tmp, "r")) == NULL)
  {
-  WpeSyntaxGetSystem(tmp);
+  sprintf(filename, "%s/%s", DATADIR, SYNTAX_FILE)
   if ((syntax_file = fopen(tmp, "r")) == NULL)
   {
    /* C Syntax (".c" extension) */
