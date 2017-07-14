@@ -21,13 +21,13 @@
 /*  XWindow Definitions  */
 
 #if !defined(NO_XWINDOWS)  || defined (HAVE_LIBGPM)
-#define MOUSE   1        /*  activate mouse  */
+#define MOUSE   1		/*  activate mouse  */
 #else
-#define MOUSE   0        /*  deactivate mouse  */
+#define MOUSE   0		/*  deactivate mouse  */
 #endif
 
 /*  Newstyle only for XWindow   */
-#if !defined(NO_XWINDOWS) 
+#if !defined(NO_XWINDOWS)
 #define NEWSTYLE
 #endif
 

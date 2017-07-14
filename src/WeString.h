@@ -8,7 +8,8 @@
 \*-------------------------------------------------------------------------*/
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 
@@ -22,7 +23,7 @@ characters.
       n            (In)  Maximum number of characters to compare
     Returns: Zero if equal.  Anything else means not equal.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-int WpeStrnccmp(const char *s1, const char *s2, int n);
+  int WpeStrnccmp (const char *s1, const char *s2, int n);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStrccmp - Case-insensitive compare of two strings.
@@ -32,7 +33,7 @@ int WpeStrnccmp(const char *s1, const char *s2, int n);
       s2           (In)  Second string
     Returns: Zero if equal.  Anything else means not equal.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-int WpeStrccmp(const char *s1, const char *s2);
+  int WpeStrccmp (const char *s1, const char *s2);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStrcstr - Case-insensitive substring search.
@@ -43,7 +44,7 @@ int WpeStrccmp(const char *s1, const char *s2);
     Returns: Pointer to the beginning of the substring in the main string.
   NULL if the substring is not found.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-char *WpeStrcstr(char *str, const char *substr);
+  char *WpeStrcstr (char *str, const char *substr);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStrdup - Duplicate a string.
@@ -53,7 +54,7 @@ char *WpeStrcstr(char *str, const char *substr);
     Returns: Pointer to new string created with malloc().  NULL if
   insufficient memory free to create the string.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-char *WpeStrdup(const char *str);
+  char *WpeStrdup (const char *str);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeNumberOfPlaces - Number of places in a number excluding the sign.
@@ -62,7 +63,7 @@ char *WpeStrdup(const char *str);
       n            (In)  Number
     Returns: The number of places.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-int WpeNumberOfPlaces(int n);
+  int WpeNumberOfPlaces (int n);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeNumberToString - Converts a number to a string.
@@ -73,7 +74,7 @@ int WpeNumberOfPlaces(int n);
       s            (In & Out) Converted number
     Returns: Pointer to the converted number string
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-char *WpeNumberToString(int n, int len, char *s);
+  char *WpeNumberToString (int n, int len, char *s);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStringToNumber - Converts a string to a number.
@@ -82,7 +83,7 @@ char *WpeNumberToString(int n, int len, char *s);
       s            (In)  String to be converted to a number
     Returns: The string's number value
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-int WpeStringToNumber(const char *s);
+  int WpeStringToNumber (const char *s);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStringToUpper - Converts a string to all uppercase.
@@ -91,7 +92,7 @@ int WpeStringToNumber(const char *s);
       s            (In & Out) String to be converted to uppercase
     Returns: Pointer to the uppercase string
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-char *WpeStringToUpper(char *s);
+  char *WpeStringToUpper (char *s);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStringBlank - Fills a string with blank spaces.
@@ -101,7 +102,7 @@ char *WpeStringToUpper(char *s);
       len          (In)  Length of the string (excluding '\0')
     Returns: The blanked string.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-char *WpeStringBlank(char *s, int len);
+  char *WpeStringBlank (char *s, int len);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStringCutChar - Cuts a string at the last occurance of a character.
@@ -111,11 +112,10 @@ char *WpeStringBlank(char *s, int len);
       c            (In) Character to cut off
     Returns: The cut string.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-char *WpeStringCutChar(char *s, char c);
+  char *WpeStringCutChar (char *s, char c);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

@@ -1,7 +1,7 @@
 #ifndef WE_GLOBALS_H
 #define WE_GLOBALS_H
 
-extern struct CNT * WpeEditor;
+extern struct CNT *WpeEditor;
 
 
 /* Checks if programming editor is running (old variable currently used) */

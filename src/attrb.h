@@ -21,7 +21,3 @@
 #define A_DIM           0x10
 #define A_BOLD          0x20
 #define A_ALTCHARSET    0x100
-
-
-
-

@@ -11,11 +11,11 @@
 #include "we_opt.h"
 #include "we_unix.h"
 
-void e_ini_desk(ECNT * cn);
-void FARBE_Init(FARBE * fb);
-FARBE * e_ini_farbe();
-int e_switch_blst(ECNT * cn);
-void e_free_find(FIND * fd);
+void e_ini_desk (ECNT * cn);
+void FARBE_Init (FARBE * fb);
+FARBE *e_ini_farbe ();
+int e_switch_blst (ECNT * cn);
+void e_free_find (FIND * fd);
 
 extern char *e_msg[];
 

@@ -22,7 +22,7 @@
 #define HELP_FILE   "help.xwpe"
 #define OPTION_FILE "xwperc"
 
-#define BUFFER_NAME "Buffer"   /*  Clipboard in Buffer changed  */
+#define BUFFER_NAME "Buffer"	/*  Clipboard in Buffer changed  */
 #define SUDIR "*"
 #define MAXREC 15
 #ifndef DEF_SHELL
@@ -64,10 +64,10 @@ extern char RE1, RE2, RE3, RE4, RE5, RE6, WBT;
 #define CUT   430
 #define HELP  431
 
-#define DWR 20       /*  ctrl t  */
-#define DWL 18       /*  ctrl r  */
-#define DNDL 17      /*  ctrl q  */
-#define DGZ 25       /*  ctrl y  */
+#define DWR 20			/*  ctrl t  */
+#define DWL 18			/*  ctrl r  */
+#define DNDL 17			/*  ctrl q  */
+#define DGZ 25			/*  ctrl y  */
 
 #define WPE_CR 13
 //extern const unsigned char WPE_WR;
@@ -75,7 +75,7 @@ extern char RE1, RE2, RE3, RE4, RE5, RE6, WBT;
 #define WPE_ESC 27
 #define WPE_DC 8
 #define WPE_TAB 9
-#define WPE_BTAB 28 /*First value which looks suitable for me*/
+#define WPE_BTAB 28		/*First value which looks suitable for me */
 
 #define SCLE CLE+512
 #define SCRI CRI+512

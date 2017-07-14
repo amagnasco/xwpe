@@ -85,7 +85,7 @@
 #define ENTF 338
 #define POS1 326
 #define ENDE 334
-#define BUP 328               
+#define BUP 328
 #define BDO 336
 #define CBUP 387
 #define CBDO 373
@@ -144,13 +144,13 @@
 #define CF10 951
 
 
-#define HBG CtrlA	/*  Button start  */
-#define HFB CtrlG	/*  Button-Man-Page start  */
-#define HNF CtrlC	/*  Button with link to file   */
-#define HED CtrlE	/*  End Mark   */
-#define HHD CtrlB	/*  start headline   */
-#define HFE CtrlF	/*  end of page   */
-#define HBS CtrlH	/*  Backspace (Man-Pages)  */
-#define HBB CtrlO	/*  start highlight  */
+#define HBG CtrlA		/*  Button start  */
+#define HFB CtrlG		/*  Button-Man-Page start  */
+#define HNF CtrlC		/*  Button with link to file   */
+#define HED CtrlE		/*  End Mark   */
+#define HHD CtrlB		/*  start headline   */
+#define HFE CtrlF		/*  end of page   */
+#define HBS CtrlH		/*  Backspace (Man-Pages)  */
+#define HBB CtrlO		/*  start highlight  */
 
 #define MBKEY -100

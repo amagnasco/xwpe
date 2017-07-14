@@ -8,7 +8,7 @@
 \*-------------------------------------------------------------------------*/
 
 /* FENSTER f -> CNT ed -> flopt */
- 
+
 #define FM_SHOW_HIDDEN_FILES  0x0001
 #define FM_SHOW_HIDDEN_DIRS   0x0002
 #define FM_DELETE_AT_EXIT     0x0004
@@ -58,4 +58,3 @@
   (ED_ERRORS_STOP_AT | ED_MESSAGES_STOP_AT | ED_SYNTAX_HIGHLIGHT)
 
 #endif
-
