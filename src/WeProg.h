@@ -20,16 +20,16 @@ extern "C" {
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 typedef struct wpeSyntaxRule {
  char **reserved_word;  /* Reserved words */
- unsigned char **long_operator;  /* Operators longer than a single character*/
- unsigned char *single_operator; /* Single character operators */
- unsigned char *begin_comment;   /* Comments begin with this string */
- unsigned char *end_comment;     /* Comments end with this string */
- unsigned char *line_comment;    /* Comments 'til end of line with this */
- unsigned char string_constant;  /* Character denoting string constant */
- unsigned char char_constant;    /* Character denoting character constant */
- unsigned char preproc_cmd;      /* Character denoting preprocessor commnand*/
- unsigned char quoting_char;     /* Quote the next character */
- unsigned char continue_char;    /* Line continues if this is last character*/
+ char **long_operator;  /* Operators longer than a single character*/
+ char *single_operator; /* Single character operators */
+ char *begin_comment;   /* Comments begin with this string */
+ char *end_comment;     /* Comments end with this string */
+ char *line_comment;    /* Comments 'til end of line with this */
+ char string_constant;  /* Character denoting string constant */
+ char char_constant;    /* Character denoting character constant */
+ char preproc_cmd;      /* Character denoting preprocessor commnand*/
+ char quoting_char;     /* Quote the next character */
+ char continue_char;    /* Line continues if this is last character*/
  unsigned char insensitive;      /* Set when language is not case sensitive */
  int continue_column;            /* Continues previous line if anything in
                                     the column (works?) */
@@ -38,7 +38,7 @@ typedef struct wpeSyntaxRule {
  /* If any character from the special comment string is found in the special
    column the rest of the line is a comment */
  int special_column;
- unsigned char *special_comment;
+ char *special_comment;
 } WpeSyntaxRule;
 
 typedef struct wpeSyntaxExt {

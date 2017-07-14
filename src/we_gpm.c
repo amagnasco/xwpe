@@ -42,6 +42,7 @@ int WpeGpmMouseInit(void)
 
 int WpeGpmHandler(Gpm_Event *ep, void *data)
 {
+ UNUSED(data);
  extern struct mouse e_mouse;
 
  GPM_DRAWPOINTER(ep);

@@ -88,7 +88,7 @@ void WpeSyntaxReadFile(ECNT *cn)
 
  if ((syntax_file = fopen(tmp, "r")) == NULL)
  {
-  sprintf(filename, "%s/%s", DATADIR, SYNTAX_FILE)
+  sprintf(tmp, "%s/%s", DATADIR, SYNTAX_FILE);
   if ((syntax_file = fopen(tmp, "r")) == NULL)
   {
    /* C Syntax (".c" extension) */
