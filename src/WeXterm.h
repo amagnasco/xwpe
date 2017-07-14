@@ -8,7 +8,8 @@
 \*-------------------------------------------------------------------------*/
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
@@ -29,37 +30,37 @@ extern "C" {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   New Types
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-typedef struct wpeXStruct {
- Display *display;
- int screen;
- Window window;
- GC gc;
- XFontStruct *font;
- Atom delete_atom, protocol_atom, selection_atom, text_atom, property_atom;
- int font_height, font_width;
- int altmask;
- int colors[16];
- WpeMouseShape shape_list[2];
+  typedef struct wpeXStruct
+  {
+    Display *display;
+    int screen;
+    Window window;
+    GC gc;
+    XFontStruct *font;
+    Atom delete_atom, protocol_atom, selection_atom, text_atom, property_atom;
+    int font_height, font_width;
+    int altmask;
+    int colors[16];
+    WpeMouseShape shape_list[2];
 #ifdef SELECTION
- unsigned char *selection;
+    unsigned char *selection;
 #else
- char *selection;
+    char *selection;
 #endif
-} WpeXStruct;
+  } WpeXStruct;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Global Variables
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-extern WpeXStruct WpeXInfo;
+  extern WpeXStruct WpeXInfo;
 
 
-void WpeXInit(int *argc, char **argv);
-void WpeXMouseChangeShape(WpeMouseShape new_shape);
-void WpeXMouseRestoreShape();
+  void WpeXInit (int *argc, char **argv);
+  void WpeXMouseChangeShape (WpeMouseShape new_shape);
+  void WpeXMouseRestoreShape ();
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

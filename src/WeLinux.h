@@ -3,7 +3,7 @@
 
 /* WeLinux.c */
 #ifdef __linux__
-int WpeLinuxBioskey(void);
+int WpeLinuxBioskey (void);
 #endif // #ifdef __linux__
 
 #endif

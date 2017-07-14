@@ -6,8 +6,8 @@
 #include "we_block.h"
 #include "we_e_aus.h"
 
-extern int (*e_u_ini_size)(void);
+extern int (*e_u_ini_size) (void);
 
-int e_X_sw_color(void);
+int e_X_sw_color (void);
 
 #endif
