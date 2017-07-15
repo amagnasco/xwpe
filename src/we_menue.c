@@ -33,6 +33,7 @@ int e_hp_ret (FENSTER * f);
 int e_hp_back (FENSTER * f);
 int e_hp_prev (FENSTER * f);
 int e_hp_next (FENSTER * f);
+OPTK WpeFillSubmenuItem (char *t, int x, char o, int (*fkt) ());
 
 /* main menu control bar */
 int
