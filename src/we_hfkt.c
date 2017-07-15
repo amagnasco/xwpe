@@ -261,7 +261,7 @@ e_set_pnt (int x, int y)
 }
 
 int
-e_pr_uul (FARBE * fb)
+e_pr_uul (we_colorset * fb)
 {
   extern WOPT *blst;
   extern int nblst;

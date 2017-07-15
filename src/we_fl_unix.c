@@ -49,7 +49,7 @@ extern char *e_tmp_dir;
 
 #ifdef DEBUG
 int
-SpecialError (char *text, int sw, FARBE * f, char *file, int line)
+SpecialError (char *text, int sw, we_colorset * f, char *file, int line)
 {
   fprintf (stderr, "\nFile \"%s\" line %d\n", file, line);
   return e_error (text, sw, f);

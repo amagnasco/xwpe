@@ -36,7 +36,7 @@ extern char *info_file;
 #ifdef DEBUGGER
 extern int e_deb_type;
 #endif
-extern FARBE *u_fb, *x_fb;
+extern we_colorset *u_fb, *x_fb;
 
 #define OPTION_SECTIONS 4
 #define OPT_SECTION_GENERAL     "General"
@@ -536,7 +536,7 @@ void
 e_pr_ed_beispiel (int xa, int ya, FENSTER * f, int sw, int md)
 {
   COLOR *frb = &(f->fb->er);
-  FARBE *fb = f->fb;
+  we_colorset *fb = f->fb;
   int i, j, xe = xa + 31, ye = ya + 19;
 
   frb[sw] = e_s_clr (frb[sw].f, frb[sw].b);
@@ -779,7 +779,7 @@ WpeWriteGeneral (ECNT * cn, char *section, FILE * opt_file)
 int
 WpeReadColor (ECNT * cn, char *section, char *option, char *value)
 {
-  FARBE *fb = NULL;
+  we_colorset *fb = NULL;
   COLOR *c = NULL;
   int convert = 0;		/* Convert old X11 colors to new colors */
 
@@ -787,8 +787,8 @@ WpeReadColor (ECNT * cn, char *section, char *option, char *value)
     {
       if (!u_fb)
 	{
-	  u_fb = malloc (sizeof (FARBE));
-	  FARBE_Init (u_fb);
+	  u_fb = malloc (sizeof (we_colorset));
+	  we_colorset_Init (u_fb);
 	}
       fb = u_fb;
     }
@@ -796,8 +796,8 @@ WpeReadColor (ECNT * cn, char *section, char *option, char *value)
     {
       if (!x_fb)
 	{
-	  x_fb = malloc (sizeof (FARBE));
-	  FARBE_Init (x_fb);
+	  x_fb = malloc (sizeof (we_colorset));
+	  we_colorset_Init (x_fb);
 	}
       fb = x_fb;
       if ((cn->major <= 1) && (cn->minor <= 5) && (cn->patch <= 27))
@@ -954,7 +954,7 @@ int
 WpeWriteColor (ECNT * cn, char *section, FILE * opt_file)
 {
   UNUSED (cn);
-  FARBE *fb = 0;
+  we_colorset *fb = 0;
 
   if (WpeStrccmp ("Term", section + strlen (OPT_SECTION_COLOR) + 1) == 0)
     fb = u_fb;

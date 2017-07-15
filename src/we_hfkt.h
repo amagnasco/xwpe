@@ -19,6 +19,6 @@ COLOR e_s_t_clr (int f, int b);
 COLOR e_n_t_clr (int fb);
 #endif
 POINT e_set_pnt (int x, int y);
-int e_pr_uul (FARBE * fb);
+int e_pr_uul (we_colorset * fb);
 
 #endif

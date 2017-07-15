@@ -364,7 +364,7 @@ e_ini_size ()
 int
 e_X_sw_color ()
 {
-  FARBE *fb = WpeEditor->fb;
+  we_colorset *fb = WpeEditor->fb;
   fb->er = e_n_clr (A_Normal);
   fb->et = e_n_clr (A_Normal);
   fb->ez = e_n_clr (A_Reverse);

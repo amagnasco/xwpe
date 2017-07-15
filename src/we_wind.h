@@ -38,7 +38,7 @@
 
 
 /*   we_wind.c   */
-int e_error (char *text, int sw, FARBE * f);
+int e_error (char *text, int sw, we_colorset * f);
 int e_message (int sw, char *str, FENSTER * f);
 void e_firstl (FENSTER * f, int sw);
 int e_pr_filetype (FENSTER * f);

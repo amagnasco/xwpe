@@ -12,8 +12,8 @@
 #include "we_unix.h"
 
 void e_ini_desk (ECNT * cn);
-void FARBE_Init (FARBE * fb);
-FARBE *e_ini_farbe ();
+void we_colorset_Init (we_colorset * fb);
+we_colorset *e_ini_farbe ();
 int e_switch_blst (ECNT * cn);
 void e_free_find (FIND * fd);
 

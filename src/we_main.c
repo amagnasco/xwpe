@@ -38,7 +38,7 @@ extern char *e_hlp_str[];
 
 extern int col_num;
 
-extern FARBE *u_fb, *x_fb;
+extern we_colorset *u_fb, *x_fb;
 
 /* globals */
 struct CNT *WpeEditor;
@@ -334,7 +334,7 @@ ECNT_Init (ECNT * cn)
 int
 main (int argc, char **argv)
 {
-  FARBE *fb;
+  we_colorset *fb;
   ECNT *cn;
   int i, err = 0, g[4];
   int so = 0, sd = 1;
@@ -601,7 +601,7 @@ e_ini_desk (ECNT * cn)
 }
 
 void
-FARBE_Init (FARBE * fb)
+we_colorset_Init (we_colorset * fb)
 {
   fb->er = e_s_x_clr (15, 4);	/*  Editor Frames         */
   fb->et = e_s_x_clr (11, 4);	/*  Editor Text           */
@@ -644,23 +644,23 @@ FARBE_Init (FARBE * fb)
   fb->ws = 7;
 }
 
-FARBE *
+we_colorset *
 e_ini_farbe ()
 {
   if (WpeIsXwin ())
     {
       if (!x_fb)
-	x_fb = malloc (sizeof (FARBE));
-      FARBE_Init (x_fb);
+	x_fb = malloc (sizeof (we_colorset));
+      we_colorset_Init (x_fb);
       return x_fb;
     }
   else
     {
       if (!u_fb)
-	u_fb = malloc (sizeof (FARBE));
+	u_fb = malloc (sizeof (we_colorset));
       if (col_num)
 	{
-	  FARBE_Init (u_fb);
+	  we_colorset_Init (u_fb);
 	}
       else
 	{

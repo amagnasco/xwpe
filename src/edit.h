@@ -127,7 +127,7 @@ typedef struct frb
   COLOR cc;			/* comments in program */
   char dc;			/* desktop fill character */
   char ws;
-} FARBE;
+} we_colorset;
 
 typedef struct undo
 {
@@ -159,7 +159,7 @@ typedef struct BFF
   Undo *ud, *rd;
   struct CNT *cn;
   struct FNST *f;
-  FARBE *fb;
+  we_colorset *fb;
 } BUFFER;
 
 typedef struct SCHRM
@@ -173,7 +173,7 @@ typedef struct SCHRM
   POINT a;
   POINT e;
   POINT c;
-  FARBE *fb;
+  we_colorset *fb;
 #ifdef DEBUGGER
   POINT da, de;
   int *brp;
@@ -217,7 +217,7 @@ typedef struct FNST
   POINT sa;
   POINT se;
   char zoom;
-  FARBE *fb;			/* color scheme */
+  we_colorset *fb;			/* color scheme */
   view *pic;			/* picture save below the box ??? */
   char *dirct;			/* working/actual directory */
   char *datnam;			/* window header text */
@@ -252,7 +252,7 @@ typedef struct CNT
   char *optfile, *tabs;
   struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
   FIND fd;
-  FARBE *fb;
+  we_colorset *fb;
   FENSTER *f[MAXEDT + 1];
   char dtmd, autosv;
 } ECNT;

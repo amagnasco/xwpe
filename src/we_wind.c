@@ -76,7 +76,7 @@ StringToStringArray (char *str, int *maxLen, int minWidth, int *nr_lines_return)
 /*
       Print error message        */
 int
-e_error (char *text, int sw, FARBE * f)
+e_error (char *text, int sw, we_colorset * f)
 {
   view *pic = NULL;
   int len, i, xa, xe, ya = 8, ye = 14;
