@@ -1536,7 +1536,7 @@ e_p_add_item (FENSTER * f)
       e_make_prj_opt (f);
       e_prj_ob_file (f);
       fw = (FLWND *) cn->f[cn->mxedt]->b;
-      fw->nf = fw->df->anz - 1;
+      fw->nf = fw->df->nr_files - 1;
     }
   cn->f[cn->mxedt]->save = 1;
   WpeCreateFileManager (5, cn, NULL);
@@ -2244,7 +2244,7 @@ e_p_get_args (char *string)
       free (df);
       return (NULL);
     }
-  df->anz = 0;
+  df->nr_files = 0;
   for (i = 0; string[i];)
     {
       for (; isspace (string[i]); i++)
@@ -2253,22 +2253,22 @@ e_p_get_args (char *string)
 	;
       if (j == i)
 	break;
-      df->anz++;
-      if (!(df->name = realloc (tmp = df->name, df->anz * sizeof (char *))))
+      df->nr_files++;
+      if (!(df->name = realloc (tmp = df->name, df->nr_files * sizeof (char *))))
 	{
-	  df->anz--;
+	  df->nr_files--;
 	  df->name = tmp;
 	  return (df);
 	}
-      if (!(df->name[df->anz - 1] = malloc ((j - i + 1) * sizeof (char))))
+      if (!(df->name[df->nr_files - 1] = malloc ((j - i + 1) * sizeof (char))))
 	{
-	  df->anz--;
+	  df->nr_files--;
 	  return (df);
 	}
       for (k = i; k < j; k++)
-	*(df->name[df->anz - 1] + k - i) = string[k];
-      *(df->name[df->anz - 1] + k - i) = '\0';
-      e_interpr_var (df->name[df->anz - 1]);
+	*(df->name[df->nr_files - 1] + k - i) = string[k];
+      *(df->name[df->nr_files - 1] + k - i) = '\0';
+      e_interpr_var (df->name[df->nr_files - 1]);
       i = j;
     }
   return (df);
@@ -2337,7 +2337,7 @@ e_c_project (FENSTER * f)
       e_free_arg (e_arg, e_argc);
       return (-1);
     }
-  for (k = 0; k < df->anz; k++, e_argc++, argc++)
+  for (k = 0; k < df->nr_files; k++, e_argc++, argc++)
     {
       j = e_argc == 1 ? 1 : 0;
       e_arg = realloc (e_arg, (e_argc + 2) * sizeof (char *));
@@ -2358,7 +2358,7 @@ e_c_project (FENSTER * f)
   df = e_p_get_var ("CMPFLAGS");
   if (df)
     {
-      for (k = 0; k < df->anz; k++, e_argc++, argc++)
+      for (k = 0; k < df->nr_files; k++, e_argc++, argc++)
 	{
 	  j = e_argc == 1 ? 1 : 0;
 	  e_arg = realloc (e_arg, (e_argc + 2) * sizeof (char *));
@@ -2377,10 +2377,10 @@ e_c_project (FENSTER * f)
   elen = strlen (e_prog.exedir) - 1;
   if (e_prog.exedir[elen] == '/')
     sprintf (ofile, "%s%s", e_prog.exedir,
-	     (df && df->anz > 0 && df->name[0][0]) ? df->name[0] : "a.out");
+	     (df && df->nr_files > 0 && df->name[0][0]) ? df->name[0] : "a.out");
   else
     sprintf (ofile, "%s/%s", e_prog.exedir,
-	     (df && df->anz > 0 && df->name[0][0]) ? df->name[0] : "a.out");
+	     (df && df->nr_files > 0 && df->name[0][0]) ? df->name[0] : "a.out");
   if (df)
     freedf (df);
   if (e_s_prog.exe_name)
@@ -2411,7 +2411,7 @@ e_c_project (FENSTER * f)
     {
       char *tmpstr = malloc (1);
       tmpstr[0] = '\0';
-      for (k = 0; k < df->anz; k++)
+      for (k = 0; k < df->nr_files; k++)
 	{
 	  tmpstr = realloc (tmpstr,
 			    (strlen (tmpstr) + strlen (df->name[k]) +
@@ -2442,7 +2442,7 @@ e_c_project (FENSTER * f)
     }
   arg[argc] = NULL;
   elen = strlen (e_prog.exedir) - 1;
-  for (k = 0; k < df->anz; k++)
+  for (k = 0; k < df->nr_files; k++)
     {
       for (j = cn->mxedt; j > 0; j--)
 	if (!strcmp (cn->f[j]->datnam, df->name[k]) && cn->f[j]->save)
@@ -2577,7 +2577,7 @@ e_c_project (FENSTER * f)
     {
       free (e_s_prog.libraries);
       e_s_prog.libraries = NULL;
-      for (k = 0; k < df->anz; k++, e_argc++)
+      for (k = 0; k < df->nr_files; k++, e_argc++)
 	{
 	  e_arg = realloc (e_arg, (e_argc + 2) * sizeof (char *));
 	  e_arg[e_argc] = malloc (strlen (df->name[k]) + 1);
@@ -2708,7 +2708,7 @@ e_make_prj_opt (FENSTER * f)
 	  e_p_df[i]->name[0] = malloc (2 * sizeof (char));
 	  *e_p_df[i]->name[0] = ' ';
 	  *(e_p_df[i]->name[0] + 1) = '\0';
-	  e_p_df[i]->anz = 1;
+	  e_p_df[i]->nr_files = 1;
 	}
       if (save_df)
 	e_p_df[0] = save_df;
@@ -2718,12 +2718,12 @@ e_make_prj_opt (FENSTER * f)
     return (e_p_df);
   if (!(e_p_df[1]->name = malloc (sizeof (char *))))
     return (e_p_df);
-  e_p_df[1]->anz = 0;
+  e_p_df[1]->nr_files = 0;
   if (!(e_p_df[2] = malloc (sizeof (struct dirfile))))
     return (e_p_df);
   if (!(e_p_df[2]->name = malloc (sizeof (char *))))
     return (e_p_df);
-  e_p_df[2]->anz = 0;
+  e_p_df[2]->nr_files = 0;
   for (i = 0; i < p_v_n; i++)
     {
       if (!strcmp (p_v[i]->var, "CMP"))
@@ -2783,24 +2783,24 @@ e_make_prj_opt (FENSTER * f)
 	e_p_df[0] = e_p_get_args (p_v[i]->string);
       else
 	{
-	  e_p_df[1]->anz++;
+	  e_p_df[1]->nr_files++;
 	  if (!(e_p_df[1]->name = realloc (tmp =
 					   e_p_df[1]->name,
-					   e_p_df[1]->anz * sizeof (char *))))
+					   e_p_df[1]->nr_files * sizeof (char *))))
 	    {
-	      e_p_df[1]->anz--;
+	      e_p_df[1]->nr_files--;
 	      e_p_df[1]->name = tmp;
 	      return (e_p_df);
 	    }
 	  if (!
-	      (e_p_df[1]->name[e_p_df[1]->anz - 1] =
+	      (e_p_df[1]->name[e_p_df[1]->nr_files - 1] =
 	       malloc ((strlen (p_v[i]->var) + strlen (p_v[i]->string) +
 			2) * sizeof (char))))
 	    {
-	      e_p_df[1]->anz--;
+	      e_p_df[1]->nr_files--;
 	      return (e_p_df);
 	    }
-	  sprintf (e_p_df[1]->name[e_p_df[1]->anz - 1], "%s=%s",
+	  sprintf (e_p_df[1]->name[e_p_df[1]->nr_files - 1], "%s=%s",
 		   p_v[i]->var, p_v[i]->string);
 	}
     }
@@ -2822,7 +2822,7 @@ e_make_prj_opt (FENSTER * f)
   if (!e_p_df[0])
     {
       e_p_df[0] = malloc (sizeof (struct dirfile));
-      e_p_df[0]->anz = 0;
+      e_p_df[0]->nr_files = 0;
     }
   if ((fp = fopen (e_prog.project, "r")) == NULL)
     {
@@ -2865,35 +2865,35 @@ e_make_prj_opt (FENSTER * f)
 	break;
       if (sp[0] == '\0')
 	continue;
-      e_p_df[2]->anz++;
+      e_p_df[2]->nr_files++;
       if (!(e_p_df[2]->name = realloc (tmp =
 				       e_p_df[2]->name,
-				       e_p_df[2]->anz * sizeof (char *))))
+				       e_p_df[2]->nr_files * sizeof (char *))))
 	{
-	  e_p_df[2]->anz--;
+	  e_p_df[2]->nr_files--;
 	  e_p_df[2]->name = tmp;
 	  fclose (fp);
 	  return (e_p_df);
 	}
-      if (!(e_p_df[2]->name[e_p_df[2]->anz - 1] = malloc ((strlen (sp) + 1))))
+      if (!(e_p_df[2]->name[e_p_df[2]->nr_files - 1] = malloc ((strlen (sp) + 1))))
 	{
-	  e_p_df[2]->anz--;
+	  e_p_df[2]->nr_files--;
 	  fclose (fp);
 	  return (e_p_df);
 	}
 
-      strcpy (e_p_df[2]->name[e_p_df[2]->anz - 1], sp);
+      strcpy (e_p_df[2]->name[e_p_df[2]->nr_files - 1], sp);
       while (tp
 	     && (text[j = strlen (text) - 1] != '\n' || text[j - 1] == '\\'))
 	{
 	  tp = fgets (text, 256, fp);
 	  if (tp)
 	    {
-	      j = strlen (e_p_df[2]->name[e_p_df[2]->anz - 1]);
-	      *(e_p_df[2]->name[e_p_df[2]->anz - 1] + j - 2) = '\0';
-	      if (!(e_p_df[2]->name[e_p_df[2]->anz - 1] =
-		    realloc (sp = e_p_df[2]->name[e_p_df[2]->anz - 1],
-			     strlen (e_p_df[2]->name[e_p_df[2]->anz - 1])
+	      j = strlen (e_p_df[2]->name[e_p_df[2]->nr_files - 1]);
+	      *(e_p_df[2]->name[e_p_df[2]->nr_files - 1] + j - 2) = '\0';
+	      if (!(e_p_df[2]->name[e_p_df[2]->nr_files - 1] =
+		    realloc (sp = e_p_df[2]->name[e_p_df[2]->nr_files - 1],
+			     strlen (e_p_df[2]->name[e_p_df[2]->nr_files - 1])
 			     + strlen (text) + 1)))
 		{
 		  fclose (fp);
@@ -2901,12 +2901,12 @@ e_make_prj_opt (FENSTER * f)
 		  e_error (e_msg[ERR_LOWMEM], 0, f->fb);
 		  return (e_p_df);
 		}
-	      strcat (e_p_df[2]->name[e_p_df[2]->anz - 1], text);
+	      strcat (e_p_df[2]->name[e_p_df[2]->nr_files - 1], text);
 	    }
 	}
-      j = strlen (e_p_df[2]->name[e_p_df[2]->anz - 1]);
-      if (*(e_p_df[2]->name[e_p_df[2]->anz - 1] + j - 1) == '\n')
-	*(e_p_df[2]->name[e_p_df[2]->anz - 1] + j - 1) = '\0';
+      j = strlen (e_p_df[2]->name[e_p_df[2]->nr_files - 1]);
+      if (*(e_p_df[2]->name[e_p_df[2]->nr_files - 1] + j - 1) == '\n')
+	*(e_p_df[2]->name[e_p_df[2]->nr_files - 1] + j - 1) = '\0';
     }
   fclose (fp);
   for (i = 0; i < 3; i++)
@@ -2915,14 +2915,14 @@ e_make_prj_opt (FENSTER * f)
 	{
 	  e_p_df[i] = malloc (sizeof (struct dirfile));
 	  e_p_df[i]->name = malloc (sizeof (char *));
-	  e_p_df[i]->anz = 0;
+	  e_p_df[i]->nr_files = 0;
 	}
       e_p_df[i]->name = realloc (e_p_df[i]->name,
-				 (e_p_df[i]->anz + 1) * sizeof (char *));
-      e_p_df[i]->name[e_p_df[i]->anz] = malloc (2 * sizeof (char));
-      *e_p_df[i]->name[e_p_df[i]->anz] = ' ';
-      *(e_p_df[i]->name[e_p_df[i]->anz] + 1) = '\0';
-      e_p_df[i]->anz++;
+				 (e_p_df[i]->nr_files + 1) * sizeof (char *));
+      e_p_df[i]->name[e_p_df[i]->nr_files] = malloc (2 * sizeof (char));
+      *e_p_df[i]->name[e_p_df[i]->nr_files] = ' ';
+      *(e_p_df[i]->name[e_p_df[i]->nr_files] + 1) = '\0';
+      e_p_df[i]->nr_files++;
     }
   if (save_df)
     {
@@ -2967,7 +2967,7 @@ e_wrt_prj_fl (FENSTER * f)
     }
   fprintf (fp, "#\n# xwpe - project-file: %s\n", e_prog.project);
   fprintf (fp, "# created by xwpe version %s\n#\n", VERSION);
-  for (i = 0; i < e_p_df[1]->anz; i++)
+  for (i = 0; i < e_p_df[1]->nr_files; i++)
     fprintf (fp, "%s\n", e_p_df[1]->name[i]);
   fprintf (fp, "\nCMP=\t%s\n", e_s_prog.compiler);
   fprintf (fp, "CMPFLAGS=\t%s\n", e_s_prog.comp_str);
@@ -2994,7 +2994,7 @@ e_wrt_prj_fl (FENSTER * f)
     }
   fprintf (fp, "\'\n");
   fprintf (fp, "\nFILES=\t");
-  for (i = 0, len = 8; i < e_p_df[0]->anz; i++)
+  for (i = 0, len = 8; i < e_p_df[0]->nr_files; i++)
     {
       len += strlen (e_p_df[0]->name[i]);
       if (len > 80)
@@ -3031,9 +3031,9 @@ e_wrt_prj_fl (FENSTER * f)
   fprintf (fp, "\n");
 /*****************************************/
 
-  if (e_p_df[2]->anz > 0)
+  if (e_p_df[2]->nr_files > 0)
     fprintf (fp, "\ninstall:\n");
-  for (i = 0; i < e_p_df[2]->anz; i++)
+  for (i = 0; i < e_p_df[2]->nr_files; i++)
     fprintf (fp, "\t%s\n", e_p_df[2]->name[i]);
   fclose (fp);
   return (0);
@@ -3064,9 +3064,9 @@ e_p_add_df (FLWND * fw, int sw)
   str[0] = '\0';		/* terminate new string to prevent garbage in display */
   if (e_add_arguments (str, title, fw->f, 0, AltA, NULL))
     {
-      fw->df->anz++;
-      fw->df->name = realloc (fw->df->name, fw->df->anz * sizeof (char *));
-      for (i = fw->df->anz - 1; i > fw->nf; i--)
+      fw->df->nr_files++;
+      fw->df->name = realloc (fw->df->name, fw->df->nr_files * sizeof (char *));
+      for (i = fw->df->nr_files - 1; i > fw->nf; i--)
 	fw->df->name[i] = fw->df->name[i - 1];
       fw->df->name[i] = malloc (strlen (str) + 1);
       strcpy (fw->df->name[i], str);
@@ -3085,7 +3085,7 @@ e_p_edit_df (FLWND * fw, int sw)
     title = "Change Variable";
   else if (sw == 6)
     title = "Change Command";
-  if (fw->nf < fw->df->anz - 1 && fw->df->name[fw->nf])
+  if (fw->nf < fw->df->nr_files - 1 && fw->df->name[fw->nf])
     strcpy (str, fw->df->name[fw->nf]);
   else
     {
@@ -3094,13 +3094,13 @@ e_p_edit_df (FLWND * fw, int sw)
     }
   if (e_add_arguments (str, title, fw->f, 0, AltA, NULL))
     {
-      if (fw->nf > fw->df->anz - 2)
+      if (fw->nf > fw->df->nr_files - 2)
 	{
-	  fw->nf = fw->df->anz - 1;
-	  fw->df->anz++;
+	  fw->nf = fw->df->nr_files - 1;
+	  fw->df->nr_files++;
 	  fw->df->name =
-	    realloc (fw->df->name, fw->df->anz * sizeof (char *));
-	  fw->df->name[fw->df->anz - 1] = fw->df->name[fw->df->anz - 2];
+	    realloc (fw->df->name, fw->df->nr_files * sizeof (char *));
+	  fw->df->name[fw->df->nr_files - 1] = fw->df->name[fw->df->nr_files - 2];
 	}
       if (!new)
 	free (fw->df->name[fw->nf]);
@@ -3117,10 +3117,10 @@ e_p_del_df (FLWND * fw, int sw)
   UNUSED (sw);
   int i;
 
-  if (fw->nf > fw->df->anz - 2)
+  if (fw->nf > fw->df->nr_files - 2)
     return (0);
-  fw->df->anz--;
-  for (i = fw->nf; i < fw->df->anz; i++)
+  fw->df->nr_files--;
+  for (i = fw->nf; i < fw->df->nr_files; i++)
     fw->df->name[i] = fw->df->name[i + 1];
   return (0);
 }

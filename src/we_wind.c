@@ -29,9 +29,9 @@ int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
    REM: Caller has to free returned vector!!! 
 */
 char **
-StringToStringArray (char *str, int *maxLen, int minWidth, int *anzahl)
+StringToStringArray (char *str, int *maxLen, int minWidth, int *nr_lines_return)
 {
-  int i, j, k, anz = 0, mxlen = 0, max = 0.8 * MAXSCOL;
+  int i, j, k, nr_lines = 0, mxlen = 0, max = 0.8 * MAXSCOL;
   char **s = malloc (sizeof (char *));
 
   for (k = 0, i = 0; str[i]; i++)
@@ -44,31 +44,31 @@ StringToStringArray (char *str, int *maxLen, int minWidth, int *anzahl)
 	      ;
 	  if (j > k)
 	    i = j;
-	  anz++;
-	  s = realloc (s, anz * sizeof (char *));
-	  s[anz - 1] = malloc ((i - k + 2) * sizeof (char));
+	  nr_lines++;
+	  s = realloc (s, nr_lines * sizeof (char *));
+	  s[nr_lines - 1] = malloc ((i - k + 2) * sizeof (char));
 	  for (j = k; j <= i; j++)
-	    s[anz - 1][j - k] = str[j];
+	    s[nr_lines - 1][j - k] = str[j];
 	  if (isspace (str[j - 1]))
 	    j--;
 	  if (mxlen < (j - k))
 	    mxlen = j - k;
-	  s[anz - 1][j - k] = '\0';
+	  s[nr_lines - 1][j - k] = '\0';
 	  k = i + 1;
 	}
     }
-  anz++;
-  s = realloc (s, anz * sizeof (char *));
-  s[anz - 1] = malloc ((i - k + 2) * sizeof (char));
+  nr_lines++;
+  s = realloc (s, nr_lines * sizeof (char *));
+  s[nr_lines - 1] = malloc ((i - k + 2) * sizeof (char));
   for (j = k; j <= i; j++)
-    s[anz - 1][j - k] = str[j];
+    s[nr_lines - 1][j - k] = str[j];
   if (mxlen < (j - k))
     mxlen = j - k;
   if (mxlen < minWidth)
     mxlen = minWidth;
 
   *maxLen = mxlen;
-  *anzahl = anz;
+  *nr_lines_return = nr_lines;
 
   return (s);
 }
@@ -144,23 +144,23 @@ e_error (char *text, int sw, FARBE * f)
 int
 e_message (int sw, char *str, FENSTER * f)
 {
-  int i, ret, mxlen = 0, anz = 0;
+  int i, ret, mxlen = 0, nr_lines = 0;
   char **s;
   W_OPTSTR *o = e_init_opt_kst (f);
 
   if (!o)
     return (-1);
 
-  s = StringToStringArray (str, &mxlen, 22, &anz);
+  s = StringToStringArray (str, &mxlen, 22, &nr_lines);
 
   o->ye = MAXSLNS - 6;
-  o->ya = o->ye - anz - 5;
+  o->ya = o->ye - nr_lines - 5;
   o->xa = (MAXSCOL - mxlen - 6) / 2;
   o->xe = o->xa + mxlen + 6;
 
   o->bgsw = 0;
   o->name = "Message";
-  for (i = 0; i < anz; i++)
+  for (i = 0; i < nr_lines; i++)
     {
       e_add_txtstr ((o->xe - o->xa - strlen (s[i])) / 2, 2 + i, s[i], o);
       free (s[i]);
@@ -1510,20 +1510,20 @@ e_add_df (char *str, struct dirfile *df)
   if (df == NULL)
     {
       df = malloc (sizeof (struct dirfile));
-      df->anz = 0;
+      df->nr_files = 0;
       df->name = malloc (sizeof (char *));
     }
-  for (n = 0; n < df->anz && *df->name[n] && strcmp (df->name[n], str); n++);
-  if (n == df->anz)
+  for (n = 0; n < df->nr_files && *df->name[n] && strcmp (df->name[n], str); n++);
+  if (n == df->nr_files)
     {
-      if (df->anz == MAXSVSTR - 1)
-	free (df->name[df->anz - 1]);
+      if (df->nr_files == MAXSVSTR - 1)
+	free (df->name[df->nr_files - 1]);
       else
 	{
-	  df->anz++;
-	  df->name = realloc (df->name, df->anz * sizeof (char *));
+	  df->nr_files++;
+	  df->name = realloc (df->name, df->nr_files * sizeof (char *));
 	}
-      for (i = df->anz - 1; i > 0; i--)
+      for (i = df->nr_files - 1; i > 0; i--)
 	df->name[i] = df->name[i - 1];
       df->name[0] = malloc ((strlen (str) + 1) * sizeof (char));
       strcpy (df->name[0], str);
@@ -1817,32 +1817,32 @@ e_make_win_list (FENSTER * f)
 
   if (!(df = malloc (sizeof (struct dirfile))))
     return (NULL);
-  df->anz = f->ed->mxedt;
-  if (!(df->name = malloc (df->anz * sizeof (char *))))
+  df->nr_files = f->ed->mxedt;
+  if (!(df->name = malloc (df->nr_files * sizeof (char *))))
     {
       free (df);
       return (NULL);
     }
-  for (i = 0; i < df->anz; i++)
+  for (i = 0; i < df->nr_files; i++)
     {
-      if (f->ed->f[df->anz - i]->datnam)
+      if (f->ed->f[df->nr_files - i]->datnam)
 	{
 	  if (!(df->name[i] =
-		malloc ((strlen (f->ed->f[df->anz - i]->datnam) +
+		malloc ((strlen (f->ed->f[df->nr_files - i]->datnam) +
 			 1) * sizeof (char))))
 	    {
-	      df->anz = i;
+	      df->nr_files = i;
 	      freedf (df);
 	      return (NULL);
 	    }
 	  else
-	    strcpy (df->name[i], f->ed->f[df->anz - i]->datnam);
+	    strcpy (df->name[i], f->ed->f[df->nr_files - i]->datnam);
 	}
       else
 	{
 	  if (!(df->name[i] = malloc (sizeof (char))))
 	    {
-	      df->anz = i;
+	      df->nr_files = i;
 	      freedf (df);
 	      return (NULL);
 	    }

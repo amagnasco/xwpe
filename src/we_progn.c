@@ -1156,13 +1156,13 @@ e_c_add_df (char *str, struct dirfile *df)
   if (df == NULL)
     {
       df = malloc (sizeof (struct dirfile));
-      df->anz = 0;
+      df->nr_files = 0;
       df->name = malloc (sizeof (char *));
     }
-  df->anz++;
-  df->name = realloc (df->name, df->anz * sizeof (char *));
-  df->name[df->anz - 1] = malloc ((strlen (str) + 1) * sizeof (char));
-  strcpy (df->name[df->anz - 1], str);
+  df->nr_files++;
+  df->name = realloc (df->name, df->nr_files * sizeof (char *));
+  df->name[df->nr_files - 1] = malloc ((strlen (str) + 1) * sizeof (char));
+  strcpy (df->name[df->nr_files - 1], str);
   return (df);
 }
 
@@ -1185,7 +1185,7 @@ e_find_def (name, startfile, mode, file, num, xn, nold, oldfile, df, first)
   int len = strlen (name);
   if (*df)
     {
-      for (i = 0; i < (*df)->anz; i++)
+      for (i = 0; i < (*df)->nr_files; i++)
 	if (!strcmp ((*df)->name[i], startfile))
 	  return (-2);
     }
@@ -1702,7 +1702,7 @@ e_show_nm_f (char *name, FENSTER * f, int oldn, char **oldname)
 	      WpeMouseRestoreShape ();
 	      return (-1);
 	    }
-	  for (i = 0, ret = 1; i < df->anz && ret; i++)
+	  for (i = 0, ret = 1; i < df->nr_files && ret; i++)
 	    {
 	      strcpy (str, df->name[i]);
 	      ret = e_find_def (name, str, 7, file, &num, &x, oldn,
@@ -1793,7 +1793,7 @@ e_sh_def (FENSTER * f)
 {
   char str[80];
 
-  if (f->ed->shdf && f->ed->shdf->anz > 0)
+  if (f->ed->shdf && f->ed->shdf->nr_files > 0)
     strcpy (str, f->ed->shdf->name[0]);
   else
     str[0] = '\0';

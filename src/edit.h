@@ -52,7 +52,7 @@ struct mouse
 
 struct dirfile
 {
-  int anz;			/* number elements in the list */
+  int nr_files;			/* number elements in the list */
   char **name;			/* the list elements */
 };
 

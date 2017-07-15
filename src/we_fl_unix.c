@@ -269,7 +269,7 @@ WpeCreateFileManager (int sw, ECNT * cn, char *dirct)
   b->dw->f = f;
   b->dw->ia = b->dw->ja = b->dw->nxfo = 0;
   b->dw->srcha = -1;
-  b->dw->nf = b->dw->nyfo = b->cd->anz - 1;
+  b->dw->nf = b->dw->nyfo = b->cd->nr_files - 1;
 
   if (cn->mxedt > 1)
     e_ed_rahmen (cn->f[cn->mxedt - 1], 0);
@@ -536,7 +536,7 @@ WpeHandleFileManager (ECNT * cn)
       strcpy (svdir, f->ed->dirct);
     }
 
-  nco = b->cd->anz - 1;
+  nco = b->cd->nr_files - 1;
   /* when searching among files, search hidden ones as well */
   fmode = f->ed->flopt & FM_SHOW_HIDDEN_FILES ? 1 : 0;
   /* in execution mode show hidden dirs as well */
@@ -751,7 +751,7 @@ WpeHandleFileManager (ECNT * cn)
 
 	  /* file list window activation */
 	case AltF:
-	  if (b->df->anz < 1)
+	  if (b->df->nr_files < 1)
 	    {
 	      c = cold;
 	      break;
@@ -866,7 +866,7 @@ WpeHandleFileManager (ECNT * cn)
 	  /* setup the drawing in the dir tree window */
 	  b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
 
-	  nco = b->dw->nf = b->cd->anz - 1;
+	  nco = b->dw->nf = b->cd->nr_files - 1;
 	  b->dw->ia = b->dw->ja = 0;
 
 	  /* finds all files matching the pattern */
@@ -939,13 +939,13 @@ WpeHandleFileManager (ECNT * cn)
 	      free (ftmp);
 	    }
 	  /* we are coming from dirs */
-	  else if (cold == AltT && b->dw->nf >= b->cd->anz)
+	  else if (cold == AltT && b->dw->nf >= b->cd->nr_files)
 	    {
 	      if ((ftmp = malloc (129)) == NULL)
 		e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
 	      /* selected dir */
-	      t = b->dw->nf - b->cd->anz;
+	      t = b->dw->nf - b->cd->nr_files;
 
 	      if (strlen (*(b->dd->name + t)) > 128)
 		{
@@ -995,7 +995,7 @@ WpeHandleFileManager (ECNT * cn)
 				f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
 		  /* setup drawing */
 		  b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
-		  nco = b->dw->nf = b->cd->anz - 1;
+		  nco = b->dw->nf = b->cd->nr_files - 1;
 		  b->dw->ia = b->dw->ja = 0;
 		}
 	      free (ftmp);
@@ -1035,9 +1035,9 @@ WpeHandleFileManager (ECNT * cn)
 		}
 	      /* coming from the dir tree list and the selected dir is a subdir of
 	         the current directory */
-	      else if (cold == AltT && b->dw->nf >= b->cd->anz)
+	      else if (cold == AltT && b->dw->nf >= b->cd->nr_files)
 		{
-		  t = b->dw->nf - b->cd->anz;
+		  t = b->dw->nf - b->cd->nr_files;
 		  WpeRemove (*(b->dd->name + t), f);	/* remove the dir */
 
 		  /* free up structures */
@@ -1053,7 +1053,7 @@ WpeHandleFileManager (ECNT * cn)
 				f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
 		  /* setup drawing */
 		  b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
-		  nco = b->dw->nf = b->cd->anz - 1;
+		  nco = b->dw->nf = b->cd->nr_files - 1;
 		  b->dw->ia = b->dw->ja = 0;
 		}
 	      c = cold;
@@ -1342,12 +1342,12 @@ WpeHandleFileManager (ECNT * cn)
 	    e_find_dir (SUDIR, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
 	  b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
 	  /* go to the line where the new dir is */
-	  for (i = 0; i < b->dd->anz && strcmp (b->dd->name[i], "new.dir");
+	  for (i = 0; i < b->dd->nr_files && strcmp (b->dd->name[i], "new.dir");
 	       i++)
 	    ;
 	  /* set the slidebar variables */
-	  if ((b->dw->nf = b->cd->anz + i) >= b->dw->df->anz)
-	    b->dw->nf = b->cd->anz - 1;
+	  if ((b->dw->nf = b->cd->nr_files + i) >= b->dw->df->nr_files)
+	    b->dw->nf = b->cd->nr_files - 1;
 	  if (b->dw->nf - b->dw->ia >= b->dw->ye - b->dw->ya)
 	    b->dw->ia = b->dw->nf + b->dw->ya - b->dw->ye + 1;
 	  else if (b->dw->nf - b->dw->ia < 0)
@@ -1384,9 +1384,9 @@ WpeHandleFileManager (ECNT * cn)
 		  b->fw->df =
 		    WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
 		}
-	      else if (cold == AltT && b->dw->nf >= b->cd->anz)	/* coming from dir tree */
+	      else if (cold == AltT && b->dw->nf >= b->cd->nr_files)	/* coming from dir tree */
 		{
-		  t = b->dw->nf - b->cd->anz;
+		  t = b->dw->nf - b->cd->nr_files;
 
 		  if ((ftmp =
 		       malloc (strlen (*(b->dd->name + t)) + 1)) == NULL)
@@ -1428,10 +1428,10 @@ WpeHandleFileManager (ECNT * cn)
 		  /* Full path */
 		  sprintf (ftmp, "%s%s", f->dirct, filen);
 		}
-	      fw->df->anz++;
+	      fw->df->nr_files++;
 	      fw->df->name =
-		realloc (fw->df->name, fw->df->anz * sizeof (char *));
-	      for (i = fw->df->anz - 1; i > fw->nf; i--)
+		realloc (fw->df->name, fw->df->nr_files * sizeof (char *));
+	      for (i = fw->df->nr_files - 1; i > fw->nf; i--)
 		fw->df->name[i] = fw->df->name[i - 1];
 	      fw->df->name[i] = ftmp;
 /* Don't bother notifying the user for each file added to project
@@ -1838,7 +1838,7 @@ WpeAssemblePath (char *pth, struct dirfile *cd, struct dirfile *dd, int n,
 	}
     }
 #endif
-  for (; k <= n && k < cd->anz; i++, j++)
+  for (; k <= n && k < cd->nr_files; i++, j++)
     {
       if (i >= totall - 1)
 	{
@@ -1857,7 +1857,7 @@ WpeAssemblePath (char *pth, struct dirfile *cd, struct dirfile *dd, int n,
     }
   if (n >= k)
     {
-      t = n - cd->anz;
+      t = n - cd->nr_files;
       j = 0;
 
       do
@@ -1910,7 +1910,7 @@ WpeCreateWorkingDirTree (int sw, ECNT * cn)
       || ((df->name = malloc (sizeof (char *) * maxd)) == NULL))
     e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
-  df->anz = 0;
+  df->nr_files = 0;
 
   if (sw == 1)			/* file-manager open to wastebasket */
     {
@@ -1925,7 +1925,7 @@ WpeCreateWorkingDirTree (int sw, ECNT * cn)
 	{
 	  i = strlen (tmp2);
 	  /* increase the level in the dir tree */
-	  df->anz = 1;
+	  df->nr_files = 1;
 	  /* save the name into first level */
 	  if ((*(df->name) = malloc (12 * sizeof (char))) == NULL)
 	    e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
@@ -1959,12 +1959,12 @@ WpeCreateWorkingDirTree (int sw, ECNT * cn)
 	{
 	  if (buf[i] == '\0' && j == 0)
 	    return (df);
-	  if (df->anz == 0)	/* for the very first time save the '/' sign */
+	  if (df->nr_files == 0)	/* for the very first time save the '/' sign */
 	    j++;
 	  tmp[j] = '\0';
 
 	  /* if we need more space for the directories */
-	  if (df->anz >= maxd)
+	  if (df->nr_files >= maxd)
 	    {
 	      maxd += 10;
 	      dftmp = df->name;
@@ -1975,11 +1975,11 @@ WpeCreateWorkingDirTree (int sw, ECNT * cn)
 	      free (dftmp);
 	    }
 	  /* save the current directory */
-	  if ((*(df->name + df->anz) =
+	  if ((*(df->name + df->nr_files) =
 	       malloc ((strlen (tmp) + 1) * sizeof (char))) == NULL)
 	    e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
-	  strcpy (*(df->name + df->anz), tmp);
-	  df->anz++;
+	  strcpy (*(df->name + df->nr_files), tmp);
+	  df->nr_files++;
 	  j = -1;
 	}
     }
@@ -2073,19 +2073,19 @@ WpeGraphicalFileList (struct dirfile *df, int sw, ECNT * cn)
   if ((edf = malloc (sizeof (struct dirfile))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
-  edf->anz = df->anz;
+  edf->nr_files = df->nr_files;
   edf->name = NULL;
 
 /* OSF and AIX fix, for malloc(0) they return NULL */
-  if (df->anz)
+  if (df->nr_files)
     {
-      if ((edf->name = malloc (df->anz * sizeof (char *))) == NULL)
+      if ((edf->name = malloc (df->nr_files * sizeof (char *))) == NULL)
 	e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
-      if ((num = malloc (df->anz * sizeof (int))) == NULL)
+      if ((num = malloc (df->nr_files * sizeof (int))) == NULL)
 	e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
-      for (i = 0; i < df->anz; i++)
+      for (i = 0; i < df->nr_files; i++)
 	{
 	  e_file_info (*(df->name + i), str, num + i, sw);
 	  if ((*(edf->name + i) = malloc (strlen (str) + 1)) == NULL)
@@ -2096,13 +2096,13 @@ WpeGraphicalFileList (struct dirfile *df, int sw, ECNT * cn)
       /* sort by time or size mode */
       if (sw & 3)
 	{
-	  if ((ename = malloc (df->anz * sizeof (char *))) == NULL)
+	  if ((ename = malloc (df->nr_files * sizeof (char *))) == NULL)
 	    e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
-	  if ((name = malloc (df->anz * sizeof (char *))) == NULL)
+	  if ((name = malloc (df->nr_files * sizeof (char *))) == NULL)
 	    e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
-	  for (i = 0; i < df->anz; i++)
+	  for (i = 0; i < df->nr_files; i++)
 	    {
 	      for (ntmp = num[i], n = i; n > 0 && ntmp > num[n - 1]; n--)
 		{
@@ -2125,14 +2125,14 @@ WpeGraphicalFileList (struct dirfile *df, int sw, ECNT * cn)
       /* reverse order */
       if (sw & 4)
 	{
-	  for (i = 0; i < (df->anz) / 2; i++)
+	  for (i = 0; i < (df->nr_files) / 2; i++)
 	    {
 	      stmp = edf->name[i];
-	      edf->name[i] = edf->name[edf->anz - i - 1];
-	      edf->name[edf->anz - i - 1] = stmp;
+	      edf->name[i] = edf->name[edf->nr_files - i - 1];
+	      edf->name[edf->nr_files - i - 1] = stmp;
 	      stmp = df->name[i];
-	      df->name[i] = df->name[df->anz - i - 1];
-	      df->name[df->anz - i - 1] = stmp;
+	      df->name[i] = df->name[df->nr_files - i - 1];
+	      df->name[df->nr_files - i - 1] = stmp;
 	    }
 	}
     }
@@ -2152,13 +2152,13 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, ECNT * cn)
     e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
   /* for the OSF and AIX this should never be zero, we are always somewhere */
-  if (cd->anz + dd->anz > 0)
+  if (cd->nr_files + dd->nr_files > 0)
     {
       if ((edf->name =
-	   malloc ((cd->anz + dd->anz) * sizeof (char *))) == NULL)
+	   malloc ((cd->nr_files + dd->nr_files) * sizeof (char *))) == NULL)
 	e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
-      for (i = 0; i < cd->anz; i++)
+      for (i = 0; i < cd->nr_files; i++)
 	{
 	  if (!i)
 	    {
@@ -2171,9 +2171,9 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, ECNT * cn)
 	    {
 	      for (str[0] = '\0', j = 0; j < i - 1; j++)
 		strcat (str, "  ");
-	      if (i == cd->anz - 1 && dd->anz < 1)
+	      if (i == cd->nr_files - 1 && dd->nr_files < 1)
 		strcat (str, ctree[1]);
-	      else if (i == cd->anz - 1)
+	      else if (i == cd->nr_files - 1)
 		strcat (str, ctree[2]);
 	      else
 		strcat (str, ctree[0]);
@@ -2185,17 +2185,17 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, ECNT * cn)
 	  strcpy (*(edf->name + i), str);
 	}
 
-      for (; i < cd->anz + dd->anz; i++)
+      for (; i < cd->nr_files + dd->nr_files; i++)
 	{
-	  for (str[0] = '\0', j = 0; j < cd->anz - 2; j++)
+	  for (str[0] = '\0', j = 0; j < cd->nr_files - 2; j++)
 	    strcat (str, "  ");
 	  strcat (str, " ");
-	  if (i == cd->anz + dd->anz - 1)
+	  if (i == cd->nr_files + dd->nr_files - 1)
 	    strcat (str, ctree[4]);
 	  else
 	    strcat (str, ctree[3]);
 	  {
-	    int tttt = i - cd->anz;
+	    int tttt = i - cd->nr_files;
 	    strcat (str, *(dd->name + tttt));
 	  }
 	  if ((*(edf->name + i) =
@@ -2205,7 +2205,7 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, ECNT * cn)
 	}
     }
 
-  edf->anz = i;
+  edf->nr_files = i;
   return (edf);
 }
 
@@ -2331,7 +2331,7 @@ WpeRemoveDir (char *dirct, char *file, FENSTER * f, int rec)
 
   /* it is called for the first time and the user should be asked about
      the deletion */
-  if (!rec && (f->ed->flopt & FM_REMOVE_PROMPT) && dd->anz > 0)
+  if (!rec && (f->ed->flopt & FM_REMOVE_PROMPT) && dd->nr_files > 0)
     {
       if ((ret = WpeDirDelOptions (f)) < 0)
 	{
@@ -2348,7 +2348,7 @@ WpeRemoveDir (char *dirct, char *file, FENSTER * f, int rec)
   free (tmp);
 
   /* cleans up the files in the directory */
-  for (i = 0; i < dd->anz; i++)
+  for (i = 0; i < dd->nr_files; i++)
     {
       if ((tmp = malloc (strlen (dirct) + strlen (dd->name[i]) + 15)) == NULL)
 	e_error (e_msg[ERR_LOWMEM], 1, f->ed->fb);
@@ -2414,7 +2414,7 @@ WpeRemoveDir (char *dirct, char *file, FENSTER * f, int rec)
       dd = e_find_dir (tmp, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
 
       /* should the user be asked about deletion ? */
-      if (!rec && (f->ed->flopt & FM_REMOVE_PROMPT) && dd->anz > 0)
+      if (!rec && (f->ed->flopt & FM_REMOVE_PROMPT) && dd->nr_files > 0)
 	{
 	  if ((ret = WpeDirDelOptions (f)) < 0)
 	    {
@@ -2433,7 +2433,7 @@ WpeRemoveDir (char *dirct, char *file, FENSTER * f, int rec)
       free (tmp);
 
       /* call recursively itself to delete the subdirectories */
-      for (rec++, i = 0; i < dd->anz; i++)
+      for (rec++, i = 0; i < dd->nr_files; i++)
 	{
 	  if ((tmp =
 	       malloc (strlen (dirct) + strlen (dd->name[i]) + 2)) == NULL)
@@ -2593,7 +2593,7 @@ WpeRenameCopyDir (char *dirct, char *file, char *newname, FENSTER * f,
       dd = e_find_dir (tmp, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
       free (tmp);
 
-      for (rec++, i = 0; i < dd->anz; i++)
+      for (rec++, i = 0; i < dd->nr_files; i++)
 	{
 
 	  if ((tmp =
@@ -2629,7 +2629,7 @@ WpeRenameCopyDir (char *dirct, char *file, char *newname, FENSTER * f,
   mode = f->ed->flopt;
   f->ed->flopt &= ~FM_REMOVE_PROMPT;
 
-  for (i = 0; i < dd->anz; i++)
+  for (i = 0; i < dd->nr_files; i++)
     {
       if ((ntmp =
 	   malloc (strlen (newname) + 2 + strlen (dd->name[i]))) == NULL)
@@ -3276,7 +3276,7 @@ WpeSearchFiles (FENSTER * f, char *dirct, char *file, char *string,
       if ((df = malloc (sizeof (struct dirfile))) == NULL)
 	e_error (e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
-      df->anz = 0;
+      df->nr_files = 0;
       if ((df->name = malloc (sizeof (char *))) == NULL)
 	e_error (e_msg[ERR_LOWMEM], 1, f->ed->fb);
     }
@@ -3285,13 +3285,13 @@ WpeSearchFiles (FENSTER * f, char *dirct, char *file, char *string,
   dd = e_find_files (tmp, 0);
 
   /* if we found something */
-  if (dd && dd->anz > 0)
+  if (dd && dd->nr_files > 0)
     {
 
       /* file find */
       if (!(sw & 1024))
 	{
-	  for (i = 0; i < dd->anz; i++)
+	  for (i = 0; i < dd->nr_files; i++)
 	    {
 	      if ((tp =
 		   malloc (strlen (tmp2) + strlen (dd->name[i]) + 2)) == NULL)
@@ -3299,20 +3299,20 @@ WpeSearchFiles (FENSTER * f, char *dirct, char *file, char *string,
 
 	      sprintf (tp, "%s%s", tmp2, dd->name[i]);
 
-	      df->anz++;
+	      df->nr_files++;
 
 	      if ((tname =
-		   realloc (df->name, df->anz * sizeof (char *))) == NULL)
+		   realloc (df->name, df->nr_files * sizeof (char *))) == NULL)
 		e_error (e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
 	      df->name = tname;
-	      df->name[df->anz - 1] = tp;
+	      df->name[df->nr_files - 1] = tp;
 	    }
 	}
       /* file grep */
       else
 	{
-	  for (i = 0; i < dd->anz; i++)
+	  for (i = 0; i < dd->nr_files; i++)
 	    {
 	      if ((tp =
 		   malloc (strlen (tmp2) + strlen (dd->name[i]) + 2)) == NULL)
@@ -3322,13 +3322,13 @@ WpeSearchFiles (FENSTER * f, char *dirct, char *file, char *string,
 
 	      if (WpeGrepFile (tp, string, sw))
 		{
-		  df->anz++;
+		  df->nr_files++;
 		  if ((tname =
-		       realloc (df->name, df->anz * sizeof (char *))) == NULL)
+		       realloc (df->name, df->nr_files * sizeof (char *))) == NULL)
 		    e_error (e_msg[ERR_LOWMEM], 1, f->ed->fb);
 
 		  df->name = tname;
-		  df->name[df->anz - 1] = tp;
+		  df->name[df->nr_files - 1] = tp;
 		}
 	      else
 		free (tp);
@@ -3361,7 +3361,7 @@ WpeSearchFiles (FENSTER * f, char *dirct, char *file, char *string,
     return (df);
 
   rec++;
-  for (i = 0; i < dd->anz; i++)
+  for (i = 0; i < dd->nr_files; i++)
     {
       if ((tmp = malloc (strlen (dirct) + strlen (dd->name[i]) + 3)) == NULL)
 	{
@@ -3642,7 +3642,7 @@ e_funct (FENSTER * f)
 {
   char str[80];
 
-  if (f->ed->hdf && f->ed->hdf->anz > 0)
+  if (f->ed->hdf && f->ed->hdf->nr_files > 0)
     strcpy (str, f->ed->hdf->name[0]);
   else
     str[0] = '\0';
@@ -3663,7 +3663,7 @@ e_make_funct (char *man)
 
   manpath = NULL;
   WpeMouseChangeShape (WpeWorkingShape);
-  dout->anz = 0;
+  dout->nr_files = 0;
   dout->name = NULL;
   if (getenv ("MANPATH"))
     {
@@ -3687,12 +3687,12 @@ e_make_funct (char *man)
 	}
       sprintf (sustr, "%s/man%s/*", subpath, man);
       df = e_find_files (sustr, 0);
-      if (!df->anz)
+      if (!df->nr_files)
 	{
 	  freedf (df);
 	  continue;
 	}
-      for (j = 0; j < df->anz; j++)
+      for (j = 0; j < df->nr_files; j++)
 	{
 	  k = strlen (df->name[j]) - 1;
 
@@ -3728,13 +3728,13 @@ e_make_funct (char *man)
 	    }
 	}
       if (!dout->name)
-	dout->name = malloc (df->anz * sizeof (char *));
+	dout->name = malloc (df->nr_files * sizeof (char *));
       else
 	dout->name =
-	  realloc (dout->name, (df->anz + dout->anz) * sizeof (char *));
-      for (j = 0; j < df->anz; j++)
+	  realloc (dout->name, (df->nr_files + dout->nr_files) * sizeof (char *));
+      for (j = 0; j < df->nr_files; j++)
 	{
-	  for (k = 0; k < dout->anz; k++)
+	  for (k = 0; k < dout->nr_files; k++)
 	    {
 	      if (!(ret = strcmp (df->name[j], dout->name[k])))
 		{
@@ -3744,12 +3744,12 @@ e_make_funct (char *man)
 	      else if (ret < 0)
 		break;
 	    }
-	  if (!ret && dout->anz)
+	  if (!ret && dout->nr_files)
 	    continue;
-	  for (l = dout->anz; l > k; l--)
+	  for (l = dout->nr_files; l > k; l--)
 	    dout->name[l] = dout->name[l - 1];
 	  dout->name[k] = df->name[j];
-	  dout->anz++;
+	  dout->nr_files++;
 	}
       free (df);
     }
@@ -3999,7 +3999,7 @@ e_data_eingabe (ECNT * cn)
 /*        WpeCreateFileManager(0, f->ed, fw->df->name[fw->nf]); */
 	    }
 	  else if (f->ins == 7)
-	    e_switch_window (f->ed->edt[fw->df->anz - fw->nf], f);
+	    e_switch_window (f->ed->edt[fw->df->nr_files - fw->nf], f);
 #ifdef PROG
 	  else if (f->ins == 4)
 	    {

@@ -310,23 +310,23 @@ WpeMouseInFileDirList (int k, int sw, FENSTER * f)
     {
       if (cn->f[i]->dirct[strlen (cn->f[i]->dirct) - 1] == DIRC)
 	sprintf (tmp, "%s%s", cn->f[i]->dirct,
-		 b->dd->name[b->dw->nf - b->cd->anz]);
+		 b->dd->name[b->dw->nf - b->cd->nr_files]);
       else
 	sprintf (tmp, "%s/%s", cn->f[i]->dirct,
-		 b->dd->name[b->dw->nf - b->cd->anz]);
+		 b->dd->name[b->dw->nf - b->cd->nr_files]);
       if (k == -2)
-	e_copy (b->dd->name[b->dw->nf - b->cd->anz], tmp, f);
+	e_copy (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, f);
       else if (k == -4)
-	e_link (b->dd->name[b->dw->nf - b->cd->anz], tmp, f);
+	e_link (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, f);
       else
-	e_rename (b->dd->name[b->dw->nf - b->cd->anz], tmp, f);
+	e_rename (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, f);
       freedf (b->cd);
       freedf (b->dw->df);
       freedf (b->dd);
       b->dd = e_find_dir (SUDIR, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
       b->cd = WpeCreateWorkingDirTree (f->save, cn);	/* ??? cn */
       b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
-      b->dw->nf = b->cd->anz - 1;
+      b->dw->nf = b->cd->nr_files - 1;
       b->dw->ia = b->dw->ja = 0;
       e_pr_file_window (b->dw, 0, 1, f->fb->ft.fb, f->fb->fz.fb,
 			f->fb->frft.fb);
@@ -390,7 +390,7 @@ fl_wnd_mouse (sw, k, fw)
   if (e_mouse.x == fw->xe && e_mouse.y >= fw->ya && e_mouse.y < fw->ye)
     {
       fw->nf = e_lst_mouse (fw->xe, fw->ya, fw->ye - fw->ya, 0,
-			    fw->df->anz, fw->nf);
+			    fw->df->nr_files, fw->nf);
       return (0);
     }
   else if (e_mouse.y == fw->ye && e_mouse.x >= fw->xa && e_mouse.x < fw->xe)
@@ -403,7 +403,7 @@ fl_wnd_mouse (sw, k, fw)
 	   e_mouse.x >= fw->xa && e_mouse.x < fw->xe)
     {
       if (fw->nf == e_mouse.y - fw->ya + fw->ia
-	  && e_mouse.y - fw->ya + fw->ia < fw->df->anz)
+	  && e_mouse.y - fw->ya + fw->ia < fw->df->nr_files)
 	{			/*  if(k == -2) {  while (e_mshit() != 0);  return(AltU);  }
 				   else if(k == -4) {  while (e_mshit() != 0);  return(AltM);  }
 				   else   */
@@ -437,7 +437,7 @@ fl_wnd_mouse (sw, k, fw)
 		  if (fw->srcha < 0)
 		    {
 		      FLBFFR *b = (FLBFFR *) fw->f->b;
-		      if (b->cd->anz > fw->nf)
+		      if (b->cd->nr_files > fw->nf)
 			{
 			  while (e_mshit () != 0)
 			    {

@@ -730,7 +730,7 @@ e_make_watches (FENSTER * f)
     }
   else
     y = e_d_nwtchs;
-  if (f->ed->wdf && f->ed->wdf->anz > 0)
+  if (f->ed->wdf && f->ed->wdf->nr_files > 0)
     strcpy (str, f->ed->wdf->name[0]);
   else
     str[0] = '\0';

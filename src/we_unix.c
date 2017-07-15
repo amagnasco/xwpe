@@ -610,7 +610,7 @@ e_find_files (char *sufile, int sw)
   unsigned int sizeStmp;
 
   df->name = NULL;
-  df->anz = 0;
+  df->nr_files = 0;
   for (n = strlen (sufile); n >= 0 && sufile[n] != DIRC; n--);
   sfile = sufile + 1 + n;
   if (n <= 0)
@@ -664,26 +664,26 @@ e_find_files (char *sufile, int sw)
 		(cexist || (cexist == 0 && !S_ISDIR (buf.st_mode))))) &&
 	      (!(sw & 2) || (buf.st_mode & 0111)))
 	    {
-	      if (df->anz == 0)
-		df->name = malloc ((df->anz + 1) * sizeof (char *));
+	      if (df->nr_files == 0)
+		df->name = malloc ((df->nr_files + 1) * sizeof (char *));
 	      else
 		df->name =
-		  realloc (df->name, (df->anz + 1) * sizeof (char *));
+		  realloc (df->name, (df->nr_files + 1) * sizeof (char *));
 	      if (df->name == NULL
 		  || !(tmpst = malloc (strlen (dp->d_name) + 1)))
 		{
-		  df->anz = 0;
+		  df->nr_files = 0;
 		  closedir (dirp);
 		  free (stmp);
 		  free (sdir);
 		  return (df);
 		}
 	      strcpy (tmpst, dp->d_name);
-	      for (n = df->anz;
+	      for (n = df->nr_files;
 		   n > 0 && strcmp (*(df->name + n - 1), tmpst) > 0; n--)
 		*(df->name + n) = *(df->name + n - 1);
 	      *(df->name + n) = tmpst;
-	      (df->anz)++;
+	      (df->nr_files)++;
 	    }
 	}
     }
@@ -705,7 +705,7 @@ e_find_dir (char *sufile, int sw)
   unsigned int sizeStmp;
 
   df->name = NULL;
-  df->anz = 0;
+  df->nr_files = 0;
   for (n = strlen (sufile); n >= 0 && sufile[n] != DIRC; n--);
   sfile = sufile + 1;
   sfile = sfile + n;
@@ -750,26 +750,26 @@ e_find_dir (char *sufile, int sw)
 	  if (S_ISDIR (buf.st_mode))
 	    {
 
-	      if (df->anz == 0)
-		df->name = malloc ((df->anz + 1) * sizeof (char *));
+	      if (df->nr_files == 0)
+		df->name = malloc ((df->nr_files + 1) * sizeof (char *));
 	      else
 		df->name =
-		  realloc (df->name, (df->anz + 1) * sizeof (char *));
+		  realloc (df->name, (df->nr_files + 1) * sizeof (char *));
 	      if (df->name == NULL
 		  || !(tmpst = malloc (strlen (dp->d_name) + 1)))
 		{
-		  df->anz = 0;
+		  df->nr_files = 0;
 		  closedir (dirp);
 		  free (sdir);
 		  free (stmp);
 		  return (df);
 		}
 	      strcpy (tmpst, dp->d_name);
-	      for (n = df->anz;
+	      for (n = df->nr_files;
 		   n > 0 && strcmp (*(df->name + n - 1), tmpst) > 0; n--)
 		*(df->name + n) = *(df->name + n - 1);
 	      *(df->name + n) = tmpst;
-	      (df->anz)++;
+	      (df->nr_files)++;
 	    }
 	}
     }
@@ -828,7 +828,7 @@ e_recover (ECNT * cn)
   int i;
 
   files = e_find_files ("*.ESV", 1);
-  for (i = 0; i < files->anz; i++)
+  for (i = 0; i < files->nr_files; i++)
     {
       e_edit (cn, files->name[i]);
       f = cn->f[cn->mxedt];

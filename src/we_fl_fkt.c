@@ -427,10 +427,10 @@ freedf (struct dirfile *df)
     return (-1);
   if (df->name)
     {
-      for (; df->anz > 0; (df->anz)--)
+      for (; df->nr_files > 0; (df->nr_files)--)
 	{
-	  if (*(df->name + df->anz - 1))
-	    free (*(df->name + df->anz - 1));
+	  if (*(df->name + df->nr_files - 1))
+	    free (*(df->name + df->nr_files - 1));
 	}
       free (df->name);
     }
@@ -447,10 +447,10 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
   int i, c, nsu = 0;
   int len = 0;
   char sustr[18];
-  if (fw->df->anz > 0)
+  if (fw->df->nr_files > 0)
     {
-      if (fw->nf >= fw->df->anz)
-	fw->nf = fw->df->anz - 1;
+      if (fw->nf >= fw->df->nr_files)
+	fw->nf = fw->df->nr_files - 1;
       len = strlen (*(fw->df->name + fw->nf));
     }
   e_mouse_bar (fw->xe, fw->ya, fw->ye - fw->ya, 0, fw->f->fb->em.fb);
@@ -464,7 +464,7 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
 #else
       c = e_getch ();
 #endif
-      if (fw->df->anz <= 0)
+      if (fw->df->nr_files <= 0)
 	return (WPE_ESC);
       if (c == CUP || c == CtrlP)
 	{
@@ -475,7 +475,7 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
 	  if (fw->srcha < 0)
 	    nsu = 0;
 	}
-      else if ((c == CDO || c == CtrlN) && fw->nf < fw->df->anz - 1)
+      else if ((c == CDO || c == CtrlN) && fw->nf < fw->df->nr_files - 1)
 	{
 	  fw->nf++;
 	  if (fw->srcha < 0)
@@ -506,8 +506,8 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
 	}
       else if (c == BDO)
 	{
-	  if ((fw->nf += (fw->ye - fw->ya - 1)) > fw->df->anz - 1)
-	    fw->nf = fw->df->anz - 1;
+	  if ((fw->nf += (fw->ye - fw->ya - 1)) > fw->df->nr_files - 1)
+	    fw->nf = fw->df->nr_files - 1;
 	  if (fw->srcha < 0)
 	    nsu = 0;
 	}
@@ -518,14 +518,14 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
 	  fw->ja = fw->srcha > 0 ? fw->srcha : 0;
 	}
       else if (c == ENDE || c == CtrlE || c == CBDO)
-	fw->nf = fw->df->anz - 1;
+	fw->nf = fw->df->nr_files - 1;
       else if (c >= 32 && c < 127)
 	{
 	  sustr[nsu] = c;
 	  sustr[++nsu] = '\0';
 	  if (fw->srcha < 0)
 	    {
-	      for (i = nsu > 1 ? fw->nf : fw->nf + 1; i < fw->df->anz; i++)
+	      for (i = nsu > 1 ? fw->nf : fw->nf + 1; i < fw->df->nr_files; i++)
 		{
 		  for (c = 0; *(fw->df->name[i] + c)
 		       && (*(fw->df->name[i] + c) <= 32
@@ -540,11 +540,11 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
 	    }
 	  else
 	    {
-	      for (i = 0; i < fw->df->anz
+	      for (i = 0; i < fw->df->nr_files
 		   && strncmp (fw->df->name[i] + fw->srcha, sustr, nsu) < 0;
 		   i++);
 	    }
-	  fw->nf = i < fw->df->anz ? i : fw->df->anz - 1;
+	  fw->nf = i < fw->df->nr_files ? i : fw->df->nr_files - 1;
 	}
       else if (c == CCLE)
 	return (c);
@@ -557,8 +557,8 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
 	}
       else if (fw->srcha < 0)
 	nsu = 0;
-      if (fw->nf > fw->df->anz - 1)
-	fw->nf = fw->df->anz - 1;
+      if (fw->nf > fw->df->nr_files - 1)
+	fw->nf = fw->df->nr_files - 1;
       len = strlen (*(fw->df->name + fw->nf));
       if (fw->ja >= len)
 	fw->ja = !len ? len : len - 1;
@@ -580,7 +580,7 @@ e_pr_file_window (FLWND * fw, int c, int sw, int ft, int fz, int fs)
 
   if (fw->df != NULL)
     {
-      for (; i < fw->df->anz && i - fw->ia < fw->ye - fw->ya; i++)
+      for (; i < fw->df->nr_files && i - fw->ia < fw->ye - fw->ya; i++)
 	{
 	  if ((len = strlen (*(fw->df->name + i))) < 0)
 	    len = 0;
@@ -607,7 +607,7 @@ e_pr_file_window (FLWND * fw, int c, int sw, int ft, int fz, int fs)
 	  if (sw)
 	    {
 	      fw->nyfo = e_lst_zeichen (fw->xe, fw->ya, fw->ye - fw->ya, 0,
-					fw->f->fb->em.fb, fw->df->anz,
+					fw->f->fb->em.fb, fw->df->nr_files,
 					fw->nyfo, fw->nf);
 	      fw->nxfo =
 		e_lst_zeichen (fw->xa, fw->ye, fw->xe - fw->xa, 1,
