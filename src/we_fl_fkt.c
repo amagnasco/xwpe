@@ -180,14 +180,14 @@ e_readin (int i, int j, FILE * fp, BUFFER * b, char *type)
 
 /*   Open new edit window   */
 int
-e_new (FENSTER * f)
+e_new (we_window * f)
 {
   e_edit (f->ed, "");
   return (0);
 }
 
 int
-e_m_save (FENSTER * f)
+e_m_save (we_window * f)
 {
   int ret = e_save (f);
 
@@ -197,7 +197,7 @@ e_m_save (FENSTER * f)
 }
 
 int
-e_save (FENSTER * f)
+e_save (we_window * f)
 {
   BUFFER *b;
   int ret;
@@ -219,7 +219,7 @@ e_save (FENSTER * f)
 
 /*	save all windows */
 int
-e_saveall (FENSTER * f)
+e_saveall (we_window * f)
 {
   int i, ret = 0;
   ECNT *cn = f->ed;
@@ -237,7 +237,7 @@ e_saveall (FENSTER * f)
 
 /*	terminate edit session */
 int
-e_quit (FENSTER * f)
+e_quit (we_window * f)
 {
   int i;
   char tmp[128];
@@ -293,7 +293,7 @@ e_quit (FENSTER * f)
 
 /*	write file to disk */
 int
-e_write (int xa, int ya, int xe, int ye, FENSTER * f, int backup)
+e_write (int xa, int ya, int xe, int ye, we_window * f, int backup)
 {
   BUFFER *b;
   int i = xa, j;
@@ -866,7 +866,7 @@ e_i_fclose (IFILE fp)
 #endif
 
 int
-e_read_help (char *str, FENSTER * f, int sw)
+e_read_help (char *str, we_window * f, int sw)
 {
   IFILE fp;
   char *ptmp, tstr[256];
@@ -956,7 +956,7 @@ e_read_help (char *str, FENSTER * f, int sw)
 }
 
 int
-e_help_ret (FENSTER * f)
+e_help_ret (we_window * f)
 {
   BUFFER *b = f->b;
   int i, j;
@@ -1052,7 +1052,7 @@ e_help_ret (FENSTER * f)
 }
 
 int
-e_help_last (FENSTER * f)
+e_help_last (we_window * f)
 {
   struct help_ud *last = ud_help;
 
@@ -1083,7 +1083,7 @@ e_help_last (FENSTER * f)
 }
 
 int
-e_help_next (FENSTER * f, int sw)
+e_help_next (we_window * f, int sw)
 {
   struct help_ud *last = ud_help;
   if (last && last->sw)
@@ -1141,7 +1141,7 @@ e_help_next (FENSTER * f, int sw)
 }
 
 int
-e_help_free (FENSTER * f)
+e_help_free (we_window * f)
 {
   UNUSED (f);
   struct help_ud *next, *last = ud_help;
@@ -1165,7 +1165,7 @@ e_help_free (FENSTER * f)
 }
 
 int
-e_help_comp (FENSTER * f)
+e_help_comp (we_window * f)
 {
   BUFFER *b = f->b;
   int i, j, k, hn = 0, sn = 0;
@@ -1265,7 +1265,7 @@ ende:
 
 /*          Help window    */
 int
-e_help (FENSTER * f)
+e_help (we_window * f)
 {
   extern char *e_hlp;
 
@@ -1274,7 +1274,7 @@ e_help (FENSTER * f)
 }
 
 int
-e_info (FENSTER * f)
+e_info (we_window * f)
 {
   extern char *e_hlp;
 
@@ -1503,7 +1503,7 @@ e_mk_info_path (char *path, char *file)
 }
 
 int
-e_read_info (char *str, FENSTER * f, char *file)
+e_read_info (char *str, we_window * f, char *file)
 {
   IFILE fp = NULL;
   char *path = NULL, *ptmp, tstr[256], fstr[128];
@@ -1614,7 +1614,7 @@ e_read_info (char *str, FENSTER * f, char *file)
 }
 
 int
-e_help_loc (FENSTER * f, int sw)
+e_help_loc (we_window * f, int sw)
 {
   extern char *e_hlp;
   int i;
@@ -1664,7 +1664,7 @@ e_help_loc (FENSTER * f, int sw)
 }
 
 int
-e_help_options (FENSTER * f)
+e_help_options (we_window * f)
 {
   char str[128];
 
@@ -1683,7 +1683,7 @@ e_help_options (FENSTER * f)
 }
 
 int
-e_hp_next (FENSTER * f)
+e_hp_next (we_window * f)
 {
   int i;
 
@@ -1703,7 +1703,7 @@ e_hp_next (FENSTER * f)
 }
 
 int
-e_hp_prev (FENSTER * f)
+e_hp_prev (we_window * f)
 {
   int i;
 
@@ -1723,7 +1723,7 @@ e_hp_prev (FENSTER * f)
 }
 
 int
-e_hp_back (FENSTER * f)
+e_hp_back (we_window * f)
 {
   int i;
 
@@ -1743,7 +1743,7 @@ e_hp_back (FENSTER * f)
 }
 
 int
-e_hp_ret (FENSTER * f)
+e_hp_ret (we_window * f)
 {
   int i;
 
@@ -1764,7 +1764,7 @@ e_hp_ret (FENSTER * f)
 
 /* Give a context-sensitive help for the identifier under cursor */
 int
-e_topic_search (FENSTER * f)
+e_topic_search (we_window * f)
 {
   int x, y;
   unsigned char *s;

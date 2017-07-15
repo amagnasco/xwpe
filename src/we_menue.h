@@ -8,8 +8,8 @@
 #include "we_debug.h"
 
 /*   we_menue.c   */
-int WpeHandleMainmenu (int n, FENSTER * f);
+int WpeHandleMainmenu (int n, we_window * f);
 int WpeHandleSubmenu (int xa, int ya, int xe, int ye,
-		      int nm, OPTK * fopt, FENSTER * f);
+		      int nm, OPTK * fopt, we_window * f);
 
 #endif

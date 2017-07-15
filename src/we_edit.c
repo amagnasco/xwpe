@@ -45,7 +45,7 @@ e_edit (ECNT * cn, char *filename)
   extern char *e_hlp_str[];
   extern WOPT *eblst, *hblst, *mblst, *dblst;
   FILE *fp = NULL;
-  FENSTER *f, *fo;
+  we_window *f, *fo;
   char *complete_fname, *path, *file;
   int ftype = 0, i, j, st = 0;
   struct stat buf[1];
@@ -118,7 +118,7 @@ e_edit (ECNT * cn, char *filename)
   (cn->mxedt)++;
   cn->edt[cn->mxedt] = j;
 
-  if ((f = (FENSTER *) malloc (sizeof (FENSTER))) == NULL)
+  if ((f = (we_window *) malloc (sizeof (we_window))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
   f->fb = cn->fb;
@@ -414,7 +414,7 @@ e_eingabe (ECNT * e)
 {
   BUFFER *b = e->f[e->mxedt]->b;
   SCHIRM *s = e->f[e->mxedt]->s;
-  FENSTER *f = e->f[e->mxedt];
+  we_window *f = e->f[e->mxedt];
   int ret, c = 0;
   unsigned char cc;
 
@@ -574,7 +574,7 @@ e_eingabe (ECNT * e)
 int
 e_tst_cur (int c, ECNT * e)
 {
-  FENSTER *f = e->f[e->mxedt];
+  we_window *f = e->f[e->mxedt];
   BUFFER *b = f->b;
   SCHIRM *s = f->s;
 
@@ -823,7 +823,7 @@ e_tst_fkt (int c, ECNT * e)
 {
   extern OPT opt[];
   int i;
-  FENSTER *f = e->f[e->mxedt];
+  we_window *f = e->f[e->mxedt];
 
 #ifdef PROG
   if (e_tst_dfkt (f, c) == 0 || ((WpeIsProg ()) && e_prog_switch (f, c) == 0))
@@ -946,7 +946,7 @@ e_tst_fkt (int c, ECNT * e)
 }
 
 int
-e_ctrl_k (FENSTER * f)
+e_ctrl_k (we_window * f)
 {
   BUFFER *b = f->ed->f[f->ed->mxedt]->b;
   SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
@@ -1047,7 +1047,7 @@ e_ctrl_k (FENSTER * f)
 
 /*   Ctrl - O - Dispatcher     */
 int
-e_ctrl_o (FENSTER * f)
+e_ctrl_o (we_window * f)
 {
   BUFFER *b = f->ed->f[f->ed->mxedt]->b;
   SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
@@ -1181,7 +1181,7 @@ e_ctrl_o (FENSTER * f)
    basically, every time when it returns with zero
    something has happened */
 int
-e_tst_dfkt (FENSTER * f, int c)
+e_tst_dfkt (we_window * f, int c)
 {
   if (c >= Alt1 && c <= Alt9)
     {
@@ -1302,7 +1302,7 @@ e_tst_dfkt (FENSTER * f, int c)
 }
 
 int
-e_chr_sp (int x, BUFFER * b, FENSTER * f)
+e_chr_sp (int x, BUFFER * b, we_window * f)
 {
   int i, j;
 
@@ -1663,7 +1663,7 @@ e_car_ret (BUFFER * b, SCHIRM * s)
 
 /*   cursor placement */
 void
-e_cursor (FENSTER * f, int sw)
+e_cursor (we_window * f, int sw)
 {
   BUFFER *b = f->b;
   SCHIRM *s = f->s;
@@ -1810,7 +1810,7 @@ e_del_line (int yd, BUFFER * b, SCHIRM * s)
 int
 e_del_nchar (BUFFER * b, SCHIRM * s, int x, int y, int n)
 {
-  FENSTER *f = WpeEditor->f[WpeEditor->mxedt];
+  we_window *f = WpeEditor->f[WpeEditor->mxedt];
   int len, i, j;
 
   (f->save) += n;
@@ -1869,7 +1869,7 @@ int
 e_ins_nchar (BUFFER * b, SCHIRM * sch, unsigned char *s, int xa, int ya,
 	     int n)
 {
-  FENSTER *f = WpeEditor->f[WpeEditor->mxedt];
+  we_window *f = WpeEditor->f[WpeEditor->mxedt];
   int i, j;
 
   (f->save) += n;
@@ -2089,7 +2089,7 @@ e_su_rblk (int xa, unsigned char *s)
 
 /* Prints out the line number and column of cursor */
 void
-e_zlsplt (FENSTER * f)
+e_zlsplt (we_window * f)
 {
   char str[20];
 
@@ -2250,7 +2250,7 @@ e_mouse_bar (int x, int y, int n, int sw, int frb)
 }
 
 int
-e_autosave (FENSTER * f)
+e_autosave (we_window * f)
 {
   char *tmp, *str;
   unsigned long maxname;
@@ -2392,8 +2392,8 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
     {
       BUFFER *bn = malloc (sizeof (BUFFER));
       SCHIRM *sn = malloc (sizeof (SCHIRM));
-      FENSTER *fn = malloc (sizeof (FENSTER));
-      FENSTER *f = b->cn->f[b->cn->mxedt];
+      we_window *fn = malloc (sizeof (we_window));
+      we_window *f = b->cn->f[b->cn->mxedt];
 
       bn->bf = (STRING *) malloc (MAXLINES * sizeof (STRING));
       if (bn == NULL || sn == 0 || bn->bf == NULL)
@@ -2435,19 +2435,19 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
 }
 
 int
-e_make_undo (FENSTER * f)
+e_make_undo (we_window * f)
 {
   return (e_make_rudo (f, 0));
 }
 
 int
-e_make_redo (FENSTER * f)
+e_make_redo (we_window * f)
 {
   return (e_make_rudo (f, 1));
 }
 
 int
-e_make_rudo (FENSTER * f, int sw)
+e_make_rudo (we_window * f, int sw)
 {
   BUFFER *b;
   SCHIRM *s;

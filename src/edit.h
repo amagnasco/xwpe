@@ -235,7 +235,7 @@ typedef struct FNST
   struct BFF *b;
   struct SCHRM *s;
   FIND fd;
-} FENSTER;
+} we_window;
 
 typedef struct CNT
 {
@@ -253,7 +253,7 @@ typedef struct CNT
   struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
   FIND fd;
   we_colorset *fb;
-  FENSTER *f[MAXEDT + 1];
+  we_window *f[MAXEDT + 1];
   char dtmd, autosv;
 } ECNT;
 
@@ -270,7 +270,7 @@ typedef struct fl_wnd
   int mxe, mye;
   int srcha;
   struct dirfile *df;		/* directory tree or file list */
-  FENSTER *f;			/* the window itself */
+  we_window *f;			/* the window itself */
 } FLWND;
 
 typedef struct FLBFF
@@ -327,7 +327,7 @@ typedef struct
 {
   int x, y, nc, sw;
   char *header;
-  int (*fkt) (FENSTER * f);
+  int (*fkt) (we_window * f);
 } W_O_BTTSTR;
 
 typedef struct
@@ -344,7 +344,7 @@ typedef struct
   W_O_BTTSTR **bstr;
   W_O_WRSTR **wstr;
   W_O_NUMSTR **nstr;
-  FENSTER *f;
+  we_window *f;
 } W_OPTSTR;
 
 typedef struct wpeOptionSection

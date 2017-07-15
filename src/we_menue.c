@@ -15,29 +15,29 @@
 #include "we_progn.h"
 #include "we_prog.h"
 
-int e_p_show_messages (FENSTER * f);
-int e_p_show_watches (FENSTER * f);
-int e_blck_gt_beg (FENSTER * f);
-int e_blck_gt_end (FENSTER * f);
-int e_blck_mrk_line (FENSTER * f);
-int e_blck_mrk_all (FENSTER * f);
-int e_blck_to_left (FENSTER * f);
-int e_blck_to_right (FENSTER * f);
-int e_cl_project (FENSTER * f);
-int e_p_add_item (FENSTER * f);
-int e_p_del_item (FENSTER * f);
-int e_show_project (FENSTER * f);
-int e_info (FENSTER * f);
-int e_help_options (FENSTER * f);
-int e_hp_ret (FENSTER * f);
-int e_hp_back (FENSTER * f);
-int e_hp_prev (FENSTER * f);
-int e_hp_next (FENSTER * f);
+int e_p_show_messages (we_window * f);
+int e_p_show_watches (we_window * f);
+int e_blck_gt_beg (we_window * f);
+int e_blck_gt_end (we_window * f);
+int e_blck_mrk_line (we_window * f);
+int e_blck_mrk_all (we_window * f);
+int e_blck_to_left (we_window * f);
+int e_blck_to_right (we_window * f);
+int e_cl_project (we_window * f);
+int e_p_add_item (we_window * f);
+int e_p_del_item (we_window * f);
+int e_show_project (we_window * f);
+int e_info (we_window * f);
+int e_help_options (we_window * f);
+int e_hp_ret (we_window * f);
+int e_hp_back (we_window * f);
+int e_hp_prev (we_window * f);
+int e_hp_next (we_window * f);
 OPTK WpeFillSubmenuItem (char *t, int x, char o, int (*fkt) ());
 
 /* main menu control bar */
 int
-WpeHandleMainmenu (int n, FENSTER * f)
+WpeHandleMainmenu (int n, we_window * f)
 {
   extern int e_mn_men;
   int i, c = 255, nold = n <= 0 ? 1 : n - 1;
@@ -624,7 +624,7 @@ WpeHandleMainmenu (int n, FENSTER * f)
 /* sub menu box */
 int
 WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
-		  FENSTER * f)
+		  we_window * f)
 {
 #if MOUSE
   extern struct mouse e_mouse;

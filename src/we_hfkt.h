@@ -11,7 +11,7 @@ int e_urstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn);
 int e_rstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn);
 int e_str_len (unsigned char *s);
 
-int e_num_kst (char *s, int num, int max, FENSTER * f, int n, int sw);
+int e_num_kst (char *s, int num, int max, we_window * f, int n, int sw);
 COLOR e_s_x_clr (int f, int b);
 COLOR e_n_x_clr (int fb);
 #ifdef UNIX

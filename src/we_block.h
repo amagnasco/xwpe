@@ -5,28 +5,28 @@
 #include "we_opt.h"
 #include "we_debug.h"
 
-int e_blck_del (FENSTER * f);
-int e_blck_dup (char *dup, FENSTER * f);
-int e_show_clipboard (FENSTER * f);
-int e_edt_del (FENSTER * f);
-int e_edt_copy (FENSTER * f);
-int e_edt_einf (FENSTER * f);
-int e_blck_move (FENSTER * f);
-void e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, FENSTER * f);
-int e_blck_copy (FENSTER * f);
+int e_blck_del (we_window * f);
+int e_blck_dup (char *dup, we_window * f);
+int e_show_clipboard (we_window * f);
+int e_edt_del (we_window * f);
+int e_edt_copy (we_window * f);
+int e_edt_einf (we_window * f);
+int e_blck_move (we_window * f);
+void e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window * f);
+int e_blck_copy (we_window * f);
 void e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
-		   FENSTER * f);
-int e_blck_begin (FENSTER * f);
-int e_blck_end (FENSTER * f);
-int e_blck_hide (FENSTER * f);
-int e_find (FENSTER * f);
-int e_replace (FENSTER * f);
-int e_goto_line (FENSTER * f);
-int e_changecase_dialog (FENSTER * f);
-int e_blck_to_left (FENSTER * f);
-int e_blck_to_right (FENSTER * f);
-int e_blck_read (FENSTER * f);
-int e_blck_write (FENSTER * f);
-int e_rep_search (FENSTER * f);
+		   we_window * f);
+int e_blck_begin (we_window * f);
+int e_blck_end (we_window * f);
+int e_blck_hide (we_window * f);
+int e_find (we_window * f);
+int e_replace (we_window * f);
+int e_goto_line (we_window * f);
+int e_changecase_dialog (we_window * f);
+int e_blck_to_left (we_window * f);
+int e_blck_to_right (we_window * f);
+int e_blck_read (we_window * f);
+int e_blck_write (we_window * f);
+int e_rep_search (we_window * f);
 
 #endif

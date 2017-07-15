@@ -53,7 +53,7 @@ WpeOptionSection WpeSectionRead[] = {
 
 /*    About WE      */
 int
-e_about_WE (FENSTER * f)
+e_about_WE (we_window * f)
 {
   view *pic = NULL;
   int xa = 10, ya = 4, xe = xa + 50, ye = ya + 13;
@@ -126,7 +126,7 @@ e_about_WE (FENSTER * f)
 
 /*    delete everything    */
 int
-e_clear_desk (FENSTER * f)
+e_clear_desk (we_window * f)
 {
   int i;
   ECNT *cn = f->ed;
@@ -156,7 +156,7 @@ e_clear_desk (FENSTER * f)
 
 /*    redraw everything */
 int
-e_repaint_desk (FENSTER * f)
+e_repaint_desk (we_window * f)
 {
   /* int j; */
   ECNT *cn = f->ed;
@@ -223,7 +223,7 @@ e_repaint_desk (FENSTER * f)
 
 /*    write system information   */
 int
-e_sys_info (FENSTER * f)
+e_sys_info (we_window * f)
 {
   view *pic = NULL;
   char tmp[80];
@@ -270,7 +270,7 @@ e_sys_info (FENSTER * f)
 
 /*   color adjustments  */
 int
-e_ad_colors (FENSTER * f)
+e_ad_colors (we_window * f)
 {
   int n, xa = 48, ya = 2, num = 4;
   OPTK *opt = malloc (num * sizeof (OPTK));
@@ -298,7 +298,7 @@ e_ad_colors (FENSTER * f)
 }
 
 int
-e_ad_colors_md (FENSTER * f, int md)
+e_ad_colors_md (we_window * f, int md)
 {
   int sw = 0, xa = 0, ya = 1, xe = xa + 79, ye = ya + 22;
   view *pic;
@@ -318,7 +318,7 @@ e_ad_colors_md (FENSTER * f, int md)
 
 /*   install/execute color adjustments */
 int
-e_dif_colors (int sw, int xa, int ya, FENSTER * f, int md)
+e_dif_colors (int sw, int xa, int ya, we_window * f, int md)
 {
   COLOR *frb = &(f->fb->er);
   int c = 0, bg, num;
@@ -387,7 +387,7 @@ char *text[] = { "Border", "Bord. Bt.", "Text", "Txt Mrk.1", "Txt Mrk.2",
 
 /*   draw color box */
 void
-e_pr_dif_colors (int sw, int xa, int ya, FENSTER * f, int sw2, int md)
+e_pr_dif_colors (int sw, int xa, int ya, we_window * f, int sw2, int md)
 {
   int i, rfrb, cfrb, xe = xa + 12, ye, bg;
   char *header;
@@ -428,7 +428,7 @@ e_pr_dif_colors (int sw, int xa, int ya, FENSTER * f, int sw2, int md)
 
 /*    color menu  */
 int
-e_frb_x_menue (int sw, int xa, int ya, FENSTER * f, int md)
+e_frb_x_menue (int sw, int xa, int ya, we_window * f, int md)
 {
   COLOR *frb = &(f->fb->er);
   int c = 1, fsv = frb[sw].fb, x, y;
@@ -474,7 +474,7 @@ e_frb_x_menue (int sw, int xa, int ya, FENSTER * f, int md)
 
 /*   draw color box  */
 void
-e_pr_x_col_kasten (int xa, int ya, int x, int y, FENSTER * f, int sw)
+e_pr_x_col_kasten (int xa, int ya, int x, int y, we_window * f, int sw)
 {
   int i, j, rfrb, ffrb, xe = xa + 25, ye = ya + 18;
 
@@ -533,7 +533,7 @@ e_pr_x_col_kasten (int xa, int ya, int x, int y, FENSTER * f, int sw)
 
 /*    draw color example   */
 void
-e_pr_ed_beispiel (int xa, int ya, FENSTER * f, int sw, int md)
+e_pr_ed_beispiel (int xa, int ya, we_window * f, int sw, int md)
 {
   COLOR *frb = &(f->fb->er);
   we_colorset *fb = f->fb;
@@ -657,7 +657,7 @@ e_pr_ed_beispiel (int xa, int ya, FENSTER * f, int sw, int md)
 
 /*   Save - Options - Menu   */
 int
-e_opt_save (FENSTER * f)
+e_opt_save (we_window * f)
 {
   int ret;
   char tmp[256];
@@ -1151,7 +1151,7 @@ WpeWriteLanguage (ECNT * cn, char *section, FILE * opt_file)
 
 /*   save options    */
 int
-e_save_opt (FENSTER * f)
+e_save_opt (we_window * f)
 {
   ECNT *cn = f->ed;
   FILE *fp;
@@ -1306,7 +1306,7 @@ e_opt_read (ECNT * cn)
 
 /*  window for entering a text line */
 int
-e_add_arguments (char *str, char *head, FENSTER * f, int n, int sw,
+e_add_arguments (char *str, char *head, we_window * f, int n, int sw,
 		 struct dirfile **df)
 {
   int ret;
@@ -1490,7 +1490,7 @@ e_add_pswstr (int n, int x, int y, int nc, int sw, int num,
 
 W_O_BTTSTR **
 e_add_bttstr (int x, int y, int nc, int sw, char *header,
-	      int (*fkt) (FENSTER * f), W_OPTSTR * o)
+	      int (*fkt) (we_window * f), W_OPTSTR * o)
 {
   if (o->bn == 0)
     o->bstr = malloc (1);
@@ -1566,7 +1566,7 @@ freeostr (W_OPTSTR * o)
 }
 
 W_OPTSTR *
-e_init_opt_kst (FENSTER * f)
+e_init_opt_kst (we_window * f)
 {
   W_OPTSTR *o = malloc (sizeof (W_OPTSTR));
   if (!o)
@@ -2179,7 +2179,7 @@ e_opt_kst (W_OPTSTR * o)
 }
 
 int
-e_edt_options (FENSTER * f)
+e_edt_options (we_window * f)
 {
   int i, ret, edopt = f->ed->edopt;
   W_OPTSTR *o = e_init_opt_kst (f);
