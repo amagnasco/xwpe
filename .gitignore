@@ -2,6 +2,8 @@ Makefile
 configure.scan
 config.status
 config.h
+xwpe.cs
+xwpe.csworkspace
 *.o
 *.bak
 *.log

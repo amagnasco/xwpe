@@ -24,7 +24,7 @@
 #undef TESTSDEF
 
 #ifdef PROG
-#include "makro.h"
+#include "utils.h"
 
 extern struct dirfile *e_p_get_var (char *string);
 extern char *e_p_msg[];

@@ -13,7 +13,7 @@
 #include "model.h"
 #include "edit.h"
 #include "we_edit.h"
-#include "makro.h"
+#include "utils.h"
 #include "we_progn.h"
 #include "we_prog.h"
 #include "WeString.h"

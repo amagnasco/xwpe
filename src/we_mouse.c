@@ -16,7 +16,7 @@
 
 #if  MOUSE
 
-#include "makro.h"
+#include "utils.h"
 
 int e_mouse_cursor ();
 

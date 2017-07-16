@@ -15,7 +15,7 @@
 #include "we_edit.h"
 #include "WeString.h"
 #include "we_fl_fkt.h"
-#include "makro.h"
+#include "utils.h"
 #ifdef UNIX
 #include <sys/types.h>
 #include <sys/stat.h>
