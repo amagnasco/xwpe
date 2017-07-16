@@ -1752,7 +1752,7 @@ e_d_car_mouse (we_window * f)
 {
   extern struct mouse e_mouse;
   BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-  SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
+  we_screen *s = f->ed->f[f->ed->mxedt]->s;
 
   if (e_mouse.y - f->a.y + s->c.y - 1 == b->b.y)
     return (WPE_CR);

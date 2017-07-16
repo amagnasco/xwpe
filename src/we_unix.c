@@ -824,7 +824,7 @@ e_recover (ECNT * cn)
   struct dirfile *files;
   we_window *f = NULL;
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   int i;
 
   files = e_find_files ("*.ESV", 1);

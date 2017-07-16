@@ -1025,7 +1025,7 @@ e_d_p_stack (we_window * f, int sw)
 {
   ECNT *cn = f->ed;
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   int is, i, j, k, l, ret;
   char str[256];
 
@@ -1256,7 +1256,7 @@ e_brk_schirm (we_window * f)
   int i;
   int n;
 
-  SCHIRM *s = f->s;
+  we_screen *s = f->s;
   s->brp = realloc (s->brp, sizeof (int));
   s->brp[0] = 0;
   for (i = 0; i < e_d_nbrpts; i++)
@@ -1654,7 +1654,7 @@ int
 e_make_breakpoint (we_window * f, int sw)
 {
   ECNT *cn = f->ed;
-  SCHIRM *s = cn->f[cn->mxedt]->s;
+  we_screen *s = cn->f[cn->mxedt]->s;
   BUFFER *b = cn->f[cn->mxedt]->b;
   int ret, i;
   char eing[128], str[256];
@@ -2985,7 +2985,7 @@ e_d_goto_break (char *file, int line, we_window * f)
 {
   ECNT *cn = f->ed;
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   we_window ftmp;
   int i;
   char str[120];

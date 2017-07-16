@@ -20,14 +20,14 @@ int e_ctrl_k (we_window * f);
 int e_ctrl_o (we_window * f);
 int e_tst_dfkt (we_window * f, int c);
 int e_blk (int anz, int xa, int ya, int col);
-int e_car_ret (BUFFER * b, SCHIRM * s);
+int e_car_ret (BUFFER * b, we_screen * s);
 void e_cursor (we_window * f, int sw);
-int e_del_line (int yd, BUFFER * b, SCHIRM * s);
-int e_del_nchar (BUFFER * b, SCHIRM * s, int x, int y, int n);
-int e_ins_nchar (BUFFER * b, SCHIRM * sch, unsigned char *s, int xa, int ya,
+int e_del_line (int yd, BUFFER * b, we_screen * s);
+int e_del_nchar (BUFFER * b, we_screen * s, int x, int y, int n);
+int e_ins_nchar (BUFFER * b, we_screen * sch, unsigned char *s, int xa, int ya,
 		 int n);
 int e_new_line (int yd, BUFFER * b);
-int e_put_char (int c, BUFFER * b, SCHIRM * s);
+int e_put_char (int c, BUFFER * b, we_screen * s);
 int e_su_lblk (int xa, unsigned char *s);
 int e_su_rblk (int xa, unsigned char *s);
 void e_zlsplt (we_window * f);

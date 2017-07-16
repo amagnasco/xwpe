@@ -505,7 +505,7 @@ WpeHandleFileManager (ECNT * cn)
   we_window *f = cn->f[cn->mxedt], *fe = NULL;
   FLBFFR *b = (FLBFFR *) f->b;
   BUFFER *be = NULL;
-  SCHIRM *se = NULL;
+  we_screen *se = NULL;
   int c = AltC, i, j, t;
   int winnum = 0, nco, svmode = -1, fmode, len, start;
   int g[4], cold = AltN;

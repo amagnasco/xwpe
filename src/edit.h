@@ -178,7 +178,7 @@ typedef struct SCHRM
   POINT da, de;
   int *brp;
 #endif
-} SCHIRM;
+} we_screen;
 
 typedef struct OPTION
 {

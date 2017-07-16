@@ -1195,7 +1195,7 @@ void
 e_pr_line (int y, we_window * f)
 {
   BUFFER *b = f->b;
-  SCHIRM *s = f->s;
+  we_screen *s = f->s;
   int i, j, k, frb;
 #ifdef DEBUGGER
   int fsw = 0;

@@ -67,7 +67,7 @@ extern char *e_p_msg[];
  *
  * The variable s hidden in a macro FRB1 .. FRB5 refers to an element of a screen.
  *
- * SCHIRM *s:	reference to an element of f->s
+ * we_screen *s:	reference to an element of f->s
  *
  * This function is in desparate need of refactoring. But testing first.
  *
@@ -75,7 +75,7 @@ extern char *e_p_msg[];
 void
 e_mk_col (unsigned char *str, int l, int n, int *frb,
 	  struct wpeSyntaxRule *cs, int n_nd, int *n_bg, int *mcsw, int *bssw,
-	  int *svmsw, SCHIRM * s)
+	  int *svmsw, we_screen * s)
 {
   if (n < l)
     {
@@ -625,7 +625,7 @@ void
 e_pr_c_line (int y, we_window * f)
 {
   BUFFER *b = f->b;
-  SCHIRM *s = f->s;
+  we_screen *s = f->s;
   int i, j, k, frb = 0;
   int mcsw = f->c_sw[y], svmsw = f->c_sw[y] == 5 ? 5 : 0, bssw = 0;
   int n_bg = -1, n_nd = strlen ((const char *) f->c_st->end_comment) - 1;
@@ -2207,7 +2207,7 @@ int
 e_mk_beauty (int sw, int ndif, we_window * f)
 {
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   int bg, nd, m, n, i, j, k, brk, cbrk = 0, nif = 0, nic = 0;
   int nstrct = 0, cmnd, cm_sv;
   char *tstr = malloc (sizeof (char));

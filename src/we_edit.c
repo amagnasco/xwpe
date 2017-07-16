@@ -126,7 +126,7 @@ e_edit (ECNT * cn, char *filename)
 
   if ((f->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, f->fb);
-  if ((f->s = (SCHIRM *) malloc (sizeof (SCHIRM))) == NULL)
+  if ((f->s = (we_screen *) malloc (sizeof (we_screen))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, f->fb);
   if ((f->b->bf = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, f->fb);
@@ -413,7 +413,7 @@ int
 e_eingabe (ECNT * e)
 {
   BUFFER *b = e->f[e->mxedt]->b;
-  SCHIRM *s = e->f[e->mxedt]->s;
+  we_screen *s = e->f[e->mxedt]->s;
   we_window *f = e->f[e->mxedt];
   int ret, c = 0;
   unsigned char cc;
@@ -576,7 +576,7 @@ e_tst_cur (int c, ECNT * e)
 {
   we_window *f = e->f[e->mxedt];
   BUFFER *b = f->b;
-  SCHIRM *s = f->s;
+  we_screen *s = f->s;
 
   switch (c)
     {
@@ -949,7 +949,7 @@ int
 e_ctrl_k (we_window * f)
 {
   BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-  SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
+  we_screen *s = f->ed->f[f->ed->mxedt]->s;
   int c;
 
   c = toupper (e_getch ());
@@ -1050,7 +1050,7 @@ int
 e_ctrl_o (we_window * f)
 {
   BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-  SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
+  we_screen *s = f->ed->f[f->ed->mxedt]->s;
   int i, c;
   unsigned char cc;
 
@@ -1393,7 +1393,7 @@ GetCharNumOfX (BUFFER * b, int line, int char_x)
 
 /* New version of auto-indent */
 int
-e_tab_a_ind (BUFFER * b, SCHIRM * s)
+e_tab_a_ind (BUFFER * b, we_screen * s)
 {
   int a_indent = b->cn->autoindent;
   int line, x, k, char_to_ins;
@@ -1512,7 +1512,7 @@ e_tab_a_ind (BUFFER * b, SCHIRM * s)
 }
 
 int
-e_del_a_ind (BUFFER * b, SCHIRM * s)
+e_del_a_ind (BUFFER * b, we_screen * s)
 {
   int i = 1, j = -1, k;
 
@@ -1568,7 +1568,7 @@ e_del_a_ind (BUFFER * b, SCHIRM * s)
 }
 
 int
-e_car_a_ind (BUFFER * b, SCHIRM * s)
+e_car_a_ind (BUFFER * b, we_screen * s)
 {
   int i, j, k;
   unsigned char *str;
@@ -1611,7 +1611,7 @@ e_blk (int anz, int xa, int ya, int col)
 
 /*       insert Carriage Return     */
 int
-e_car_ret (BUFFER * b, SCHIRM * s)
+e_car_ret (BUFFER * b, we_screen * s)
 {
   int len, i;
   len = b->bf[b->b.y].len;
@@ -1666,7 +1666,7 @@ void
 e_cursor (we_window * f, int sw)
 {
   BUFFER *b = f->b;
-  SCHIRM *s = f->s;
+  we_screen *s = f->s;
   static int iold = 0, jold = 0;
   int i, j;
 
@@ -1770,7 +1770,7 @@ e_cursor (we_window * f, int sw)
 
 /*   delete one line */
 int
-e_del_line (int yd, BUFFER * b, SCHIRM * s)
+e_del_line (int yd, BUFFER * b, we_screen * s)
 {
   int i;
 
@@ -1808,7 +1808,7 @@ e_del_line (int yd, BUFFER * b, SCHIRM * s)
 
 /*   delete N chars from buffer */
 int
-e_del_nchar (BUFFER * b, SCHIRM * s, int x, int y, int n)
+e_del_nchar (BUFFER * b, we_screen * s, int x, int y, int n)
 {
   we_window *f = WpeEditor->f[WpeEditor->mxedt];
   int len, i, j;
@@ -1866,7 +1866,7 @@ e_del_nchar (BUFFER * b, SCHIRM * s, int x, int y, int n)
 
 /*   insert N chars in buffer */
 int
-e_ins_nchar (BUFFER * b, SCHIRM * sch, unsigned char *s, int xa, int ya,
+e_ins_nchar (BUFFER * b, we_screen * sch, unsigned char *s, int xa, int ya,
 	     int n)
 {
   we_window *f = WpeEditor->f[WpeEditor->mxedt];
@@ -2035,7 +2035,7 @@ e_new_line (int yd, BUFFER * b)
 
 /*     Overwriting of a character       */
 int
-e_put_char (int c, BUFFER * b, SCHIRM * s)
+e_put_char (int c, BUFFER * b, we_screen * s)
 {
   unsigned char cc = c;
 
@@ -2383,7 +2383,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
     next->u.pt = b->bf[y].s;
   else if (sw == 'c' || sw == 'v')
     {
-      SCHIRM *s = b->cn->f[b->cn->mxedt]->s;
+      we_screen *s = b->cn->f[b->cn->mxedt]->s;
 
       next->a = s->mark_begin;
       next->e = s->mark_end;
@@ -2391,7 +2391,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
   else if (sw == 'd')
     {
       BUFFER *bn = malloc (sizeof (BUFFER));
-      SCHIRM *sn = malloc (sizeof (SCHIRM));
+      we_screen *sn = malloc (sizeof (we_screen));
       we_window *fn = malloc (sizeof (we_window));
       we_window *f = b->cn->f[b->cn->mxedt];
 
@@ -2450,7 +2450,7 @@ int
 e_make_rudo (we_window * f, int sw)
 {
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   Undo *ud;
   int i;
 

@@ -16,7 +16,7 @@
 /*            |         a.x=seems to always be 0  */
 /*            |         a.y=seems to always be 1  */
 /*            |                                   */
-/*            +->(SCHIRM)s                        */
+/*            +->(we_screen)s                        */
 /*            |                                   */
 /*            |  there's lots more in this struct */
 /*            |                                   */

@@ -22,7 +22,7 @@ int
 e_blck_del (we_window * f)
 {
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   int i, y, len;
 
   for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -76,7 +76,7 @@ int
 e_blck_dup (char *dup, we_window * f)
 {
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   int i;
 
   for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -101,7 +101,7 @@ e_blck_dup (char *dup, we_window * f)
 }
 
 int
-e_blck_clear (BUFFER * b, SCHIRM * s)
+e_blck_clear (BUFFER * b, we_screen * s)
 {
   int i;
   int len = (s->mark_end.y - s->mark_begin.y - 1);
@@ -323,9 +323,9 @@ e_blck_move (we_window * f)
 void
 e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window * f)
 {
-  SCHIRM *s = f->ed->f[f->ed->mxedt]->s;
-  SCHIRM *sv = bv->f->s;
-  SCHIRM *sz = bz->f->s;
+  we_screen *s = f->ed->f[f->ed->mxedt]->s;
+  we_screen *sv = bv->f->s;
+  we_screen *sz = bz->f->s;
   int sw = (y < s->mark_begin.y) ? 0 : 1, i, n =
     s->mark_end.y - s->mark_begin.y - 1;
   int kax = s->mark_begin.x, kay = s->mark_begin.y, kex =
@@ -531,8 +531,8 @@ e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
 	      we_window * f)
 {
   BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-  SCHIRM *s_src = buffer_src->f->s;
-  SCHIRM *s_dst = buffer_dst->f->s;
+  we_screen *s_src = buffer_src->f->s;
+  we_screen *s_dst = buffer_dst->f->s;
   int i, j, n = s_src->mark_end.y - s_src->mark_begin.y - 1;
   int kax = s_src->mark_begin.x, kay = s_src->mark_begin.y, kex =
     s_src->mark_end.x, key = s_src->mark_end.y;
@@ -652,7 +652,7 @@ e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
 int
 e_blck_hide (we_window * f)
 {
-  SCHIRM *s;
+  we_screen *s;
   int i;
 
   for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -786,7 +786,7 @@ int
 e_blck_changecase (we_window * f, int mode)
 {
   BUFFER *b;
-  SCHIRM *screen;
+  we_screen *screen;
   int i, x, y, x_begin, x_end;
 
   for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -862,7 +862,7 @@ int
 e_blck_to_left (we_window * f)
 {
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   int n = f->ed->tabn / 2, i, j, k, l, m, nn;
   unsigned char *tstr = malloc ((n + 2) * sizeof (char));
 
@@ -916,7 +916,7 @@ int
 e_blck_to_right (we_window * f)
 {
   BUFFER *b;
-  SCHIRM *s;
+  we_screen *s;
   int n = f->ed->tabn / 2, i, j;
   unsigned char *tstr = malloc ((n + 1) * sizeof (char));
 
@@ -966,7 +966,7 @@ e_blck_write (we_window * f)
 int
 e_rep_search (we_window * f)
 {
-  SCHIRM *s;
+  we_screen *s;
   BUFFER *b;
   FIND *fd = &(f->ed->fd);
   int i, ret, j, iend, jend, end;
@@ -1091,7 +1091,7 @@ e_goto_line (we_window * f)
 int
 e_find (we_window * f)
 {
-  SCHIRM *s;
+  we_screen *s;
   BUFFER *b;
   FIND *fd = &(f->ed->fd);
   int i, ret;
@@ -1179,7 +1179,7 @@ e_find (we_window * f)
 int
 e_replace (we_window * f)
 {
-  SCHIRM *s;
+  we_screen *s;
   BUFFER *b;
   FIND *fd = &(f->ed->fd);
   int i, ret, c, rep = 0, found = 0;
