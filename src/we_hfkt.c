@@ -6,13 +6,13 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <regex.h>
 #include "config.h"
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
 #include "WeString.h"
 #include "we_hfkt.h"
-#include <regex.h>
 
 /*        find string in text line    */
 int
