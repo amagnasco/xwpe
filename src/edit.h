@@ -30,15 +30,6 @@ extern int MAXSLNS, MAXSCOL, MENOPT;
 #define WPE_NOBACKUP 1
 #define WPE_BACKUP   0
 
-#if  MOUSE
-struct mouse
-{
-  int x;
-  int y;
-  int k;
-};
-#endif
-
 #define DTMD_NORMAL        'n'	/* Normal text file */
 #define DTMD_MSDOS         'm'	/* MS-DOS text file */
 #define DTMD_HELP          'h'	/* Help window */

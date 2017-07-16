@@ -5,6 +5,12 @@
 
 /*   we_mouse.c   */
 #if  MOUSE
+struct mouse
+{
+  int x;
+  int y;
+  int k;
+};
 int e_mshit (void);
 int e_m1_mouse (void);
 int e_m2_mouse (int xa, int ya, int xe, int ye, OPTK * fopt);

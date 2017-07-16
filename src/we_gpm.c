@@ -6,10 +6,11 @@
 
 Based on we_linux.c -- Created by Sebastiano Suraci */
 
+#include <gpm.h>
 #include "config.h"
 #include "model.h"
 #include "edit.h"
-#include <gpm.h>
+#include "we_mouse.h"
 
 int WpeGpmHandler (Gpm_Event * ep, void *data);
 
