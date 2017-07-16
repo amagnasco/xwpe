@@ -50,7 +50,6 @@ void
 e_pr_str (int x, int y, char *str, int col, int b2, int n2, int col2,
 	  int col3)
 {
-  UNUSED (col3);
   int i, sw = 0;
 
   if (n2 < 0)
@@ -69,6 +68,7 @@ e_pr_str (int x, int y, char *str, int col, int b2, int n2, int col2,
   e_pr_char (x + i, y, 32, col);
   if (sw == 1 && WpeIsXwin ())
 #ifdef NEWSTYLE
+    UNUSED (col3);
     e_make_xrect (x - 1, y, x + i, y, 0);
 #else
     {

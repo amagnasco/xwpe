@@ -1907,6 +1907,13 @@ e_make_xrect_abs (int xa, int ya, int xe, int ye, int sw)
   return (e_make_xrect (xa, ya, xe, ye, sw));
 }
 
+/**
+ * function e_make_xrect
+ *
+ * TODO: what does this function do?
+ *
+ *
+ */
 int
 e_make_xrect (int xa, int ya, int xe, int ye, int sw)
 {
