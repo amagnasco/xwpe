@@ -115,7 +115,8 @@ e_rstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
 {
   regex_t *regz;
   regmatch_t *matches = NULL;
-  int start, end, i, len;
+  int start, end;
+  size_t nr_submatches;
   int res;
   unsigned char old;
 
@@ -125,9 +126,9 @@ e_rstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
       free (regz);
       return (-1);
     }
-  len = regz->re_nsub;
-  if (len)
-    matches = malloc (len * sizeof (regmatch_t));
+  nr_submatches = regz->re_nsub;
+  if (nr_submatches)
+    matches = malloc (nr_submatches * sizeof (regmatch_t));
   start = (x < n) ? x : n;
   end = (n > x) ? n : x;
   if (start < 0)
@@ -135,7 +136,7 @@ e_rstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
   old = s[end];			/* Save char */
   s[end] = '\0';
   res =
-    regexec (regz, (const char *) &s[start], len, matches,
+    regexec (regz, (const char *) &s[start], nr_submatches, matches,
 	     REG_NOTBOL | REG_NOTEOL);
   s[end] = old;			/* Restore char */
   regfree (regz);
@@ -148,7 +149,7 @@ e_rstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
   start = strlen ((const char *) s);
   end = 0;
 
-  for (i = 0; i < len; i++)
+  for (size_t i = 0; i < nr_submatches; i++)
     {
       start = (matches[i].rm_so < start) ? matches[i].rm_so : start;
       end = (matches[i].rm_eo > end) ? matches[i].rm_eo : end;
