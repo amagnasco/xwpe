@@ -1,6 +1,6 @@
 workspace xwpe-git {
 	ro_prefix "/usr/include"
-	define LIBRARY_DIR 1
+	define LIBRARY_DIR "/usr/local/lib/"
 	project xwpe {
 		cd "src"
 		ipath ".."
