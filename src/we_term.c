@@ -12,6 +12,9 @@
 #include "edit.h"
 #include "we_term.h"
 #include "we_gpm.h"
+#include "we_hfkt.h"
+#include "we_gpm.h"
+#include "WeLinux.h"
 
 #ifdef UNIX
 

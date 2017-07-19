@@ -25,6 +25,8 @@
 #include "WeString.h"
 #include "WeSyntax.h"
 
+#include "we_wind.h"
+
 char *WpeCReservedWord[] = {
   "auto", "break", "case", "char", "const", "continue", "default", "do",
   "double", "else", "enum", "extern", "float", "for", "goto", "if", "int",

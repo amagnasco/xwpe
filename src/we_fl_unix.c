@@ -58,6 +58,27 @@ SpecialError (char *text, int sw, we_colorset * f, char *file, int line)
 #define e_error(text, sw, f) SpecialError(text, sw, f, __FILE__, __LINE__)
 #endif // #ifdef DEBUG
 
+int WpeGrepFile (char *file, char *string, int sw);
+int WpeRemove (char *file, We_window * f);
+
+struct dirfile *WpeSearchFiles (We_window * f,
+				char *dirct, char *file, char *string,
+				struct dirfile *df, int sw);
+int e_rename (char *file, char *newname, We_window * f);
+int WpeRemoveDir (char *dirct, char *file, We_window * f, int rec);
+char *WpeGetWastefile (char *file);
+int WpeMakeNewDir (We_window * f);
+int WpeFileDirAttributes (char *filen, We_window * f);
+int WpeRenameCopyDir (char *dirct, char *file, char *newname,
+		      We_window * f, int rec, int sw);
+int WpeRenameCopy (char *file, char *newname, We_window * f, int sw);
+int WpeCopyFileCont (char *oldfile, char *newfile, We_window * f);
+
+int WpeDirDelOptions (We_window * f);
+#ifdef HAVE_SYMLINK
+int WpeLinkFile (char *fl, char *ln, int sw, We_window * f);
+int WpeRenameLink (char *old, char *ln, char *fl, We_window * f);
+#endif
 
 /* setup the file-manager structures 
    'dirct' or the current dir. is used to 
