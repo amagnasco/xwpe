@@ -19,7 +19,7 @@ extern int e_undo_sw;
 
 /*	delete block */
 int
-e_blck_del (we_window * f)
+e_blck_del (We_window * f)
 {
   BUFFER *b;
   we_screen *s;
@@ -73,7 +73,7 @@ e_blck_del (we_window * f)
 
 /*      dup selected block BD*/
 int
-e_blck_dup (char *dup, we_window * f)
+e_blck_dup (char *dup, We_window * f)
 {
   BUFFER *b;
   we_screen *s;
@@ -132,10 +132,10 @@ e_blck_clear (BUFFER * b, we_screen * s)
 
 /*   write buffer to screen */
 int
-e_show_clipboard (we_window * f)
+e_show_clipboard (We_window * f)
 {
   ECNT *cn = f->ed;
-  we_window *fo;
+  We_window *fo;
   int i, j;
 
   for (j = 1; j <= cn->mxedt; j++)
@@ -209,7 +209,7 @@ e_show_clipboard (we_window * f)
 
 /*   move block to buffer */
 int
-e_edt_del (we_window * f)
+e_edt_del (We_window * f)
 {
   e_edt_copy (f);
   e_blck_del (f);
@@ -218,7 +218,7 @@ e_edt_del (we_window * f)
 
 /* copy block to buffer */
 int
-e_edt_copy (we_window * f)
+e_edt_copy (We_window * f)
 {
   BUFFER *b;
   BUFFER *b0 = f->ed->f[0]->b;
@@ -250,7 +250,7 @@ e_edt_copy (we_window * f)
 
 /*            Copy block buffer into window  */
 int
-e_edt_einf (we_window * f)
+e_edt_einf (We_window * f)
 {
   BUFFER *b;
   BUFFER *b0 = f->ed->f[0]->b;
@@ -288,7 +288,7 @@ e_edt_einf (we_window * f)
 
 /*   move block within window */
 int
-e_blck_move (we_window * f)
+e_blck_move (We_window * f)
 {
   BUFFER *b;
   int i;
@@ -321,7 +321,7 @@ e_blck_move (we_window * f)
 
 /*    move Block    */
 void
-e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window * f)
+e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, We_window * f)
 {
   we_screen *s = f->ed->f[f->ed->mxedt]->s;
   we_screen *sv = bv->f->s;
@@ -502,7 +502,7 @@ e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window * f)
 
 /*   copy block within window   */
 int
-e_blck_copy (we_window * f)
+e_blck_copy (We_window * f)
 {
   BUFFER *b;
   int i;
@@ -528,7 +528,7 @@ e_blck_copy (we_window * f)
 /*   copy block  */
 void
 e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
-	      we_window * f)
+	      We_window * f)
 {
   BUFFER *b = f->ed->f[f->ed->mxedt]->b;
   we_screen *s_src = buffer_src->f->s;
@@ -650,7 +650,7 @@ e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
 
 /*   delete block marks   */
 int
-e_blck_hide (we_window * f)
+e_blck_hide (We_window * f)
 {
   we_screen *s;
   int i;
@@ -669,7 +669,7 @@ e_blck_hide (we_window * f)
 
 /*   mark begin of block   */
 int
-e_blck_begin (we_window * f)
+e_blck_begin (We_window * f)
 {
   int i;
 
@@ -685,7 +685,7 @@ e_blck_begin (we_window * f)
 
 /*           Set end of block   */
 int
-e_blck_end (we_window * f)
+e_blck_end (We_window * f)
 {
   int i;
 
@@ -701,7 +701,7 @@ e_blck_end (we_window * f)
 
 /* goto begin of block   */
 int
-e_blck_gt_beg (we_window * f)
+e_blck_gt_beg (We_window * f)
 {
   int i;
 
@@ -717,7 +717,7 @@ e_blck_gt_beg (we_window * f)
 
 /*   goto end of block   */
 int
-e_blck_gt_end (we_window * f)
+e_blck_gt_end (We_window * f)
 {
   int i;
 
@@ -733,7 +733,7 @@ e_blck_gt_end (we_window * f)
 
 /*   mark text line in block   */
 int
-e_blck_mrk_all (we_window * f)
+e_blck_mrk_all (We_window * f)
 {
   int i;
 
@@ -752,7 +752,7 @@ e_blck_mrk_all (we_window * f)
 
 /*   mark text line in block   */
 int
-e_blck_mrk_line (we_window * f)
+e_blck_mrk_line (We_window * f)
 {
   int i;
 
@@ -783,7 +783,7 @@ mode=1 every character upcase
 mode=2 first character in each word upcase
 mode=3 first character in each line upcase   */
 int
-e_blck_changecase (we_window * f, int mode)
+e_blck_changecase (We_window * f, int mode)
 {
   BUFFER *b;
   we_screen *screen;
@@ -825,7 +825,7 @@ e_blck_changecase (we_window * f, int mode)
 }
 
 int
-e_changecase_dialog (we_window * f)
+e_changecase_dialog (We_window * f)
 {
   static int b_sw = 0;
   int ret;
@@ -859,7 +859,7 @@ e_changecase_dialog (we_window * f)
 
 /*   unindent block   */
 int
-e_blck_to_left (we_window * f)
+e_blck_to_left (We_window * f)
 {
   BUFFER *b;
   we_screen *s;
@@ -913,7 +913,7 @@ e_blck_to_left (we_window * f)
 
 /*   indent block   */
 int
-e_blck_to_right (we_window * f)
+e_blck_to_right (We_window * f)
 {
   BUFFER *b;
   we_screen *s;
@@ -945,7 +945,7 @@ e_blck_to_right (we_window * f)
 
 /*            Read block from file   */
 int
-e_blck_read (we_window * f)
+e_blck_read (We_window * f)
 {
   if (f->ins == 8)
     return (WPE_ESC);
@@ -956,7 +956,7 @@ e_blck_read (we_window * f)
 
 /*   write block to file   */
 int
-e_blck_write (we_window * f)
+e_blck_write (We_window * f)
 {
   WpeCreateFileManager (2, f->ed, "");
   return (0);
@@ -964,7 +964,7 @@ e_blck_write (we_window * f)
 
 /*   Find + Find again   */
 int
-e_rep_search (we_window * f)
+e_rep_search (We_window * f)
 {
   we_screen *s;
   BUFFER *b;
@@ -1064,7 +1064,7 @@ e_rep_search (we_window * f)
 
 /*   goto line  */
 int
-e_goto_line (we_window * f)
+e_goto_line (We_window * f)
 {
   int i, num;
   BUFFER *b;
@@ -1086,7 +1086,7 @@ e_goto_line (we_window * f)
 }
 
 int
-e_find (we_window * current_window)
+e_find (We_window * current_window)
 {
   we_screen *wind_screen;
   BUFFER *buffer;
@@ -1174,7 +1174,7 @@ e_find (we_window * current_window)
   occurrences found and the number actually replaced.
 */
 int
-e_replace (we_window * f)
+e_replace (We_window * f)
 {
   we_screen *s;
   BUFFER *b;

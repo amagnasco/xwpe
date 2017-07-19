@@ -7,7 +7,7 @@
 /*   we_hfkt.c   */
 int e_str_len (unsigned char *s);
 
-int e_num_kst (char *s, int num, int max, we_window * f, int n, int sw);
+int e_num_kst (char *s, int num, int max, We_window * f, int n, int sw);
 COLOR e_s_x_clr (int f, int b);
 COLOR e_n_x_clr (int fb);
 #ifdef UNIX

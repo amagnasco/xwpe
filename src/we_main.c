@@ -482,7 +482,7 @@ int
 e_switch_blst (ECNT * cn)
 {
   int i;
-  we_window *f;
+  We_window *f;
 
   if (cn->edopt & ED_CUA_STYLE)
     {

@@ -39,11 +39,11 @@ int e_x_sys_end (void);
 int fk_x_putchar (int c);
 int x_bioskey (void);
 int e_x_system (const char *exe);
-int e_x_cp_X_to_buffer (we_window * f);
-int e_x_copy_X_buffer (we_window * f);
-int e_x_paste_X_buffer (we_window * f);
+int e_x_cp_X_to_buffer (We_window * f);
+int e_x_copy_X_buffer (We_window * f);
+int e_x_paste_X_buffer (We_window * f);
 int e_x_change (view * pic);
-int e_x_repaint_desk (we_window * f);
+int e_x_repaint_desk (We_window * f);
 void e_setlastpic (view * pic);
 int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
 int e_x_kbhit (void);
@@ -990,7 +990,7 @@ e_x_system (const char *exe)
 }
 
 int
-e_x_repaint_desk (we_window * f)
+e_x_repaint_desk (We_window * f)
 {
   ECNT *cn = f->ed;
   int i, g[4];
@@ -1089,7 +1089,7 @@ fk_x_mouse (int *g)
 }
 
 int
-e_x_cp_X_to_buffer (we_window * f)
+e_x_cp_X_to_buffer (We_window * f)
 {
   BUFFER *b0 = f->ed->f[0]->b;
   we_screen *s0 = f->ed->f[0]->s;
@@ -1179,7 +1179,7 @@ e_x_cp_X_to_buffer (we_window * f)
 }
 
 int
-e_x_copy_X_buffer (we_window * f)
+e_x_copy_X_buffer (We_window * f)
 {
   e_cp_X_to_buffer (f);
   e_edt_einf (f);
@@ -1187,7 +1187,7 @@ e_x_copy_X_buffer (we_window * f)
 }
 
 int
-e_x_paste_X_buffer (we_window * f)
+e_x_paste_X_buffer (We_window * f)
 {
   BUFFER *b0 = f->ed->f[0]->b;
   we_screen *s0 = f->ed->f[0]->s;

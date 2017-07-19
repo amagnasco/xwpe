@@ -59,10 +59,10 @@ int (*fk_u_cursor) (int x);
 int (*e_u_initscr) (int argc, char *argv[]);
 int (*fk_u_putchar) (int c);
 int (*u_bioskey) (void);
-int (*e_frb_u_menue) (int sw, int xa, int ya, we_window * f, int md);
+int (*e_frb_u_menue) (int sw, int xa, int ya, We_window * f, int md);
 COLOR (*e_s_u_clr) (int f, int b);
 COLOR (*e_n_u_clr) (int fb);
-void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window * f, int sw);
+void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, We_window * f, int sw);
 int (*fk_mouse) (int g[]);
 int (*e_u_refresh) (void);
 int (*e_u_getch) (void);
@@ -444,7 +444,7 @@ e_err_save ()
   ECNT *cn = WpeEditor;
   int i;
   unsigned long maxname;
-  we_window *f;
+  We_window *f;
   BUFFER *b;
 
   /* Quick fix to multiple emergency save problems */
@@ -822,7 +822,7 @@ int
 e_recover (ECNT * cn)
 {
   struct dirfile *files;
-  we_window *f = NULL;
+  We_window *f = NULL;
   BUFFER *b;
   we_screen *s;
   int i;
@@ -857,7 +857,7 @@ e_recover (ECNT * cn)
 }
 
 int
-e_frb_t_menue (int sw, int xa, int ya, we_window * f, int md)
+e_frb_t_menue (int sw, int xa, int ya, We_window * f, int md)
 {
   COLOR *frb = &(f->fb->er);
   int i, j, y, c = 1, fb, fsv;
@@ -903,7 +903,7 @@ e_frb_t_menue (int sw, int xa, int ya, we_window * f, int md)
 
 /*   draw colors box  */
 void
-e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window * f, int sw)
+e_pr_t_col_kasten (int xa, int ya, int x, int y, We_window * f, int sw)
 {
   int rfrb, xe = xa + 14, ye = ya + 8;
 

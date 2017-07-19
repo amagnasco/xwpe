@@ -430,7 +430,7 @@ e_scfbol (int n, int mcsw, unsigned char *str, WpeSyntaxRule * cs)
 }
 
 int
-e_sc_all (we_window * f, int sw)
+e_sc_all (We_window * f, int sw)
 {
   int i;
 
@@ -465,7 +465,7 @@ e_sc_all (we_window * f, int sw)
 }
 
 int
-e_program_opt (we_window * f)
+e_program_opt (We_window * f)
 {
   int ret, sw = f->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0;
   W_OPTSTR *o = e_init_opt_kst (f);
@@ -622,7 +622,7 @@ e_sc_txt (int *c_sw, BUFFER * b)
 
 /*       Writing of a line (content of a screen)      */
 void
-e_pr_c_line (int y, we_window * f)
+e_pr_c_line (int y, We_window * f)
 {
   BUFFER *b = f->b;
   we_screen *s = f->s;
@@ -776,7 +776,7 @@ e_pr_c_line (int y, we_window * f)
 }
 
 int
-e_add_synt_tl (char *filename, we_window * f)
+e_add_synt_tl (char *filename, We_window * f)
 {
   int i, k;
 
@@ -1681,7 +1681,7 @@ b_end:
 }
 
 int
-e_show_nm_f (char *name, we_window * f, int oldn, char **oldname)
+e_show_nm_f (char *name, We_window * f, int oldn, char **oldname)
 {
   int i, j, len, ret, num, x, first = oldn < 0 ? 1 : 0;
   char str[128], file[128], *filename;
@@ -1789,7 +1789,7 @@ struct
 -1, NULL, NULL};
 
 int
-e_sh_def (we_window * f)
+e_sh_def (We_window * f)
 {
   char str[80];
 
@@ -1815,7 +1815,7 @@ e_sh_def (we_window * f)
 }
 
 int
-e_sh_nxt_def (we_window * f)
+e_sh_nxt_def (We_window * f)
 {
   if (sh_df.num >= 0 && sh_df.str && sh_df.file)
     {
@@ -1825,7 +1825,7 @@ e_sh_nxt_def (we_window * f)
 }
 
 int
-e_nxt_brk (we_window * f)
+e_nxt_brk (We_window * f)
 {
   int c = f->b->bf[f->b->b.y].s[f->b->b.x];
   int i, j, ob, cb, bsp, brk, nif;
@@ -2204,7 +2204,7 @@ e_mbt_cnd (BUFFER * b, int *ii, int *jj, int n, int sw, int *cmnd)
 }
 
 int
-e_mk_beauty (int sw, int ndif, we_window * f)
+e_mk_beauty (int sw, int ndif, We_window * f)
 {
   BUFFER *b;
   we_screen *s;
@@ -2591,7 +2591,7 @@ e_mk_beauty (int sw, int ndif, we_window * f)
 }
 
 int
-e_p_beautify (we_window * f)
+e_p_beautify (We_window * f)
 {
   static int b_sw = 0;
   int ret;

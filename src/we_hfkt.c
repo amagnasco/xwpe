@@ -17,7 +17,7 @@
 
 /*   numbers box (numbers input/edit)     */
 int
-e_num_kst (char *s, int num, int max, we_window * f, int n, int sw)
+e_num_kst (char *s, int num, int max, We_window * f, int n, int sw)
 {
   int ret, nz = WpeNumberOfPlaces (max);
   char *tmp = malloc ((strlen (s) + 2) * sizeof (char));

@@ -28,7 +28,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-struct dirfile *e_make_win_list (we_window * f);
+struct dirfile *e_make_win_list (We_window * f);
 extern char *e_tmp_dir;
 
 #ifndef HAVE_SYMLINK
@@ -78,7 +78,7 @@ WpeCreateFileManager (int sw, ECNT * cn, char *dirct)
 {
   extern char *e_hlp_str[];
   extern WOPT *fblst, *rblst, *wblst, *xblst, *sblst, *ablst;
-  we_window *f;
+  We_window *f;
   int i, j;
   FLBFFR *b;
   int allocate_size;		/* inital memory size for allocation */
@@ -111,7 +111,7 @@ WpeCreateFileManager (int sw, ECNT * cn, char *dirct)
   cn->edt[cn->mxedt] = j;
 
   /* allocate window structure */
-  if ((f = (we_window *) malloc (sizeof (we_window))) == NULL)
+  if ((f = (We_window *) malloc (sizeof (We_window))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
   /* allocate buffer related to the window (NOT proper type, later casted) */
@@ -287,7 +287,7 @@ WpeCreateFileManager (int sw, ECNT * cn, char *dirct)
 /* drawing out the file-manager, 
    first buttons, than the dir tree and file list */
 int
-WpeDrawFileManager (we_window * f)
+WpeDrawFileManager (We_window * f)
 {
   FLBFFR *b = (FLBFFR *) f->b;
   int i, j;
@@ -422,7 +422,7 @@ WpeDrawFileManager (we_window * f)
 
 /* tries to find the required style file manager */
 int
-WpeCallFileManager (int sw, we_window * f)
+WpeCallFileManager (int sw, We_window * f)
 {
   int i, ret;
   FLBFFR *b;
@@ -471,28 +471,28 @@ WpeCallFileManager (int sw, we_window * f)
 
 /* It will always create a new file manager */
 int
-WpeManagerFirst (we_window * f)
+WpeManagerFirst (We_window * f)
 {
   return (WpeCreateFileManager (0, f->ed, ""));
 }
 
 /* try to find an "open/new" style file manager or create one */
 int
-WpeManager (we_window * f)
+WpeManager (We_window * f)
 {
   return (WpeCallFileManager (0, f));
 }
 
 /* try to find an "execute" style file manager or create one */
 int
-WpeExecuteManager (we_window * f)
+WpeExecuteManager (We_window * f)
 {
   return (WpeCallFileManager (3, f));
 }
 
 /* try to find a "save as" style file manager or create one */
 int
-WpeSaveAsManager (we_window * f)
+WpeSaveAsManager (We_window * f)
 {
   return (WpeCreateFileManager (4, f->ed, ""));
 }
@@ -502,7 +502,7 @@ WpeSaveAsManager (we_window * f)
 int
 WpeHandleFileManager (ECNT * cn)
 {
-  we_window *f = cn->f[cn->mxedt], *fe = NULL;
+  We_window *f = cn->f[cn->mxedt], *fe = NULL;
   FLBFFR *b = (FLBFFR *) f->b;
   BUFFER *be = NULL;
   we_screen *se = NULL;
@@ -1642,7 +1642,7 @@ WpeGrepFile (char *file, char *string, int sw)
 }
 
 int
-WpeMakeNewDir (we_window * f)
+WpeMakeNewDir (We_window * f)
 {
   char *dirct;
   int msk, mode, ret;
@@ -1682,7 +1682,7 @@ WpeMakeNewDir (we_window * f)
 }
 
 int
-WpeFileDirAttributes (char *filen, we_window * f)
+WpeFileDirAttributes (char *filen, We_window * f)
 {
   struct stat buf[1];
   int mode, ret;
@@ -1811,7 +1811,7 @@ WpeGetCurrentDir (ECNT * cn)
    when it is in wastebasket mode and there is an error, return NULL */
 char *
 WpeAssemblePath (char *pth, struct dirfile *cd, struct dirfile *dd, int n,
-		 we_window * f)
+		 We_window * f)
 {
   int i = 0, k = 0, j = 0, t;
   char *adir = NULL;		/* assembled directory */
@@ -2212,7 +2212,7 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, ECNT * cn)
 }
 
 int
-WpeDelWastebasket (we_window * f)
+WpeDelWastebasket (We_window * f)
 {
   char *tmp;
   int ret, mode = f->ed->flopt;
@@ -2250,13 +2250,13 @@ WpeDelWastebasket (we_window * f)
 }
 
 int
-WpeShowWastebasket (we_window * f)
+WpeShowWastebasket (We_window * f)
 {
   return (WpeCallFileManager (6, f));
 }
 
 int
-WpeQuitWastebasket (we_window * f)
+WpeQuitWastebasket (We_window * f)
 {
   char *tmp;
   int ret = 0, mode = f->ed->flopt;
@@ -2291,7 +2291,7 @@ WpeQuitWastebasket (we_window * f)
 
 
 int
-WpeRemoveDir (char *dirct, char *file, we_window * f, int rec)
+WpeRemoveDir (char *dirct, char *file, We_window * f, int rec)
 {
   view *pic = NULL;
   char *tmp;
@@ -2467,7 +2467,7 @@ WpeRemoveDir (char *dirct, char *file, we_window * f, int rec)
 }
 
 int
-WpeRemove (char *file, we_window * f)
+WpeRemove (char *file, We_window * f)
 {
   struct stat buf;
   struct stat lbuf;
@@ -2547,7 +2547,7 @@ WpeRemove (char *file, we_window * f)
    sw = 1  -> copies the directory
    sw = 2  -> links directory */
 int
-WpeRenameCopyDir (char *dirct, char *file, char *newname, we_window * f,
+WpeRenameCopyDir (char *dirct, char *file, char *newname, We_window * f,
 		  int rec, int sw)
 {
   char *tmp, *ntmp, *mtmp;
@@ -2757,7 +2757,7 @@ WpeRenameCopyDir (char *dirct, char *file, char *newname, we_window * f,
 
 
 int
-WpeRenameCopy (char *file, char *newname, we_window * f, int sw)
+WpeRenameCopy (char *file, char *newname, We_window * f, int sw)
 {
   struct stat buf;
   struct stat lbuf;
@@ -2887,7 +2887,7 @@ WpeRenameCopy (char *file, char *newname, we_window * f, int sw)
 }
 
 int
-WpeCopyFileCont (char *oldfile, char *newfile, we_window * f)
+WpeCopyFileCont (char *oldfile, char *newfile, We_window * f)
 {
   struct stat buf;
   size_t ret;
@@ -2955,7 +2955,7 @@ WpeCopyFileCont (char *oldfile, char *newfile, we_window * f)
    symbolic linking
 */
 int
-WpeLinkFile (char *fl, char *ln, int sw, we_window * f)
+WpeLinkFile (char *fl, char *ln, int sw, We_window * f)
 {
   int ret;
 
@@ -2972,7 +2972,7 @@ WpeLinkFile (char *fl, char *ln, int sw, we_window * f)
 }
 
 int
-WpeRenameLink (char *old, char *ln, char *fl, we_window * f)
+WpeRenameLink (char *old, char *ln, char *fl, We_window * f)
 {
   int ret;
 
@@ -2996,34 +2996,34 @@ WpeRenameLink (char *old, char *ln, char *fl, we_window * f)
 #endif // #ifdef HAVE_SYMLINK
 
 int
-e_rename (char *file, char *newname, we_window * f)
+e_rename (char *file, char *newname, We_window * f)
 {
   return (WpeRenameCopy (file, newname, f, 0));
 }
 
 int
-e_rename_dir (char *dirct, char *file, char *newname, we_window * f, int rec)
+e_rename_dir (char *dirct, char *file, char *newname, We_window * f, int rec)
 {
   return (WpeRenameCopyDir (dirct, file, newname, f, rec, 0));
 }
 
 
 int
-e_link (char *file, char *newname, we_window * f)
+e_link (char *file, char *newname, We_window * f)
 {
   return (WpeRenameCopy (file, newname, f, 2));
 }
 
 
 int
-e_copy (char *file, char *newname, we_window * f)
+e_copy (char *file, char *newname, We_window * f)
 {
   return (WpeRenameCopy (file, newname, f, 1));
 }
 
 
 int
-WpeFileManagerOptions (we_window * f)
+WpeFileManagerOptions (We_window * f)
 {
   int ret;
   W_OPTSTR *o = e_init_opt_kst (f);
@@ -3110,7 +3110,7 @@ WpeFileManagerOptions (we_window * f)
 }
 
 int
-WpeDirDelOptions (we_window * f)
+WpeDirDelOptions (We_window * f)
 {
   int ret;
   W_OPTSTR *o = e_init_opt_kst (f);
@@ -3140,7 +3140,7 @@ WpeDirDelOptions (we_window * f)
 }
 
 int
-WpeShell (we_window * f)
+WpeShell (We_window * f)
 {
   view *outp = NULL;
   int g[4];
@@ -3173,7 +3173,7 @@ WpeShell (we_window * f)
 /*   print file */
 #ifndef NOPRINTER
 int
-WpePrintFile (we_window * f)
+WpePrintFile (We_window * f)
 {
   char *str, *dp;
   int c, sins = f->ins;
@@ -3223,14 +3223,14 @@ WpePrintFile (we_window * f)
 }
 #else
 int
-WpePrintFile (we_window * f)
+WpePrintFile (We_window * f)
 {
   return (e_error (e_msg[ERR_NOPRINT], 0, f->fb));
 }
 #endif
 
 struct dirfile *
-WpeSearchFiles (we_window * f, char *dirct, char *file, char *string,
+WpeSearchFiles (We_window * f, char *dirct, char *file, char *string,
 		struct dirfile *df, int sw)
 {
   struct dirfile *dd;
@@ -3390,7 +3390,7 @@ WpeSearchFiles (we_window * f, char *dirct, char *file, char *string,
 
 
 int
-WpeGrepWindow (we_window * f)
+WpeGrepWindow (We_window * f)
 {
   FIND *fd = &(f->ed->fd);
   int ret;
@@ -3446,7 +3446,7 @@ WpeGrepWindow (we_window * f)
 
 
 int
-WpeFindWindow (we_window * f)
+WpeFindWindow (We_window * f)
 {
   FIND *fd = &(f->ed->fd);
   int ret;
@@ -3487,7 +3487,7 @@ WpeFindWindow (we_window * f)
 }
 
 int
-e_ed_man (unsigned char *str, we_window * f)
+e_ed_man (unsigned char *str, We_window * f)
 {
   char command[256], tstr[_POSIX_PATH_MAX];
   char cc, hstr[80], nstr[10];
@@ -3640,7 +3640,7 @@ e_ed_man (unsigned char *str, we_window * f)
 }
 
 int
-e_funct (we_window * f)
+e_funct (We_window * f)
 {
   char str[80];
 
@@ -3771,7 +3771,7 @@ e_data_first (int sw, ECNT * cn, char *nstr)
 {
   extern char *e_hlp_str[];
   extern WOPT *gblst, *oblst;
-  we_window *f;
+  We_window *f;
   int i, j;
   struct dirfile *df = NULL;
   FLWND *fw;
@@ -3791,7 +3791,7 @@ e_data_first (int sw, ECNT * cn, char *nstr)
   (cn->mxedt)++;
   cn->edt[cn->mxedt] = j;
 
-  if ((f = (we_window *) malloc (sizeof (we_window))) == NULL)
+  if ((f = (We_window *) malloc (sizeof (We_window))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
   if ((fw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
     e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
@@ -3892,7 +3892,7 @@ e_data_first (int sw, ECNT * cn, char *nstr)
 }
 
 int
-e_data_schirm (we_window * f)
+e_data_schirm (We_window * f)
 {
   int i, j;
   FLWND *fw = (FLWND *) f->b;
@@ -3960,7 +3960,7 @@ e_data_schirm (we_window * f)
 int
 e_data_eingabe (ECNT * cn)
 {
-  we_window *f = cn->f[cn->mxedt];
+  We_window *f = cn->f[cn->mxedt];
   FLWND *fw = (FLWND *) f->b;
   int c = AltF;
 
@@ -4077,13 +4077,13 @@ e_data_eingabe (ECNT * cn)
 }
 
 int
-e_get_funct_in (char *nstr, we_window * f)
+e_get_funct_in (char *nstr, We_window * f)
 {
   return (e_data_first (1, f->ed, nstr));
 }
 
 int
-e_funct_in (we_window * f)
+e_funct_in (We_window * f)
 {
   int n, xa = 37, ya = 2, num = 8;
   OPTK *opt = malloc (num * sizeof (OPTK));

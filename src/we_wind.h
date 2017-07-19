@@ -6,7 +6,7 @@
 #include "we_mouse.h"
 
 /*******************************************************************************/
-/* (we_window *)f                                   */
+/* (We_window *)f                                   */
 /*            |                                   */
 /*            +->(POINT)e.(int)x,y                */
 /*            |         e.x=max_visible_cols_+1   */
@@ -39,37 +39,37 @@
 
 /*   we_wind.c   */
 int e_error (char *text, int sw, we_colorset * f);
-int e_message (int sw, char *str, we_window * f);
-void e_firstl (we_window * f, int sw);
-int e_pr_filetype (we_window * f);
+int e_message (int sw, char *str, We_window * f);
+void e_firstl (We_window * f, int sw);
+int e_pr_filetype (We_window * f);
 view *e_open_view (int xa, int ya, int xe, int ye, int col, int sw);
 int e_close_view (view * pic, int sw);
-void e_pr_line (int y, we_window * f);
+void e_pr_line (int y, We_window * f);
 void e_std_rahmen (int xa, int ya, int xe, int ye, char *name, int sw,
 		   int frb, int fes);
-void e_ed_rahmen (we_window * f, int sw);
-int e_schirm (we_window * f, int sw);
-int e_size_move (we_window * f);
+void e_ed_rahmen (We_window * f, int sw);
+int e_schirm (We_window * f, int sw);
+int e_size_move (We_window * f);
 view *e_std_kst (int xa, int ya, int xe, int ye, char *name, int sw, int fr,
 		 int ft, int fes);
-view *e_ed_kst (we_window * f, view * pic, int sw);
-int e_close_window (we_window * f);
-void e_switch_window (int num, we_window * f);
-int e_ed_zoom (we_window * f);
-int e_ed_cascade (we_window * f);
-int e_ed_tile (we_window * f);
-int e_ed_next (we_window * f);
-int e_mess_win (char *header, char *str, view ** pic, we_window * f);
+view *e_ed_kst (We_window * f, view * pic, int sw);
+int e_close_window (We_window * f);
+void e_switch_window (int num, We_window * f);
+int e_ed_zoom (We_window * f);
+int e_ed_cascade (We_window * f);
+int e_ed_tile (We_window * f);
+int e_ed_next (We_window * f);
+int e_mess_win (char *header, char *str, view ** pic, We_window * f);
 view *e_change_pic (int xa, int ya, int xe, int ye, view * pic, int sw,
 		    int frb);
 struct dirfile *e_add_df (char *str, struct dirfile *df);
 int e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col,
 		      int csw);
 int e_schr_lst_wsv (char *str, int xa, int ya, int n, int strlen, int ft,
-		    int fz, struct dirfile **df, we_window * f);
+		    int fz, struct dirfile **df, We_window * f);
 int e_rep_win_tree (ECNT * cn);
-int e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window * f, int sw);
+int e_opt_sec_box (int xa, int ya, int num, OPTK * opt, We_window * f, int sw);
 int e_close_buffer (BUFFER * b);
-int e_list_all_win (we_window * f);
+int e_list_all_win (We_window * f);
 
 #endif
