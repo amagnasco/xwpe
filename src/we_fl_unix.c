@@ -1596,12 +1596,13 @@ WpeGrepFile (char *file, char *string, int sw)
 {
   FILE *fp;
   char str[256];
-  int ret, nn;
+  int ret;
+  size_t end_string;
 
   if ((fp = fopen (file, "r")) == NULL)
     return (0);
 
-  nn = strlen (string);
+  end_string = strlen (string);
   while (fgets (str, 256, fp))
     {
       if ((sw & 32) == 0)
@@ -1617,18 +1618,19 @@ WpeGrepFile (char *file, char *string, int sw)
 	}
       else
 	{
-	  if ((sw & 128) != 0)
+/*	  if ((sw & 128) != 0) */
+	    _Bool case_sensitive = (sw & 128) != 0;
 	    ret =
 	      e_rstrstr (0, strlen (str), (unsigned char *) str,
-			 (unsigned char *) string, &nn);
-	  else
+			 (unsigned char *) string, &end_string, case_sensitive);
+/*	  else
 	    ret =
 	      e_urstrstr (0, strlen (str), (unsigned char *) str,
-			  (unsigned char *) string, &nn);
+			  (unsigned char *) string, &end_string); */
 	}
       if (ret >= 0
 	  && (!(sw & 64)
-	      || (isalnum (str[ret + nn]) == 0
+	      || (isalnum (str[ret + end_string]) == 0
 		  && (ret == 0 || isalnum (str[ret - 1]) == 0))))
 	{
 	  fclose (fp);

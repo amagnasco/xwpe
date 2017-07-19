@@ -13,33 +13,37 @@
 #include "edit.h"
 #include "WeString.h"
 #include "we_hfkt.h"
+#include "utils.h"
 
 /*        find string in text line    */
 int
-e_strstr (int x, int n, unsigned char *s, unsigned char *f)
+e_strstr (int start_offset, int end_offset, unsigned char *search_string,
+	  unsigned char *search_expression)
 {
-  int i, j, nf = strlen ((const char *) f);
+  int i, j, len_search_exp = strlen ((const char *) search_expression);
 
-  if (x > n)
+  if (start_offset > end_offset)
     {
-      for (i = x - nf; i >= n; i--)
+      for (i = start_offset - len_search_exp; i >= end_offset; i--)
 	{
-	  for (j = 0; j < nf; j++)
-	    if (s[i + j] != f[j])
+	  for (j = 0; j < len_search_exp; j++)
+	    if (search_string[i + j] != search_expression[j])
 	      break;
-	  if (j == nf)
+	  if (j == len_search_exp)
 	    return (i);
 	}
     }
   else
     {
-      for (i = x >= 0 ? x : 0;
-	   i <= n - nf /* && s[i] != '\0' && s[i] != WR */ ; i++)
+      for (i = start_offset >= 0 ? start_offset : 0;
+	   i <= end_offset - len_search_exp
+	   /* && search_string[i] != '\0' && search_string[i] != WR */ ;
+	   i++)
 	{
-	  for (j = 0; j < nf; j++)
-	    if (s[i + j] != f[j])
+	  for (j = 0; j < len_search_exp; j++)
+	    if (search_string[i + j] != search_expression[j])
 	      break;
-	  if (j == nf)
+	  if (j == len_search_exp)
 	    return (i);
 	}
     }
@@ -48,29 +52,33 @@ e_strstr (int x, int n, unsigned char *s, unsigned char *f)
 
 /*        Find string in line (ignoring case)   */
 int
-e_ustrstr (int x, int n, unsigned char *s, unsigned char *f)
+e_ustrstr (int start_offset, int end_offset, unsigned char *search_string,
+	   unsigned char *search_expression)
 {
-  int i, j, nf = strlen ((const char *) f);
+  int i, j, len_search_exp = strlen ((const char *) search_expression);
 
-  if (x > n)
+  if (start_offset > end_offset)
     {
-      for (i = x - nf; i >= n; i--)
+      for (i = start_offset - len_search_exp; i >= end_offset; i--)
 	{
-	  for (j = 0; j < nf; j++)
-	    if (toupper (s[i + j]) != toupper (f[j]))
+	  for (j = 0; j < len_search_exp; j++)
+	    if (toupper (search_string[i + j]) !=
+		toupper (search_expression[j]))
 	      break;
-	  if (j == nf)
+	  if (j == len_search_exp)
 	    return (i);
 	}
     }
   else
     {
-      for (i = x < 0 ? 0 : x; i <= n - nf; i++)
+      for (i = start_offset < 0 ? 0 : start_offset;
+	   i <= end_offset - len_search_exp; i++)
 	{
-	  for (j = 0; j < nf; j++)
-	    if (toupper (s[i + j]) != toupper (f[j]))
+	  for (j = 0; j < len_search_exp; j++)
+	    if (toupper (search_string[i + j]) !=
+		toupper (search_expression[j]))
 	      break;
-	  if (j == nf)
+	  if (j == len_search_exp)
 	    return (i);
 	}
     }
@@ -79,90 +87,123 @@ e_ustrstr (int x, int n, unsigned char *s, unsigned char *f)
 
 /*   find string in text line (including control chars), case insensitive */
 int
-e_urstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
+e_urstrstr (int start_offset, int end_offset, unsigned char *search_string,
+	    unsigned char *regular_expression, size_t * end_match)
 {
   int i;
   unsigned char *str;
   unsigned char *ft =
-    malloc ((strlen ((const char *) f) + 1) * sizeof (unsigned char));
+    malloc ((strlen ((const char *) regular_expression) +
+	     1) * sizeof (unsigned char));
 
-  if (x <= n)
+  if (start_offset <= end_offset)
     {
-      str = malloc ((n + 1) * sizeof (unsigned char));
-      for (i = 0; i < n; i++)
-	str[i] = toupper (s[i]);
-      str[n] = '\0';
+      str = malloc ((end_offset + 1) * sizeof (unsigned char));
+      for (i = 0; i < end_offset; i++)
+	str[i] = toupper (search_string[i]);
+      str[end_offset] = '\0';
     }
   else
     {
-      str = malloc ((x + 1) * sizeof (unsigned char));
-      for (i = 0; i < x; i++)
-	str[i] = toupper (s[i]);
-      str[x] = '\0';
+      str = malloc ((start_offset + 1) * sizeof (unsigned char));
+      for (i = 0; i < start_offset; i++)
+	str[i] = toupper (search_string[i]);
+      str[start_offset] = '\0';
     }
-  for (i = 0; (ft[i] = toupper (f[i])) != '\0'; i++)
+  for (i = 0; (ft[i] = toupper (regular_expression[i])) != '\0'; i++)
     ;
 
-  i = e_rstrstr (x, n, str, ft, nn);
+  int result =
+    e_rstrstr (start_offset, end_offset, str, ft, end_match, 0 /* case_sensitive = false */);
   free (str);
   free (ft);
-  return (i);
+  return (result);
 }
 
-/*   find string in text line (including control chars) */
+/* function e_rstrstr
+ *
+ * Matches regular expression to provided string. This function returns only the whole match.
+ * If the regular expression contains submatches (parentheses), the function ignores the submatches.
+ *
+ * @param start_offset		integer containing the startpoint within the provided search string
+ * @param end_offset		integer containing the endpoint within the provided search string
+ * @param search_string		string containing the search string
+ * @param regular_expression	string containing the regular expression
+ * @param start_match		the returned start position of the entire match (no submatches)
+ * @param end_match		the returned end position of the entire match (no submatches)
+ *
+ * @return: 0 if result is ok, -1 if an error occurred or no search result.
+ *
+ *   */
 int
-e_rstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
+e_rstrstr (size_t start_offset,
+	   size_t end_offset,
+	   unsigned char *search_string,
+	   unsigned char *regular_expression,
+	   size_t * end_match, _Bool case_sensitive)
 {
-  regex_t *regz;
+  regex_t regz[1];
   regmatch_t *matches = NULL;
-  int start, end;
-  size_t nr_submatches;
-  int res;
-  unsigned char old;
+  size_t start, end, nr_chars_search_str;
+  size_t nr_matches;
+  int start_match;
 
-  regz = malloc (sizeof (regex_t));
-  if (regcomp (regz, (const char *) f, REG_EXTENDED))
+  // copy and sanity check the input variables
+  nr_chars_search_str = strlen ((const char *) search_string);
+  start = start_offset;
+  end = end_offset;
+  if (start > end || start > nr_chars_search_str || end > nr_chars_search_str)
     {
-      free (regz);
-      return (-1);
+      char *msg =
+	"Regex search with: start=%lu, end=%lu, string=\"%s\", reg_exp=\"%s\"\n";
+      printf (msg, start, end, search_string, regular_expression);
+      print_stacktrace ();
+      return -1;
     }
-  nr_submatches = regz->re_nsub;
-  if (nr_submatches)
-    matches = malloc (nr_submatches * sizeof (regmatch_t));
-  start = (x < n) ? x : n;
-  end = (n > x) ? n : x;
-  if (start < 0)
-    start = 0;
-  old = s[end];			/* Save char */
-  s[end] = '\0';
-  res =
-    regexec (regz, (const char *) &s[start], nr_submatches, matches,
+  unsigned char str[nr_chars_search_str + 1];
+  /* copy excluding null byte */
+  strncpy ((char *) str, (const char *) search_string, nr_chars_search_str);
+  str[nr_chars_search_str] = '\0';
+
+  // Compile regular expression, return -1 if compile fails.
+  int cflags = case_sensitive 
+	  ? REG_EXTENDED | REG_NEWLINE 
+	  : REG_EXTENDED | REG_NEWLINE | REG_ICASE;
+  if (regcomp (regz, (const char *) regular_expression, cflags))
+    {
+      return -1;
+    }
+  // Note the number of submatches the compile has found and add 1 for the entire match.
+  // Use only the entire match. 
+  nr_matches = regz->re_nsub + 1;
+  matches = malloc (nr_matches * sizeof (regmatch_t));
+  unsigned char old = search_string[end];	/* Save char */
+  str[end] = '\0';
+  int search_result =
+    regexec (regz, (const char *) &search_string[start], nr_matches, matches,
 	     REG_NOTBOL | REG_NOTEOL);
-  s[end] = old;			/* Restore char */
-  regfree (regz);
-  free (regz);
-  if (res != 0)
+  str[end] = old;	  /* Restore char */
+  if (search_result == REG_NOMATCH)
+  {
+	  regfree(regz);		/* Obliged internal free */
+	  free(matches);
+	  return -1;
+  }
+  if (search_result != 0)
     {
+      char err_buff[1024];
+      regerror(search_result, regz, err_buff, 1024);
+      printf("[regex search] error message: %s\n", err_buff);
+      regfree(regz);		/* Obliged internal free */
       free (matches);
-      return (-1);		/* Can't find any occurences */
+      return -1;		/* Error other than not found */
     }
-  start = strlen ((const char *) s);
-  end = 0;
+  start_match = (matches[0].rm_so < (signed long) start) ? matches[0].rm_so : (signed long) start;
+  *end_match = (matches[0].rm_eo > (signed long) end) ? matches[0].rm_eo : (signed long) end;
 
-  for (size_t i = 0; i < nr_submatches; i++)
-    {
-      start = (matches[i].rm_so < start) ? matches[i].rm_so : start;
-      end = (matches[i].rm_eo > end) ? matches[i].rm_eo : end;
-    }
-  if (start > end)		/* Whole line matches regex */
-    {
-      end = start;
-      start = 0;
-    }
-  if (matches)
-    free (matches);
-  *nn = end;
-  return start;
+  regfree (regz);		/* Obliged internal free */
+  free (matches);
+  return start_match;
 }
 
 /*   numbers box (numbers input/edit)     */

@@ -17,6 +17,66 @@
 
 extern int e_undo_sw;
 
+_Bool find_successful (unsigned int sw)
+{
+	return (sw & 1) != 0;
+}
+
+_Bool find_from_cursor (unsigned int sw)
+{
+	return (sw & 2) == 0;
+}
+
+_Bool find_entire_scope (unsigned int sw)
+{
+	return (sw & 2) != 0;
+}
+
+_Bool find_search_forward (unsigned int sw)
+{
+	return (sw & 4) == 0;
+}
+
+_Bool find_search_backward (unsigned int sw)
+{
+	return (sw & 4) != 0;
+}
+
+_Bool find_global_scope (unsigned int sw)
+{
+	return (sw & 8) == 0;
+}
+
+_Bool find_selection (unsigned int sw)
+{
+	return (sw & 8) != 0;
+}
+
+_Bool find_confirm_replace (unsigned int sw)
+{
+	return (sw & 16) != 0;
+}
+
+_Bool find_regular_expression (unsigned int sw)
+{
+	return (sw & 32) != 0;
+}
+
+_Bool find_word_boundary (unsigned int sw)
+{
+	return (sw & 64) != 0;
+}
+
+_Bool find_ignore_case (unsigned int sw)
+{
+	return (sw & 128) == 0;
+}
+
+_Bool find_case_sensitive (unsigned int sw)
+{
+	return (sw & 128) != 0;
+}
+
 /*	delete block */
 int
 e_blck_del (we_window * f)
@@ -962,13 +1022,13 @@ e_blck_write (we_window * f)
   return (0);
 }
 
-/*   find again   */
+/*   Find + Find again   */
 int
 e_rep_search (we_window * f)
 {
   we_screen *s;
   BUFFER *b;
-  FIND *fd = &(f->ed->fd);
+  FIND *find = &(f->ed->fd);
   int i, ret, j, iend, jend, end;
 
   for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -980,69 +1040,66 @@ e_rep_search (we_window * f)
   s = f->s;
   ret = b->b.x;
   j = b->b.y;
-  if ((fd->sw & 8) == 0)
+  if (find_global_scope(find->sw))
     {
-      jend = (fd->sw & 4) ? 0 : b->mxlines - 1;
-      iend = (fd->sw & 4) ? 0 : b->bf[b->mxlines - 1].len;
+      jend = find_search_backward(find->sw) ? 0 : b->mxlines - 1;
+      iend = find_search_backward(find->sw) ? 0 : b->bf[b->mxlines - 1].len;
     }
   else
     {
-      jend = (fd->sw & 4) ? s->mark_begin.y : s->mark_end.y;
-      iend = (fd->sw & 4) ? s->mark_begin.x : s->mark_end.x;
+      jend = find_search_backward(find->sw) ? s->mark_begin.y : s->mark_end.y;
+      iend = find_search_backward(find->sw) ? s->mark_begin.x : s->mark_end.x;
     }
 
   for (;; ret = -1)
     {
-      if ((fd->sw & 4) == 0 && j > jend)
+      if (find_search_forward(find->sw) && j > jend)
 	break;
-      else if ((fd->sw & 4) != 0 && j < jend)
+      else if (find_search_backward(find->sw) && j < jend)
 	break;
       do
 	{
 	  if (j == jend)
 	    end = iend;
-	  else if (!(fd->sw & 4))
+	  else if (find_search_forward(find->sw))
 	    end = b->bf[j].len;
 	  else
 	    end = 0;
-	  if (fd->sw & 4 && ret == -1)
+	  if (find_search_backward(find->sw) && ret == -1)
 	    ret = b->bf[j].len;
-	  if ((fd->sw & 32) == 0)
+	  if (!find_regular_expression(find->sw))
 	    {
-	      if ((fd->sw & 128) != 0)
+	      if (find_case_sensitive(find->sw))
 		ret =
 		  e_strstr (ret, end, b->bf[j].s,
-			    (unsigned char *) fd->search);
+			    (unsigned char *) find->search);
 	      else
 		ret =
 		  e_ustrstr (ret, end, b->bf[j].s,
-			     (unsigned char *) fd->search);
+			     (unsigned char *) find->search);
 	    }
 	  else
 	    {
-	      if ((fd->sw & 128) != 0)
-		ret =
-		  e_rstrstr (ret, end, b->bf[j].s,
-			     (unsigned char *) fd->search, &(fd->sn));
-	      else
-		ret =
-		  e_urstrstr (ret, end, b->bf[j].s,
-			      (unsigned char *) fd->search, &(fd->sn));
+		ret = (ret >= 0) ? ret : 0;
+		ret = e_rstrstr (ret, end, b->bf[j].s,
+			     (unsigned char *) find->search, 
+			     &(find->sn), 
+			     find_case_sensitive(find->sw));
 	    }
-	  if ((fd->sw & 4) == 0 && j == jend && ret > iend)
+	  if (find_search_forward(find->sw) && j == jend && ret > iend)
 	    break;
-	  else if ((fd->sw & 4) != 0 && j == jend && ret < iend)
+	  else if (find_search_backward(find->sw) && j == jend && ret < iend)
 	    break;
-	  if (ret >= 0 && ((fd->sw & 64) == 0 ||
-			   (isalnum (*(b->bf[j].s + ret + fd->sn)) == 0 &&
+	  if (ret >= 0 && (!find_word_boundary(find->sw) ||
+			   (isalnum (*(b->bf[j].s + ret + find->sn)) == 0 &&
 			    (ret == 0
 			     || isalnum (*(b->bf[j].s + ret - 1)) == 0))))
 	    {
 	      s->fa.x = ret;
 	      b->b.y = s->fa.y = s->fe.y = j;
-	      s->fe.x = ret + fd->sn;
-	      b->b.x = ret = !(fd->sw & 4) ? s->fe.x : ret;
-	      if (!(fd->sw & 1))
+	      s->fe.x = ret + find->sn;
+	      b->b.x = ret = !(find->sw & 4) ? s->fe.x : ret;
+	      if (!find_successful(find->sw))
 		{
 		  e_cursor (f, 1);
 		  s->fa.y = j;
@@ -1050,17 +1107,17 @@ e_rep_search (we_window * f)
 		}
 	      return (1);
 	    }
-	  else if (ret >= 0 && (fd->sw & 64) != 0)
+	  else if (ret >= 0 && (find->sw & 64) != 0)
 	    ret++;
 	}
       while (ret >= 0);
-      if ((fd->sw & 4) == 0 && j > jend)
+      if (find_search_forward(find->sw) && j > jend)
 	break;
-      else if ((fd->sw & 4) != 0 && j < jend)
+      else if (find_search_backward(find->sw) && j < jend)
 	break;
-      j = ((fd->sw & 4) == 0) ? j + 1 : j - 1;
+      j = find_search_forward(find->sw) ? j + 1 : j - 1;
     }
-  if (!(fd->sw & 1))
+  if (!find_successful(find->sw))
     e_message (0, e_msg[ERR_GETSTRING], f);
   return (0);
 }
@@ -1089,28 +1146,28 @@ e_goto_line (we_window * f)
 }
 
 int
-e_find (we_window * f)
+e_find (we_window * current_window)
 {
-  we_screen *s;
-  BUFFER *b;
-  FIND *fd = &(f->ed->fd);
+  we_screen *wind_screen;
+  BUFFER *buffer;
+  FIND *find = &(current_window->ed->fd);
   int i, ret;
   char strTemp[80];
-  W_OPTSTR *o = e_init_opt_kst (f);
+  W_OPTSTR *o = e_init_opt_kst (current_window);
 
   if (!o)
     return (-1);
-  for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
+  for (i = current_window->ed->mxedt; i > 0 && !DTMD_ISTEXT (current_window->ed->f[i]->dtmd); i--);
   if (i <= 0)
     return (0);
-  e_switch_window (f->ed->edt[i], f);
-  f = f->ed->f[f->ed->mxedt];
-  b = f->b;
-  s = f->s;
-  if (e_blck_dup (strTemp, f))
+  e_switch_window (current_window->ed->edt[i], current_window);
+  current_window = current_window->ed->f[current_window->ed->mxedt];
+  buffer = current_window->b;
+  wind_screen = current_window->s;
+  if (e_blck_dup (strTemp, current_window))
     {
-      strcpy (fd->search, strTemp);
-      fd->sn = strlen (fd->search);
+      strcpy (find->search, strTemp);
+      find->sn = strlen (find->search);
     }
   o->xa = 7;
   o->ya = 3;
@@ -1123,46 +1180,46 @@ e_find (we_window * f)
   e_add_txtstr (4, 4, "Options:", o);
   e_add_txtstr (4, 9, "Scope:", o);
   e_add_txtstr (32, 9, "Begin:", o);
-  e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", fd->search,
-	       &f->ed->sdf, o);
-  e_add_sswstr (5, 5, 0, AltC, fd->sw & 128 ? 1 : 0, "Case sensitive    ", o);
-  e_add_sswstr (5, 6, 0, AltW, fd->sw & 64 ? 1 : 0, "Whole words only  ", o);
-  e_add_sswstr (5, 7, 0, AltR, fd->sw & 32 ? 1 : 0, "Regular expression", o);
+  e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
+	       &current_window->ed->sdf, o);
+  e_add_sswstr (5, 5, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", o);
+  e_add_sswstr (5, 6, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", o);
+  e_add_sswstr (5, 7, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", o);
   e_add_pswstr (0, 33, 5, 6, AltD, 0, "ForwarD        ", o);
-  e_add_pswstr (0, 33, 6, 0, AltB, fd->sw & 4 ? 1 : 0, "Backward       ", o);
+  e_add_pswstr (0, 33, 6, 0, AltB, find->sw & 4 ? 1 : 0, "Backward       ", o);
   e_add_pswstr (1, 5, 10, 0, AltG, 0, "Global            ", o);
-  e_add_pswstr (1, 5, 11, 0, AltS, fd->sw & 8 ? 1 : 0,
+  e_add_pswstr (1, 5, 11, 0, AltS, find->sw & 8 ? 1 : 0,
 		"Selected Text     ", o);
   e_add_pswstr (2, 33, 10, 0, AltF, 0, "From Cursor    ", o);
-  e_add_pswstr (2, 33, 11, 0, AltE, fd->sw & 2 ? 1 : 0, "Entire Scope   ", o);
+  e_add_pswstr (2, 33, 11, 0, AltE, find->sw & 2 ? 1 : 0, "Entire Scope   ", o);
   e_add_bttstr (16, 13, 1, AltO, " Ok ", NULL, o);
   e_add_bttstr (34, 13, -1, WPE_ESC, "Cancel", NULL, o);
   ret = e_opt_kst (o);
   if (ret != WPE_ESC)
     {
-      fd->sw = (o->pstr[0]->num << 2) + (o->pstr[1]->num << 3) +
+      find->sw = (o->pstr[0]->num << 2) + (o->pstr[1]->num << 3) +
 	(o->pstr[2]->num << 1) + (o->sstr[0]->num << 7) +
 	(o->sstr[1]->num << 6) + (o->sstr[2]->num << 5);
-      strcpy (fd->search, o->wstr[0]->txt);
-      fd->sn = strlen (fd->search);
-      if ((fd->sw & 2) != 0)
+      strcpy (find->search, o->wstr[0]->txt);
+      find->sn = strlen (find->search);
+      if ((find->sw & 2) != 0)
 	{
-	  if ((fd->sw & 4) == 0)
+	  if ((find->sw & 4) == 0)
 	    {
-	      b->b.x = (fd->sw & 8) == 0 ? 0 : s->mark_begin.x;
-	      b->b.y = (fd->sw & 8) == 0 ? 0 : s->mark_begin.y;
+	      buffer->b.x = (find->sw & 8) == 0 ? 0 : wind_screen->mark_begin.x;
+	      buffer->b.y = (find->sw & 8) == 0 ? 0 : wind_screen->mark_begin.y;
 	    }
 	  else
 	    {
-	      b->b.x =
-		(fd->sw & 8) == 0 ? b->bf[b->mxlines - 1].len : s->mark_end.x;
-	      b->b.y = (fd->sw & 8) == 0 ? b->mxlines - 1 : s->mark_end.y;
+	      buffer->b.x =
+		(find->sw & 8) == 0 ? buffer->bf[buffer->mxlines - 1].len : wind_screen->mark_end.x;
+	      buffer->b.y = (find->sw & 8) == 0 ? buffer->mxlines - 1 : wind_screen->mark_end.y;
 	    }
 	}
     }
   freeostr (o);
   if (ret != WPE_ESC)
-    e_rep_search (f);
+    e_rep_search (current_window);
   return (0);
 }
 

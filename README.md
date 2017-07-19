@@ -53,6 +53,24 @@ inadvertently break compilation on another system.  Also understanding and
 modifying the structure of xwpe is a large undertaking and will take a long
 time to complete.
 
+## Use ##
+
+See INSTALL for how to compile and install. In short get
+to the main project directory and execute:
+
+`./configure `
+`make`
+`sudo make install`
+
+From then on xwpe/xwe/wpe/we will be installed in /usr/local/bin. If you
+don't have X11, only wpe/we will be installed.
+
+## Development ##
+
+if you want to develop and use debugging do:
+
+`./configure CFLAGS="-g -O0"
+
 ## Copyright ##
 
 Copyright (C) 1993 Fred Kruse. xwpe is free; anyone may

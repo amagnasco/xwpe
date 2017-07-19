@@ -83,7 +83,9 @@ AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([symlink tparm mkdtemp tempnam]) 
-AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strchr strdup strrchr strstr])
+AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale])
+AC_CHECK_FUNCS([strchr strdup strrchr strstr])
+AC_CHECK_FUNCS([backtrace])
 
 AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile])
 AC_OUTPUT

@@ -3,6 +3,7 @@ AM_CFLAGS = -Wall -Wextra
 AM_CPPFLAGS = -DLIBRARY_DIR=\"@libdir@/xwpe\"
 AM_CPPFLAGS += -DRANLIB=\"@RANLIB@\"
 AM_CPPFLAGS += -DDATADIR=\"@datadir@/xwpe\"
+AM_LDFLAGS = -rdynamic
 lib_LTLIBRARIES = libxwpe-x11.la libxwpe-term.la
 libxwpe_x11_la_SOURCES = we_xterm.c WeXterm.c
 libxwpe_x11_la_LDFLAGS = -version-info 0:0:0
