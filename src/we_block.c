@@ -17,66 +17,6 @@
 
 extern int e_undo_sw;
 
-_Bool find_successful (unsigned int sw)
-{
-	return (sw & 1) != 0;
-}
-
-_Bool find_from_cursor (unsigned int sw)
-{
-	return (sw & 2) == 0;
-}
-
-_Bool find_entire_scope (unsigned int sw)
-{
-	return (sw & 2) != 0;
-}
-
-_Bool find_search_forward (unsigned int sw)
-{
-	return (sw & 4) == 0;
-}
-
-_Bool find_search_backward (unsigned int sw)
-{
-	return (sw & 4) != 0;
-}
-
-_Bool find_global_scope (unsigned int sw)
-{
-	return (sw & 8) == 0;
-}
-
-_Bool find_selection (unsigned int sw)
-{
-	return (sw & 8) != 0;
-}
-
-_Bool find_confirm_replace (unsigned int sw)
-{
-	return (sw & 16) != 0;
-}
-
-_Bool find_regular_expression (unsigned int sw)
-{
-	return (sw & 32) != 0;
-}
-
-_Bool find_word_boundary (unsigned int sw)
-{
-	return (sw & 64) != 0;
-}
-
-_Bool find_ignore_case (unsigned int sw)
-{
-	return (sw & 128) == 0;
-}
-
-_Bool find_case_sensitive (unsigned int sw)
-{
-	return (sw & 128) != 0;
-}
-
 /*	delete block */
 int
 e_blck_del (we_window * f)

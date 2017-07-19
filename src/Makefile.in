@@ -162,7 +162,8 @@ am_we_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) we_unix.$(OBJEXT) \
 	we_mouse.$(OBJEXT) we_opt.$(OBJEXT) we_wind.$(OBJEXT) \
 	we_prog.$(OBJEXT) we_progn.$(OBJEXT) we_debug.$(OBJEXT) \
 	WeString.$(OBJEXT) WeSyntax.$(OBJEXT) WeExpArr.$(OBJEXT) \
-	WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) utils.$(OBJEXT)
+	WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) utils.$(OBJEXT) \
+	we_find.$(OBJEXT)
 we_OBJECTS = $(am_we_OBJECTS)
 we_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
 am_wpe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
@@ -172,13 +173,14 @@ am_wpe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
 	we_wind.$(OBJEXT) we_prog.$(OBJEXT) we_progn.$(OBJEXT) \
 	we_debug.$(OBJEXT) WeString.$(OBJEXT) WeSyntax.$(OBJEXT) \
 	WeExpArr.$(OBJEXT) WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) \
-	utils.$(OBJEXT)
+	utils.$(OBJEXT) we_find.$(OBJEXT)
 wpe_OBJECTS = $(am_wpe_OBJECTS)
 wpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
 am__xwe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
 	we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c we_menue.c \
 	we_mouse.c we_opt.c we_wind.c we_prog.c we_progn.c we_debug.c \
-	WeString.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c utils.c
+	WeString.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c utils.c \
+	we_find.c
 @HAVE_X11_TRUE@am_xwe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
 @HAVE_X11_TRUE@	we_unix.$(OBJEXT) we_e_aus.$(OBJEXT) \
 @HAVE_X11_TRUE@	we_edit.$(OBJEXT) we_fl_fkt.$(OBJEXT) \
@@ -189,13 +191,14 @@ am__xwe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
 @HAVE_X11_TRUE@	we_debug.$(OBJEXT) WeString.$(OBJEXT) \
 @HAVE_X11_TRUE@	WeSyntax.$(OBJEXT) WeExpArr.$(OBJEXT) \
 @HAVE_X11_TRUE@	WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) \
-@HAVE_X11_TRUE@	utils.$(OBJEXT)
+@HAVE_X11_TRUE@	utils.$(OBJEXT) we_find.$(OBJEXT)
 xwe_OBJECTS = $(am_xwe_OBJECTS)
 @HAVE_X11_TRUE@xwe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
 am__xwpe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
 	we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c we_menue.c \
 	we_mouse.c we_opt.c we_wind.c we_prog.c we_progn.c we_debug.c \
-	WeString.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c utils.c
+	WeString.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c utils.c \
+	we_find.c
 @HAVE_X11_TRUE@am_xwpe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
 @HAVE_X11_TRUE@	we_unix.$(OBJEXT) we_e_aus.$(OBJEXT) \
 @HAVE_X11_TRUE@	we_edit.$(OBJEXT) we_fl_fkt.$(OBJEXT) \
@@ -206,7 +209,7 @@ am__xwpe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
 @HAVE_X11_TRUE@	we_debug.$(OBJEXT) WeString.$(OBJEXT) \
 @HAVE_X11_TRUE@	WeSyntax.$(OBJEXT) WeExpArr.$(OBJEXT) \
 @HAVE_X11_TRUE@	WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) \
-@HAVE_X11_TRUE@	utils.$(OBJEXT)
+@HAVE_X11_TRUE@	utils.$(OBJEXT) we_find.$(OBJEXT)
 xwpe_OBJECTS = $(am_xwpe_OBJECTS)
 @HAVE_X11_TRUE@xwpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
 AM_V_P = $(am__v_P_@AM_V@)
@@ -411,7 +414,7 @@ wpe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-		utils.c
+		utils.c we_find.c
 
 wpe_LDADD = libxwpe-x11.la libxwpe-term.la
 we_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
@@ -419,20 +422,20 @@ we_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-		utils.c
+		utils.c we_find.c
 
 we_LDADD = libxwpe-x11.la libxwpe-term.la
 include_HEADERS = attrb.h edit.h keys.h \
 		model.h unixkeys.h unixmakr.h \
 		WeString.h WeXterm.h WeProg.h WeExpArr.h \
-		utils.h
+		utils.h we_find.h
 
 @HAVE_X11_TRUE@xwpe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
 @HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
 @HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c \
 @HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c WeString.c \
 @HAVE_X11_TRUE@		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c  \
-@HAVE_X11_TRUE@		utils.c
+@HAVE_X11_TRUE@		utils.c we_find.c
 
 @HAVE_X11_TRUE@xwpe_LDADD = libxwpe-x11.la libxwpe-term.la
 @HAVE_X11_TRUE@xwe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
@@ -440,7 +443,7 @@ include_HEADERS = attrb.h edit.h keys.h \
 @HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c \
 @HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c WeString.c \
 @HAVE_X11_TRUE@		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-@HAVE_X11_TRUE@		utils.c
+@HAVE_X11_TRUE@		utils.c we_find.c
 
 @HAVE_X11_TRUE@xwe_LDADD = libxwpe-x11.la libxwpe-term.la
 all: all-am
@@ -599,6 +602,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_e_aus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_edit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_find.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_fl_fkt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_fl_unix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_gpm.Po@am__quote@
