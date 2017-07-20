@@ -87,10 +87,9 @@ _Bool find_case_sensitive (unsigned int sw);
 
 int e_strstr (int x, int n, unsigned char *s, unsigned char *f);
 int e_ustrstr (int x, int n, unsigned char *s, unsigned char *f);
-int e_urstrstr (int start_offset, int end_offset,
-		unsigned char *search_string,
-		unsigned char *regular_expression, size_t * end_match);
-int e_rstrstr (size_t x, size_t n, unsigned char *s, unsigned char *f,
+int e_rstrstr (size_t start_offset, size_t end_offset,
+	       unsigned char *search_string,
+	       unsigned char *regular_expression,
 	       size_t * end_match_str, _Bool case_sensitive);
 
 #endif

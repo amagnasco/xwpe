@@ -1643,11 +1643,7 @@ WpeGrepFile (char *file, char *string, int sw)
 	    _Bool case_sensitive = (sw & 128) != 0;
 	    ret =
 	      e_rstrstr (0, strlen (str), (unsigned char *) str,
-			 (unsigned char *) string, &end_string, case_sensitive);
-/*	  else
-	    ret =
-	      e_urstrstr (0, strlen (str), (unsigned char *) str,
-			  (unsigned char *) string, &end_string); */
+		 (unsigned char *) string, &end_string, case_sensitive);
 	}
       if (ret >= 0
 	  && (!(sw & 64)

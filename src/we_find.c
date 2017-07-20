@@ -91,42 +91,6 @@ e_ustrstr (int start_offset, int end_offset, unsigned char *search_string,
   return (-1);
 }
 
-/*   find string in text line (including control chars), case insensitive */
-int
-e_urstrstr (int start_offset, int end_offset, unsigned char *search_string,
-	    unsigned char *regular_expression, size_t * end_match)
-{
-  int i;
-  unsigned char *str;
-  unsigned char *ft =
-    malloc ((strlen ((const char *) regular_expression) +
-	     1) * sizeof (unsigned char));
-
-  if (start_offset <= end_offset)
-    {
-      str = malloc ((end_offset + 1) * sizeof (unsigned char));
-      for (i = 0; i < end_offset; i++)
-	str[i] = toupper (search_string[i]);
-      str[end_offset] = '\0';
-    }
-  else
-    {
-      str = malloc ((start_offset + 1) * sizeof (unsigned char));
-      for (i = 0; i < start_offset; i++)
-	str[i] = toupper (search_string[i]);
-      str[start_offset] = '\0';
-    }
-  for (i = 0; (ft[i] = toupper (regular_expression[i])) != '\0'; i++)
-    ;
-
-  int result =
-    e_rstrstr (start_offset, end_offset, str, ft, end_match,
-	       0 /* case_sensitive = false */ );
-  free (str);
-  free (ft);
-  return (result);
-}
-
 /* function e_rstrstr
  *
  * Matches regular expression to provided string. This function returns only the whole match.
