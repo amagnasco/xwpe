@@ -49,7 +49,7 @@ Search_result
 e_search_line (Search_request * request)
 {
     size_t size_result = 10;
-    char *alloc_err_msg;
+    char alloc_err_msg[128];
     sprintf (alloc_err_msg, "Request to look for '%s' failed due to memory problems.\n",
              request->needle);
 
