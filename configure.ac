@@ -55,6 +55,7 @@ AC_CHECK_LIB([SM], [main])
 AC_CHECK_LIB([ICE], [main])
 AC_CHECK_LIB([gpm], [main])
 AC_CHECK_LIB([z], [main])
+AC_CHECK_LIB([check], [check])
 
 # Check printer command: empty if necessary
 AC_CHECK_PROG([PRNTCMD], [lpr], [lpr])	# preferred value for printer
@@ -87,5 +88,5 @@ AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale])
 AC_CHECK_FUNCS([strchr strdup strrchr strstr])
 AC_CHECK_FUNCS([backtrace])
 
-AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile tests/Makefile])
 AC_OUTPUT

@@ -10,8 +10,8 @@ xwpe.csworkspace
 *.pdf
 *.swp
 *.orig
-src/.deps*
-src/.libs*
+*.deps*
+*.libs*
 *.la
 *.lo
 src/we
