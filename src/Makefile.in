@@ -154,64 +154,34 @@ libxwpe_x11_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libxwpe_x11_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
+libxwpe_la_LIBADD =
+am_libxwpe_la_OBJECTS = we_block.lo we_unix.lo we_e_aus.lo we_edit.lo \
+	we_fl_fkt.lo we_fl_unix.lo we_hfkt.lo we_menue.lo we_mouse.lo \
+	we_opt.lo we_wind.lo we_prog.lo we_progn.lo we_debug.lo \
+	WeString.lo WeSyntax.lo WeExpArr.lo WeLinux.lo we_gpm.lo \
+	utils.lo we_find.lo
+libxwpe_la_OBJECTS = $(am_libxwpe_la_OBJECTS)
+libxwpe_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(libxwpe_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_X11_TRUE@am__EXEEXT_1 = xwpe$(EXEEXT) xwe$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
-am_we_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) we_unix.$(OBJEXT) \
-	we_e_aus.$(OBJEXT) we_edit.$(OBJEXT) we_fl_fkt.$(OBJEXT) \
-	we_fl_unix.$(OBJEXT) we_hfkt.$(OBJEXT) we_menue.$(OBJEXT) \
-	we_mouse.$(OBJEXT) we_opt.$(OBJEXT) we_wind.$(OBJEXT) \
-	we_prog.$(OBJEXT) we_progn.$(OBJEXT) we_debug.$(OBJEXT) \
-	WeString.$(OBJEXT) WeSyntax.$(OBJEXT) WeExpArr.$(OBJEXT) \
-	WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) utils.$(OBJEXT) \
-	we_find.$(OBJEXT)
+am_we_OBJECTS = we_main.$(OBJEXT)
 we_OBJECTS = $(am_we_OBJECTS)
-we_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
-am_wpe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
-	we_unix.$(OBJEXT) we_e_aus.$(OBJEXT) we_edit.$(OBJEXT) \
-	we_fl_fkt.$(OBJEXT) we_fl_unix.$(OBJEXT) we_hfkt.$(OBJEXT) \
-	we_menue.$(OBJEXT) we_mouse.$(OBJEXT) we_opt.$(OBJEXT) \
-	we_wind.$(OBJEXT) we_prog.$(OBJEXT) we_progn.$(OBJEXT) \
-	we_debug.$(OBJEXT) WeString.$(OBJEXT) WeSyntax.$(OBJEXT) \
-	WeExpArr.$(OBJEXT) WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) \
-	utils.$(OBJEXT) we_find.$(OBJEXT)
+we_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la libxwpe.la
+am_wpe_OBJECTS = we_main.$(OBJEXT)
 wpe_OBJECTS = $(am_wpe_OBJECTS)
-wpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
-am__xwe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
-	we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c we_menue.c \
-	we_mouse.c we_opt.c we_wind.c we_prog.c we_progn.c we_debug.c \
-	WeString.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c utils.c \
-	we_find.c
-@HAVE_X11_TRUE@am_xwe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_unix.$(OBJEXT) we_e_aus.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_edit.$(OBJEXT) we_fl_fkt.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_fl_unix.$(OBJEXT) we_hfkt.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_menue.$(OBJEXT) we_mouse.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_opt.$(OBJEXT) we_wind.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_prog.$(OBJEXT) we_progn.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_debug.$(OBJEXT) WeString.$(OBJEXT) \
-@HAVE_X11_TRUE@	WeSyntax.$(OBJEXT) WeExpArr.$(OBJEXT) \
-@HAVE_X11_TRUE@	WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) \
-@HAVE_X11_TRUE@	utils.$(OBJEXT) we_find.$(OBJEXT)
+wpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la libxwpe.la
+am__xwe_SOURCES_DIST = we_main.c
+@HAVE_X11_TRUE@am_xwe_OBJECTS = we_main.$(OBJEXT)
 xwe_OBJECTS = $(am_xwe_OBJECTS)
-@HAVE_X11_TRUE@xwe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
-am__xwpe_SOURCES_DIST = we_main.c we_block.c we_unix.c we_e_aus.c \
-	we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c we_menue.c \
-	we_mouse.c we_opt.c we_wind.c we_prog.c we_progn.c we_debug.c \
-	WeString.c WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c utils.c \
-	we_find.c
-@HAVE_X11_TRUE@am_xwpe_OBJECTS = we_main.$(OBJEXT) we_block.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_unix.$(OBJEXT) we_e_aus.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_edit.$(OBJEXT) we_fl_fkt.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_fl_unix.$(OBJEXT) we_hfkt.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_menue.$(OBJEXT) we_mouse.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_opt.$(OBJEXT) we_wind.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_prog.$(OBJEXT) we_progn.$(OBJEXT) \
-@HAVE_X11_TRUE@	we_debug.$(OBJEXT) WeString.$(OBJEXT) \
-@HAVE_X11_TRUE@	WeSyntax.$(OBJEXT) WeExpArr.$(OBJEXT) \
-@HAVE_X11_TRUE@	WeLinux.$(OBJEXT) we_gpm.$(OBJEXT) \
-@HAVE_X11_TRUE@	utils.$(OBJEXT) we_find.$(OBJEXT)
+@HAVE_X11_TRUE@xwe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la \
+@HAVE_X11_TRUE@	libxwpe.la
+am__xwpe_SOURCES_DIST = we_main.c
+@HAVE_X11_TRUE@am_xwpe_OBJECTS = we_main.$(OBJEXT)
 xwpe_OBJECTS = $(am_xwpe_OBJECTS)
-@HAVE_X11_TRUE@xwpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la
+@HAVE_X11_TRUE@xwpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la \
+@HAVE_X11_TRUE@	libxwpe.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -247,10 +217,11 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libxwpe_term_la_SOURCES) $(libxwpe_x11_la_SOURCES) \
-	$(we_SOURCES) $(wpe_SOURCES) $(xwe_SOURCES) $(xwpe_SOURCES)
+	$(libxwpe_la_SOURCES) $(we_SOURCES) $(wpe_SOURCES) \
+	$(xwe_SOURCES) $(xwpe_SOURCES)
 DIST_SOURCES = $(libxwpe_term_la_SOURCES) $(libxwpe_x11_la_SOURCES) \
-	$(we_SOURCES) $(wpe_SOURCES) $(am__xwe_SOURCES_DIST) \
-	$(am__xwpe_SOURCES_DIST)
+	$(libxwpe_la_SOURCES) $(we_SOURCES) $(wpe_SOURCES) \
+	$(am__xwe_SOURCES_DIST) $(am__xwpe_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -404,48 +375,32 @@ AM_CFLAGS = -Wall -Wextra
 AM_CPPFLAGS = -DLIBRARY_DIR=\"@libdir@/xwpe\" -DRANLIB=\"@RANLIB@\" \
 	-DDATADIR=\"@datadir@/xwpe\"
 AM_LDFLAGS = -rdynamic
-lib_LTLIBRARIES = libxwpe-x11.la libxwpe-term.la
+lib_LTLIBRARIES = libxwpe-x11.la libxwpe-term.la libxwpe.la
 libxwpe_x11_la_SOURCES = we_xterm.c WeXterm.c
 libxwpe_x11_la_LDFLAGS = -version-info 0:0:0
 libxwpe_term_la_SOURCES = we_term.c
 libxwpe_term_la_LDFLAGS = -version-info 0:0:0
-wpe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
+libxwpe_la_SOURCES = we_block.c we_unix.c we_e_aus.c \
 		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
 		utils.c we_find.c
 
-wpe_LDADD = libxwpe-x11.la libxwpe-term.la
-we_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
-		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
-		we_menue.c we_mouse.c we_opt.c we_wind.c \
-		we_prog.c we_progn.c we_debug.c WeString.c \
-		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-		utils.c we_find.c
-
-we_LDADD = libxwpe-x11.la libxwpe-term.la
+libxwpe_la_LDFLAGS = -version-info 0:0:0
+wpe_SOURCES = we_main.c 
+wpe_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
+we_SOURCES = we_main.c 
+we_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
 include_HEADERS = attrb.h edit.h keys.h \
 		model.h unixkeys.h unixmakr.h \
 		WeString.h WeXterm.h WeProg.h WeExpArr.h \
 		utils.h we_find.h
 
-@HAVE_X11_TRUE@xwpe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
-@HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
-@HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c \
-@HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c WeString.c \
-@HAVE_X11_TRUE@		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c  \
-@HAVE_X11_TRUE@		utils.c we_find.c
-
-@HAVE_X11_TRUE@xwpe_LDADD = libxwpe-x11.la libxwpe-term.la
-@HAVE_X11_TRUE@xwe_SOURCES = we_main.c we_block.c we_unix.c we_e_aus.c \
-@HAVE_X11_TRUE@		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
-@HAVE_X11_TRUE@		we_menue.c we_mouse.c we_opt.c we_wind.c \
-@HAVE_X11_TRUE@		we_prog.c we_progn.c we_debug.c WeString.c \
-@HAVE_X11_TRUE@		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-@HAVE_X11_TRUE@		utils.c we_find.c
-
-@HAVE_X11_TRUE@xwe_LDADD = libxwpe-x11.la libxwpe-term.la
+@HAVE_X11_TRUE@xwpe_SOURCES = we_main.c 
+@HAVE_X11_TRUE@xwpe_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
+@HAVE_X11_TRUE@xwe_SOURCES = we_main.c 
+@HAVE_X11_TRUE@xwe_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
 all: all-am
 
 .SUFFIXES:
@@ -520,6 +475,9 @@ libxwpe-term.la: $(libxwpe_term_la_OBJECTS) $(libxwpe_term_la_DEPENDENCIES) $(EX
 
 libxwpe-x11.la: $(libxwpe_x11_la_OBJECTS) $(libxwpe_x11_la_DEPENDENCIES) $(EXTRA_libxwpe_x11_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libxwpe_x11_la_LINK) -rpath $(libdir) $(libxwpe_x11_la_OBJECTS) $(libxwpe_x11_la_LIBADD) $(LIBS)
+
+libxwpe.la: $(libxwpe_la_OBJECTS) $(libxwpe_la_DEPENDENCIES) $(EXTRA_libxwpe_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libxwpe_la_LINK) -rpath $(libdir) $(libxwpe_la_OBJECTS) $(libxwpe_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -592,30 +550,30 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeExpArr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeLinux.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeString.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeSyntax.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeExpArr.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeLinux.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeString.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeSyntax.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeXterm.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_block.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_debug.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_e_aus.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_edit.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_find.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_fl_fkt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_fl_unix.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_gpm.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_hfkt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_block.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_e_aus.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_edit.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_find.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_fl_fkt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_fl_unix.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_gpm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_hfkt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_menue.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_mouse.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_opt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_prog.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_progn.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_menue.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_mouse.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_opt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_prog.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_progn.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_term.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_unix.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_wind.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_unix.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_wind.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_xterm.Plo@am__quote@
 
 .c.o:
