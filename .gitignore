@@ -9,6 +9,7 @@ xwpe.csworkspace
 *.log
 *.pdf
 *.swp
+*.orig
 src/.deps*
 src/.libs*
 *.la
