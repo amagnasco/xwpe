@@ -58,12 +58,23 @@ time to complete.
 See INSTALL for how to compile and install. In short get
 to the main project directory and execute:
 
-`./configure `
+`mkdir build`
+
+and from build subdirectory run:
+
+`../configure ` 
+	OR `../configure CFLAGS="-g -O0"` if you want to debug
 `make`
 `sudo make install`
 
 From then on xwpe/xwe/wpe/we will be installed in /usr/local/bin. If you
 don't have X11, only wpe/we will be installed.
+
+REMARK: 
+Always compile from a separate build directory to prevent cluttering the source
+directory. However, should you have used `./configure` from the project root first,
+then when switching to a build directory, do a `make distclean` first, to remove all
+cached files.
 
 ## Development ##
 
