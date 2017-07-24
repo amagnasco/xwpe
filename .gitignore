@@ -4,6 +4,7 @@ config.status
 config.h
 xwpe.cs
 xwpe.csworkspace
+build*
 *.o
 *.bak
 *.log
@@ -18,7 +19,6 @@ src/we
 src/wpe
 src/xwpe
 src/xwe
-build-aux*
 autom4te*
 libtool*
 *~

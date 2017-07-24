@@ -106,7 +106,7 @@ am_check_search_OBJECTS = check_search.$(OBJEXT)
 check_search_OBJECTS = $(am_check_search_OBJECTS)
 check_search_DEPENDENCIES = $(top_builddir)/src/libxwpe-term.la \
 	$(top_builddir)/src/libxwpe-x11.la \
-	$(top_builddir)/src/libxwpe.la $(top_builddir)/src/we_main.o
+	$(top_builddir)/src/libxwpe.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -503,7 +503,7 @@ top_srcdir = @top_srcdir@
 check_search_SOURCES = check_search.c
 check_search_LDADD = $(top_builddir)/src/libxwpe-term.la \
 	$(top_builddir)/src/libxwpe-x11.la \
-	$(top_builddir)/src/libxwpe.la $(top_builddir)/src/we_main.o
+	$(top_builddir)/src/libxwpe.la
 all: all-am
 
 .SUFFIXES:

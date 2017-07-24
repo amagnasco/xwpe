@@ -10,4 +10,3 @@ check_search_SOURCES = check_search.c
 check_search_LDADD = $(top_builddir)/src/libxwpe-term.la
 check_search_LDADD += $(top_builddir)/src/libxwpe-x11.la 
 check_search_LDADD += $(top_builddir)/src/libxwpe.la
-check_search_LDADD += $(top_builddir)/src/we_main.o
