@@ -14,7 +14,7 @@ libxwpe_la_SOURCES = we_block.c we_unix.c we_e_aus.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-		utils.c we_find.c
+		utils.c we_find.c we_control.c
 libxwpe_la_LDFLAGS = -version-info 0:0:0
 wpe_SOURCES =	we_main.c 
 wpe_LDADD =	libxwpe-x11.la libxwpe-term.la libxwpe.la
@@ -23,7 +23,7 @@ we_LDADD =	libxwpe-x11.la libxwpe-term.la libxwpe.la
 include_HEADERS = 	attrb.h edit.h keys.h \
 		model.h unixkeys.h unixmakr.h \
 		WeString.h WeXterm.h WeProg.h WeExpArr.h \
-		utils.h we_find.h
+		utils.h we_find.h we_control.h
 if HAVE_X11
    bin_PROGRAMS += xwpe xwe
 xwpe_SOURCES =	we_main.c 

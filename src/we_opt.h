@@ -5,8 +5,13 @@
 #include "we_main.h"
 #include "we_mouse.h"
 #include "we_xterm.h"
+#include "edit.h"
 
-/*   we_opt.c   */
+/* exported data */
+extern char *e_hlp_str[];
+
+/* prototypes */
+int e_read_help_str (void);
 char *WpeStringToValue (const char *str);
 char *WpeValueToString (const char *value);
 int e_about_WE (We_window * f);

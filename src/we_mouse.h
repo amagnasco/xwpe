@@ -1,6 +1,7 @@
 #ifndef WE_MOUSE_H
 #define WE_MOUSE_H
 
+#include "config.h"
 #include "we_wind.h"
 
 /*   we_mouse.c   */

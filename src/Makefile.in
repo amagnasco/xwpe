@@ -159,7 +159,7 @@ am_libxwpe_la_OBJECTS = we_block.lo we_unix.lo we_e_aus.lo we_edit.lo \
 	we_fl_fkt.lo we_fl_unix.lo we_hfkt.lo we_menue.lo we_mouse.lo \
 	we_opt.lo we_wind.lo we_prog.lo we_progn.lo we_debug.lo \
 	WeString.lo WeSyntax.lo WeExpArr.lo WeLinux.lo we_gpm.lo \
-	utils.lo we_find.lo
+	utils.lo we_find.lo we_control.lo
 libxwpe_la_OBJECTS = $(am_libxwpe_la_OBJECTS)
 libxwpe_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -385,7 +385,7 @@ libxwpe_la_SOURCES = we_block.c we_unix.c we_e_aus.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-		utils.c we_find.c
+		utils.c we_find.c we_control.c
 
 libxwpe_la_LDFLAGS = -version-info 0:0:0
 wpe_SOURCES = we_main.c 
@@ -395,7 +395,7 @@ we_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
 include_HEADERS = attrb.h edit.h keys.h \
 		model.h unixkeys.h unixmakr.h \
 		WeString.h WeXterm.h WeProg.h WeExpArr.h \
-		utils.h we_find.h
+		utils.h we_find.h we_control.h
 
 @HAVE_X11_TRUE@xwpe_SOURCES = we_main.c 
 @HAVE_X11_TRUE@xwpe_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
@@ -557,6 +557,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeXterm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_block.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_control.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_e_aus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/we_edit.Plo@am__quote@

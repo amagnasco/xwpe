@@ -9,6 +9,9 @@
 #include "we_opt.h"
 #include "we_debug.h"
 
+extern char *info_file;
+extern char *e_tmp_dir;
+
 /*   we_fl_fkt.c   */
 char *e_mkfilename (char *dr, char *fn);
 POINT e_readin (int i, int j, FILE * fp, BUFFER * b, char *sw);
