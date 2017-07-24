@@ -44,46 +44,76 @@ Match *allocate_match (Match * ptr, size_t size, const char *err_msg);
  *
  */
 Search_result new_search_result ();
+/**
+ * Does the search request being submitted contain sane values?
+ * 
+ * Returns true if start and end values are sane and haystack and needle are non-overlapping.
+ * 
+ */
+_Bool search_request_ok(Search_request *request);
 
 Search_result
 e_search_line (Search_request * request)
 {
     size_t size_result = 10;
+
+	// TODO: combine errormessage with messages in e_msg, e_p_msg etc (we_control.c and messages.h)
+    char *alloc_err_msg_str = "Request to look for '%s' failed due to memory problems.\n";
     char alloc_err_msg[128];
-    sprintf (alloc_err_msg, "Request to look for '%s' failed due to memory problems.\n",
-             request->needle);
+    sprintf (alloc_err_msg, alloc_err_msg_str, request->needle);
+    char *request_err_msg_str = "Search request contained non sane values.\n"
+                                "offsets = [%ul, %ul], string = %s, \n"
+                                "search_expr = %s.\n";
+    char request_err_msg[1024];
+    sprintf(request_err_msg, request_err_msg_str,
+            request->start_offset, request->end_offset,
+            request->haystack, request->needle);
 
     Search_result result = new_search_result ();
+
+    if (!search_request_ok(request))
+    {
+        result.match_result = error;
+        strncpy(result.error_msg, request_err_msg, strlen(request_err_msg));
+        return result;
+    }
 
     if (!allocate_match (result.matches, size_result, alloc_err_msg))
     {
         result.match_result = error;
+        strncpy(result.error_msg, alloc_err_msg, strlen(alloc_err_msg));
         return result;
     }
     result.nr_hits = 0;
     result.match_result = match_not_found;
 
+    int (*compare)(const char *s1, const char *s2, size_t len);
+    compare = request->case_sensitive ? strncmp : strncasecmp;
+
     const char *haystack = (const char *) request->haystack;
     const char *needle = (const char *) request->needle;
-    char *match = strstr (haystack, needle);
-    while (haystack)
+    const size_t len = request->end_offset - request->start_offset + 1;
+    for (size_t i=0; i < len; i++, haystack++)
     {
-        if (!match)
-            break;
-        result.nr_hits++;
-        result.match_result = match_found;
-        if (result.nr_hits > size_result)
+        if (0 == compare(haystack, needle, len))
         {
-            size_result *= 2;	/* double the size */
-            void *ptr = allocate_match (result.matches, size_result, alloc_err_msg);
-            if (!ptr)
+            result.nr_hits++;
+            result.match_result = match_found;
+            if (result.nr_hits > size_result)
             {
-                result.match_result = error;
-                return result;
+                size_result *= 2;	/* double the size */
+                void *ptr = allocate_match (result.matches, size_result, alloc_err_msg);
+                if (!ptr)
+                {
+                    result.match_result = error;
+                    return result;
+                }
             }
+            size_t start_match = (const char *)request->haystack - haystack;
+            result.matches[result.nr_hits - 1].start_match = start_match;
+            size_t end_match = start_match + strlen((const char *)request->needle) -1;
+            result.matches[result.nr_hits - 1].end_match = end_match;
         }
-        match = strstr (haystack, needle);
-        haystack++;
     }
     return result;
 }
@@ -96,6 +126,28 @@ new_search_result ()
     strcpy (result.error_msg, "");
     result.nr_hits = 0;
     result.matches = NULL;
+    return result;
+}
+
+_Bool
+search_request_ok(Search_request *request)
+{
+    size_t start = request->start_offset;
+    size_t end = request->end_offset;
+    size_t len = strlen((char *)request->haystack);
+    unsigned char *haystack = request->haystack;
+    unsigned char *needle = request->needle;
+
+    _Bool result = 1;
+
+    /* sane start and end offset */
+    result = result && start <= end;
+    /* non-overlapping pointers */
+    result = result &&
+             (needle > haystack + len + 1 || needle < haystack);
+    /* sane end offset */
+    result = result && end < len;
+
     return result;
 }
 
@@ -119,12 +171,13 @@ allocate_match (Match * ptr, size_t size, const char *err_msg)
 
 /*        find string in text line    */
 int
-e_strstr (int start_offset, int end_offset, unsigned char *search_string,
-          unsigned char *search_expression)
+e_strstr (int start_offset, int end_offset,
+          unsigned char *search_string, unsigned char *search_expression,
+          _Bool case_sensitive)
 {
+    int (*compare)(const char *s1, const char *s2, size_t len);
+    compare = case_sensitive ? strncmp : strncasecmp;
     int len_search_exp = strlen ((const char *) search_expression);
-    int (*compare) (const char *s1, const char *s2, size_t n);
-    compare = strncmp;
 
     if (start_offset > end_offset)
     {

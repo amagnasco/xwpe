@@ -18,7 +18,40 @@
 
    */
 #include <check.h>
+#include <string.h>
+#include "../src/we_find.h"
 #include "check_search.h"
+
+START_TEST(test_search_NULL)
+{
+	const char *str = NULL;
+	const char *needle = " ";
+	Search_request request;
+	request.start_offset = 0;
+	request.end_offset = 0;
+	request.haystack = (unsigned char *)str;
+	request.needle = (unsigned char *)needle;
+	_Bool expected_result = 0;
+	_Bool actual_result = 1;
+	ck_assert_int_eq (expected_result, actual_result);
+}
+END_TEST
+
+/* START_TEST(test_search_normal)
+{
+	const char *str = "This is a big, Big, BiG String to Search In. Maybe not BIG enough.\n";
+	const char *needle = "big";
+	Search_request request;
+	request.start_offset = 0;
+	request.end_offset = 1;
+	request.haystack = (unsigned char *)str;
+	request.needle = (unsigned char *)needle;
+	_Bool expected_result = 1;
+	Search_result actual_result = e_search_line(&request);
+	ck_assert_int_eq (expected_result, actual_result.match_result);
+}
+END_TEST
+*/
 
 int main(void)
 {

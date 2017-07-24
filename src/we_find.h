@@ -17,9 +17,6 @@
 #include <string.h>
 #include "config.h"
 
-typedef enum
-{ forward_search, backward_search } Search_direction;
-
 /* Struct definitions */
 
 /**
@@ -29,14 +26,11 @@ typedef enum
 typedef struct
 {
     unsigned char *haystack;	/* the string to be searched */
-    unsigned char *needle;	/* the string we are searching for */
-    Search_direction search_direction;
+    unsigned char *needle;		/* the string we are searching for */
+    _Bool forward_search;
+	_Bool case_sensitive;
     size_t start_offset;		/* offset within the string to start search */
-    size_t end_offset;		/* offset with the string to end search */
-    /* use a function like strcmp, strncmp, strcasecmp, strncasecmp for compare
-     * You can also write your own as long as it has the same signature and comparable behaviour.
-     */
-    int (*compare) (const char *s1, const char *s2, size_t n);
+    size_t end_offset;			/* offset with the string to end search */
 } Search_request;
 
 typedef struct
@@ -64,7 +58,7 @@ typedef struct
  */
 typedef struct
 {
-    Search_direction search_direction;
+    _Bool forward_search;
     size_t start_offset;		/* offset within the string to start search */
     size_t end_offset;		/* offset with the string to end search */
     _Bool case_sensitive;		/* true for case sensitive, false to ignore case */
@@ -133,7 +127,7 @@ _Bool find_case_sensitive (unsigned int sw);
  */
 Search_result e_search_line (Search_request * request);
 
-int e_strstr (int x, int n, unsigned char *s, unsigned char *f);
+int e_strstr (int x, int n, unsigned char *s, unsigned char *f, _Bool case_sensitive);
 int e_ustrstr (int x, int n, unsigned char *s, unsigned char *f);
 int e_rstrstr (size_t start_offset, size_t end_offset,
                unsigned char *search_string,

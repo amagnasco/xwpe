@@ -55,7 +55,7 @@ AC_CHECK_LIB([SM], [main])
 AC_CHECK_LIB([ICE], [main])
 AC_CHECK_LIB([gpm], [main])
 AC_CHECK_LIB([z], [main])
-AC_CHECK_LIB([check], [check])
+AC_CHECK_LIB([check], [tcase_create])
 
 # Check printer command: empty if necessary
 AC_CHECK_PROG([PRNTCMD], [lpr], [lpr])	# preferred value for printer

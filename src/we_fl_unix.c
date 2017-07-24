@@ -17,6 +17,7 @@
 #include "curses.h"
 #endif
 #include "edit.h"
+#include "we_find.h"
 #include "we_fl_unix.h"
 #include "we_progn.h"
 #include "we_prog.h"
@@ -1626,24 +1627,17 @@ WpeGrepFile (char *file, char *string, int sw)
   end_string = strlen (string);
   while (fgets (str, 256, fp))
     {
-      if ((sw & 32) == 0)
+      if (!find_regular_expression(sw))
 	{
-	  if ((sw & 128) != 0)
 	    ret =
 	      e_strstr (0, strlen (str), (unsigned char *) str,
-			(unsigned char *) string);
-	  else
-	    ret =
-	      e_ustrstr (0, strlen (str), (unsigned char *) str,
-			 (unsigned char *) string);
+			(unsigned char *) string, find_case_sensitive(sw));
 	}
       else
 	{
-/*	  if ((sw & 128) != 0) */
-	    _Bool case_sensitive = (sw & 128) != 0;
 	    ret =
 	      e_rstrstr (0, strlen (str), (unsigned char *) str,
-		 (unsigned char *) string, &end_string, case_sensitive);
+		 (unsigned char *) string, &end_string, find_case_sensitive(sw));
 	}
       if (ret >= 0
 	  && (!(sw & 64)

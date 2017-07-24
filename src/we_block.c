@@ -1009,14 +1009,9 @@ e_rep_search (We_window * f)
 	    ret = b->bf[j].len;
 	  if (!find_regular_expression(find->sw))
 	    {
-	      if (find_case_sensitive(find->sw))
 		ret =
 		  e_strstr (ret, end, b->bf[j].s,
-			    (unsigned char *) find->search);
-	      else
-		ret =
-		  e_ustrstr (ret, end, b->bf[j].s,
-			     (unsigned char *) find->search);
+			    (unsigned char *) find->search, find_case_sensitive(find->sw));
 	    }
 	  else
 	    {
