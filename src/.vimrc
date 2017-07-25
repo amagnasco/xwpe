@@ -2,6 +2,7 @@
 " set verbose=2
 
 augroup project
+	" Remove all 'project' autocommands (prevent duplicate definition)
 	autocmd!
 	autocmd BufRead,BufNewFile *.h,*.c set filetype=c.doxygen
 	autocmd BufRead,BufNewFile *.h,*.c set formatprg=astyle\ --style=allman
