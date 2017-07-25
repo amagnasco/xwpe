@@ -1,4 +1,6 @@
 /**
+ *  XWPE - XWindows Programming Editor
+ *  Copyright (C) 2017 Guus Bonnema.
     This file is part of Xwpe - Xwindows Programming Editor.
 
     Xwpe - Xwindows Programming Editor is free software: you can redistribute it and/or modify
@@ -15,12 +17,30 @@
     along with Xwpe - Xwindows Programming Editor.  If not, see <http://www.gnu.org/licenses/>.
 
    */
-#ifndef CHECK_SEARCH_H
-#define CHECK_SEARCH_H
-
+#include <stdlib.h>
 #include <check.h>
+#include "check_search.h"
 
-Suite * search_suite(void);
+/**
+ * Testrunner for testsuites
+ *
+ * See check documentation for details.
+ *
+ */
+int main(void)
+{
+	int number_failed;
+	Suite *s;
+	SRunner *sr;
 
-#endif
+	s = search_suite();
+	sr = srunner_create(s);
+
+	srunner_run_all(sr, CK_NORMAL);
+	number_failed = srunner_ntests_failed(sr);
+	srunner_free(sr);
+
+	return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+
 

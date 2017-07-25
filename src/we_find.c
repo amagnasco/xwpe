@@ -57,26 +57,21 @@ e_search_line (Search_request * request)
 {
     size_t size_result = 10;
 
+	// Precreate Search_result
+    Search_result result = new_search_result ();
+
+	// Check input
+    if (!search_request_ok(request))
+    {
+        result.match_result = error;
+		strcpy(result.error_msg, "Search request contained non sane values.\n");
+        return result;
+    }
+
 	// TODO: combine errormessage with messages in e_msg, e_p_msg etc (we_control.c and messages.h)
     char *alloc_err_msg_str = "Request to look for '%s' failed due to memory problems.\n";
     char alloc_err_msg[128];
     sprintf (alloc_err_msg, alloc_err_msg_str, request->needle);
-    char *request_err_msg_str = "Search request contained non sane values.\n"
-                                "offsets = [%ul, %ul], string = %s, \n"
-                                "search_expr = %s.\n";
-    char request_err_msg[1024];
-    sprintf(request_err_msg, request_err_msg_str,
-            request->start_offset, request->end_offset,
-            request->haystack, request->needle);
-
-    Search_result result = new_search_result ();
-
-    if (!search_request_ok(request))
-    {
-        result.match_result = error;
-        strncpy(result.error_msg, request_err_msg, strlen(request_err_msg));
-        return result;
-    }
 
     if (!allocate_match (result.matches, size_result, alloc_err_msg))
     {
@@ -132,9 +127,13 @@ new_search_result ()
 _Bool
 search_request_ok(Search_request *request)
 {
+
+	/* non-null request pointers */
+	if (!request || !request->haystack || !request->needle)
+		return (_Bool) 0;
+
     size_t start = request->start_offset;
     size_t end = request->end_offset;
-    size_t len = strlen((char *)request->haystack);
     unsigned char *haystack = request->haystack;
     unsigned char *needle = request->needle;
 
@@ -143,6 +142,7 @@ search_request_ok(Search_request *request)
     /* sane start and end offset */
     result = result && start <= end;
     /* non-overlapping pointers */
+    size_t len = strlen((char *)request->haystack);
     result = result &&
              (needle > haystack + len + 1 || needle < haystack);
     /* sane end offset */

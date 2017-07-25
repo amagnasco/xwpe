@@ -65,6 +65,7 @@ and from build subdirectory run:
 `../configure ` 
 	OR `../configure CFLAGS="-g -O0"` if you want to debug
 `make`
+[optional: `make check`]
 `sudo make install`
 
 From then on xwpe/xwe/wpe/we will be installed in /usr/local/bin. If you
