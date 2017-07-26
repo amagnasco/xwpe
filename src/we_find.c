@@ -46,9 +46,9 @@ Match *allocate_match (Match * ptr, size_t size, const char *err_msg);
 Search_result new_search_result ();
 /**
  * Does the search request being submitted contain sane values?
- * 
+ *
  * Returns true if start and end values are sane and haystack and needle are non-overlapping.
- * 
+ *
  */
 _Bool search_request_ok(Search_request *request);
 
@@ -57,18 +57,18 @@ e_search_line (Search_request * request)
 {
     size_t size_result = 10;
 
-	// Precreate Search_result
+    // Precreate Search_result
     Search_result result = new_search_result ();
 
-	// Check input
+    // Check input
     if (!search_request_ok(request))
     {
         result.match_result = error;
-		strcpy(result.error_msg, "Search request contained non sane values.\n");
+        strcpy(result.error_msg, "Search request contained non sane values.\n");
         return result;
     }
 
-	// TODO: combine errormessage with messages in e_msg, e_p_msg etc (we_control.c and messages.h)
+    // TODO: combine errormessage with messages in e_msg, e_p_msg etc (we_control.c and messages.h)
     char *alloc_err_msg_str = "Request to look for '%s' failed due to memory problems.\n";
     char alloc_err_msg[128];
     sprintf (alloc_err_msg, alloc_err_msg_str, request->needle);
@@ -128,9 +128,9 @@ _Bool
 search_request_ok(Search_request *request)
 {
 
-	/* non-null request pointers */
-	if (!request || !request->haystack || !request->needle)
-		return (_Bool) 0;
+    /* non-null request pointers */
+    if (!request || !request->haystack || !request->needle)
+        return (_Bool) 0;
 
     size_t start = request->start_offset;
     size_t end = request->end_offset;
@@ -169,7 +169,6 @@ allocate_match (Match * ptr, size_t size, const char *err_msg)
     return return_ptr;
 }
 
-/*        find string in text line    */
 int
 e_strstr (int start_offset, int end_offset,
           unsigned char *search_string, unsigned char *search_expression,
@@ -177,10 +176,12 @@ e_strstr (int start_offset, int end_offset,
 {
     int (*compare)(const char *s1, const char *s2, size_t len);
     compare = case_sensitive ? strncmp : strncasecmp;
+
     int len_search_exp = strlen ((const char *) search_expression);
 
     if (start_offset > end_offset)
     {
+        // Search backwards
         for (int i = start_offset - len_search_exp; i >= end_offset; i--)
             if (0 == compare ((const char *) search_string + i,
                               (const char *) search_expression, len_search_exp))
@@ -188,6 +189,7 @@ e_strstr (int start_offset, int end_offset,
     }
     else
     {
+        // Search forward
         for (int i = start_offset >= 0 ? start_offset : 0;
                 i <= end_offset - len_search_exp; i++)
             if (0 == compare ((const char *) search_string + i,
@@ -315,7 +317,7 @@ e_rstrstr (size_t start_offset,
 }
 
 _Bool
-find_successful (unsigned int sw)
+find_replace (unsigned int sw)
 {
     return (sw & 1) != 0;
 }

@@ -946,10 +946,10 @@ e_tst_fkt (int c, ECNT * e)
 }
 
 int
-e_ctrl_k (We_window * f)
+e_ctrl_k (We_window * window)
 {
-  BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-  we_screen *s = f->ed->f[f->ed->mxedt]->s;
+  BUFFER *b = window->ed->f[window->ed->mxedt]->b;
+  we_screen *screen = window->ed->f[window->ed->mxedt]->s;
   int c;
 
   c = toupper (e_getch ());
@@ -958,72 +958,72 @@ e_ctrl_k (We_window * f)
   switch (c)
     {
     case 'A':
-      b->b = s->mark_begin;
-      e_schirm (f, 1);
+      b->b = screen->mark_begin;
+      e_schirm (window, 1);
       break;
     case 'B':
-      s->mark_begin = e_set_pnt (b->b.x, b->b.y);
-      e_schirm (f, 1);
+      screen->mark_begin = e_set_pnt (b->b.x, b->b.y);
+      e_schirm (window, 1);
       break;
     case 'C':
-      e_blck_copy (f);
+      e_blck_copy (window);
       break;
     case 'D':
-      e_changecase_dialog (f);
+      e_changecase_dialog (window);
       break;
     case 'F':
-      e_mk_beauty (1, 3, f);
+      e_mk_beauty (1, 3, window);
       break;
     case 'H':
-      e_blck_hide (f);
+      e_blck_hide (window);
       break;
     case 'I':
-      e_blck_to_right (f);
+      e_blck_to_right (window);
       break;
     case 'K':
-      s->mark_end = e_set_pnt (b->b.x, b->b.y);
-      e_schirm (f, 1);
+      screen->mark_end = e_set_pnt (b->b.x, b->b.y);
+      e_schirm (window, 1);
       break;
     case 'L':
-      f->s->mark_begin.x = 0;
-      f->s->mark_begin.y = f->b->b.y;
-      if (f->b->b.y < f->b->mxlines - 1)
+      window->s->mark_begin.x = 0;
+      window->s->mark_begin.y = window->b->b.y;
+      if (window->b->b.y < window->b->mxlines - 1)
 	{
-	  f->s->mark_end.x = 0;
-	  f->s->mark_end.y = f->b->b.y + 1;
+	  window->s->mark_end.x = 0;
+	  window->s->mark_end.y = window->b->b.y + 1;
 	}
       else
 	{
-	  f->s->mark_end.x = f->b->bf[f->b->b.y].len;
-	  f->s->mark_end.y = f->b->b.y;
+	  window->s->mark_end.x = window->b->bf[window->b->b.y].len;
+	  window->s->mark_end.y = window->b->b.y;
 	}
-      e_schirm (f, 1);
+      e_schirm (window, 1);
       break;
     case 'R':
-      e_blck_read (f);
+      e_blck_read (window);
       break;
     case 'U':
-      e_blck_to_left (f);
+      e_blck_to_left (window);
       break;
     case 'V':
-      e_blck_move (f);
+      e_blck_move (window);
       break;
     case 'W':
-      e_blck_write (f);
+      e_blck_write (window);
       break;
     case 'X':
-      s->mark_begin.x = 0;
-      s->mark_begin.y = 0;
-      s->mark_end.y = b->mxlines - 1;
-      s->mark_end.x = b->bf[b->mxlines - 1].len;
-      e_schirm (f, 1);
+      screen->mark_begin.x = 0;
+      screen->mark_begin.y = 0;
+      screen->mark_end.y = b->mxlines - 1;
+      screen->mark_end.x = b->bf[b->mxlines - 1].len;
+      e_schirm (window, 1);
       break;
     case 'Y':
-      e_blck_del (f);
+      e_blck_del (window);
       break;
     case 'Z':
-      b->b = s->mark_end;
-      e_schirm (f, 1);
+      b->b = screen->mark_end;
+      e_schirm (window, 1);
       break;
     case '0':
     case '1':
@@ -1035,11 +1035,12 @@ e_ctrl_k (We_window * f)
     case '7':
     case '8':
     case '9':
-      s->pt[c - '0'] = e_set_pnt (b->b.x, b->b.y);
-      s->fa.y = b->b.y;
-      s->fa.x = b->b.x;
-      s->fe.x = b->b.x + 1;
-      e_schirm (f, 1);
+	  /* Set marker number n */
+      screen->pt[c - '0'] = e_set_pnt (b->b.x, b->b.y);
+      screen->fa.y = b->b.y;
+      screen->fa.x = b->b.x;
+      screen->fe.x = b->b.x + 1;
+      e_schirm (window, 1);
       break;
     }
   return 0;
@@ -1166,6 +1167,7 @@ e_ctrl_o (We_window * f)
     case '7':
     case '8':
     case '9':
+	  /* Move to marker n (set previously with Ctrl-K n, obtained with Ctrl-O n */
       b->b.x = s->pt[c - '0'].x;
       b->b.y = s->pt[c - '0'].y;
       s->fa.y = b->b.y;

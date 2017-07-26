@@ -31,15 +31,23 @@ extern int MAXSLNS, MAXSCOL, MENOPT;
 #define WPE_NOBACKUP 1
 #define WPE_BACKUP   0
 
+/** DTMD is possibly short for Die Terminal Meta Data (German) or meta data for the terminal window */
+/** Normal text file */
 #define DTMD_NORMAL        'n'	/* Normal text file */
+/** MS-DOS text file */
 #define DTMD_MSDOS         'm'	/* MS-DOS text file */
+/** Help window */
 #define DTMD_HELP          'h'	/* Help window */
+/** Data/project window */
 #define DTMD_DATA          'D'	/* Data/project windows */
+/** File manager */
 #define DTMD_FILEMANAGER   'F'	/* File manager */
-/* File/directory dropdown of previous files/directories on the file manager */
+/** File/directory dropdown of previous files/directories on the file manager */
 #define DTMD_FILEDROPDOWN  'M'
 
+/** test to determine: is this a edittable text window or not? */
 #define DTMD_ISTEXT(x)     (x > 'Z')
+/** test to determine: is this window marakable? */ 
 #define DTMD_ISMARKABLE(x) (x > DTMD_HELP)	/* Means end marks can be shown */
 
 struct dirfile
@@ -149,10 +157,15 @@ typedef struct SCHRM
   POINT mark_begin;
   POINT mark_end;
   POINT ks;
+  /** 10 marks you can set with Ctrl-K n and get to with Ctrl-O n */ 
   POINT pt[9];
+  /** Is starting point of something related to marks (needs more research) */
   POINT fa;
+  /** Is ending point of something related to marks (needs more research) */
   POINT fe;
+  /** starting point of something */
   POINT a;
+  /** ending point of something */
   POINT e;
   POINT c;
   we_colorset *fb;

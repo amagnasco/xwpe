@@ -28,7 +28,7 @@ typedef struct
     unsigned char *haystack;	/* the string to be searched */
     unsigned char *needle;		/* the string we are searching for */
     _Bool forward_search;
-	_Bool case_sensitive;
+    _Bool case_sensitive;
     size_t start_offset;		/* offset within the string to start search */
     size_t end_offset;			/* offset with the string to end search */
 } Search_request;
@@ -76,17 +76,17 @@ typedef struct FND
     size_t rn;			/* length of the replace string */
     /** sw is a binary field where each bit has a logical value
      *
-     * bit  | test     | zero              | one                |
-     * val  |          | off               | on                 |
-     * ------------------------------------------------------
-     *  2^0 | sw & 1   |                   | successful         |
-     *  2^1 | sw & 2   | from cursor       | entire scope       |
-     *  2^2 | sw & 4   | search forward    | search backward    |
-     *  2^3 | sw & 8   | global scope      | selection          |
-     *  2^4 | sw & 16  |                   | confirm replace    |
-     *  2^5 | sw & 32  |                   | regular expression |
-     *  2^6 | sw & 64  |                   | word boundary      |
-     *  2^7 | sw & 128 | ignore case       | case sensitive     |
+     * bit  | test     | zero              | one                  |
+     * val  |          | off               | on                   |
+     * ------------------------------------------------------------
+     *  2^0 | sw & 1   | (not replace)     | replace (best guess) |
+     *  2^1 | sw & 2   | from cursor       | entire scope         |
+     *  2^2 | sw & 4   | search forward    | search backward      |
+     *  2^3 | sw & 8   | global scope      | selection            |
+     *  2^4 | sw & 16  |                   | confirm replace      |
+     *  2^5 | sw & 32  |                   | regular expression   |
+     *  2^6 | sw & 64  |                   | word boundary        |
+     *  2^7 | sw & 128 | ignore case       | case sensitive       |
      *  2^8 | sw & 256 |
      *  2^9 | sw & 512 |
      *  2^10| sw & 1024|
@@ -105,7 +105,7 @@ typedef struct FND
 
 /* Function prototypes */
 
-_Bool find_successful (unsigned int sw);
+_Bool find_replace (unsigned int sw);
 _Bool find_from_cursor (unsigned int sw);
 _Bool find_entire_scope (unsigned int sw);
 _Bool find_search_forward (unsigned int sw);
@@ -127,8 +127,37 @@ _Bool find_case_sensitive (unsigned int sw);
  */
 Search_result e_search_line (Search_request * request);
 
+/**
+ * find string in text line and return position if successful. Optionally search
+ * in a case sensitive manner. If start_offset is larger than end_offset, we search backwards.
+ *
+ * @param start_offset			int representing the starting offset from within the search_string
+ * @param end_offset			int representing the ending offset from within the search string
+ * @param search_string			string containing the string to be searched (a.k.a. haystack)
+ * @param search_expression		string containing the search expression (a.k.a. needle)
+ * @param case_sensitive		boolean true if we want a case sensitive search
+ *
+ * @return -1 if not found, position starting from 0 if found
+ *
+ */
 int e_strstr (int x, int n, unsigned char *s, unsigned char *f, _Bool case_sensitive);
+/** @obsolete This function is no longer necessary, use e_strstr in stead */
 int e_ustrstr (int x, int n, unsigned char *s, unsigned char *f);
+/**
+ *  search a string with a regular expression. Optionally search
+ *  in a case sensitive manner.
+ *
+ * @param start_offset			int representing the starting offset from within the search_string
+ * @param end_offset			int representing the ending offset from within the search string
+ * @param search_string			string containing the string to be searched (a.k.a. haystack)
+ * @param regular_expression		string containing the search expression (a.k.a. needle)
+ * @param end_match_str			pointer to size_t integer. function will return end position in
+ *							    case of a match.
+ * @param case_sensitive		boolean true if we want a case sensitive search
+ *
+ * @return -1 if not found, position starting from 0 if found
+ *
+ */
 int e_rstrstr (size_t start_offset, size_t end_offset,
                unsigned char *search_string,
                unsigned char *regular_expression,
