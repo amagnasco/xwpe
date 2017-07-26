@@ -2,7 +2,7 @@
 #define __OPTIONS_H
 /*-------------------------------------------------------------------------*\
   <options.h> -- Header file for option variables defines, etc.
-  
+
   Date      Programmer  Description
   3/27/98   Kenn F.     Created to handle f->ed-> stuff.
 \*-------------------------------------------------------------------------*/

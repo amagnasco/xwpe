@@ -1,5 +1,5 @@
 /* we_control.h                                             */
-/* Copyright (C) 1993 Fred Kruse                        
+/* Copyright (C) 1993 Fred Kruse
    Copyright (C) 2017 Guus Bonnema
 
     This file is part of Xwpe - Xwindows Programming Editor.
@@ -19,10 +19,10 @@
 
    */
 /**
- * Most of the code in this file was copied from we_main.c and later adapted 
+ * Most of the code in this file was copied from we_main.c and later adapted
  * For that reason the copyright starts with Fred Kruse's original copyright
  * even though he never created this file.
- * 
+ *
  */
 
 #ifndef WE_CONTROL_H

@@ -10,6 +10,6 @@
 /*   we_menue.c   */
 int WpeHandleMainmenu (int n, We_window * f);
 int WpeHandleSubmenu (int xa, int ya, int xe, int ye,
-		      int nm, OPTK * fopt, We_window * f);
+                      int nm, OPTK * fopt, We_window * f);
 
 #endif

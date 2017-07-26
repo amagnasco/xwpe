@@ -10,8 +10,8 @@
 
 typedef enum wpeMouseShape
 {
-  WpeEditingShape, WpeDebuggingShape, WpeWorkingShape, WpeErrorShape,
-  WpeSelectionShape, WpeLastShape
+    WpeEditingShape, WpeDebuggingShape, WpeWorkingShape, WpeErrorShape,
+    WpeSelectionShape, WpeLastShape
 } WpeMouseShape;
 
 /*   we_unix.c   */
@@ -44,7 +44,7 @@ extern int (*e_frb_u_menue) (int sw, int xa, int ya, We_window * f, int md);
 extern COLOR (*e_s_u_clr) (int f, int b);
 extern COLOR (*e_n_u_clr) (int fb);
 extern void (*e_pr_u_col_kasten) (int xa, int ya, int x,
-				  int y, We_window * f, int sw);
+                                  int y, We_window * f, int sw);
 extern int (*fk_mouse) (int g[]);
 extern int (*e_u_refresh) (void);
 extern int (*e_u_getch) (void);

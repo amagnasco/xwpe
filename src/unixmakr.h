@@ -13,8 +13,8 @@ char *getcwd (char *dir, int n);
 
 
 /**
- * tputs is necessary to add padding for termcap or terminfo 
- * capabilities. For curses or ncurses this function is not 
+ * tputs is necessary to add padding for termcap or terminfo
+ * capabilities. For curses or ncurses this function is not
  * necessary
  */
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)

@@ -6,9 +6,9 @@
 
 typedef struct
 {
-  FILE *fp;
-  BUFFER *b;
-  POINT p;
+    FILE *fp;
+    BUFFER *b;
+    POINT p;
 } E_AFILE;
 
 int *e_sc_txt (int *c_sw, BUFFER * b);
@@ -36,8 +36,8 @@ char *e_sh_spl4 (char *sp, char *str, E_AFILE * fp, int *n);
 char *e_sh_spl5 (char *sp, char *str, E_AFILE * fp, int *n);
 struct dirfile *e_c_add_df (char *str, struct dirfile *df);
 int e_find_def (char *name, char *startfile, int mode, char *file,
-		int *num, int *xn, int nold, char *oldfile,
-		struct dirfile **df, int *first);
+                int *num, int *xn, int nold, char *oldfile,
+                struct dirfile **df, int *first);
 int e_show_nm_f (char *name, We_window * f, int oldn, char **oldname);
 
 #endif

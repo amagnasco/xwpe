@@ -27,22 +27,22 @@ int e_opt_save (We_window * f);
 int e_save_opt (We_window * f);
 int e_opt_read (ECNT * cn);
 int e_add_arguments (char *str, char *head, We_window * f, int n, int sw,
-		     struct dirfile **df);
+                     struct dirfile **df);
 W_O_TXTSTR **e_add_txtstr (int x, int y, char *txt, W_OPTSTR * o);
 W_O_WRSTR **e_add_wrstr (int xt, int yt, int xw, int yw, int nw, int wmx,
-			 int nc, int sw, char *header, char *txt,
-			 struct dirfile **df, W_OPTSTR * o);
+                         int nc, int sw, char *header, char *txt,
+                         struct dirfile **df, W_OPTSTR * o);
 W_O_NUMSTR **e_add_numstr (int xt, int yt, int xw, int yw, int nw, int wmx,
-			   int nc, int sw, char *header, int num,
-			   W_OPTSTR * o);
+                           int nc, int sw, char *header, int num,
+                           W_OPTSTR * o);
 W_O_SSWSTR **e_add_sswstr (int x, int y, int nc, int sw, int num,
-			   char *header, W_OPTSTR * o);
+                           char *header, W_OPTSTR * o);
 W_O_SPSWSTR **e_add_spswstr (int n, int x, int y, int nc, int sw,
-			     char *header, W_OPTSTR * o);
+                             char *header, W_OPTSTR * o);
 W_O_PSWSTR **e_add_pswstr (int n, int x, int y, int nc, int sw, int num,
-			   char *header, W_OPTSTR * o);
+                           char *header, W_OPTSTR * o);
 W_O_BTTSTR **e_add_bttstr (int x, int y, int nc, int sw, char *header,
-			   int (*fkt) (We_window * f), W_OPTSTR * o);
+                           int (*fkt) (We_window * f), W_OPTSTR * o);
 int freeostr (W_OPTSTR * o);
 W_OPTSTR *e_init_opt_kst (We_window * f);
 int e_opt_move (W_OPTSTR * o);

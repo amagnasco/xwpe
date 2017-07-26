@@ -19,8 +19,8 @@ extern "C"
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   New Types
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  typedef struct wpeSyntaxRule
-  {
+typedef struct wpeSyntaxRule
+{
     char **reserved_word;	/* Reserved words */
     char **long_operator;	/* Operators longer than a single character */
     char *single_operator;	/* Single character operators */
@@ -41,19 +41,19 @@ extern "C"
        column the rest of the line is a comment */
     int special_column;
     char *special_comment;
-  } WpeSyntaxRule;
+} WpeSyntaxRule;
 
-  typedef struct wpeSyntaxExt
-  {
+typedef struct wpeSyntaxExt
+{
     char **extension;
     WpeSyntaxRule *syntax_rule;
-  } WpeSyntaxExt;
+} WpeSyntaxExt;
 
 /* Necessary for the time being */
-  extern WpeSyntaxExt **WpeSyntaxDef;
+extern WpeSyntaxExt **WpeSyntaxDef;
 
 /* WeSyntax.h */
-  void WpeSyntaxReadFile (ECNT * cn);
+void WpeSyntaxReadFile (ECNT * cn);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Macros and Machine specific information

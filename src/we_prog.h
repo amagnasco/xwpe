@@ -13,9 +13,9 @@ extern int e__project;
 
 struct e_s_prog
 {
-  char *language, *compiler, *comp_str, *libraries, *exe_name, *intstr, key;
-  char **filepostfix;		/* Expandable array */
-  int comp_sw, x;
+    char *language, *compiler, *comp_str, *libraries, *exe_name, *intstr, key;
+    char **filepostfix;		/* Expandable array */
+    int comp_sw, x;
 };
 extern struct e_s_prog e_s_prog;
 
@@ -23,9 +23,9 @@ int e_ini_prog (ECNT * cn);
 
 struct e_prog
 {
-  int num;
-  char *arguments, *project, *exedir, *sys_include;
-  struct e_s_prog **comp;
+    int num;
+    char *arguments, *project, *exedir, *sys_include;
+    struct e_s_prog **comp;
 };
 extern struct e_prog e_prog;
 
@@ -69,7 +69,7 @@ int e_exec_make (We_window * f);
 int e_run_sh (We_window * f);
 int e_project (We_window * f);
 int e_p_mess_win (char *header, int argc, char **argv, view ** pic,
-		  We_window * f);
+                  We_window * f);
 int e_p_add_df (FLWND * fw, int sw);
 int e_p_del_df (FLWND * fw, int sw);
 int e_p_edit_df (FLWND * fw, int sw);

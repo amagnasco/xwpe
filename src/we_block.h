@@ -15,7 +15,7 @@ int e_blck_move (We_window * f);
 void e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, We_window * f);
 int e_blck_copy (We_window * f);
 void e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
-		   We_window * f);
+                   We_window * f);
 int e_blck_begin (We_window * f);
 int e_blck_end (We_window * f);
 int e_blck_hide (We_window * f);

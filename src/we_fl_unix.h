@@ -15,10 +15,10 @@ int e_data_eingabe (ECNT * cn);
 char *WpeGetCurrentDir (ECNT * cn);
 struct dirfile *WpeCreateWorkingDirTree (int sw, ECNT * cn);
 char *WpeAssemblePath (char *pth, struct dirfile *cd, struct dirfile *dd,
-		       int n, We_window * f);
+                       int n, We_window * f);
 struct dirfile *WpeGraphicalFileList (struct dirfile *df, int sw, ECNT * cn);
 struct dirfile *WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd,
-				     ECNT * cn);
+                                     ECNT * cn);
 int e_funct (We_window * f);
 int e_funct_in (We_window * f);
 int e_data_first (int sw, ECNT * cn, char *nstr);

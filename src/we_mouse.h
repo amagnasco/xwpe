@@ -8,9 +8,9 @@
 #if  MOUSE
 struct mouse
 {
-  int x;
-  int y;
-  int k;
+    int x;
+    int y;
+    int k;
 };
 int e_mshit (void);
 int e_m1_mouse (void);

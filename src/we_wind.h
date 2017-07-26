@@ -46,12 +46,12 @@ view *e_open_view (int xa, int ya, int xe, int ye, int col, int sw);
 int e_close_view (view * pic, int sw);
 void e_pr_line (int y, We_window * f);
 void e_std_rahmen (int xa, int ya, int xe, int ye, char *name, int sw,
-		   int frb, int fes);
+                   int frb, int fes);
 void e_ed_rahmen (We_window * f, int sw);
 int e_schirm (We_window * f, int sw);
 int e_size_move (We_window * f);
 view *e_std_kst (int xa, int ya, int xe, int ye, char *name, int sw, int fr,
-		 int ft, int fes);
+                 int ft, int fes);
 view *e_ed_kst (We_window * f, view * pic, int sw);
 int e_close_window (We_window * f);
 void e_switch_window (int num, We_window * f);
@@ -61,12 +61,12 @@ int e_ed_tile (We_window * f);
 int e_ed_next (We_window * f);
 int e_mess_win (char *header, char *str, view ** pic, We_window * f);
 view *e_change_pic (int xa, int ya, int xe, int ye, view * pic, int sw,
-		    int frb);
+                    int frb);
 struct dirfile *e_add_df (char *str, struct dirfile *df);
 int e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col,
-		      int csw);
+                      int csw);
 int e_schr_lst_wsv (char *str, int xa, int ya, int n, int strlen, int ft,
-		    int fz, struct dirfile **df, We_window * f);
+                    int fz, struct dirfile **df, We_window * f);
 int e_rep_win_tree (ECNT * cn);
 int e_opt_sec_box (int xa, int ya, int num, OPTK * opt, We_window * f, int sw);
 int e_close_buffer (BUFFER * b);

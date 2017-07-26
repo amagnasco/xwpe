@@ -19,109 +19,109 @@
 int
 e_num_kst (char *s, int num, int max, We_window * f, int n, int sw)
 {
-  int ret, nz = WpeNumberOfPlaces (max);
-  char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
-  W_OPTSTR *o = e_init_opt_kst (f);
+    int ret, nz = WpeNumberOfPlaces (max);
+    char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
+    W_OPTSTR *o = e_init_opt_kst (f);
 
-  if (!o || !tmp)
-    return (-1);
-  o->xa = 20;
-  o->ya = 4;
-  o->xe = 52;
-  o->ye = 10;
-  o->bgsw = 0;
-  o->name = s;
-  o->crsw = AltO;
-  sprintf (tmp, "%s:", s);
-  e_add_numstr (3, 2, 29 - nz, 2, nz, max, n, sw, tmp, num, o);
-  free (tmp);
-  e_add_bttstr (6, 4, 1, AltO, " Ok ", NULL, o);
-  e_add_bttstr (21, 4, -1, WPE_ESC, "Cancel", NULL, o);
-  ret = e_opt_kst (o);
-  if (ret != WPE_ESC)
-    num = o->nstr[0]->num;
-  freeostr (o);
-  return (num);
+    if (!o || !tmp)
+        return (-1);
+    o->xa = 20;
+    o->ya = 4;
+    o->xe = 52;
+    o->ye = 10;
+    o->bgsw = 0;
+    o->name = s;
+    o->crsw = AltO;
+    sprintf (tmp, "%s:", s);
+    e_add_numstr (3, 2, 29 - nz, 2, nz, max, n, sw, tmp, num, o);
+    free (tmp);
+    e_add_bttstr (6, 4, 1, AltO, " Ok ", NULL, o);
+    e_add_bttstr (21, 4, -1, WPE_ESC, "Cancel", NULL, o);
+    ret = e_opt_kst (o);
+    if (ret != WPE_ESC)
+        num = o->nstr[0]->num;
+    freeostr (o);
+    return (num);
 }
 
 /*   determine string length delimited by null or newline (WPE_WR == 10) */
 int
 e_str_len (unsigned char *s)
 {
-  int i;
+    int i;
 
-  for (i = 0; *(s + i) != '\0' && *(s + i) != WPE_WR; i++)
-    ;
-  return (i);
+    for (i = 0; *(s + i) != '\0' && *(s + i) != WPE_WR; i++)
+        ;
+    return (i);
 }
 
 /*           COLOR - fill struct with constants           */
 COLOR
 e_s_x_clr (int f, int b)
 {
-  COLOR c;
+    COLOR c;
 
-  c.f = f;
-  c.b = b;
-  c.fb = 16 * b + f;
-  return (c);
+    c.f = f;
+    c.b = b;
+    c.fb = 16 * b + f;
+    return (c);
 }
 
 COLOR
 e_n_x_clr (int fb)
 {
-  COLOR f;
+    COLOR f;
 
-  f.fb = fb;
-  f.b = fb / 16;
-  f.f = fb % 16;
-  return (f);
+    f.fb = fb;
+    f.b = fb / 16;
+    f.f = fb % 16;
+    return (f);
 }
 
 COLOR
 e_s_t_clr (int f, int b)
 {
-  COLOR c;
+    COLOR c;
 
-  c.f = f;
-  c.b = b;
-  c.fb = f;
-  return (c);
+    c.f = f;
+    c.b = b;
+    c.fb = f;
+    return (c);
 }
 
 COLOR
 e_n_t_clr (int fb)
 {
-  COLOR f;
+    COLOR f;
 
-  f.fb = fb;
-  f.b = fb;
-  f.f = fb;
-  return (f);
+    f.fb = fb;
+    f.b = fb;
+    f.f = fb;
+    return (f);
 }
 
 /*            POINT - fill struct with constants            */
 POINT
 e_set_pnt (int x, int y)
 {
-  POINT p;
+    POINT p;
 
-  p.x = x;
-  p.y = y;
-  return (p);
+    p.x = x;
+    p.y = y;
+    return (p);
 }
 
 int
 e_pr_uul (we_colorset * fb)
 {
-  extern WOPT *blst;
-  extern int nblst;
-  int i;
+    extern WOPT *blst;
+    extern int nblst;
+    int i;
 
-  e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fb);
-  for (i = 0; i < nblst && blst[i].x < MAXSCOL; ++i)
-    e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fb,
-		   blst[i].s, blst[i].n, fb->ms.fb, blst[i].x,
-		   i == nblst - 1 ? MAXSCOL - 1 : blst[i + 1].x - 1);
-  return (i);
+    e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fb);
+    for (i = 0; i < nblst && blst[i].x < MAXSCOL; ++i)
+        e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fb,
+                       blst[i].s, blst[i].n, fb->ms.fb, blst[i].x,
+                       i == nblst - 1 ? MAXSCOL - 1 : blst[i + 1].x - 1);
+    return (i);
 }

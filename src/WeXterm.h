@@ -30,8 +30,8 @@ extern "C"
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   New Types
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  typedef struct wpeXStruct
-  {
+typedef struct wpeXStruct
+{
     Display *display;
     int screen;
     Window window;
@@ -47,17 +47,17 @@ extern "C"
 #else
     char *selection;
 #endif
-  } WpeXStruct;
+} WpeXStruct;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Global Variables
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  extern WpeXStruct WpeXInfo;
+extern WpeXStruct WpeXInfo;
 
 
-  void WpeXInit (int *argc, char **argv);
-  void WpeXMouseChangeShape (WpeMouseShape new_shape);
-  void WpeXMouseRestoreShape ();
+void WpeXInit (int *argc, char **argv);
+void WpeXMouseChangeShape (WpeMouseShape new_shape);
+void WpeXMouseRestoreShape ();
 
 #ifdef __cplusplus
 }
