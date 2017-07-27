@@ -177,25 +177,36 @@ e_strstr (int start_offset, int end_offset,
     int (*compare)(const char *s1, const char *s2, size_t len);
     compare = case_sensitive ? strncmp : strncasecmp;
 
-    int len_search_exp = strlen ((const char *) search_expression);
+    int len_search_expr = strlen ((const char *) search_expression);
 
-    if (start_offset > end_offset)
-    {
-        // Search backwards
-        for (int i = start_offset - len_search_exp; i >= end_offset; i--)
-            if (0 == compare ((const char *) search_string + i,
-                              (const char *) search_expression, len_search_exp))
-                return (i);
-    }
-    else
-    {
-        // Search forward
-        for (int i = start_offset >= 0 ? start_offset : 0;
-                i <= end_offset - len_search_exp; i++)
-            if (0 == compare ((const char *) search_string + i,
-                              (const char *) search_expression, len_search_exp))
-                return (i);
-    }
+	/** 
+	 *  Search forward or backward.
+	 *  
+	 *  When searching backward start < end. In order to use the same algorithm 
+	 *  for forward and backward we search from -1 * start to -1 * end for backward searches.
+	 *  To determine the offset we have to use absolute value of the index.
+	 *  
+	 *  Remark 1: 
+	 *  The caller returns the starting position of the last match as the ending position.
+	 *  This means, that the next match may end in the ending position (backwards) but cannot
+	 *  start in the ending position, or it will find the old match and each subsequent would
+	 *  render the same result. For that reason with backward search we start one position before 
+	 *  the end.
+	 * 
+	 * */
+	int start = start_offset < 0 ? 0 : start_offset;
+	int end = end_offset;
+
+	int i = start <= end ? start : -1 * (start - 1);
+	int i_end = start <= end ? end - 1 : -1 * end;
+
+	for ( ; i <= i_end; i++) {
+		if (0 == compare((const char *) search_string + abs(i),
+					     (const char *) search_expression, len_search_expr))
+			return(abs(i));
+	}
+
+	// return -1 if nothing was found
     return (-1);
 }
 
