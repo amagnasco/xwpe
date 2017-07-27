@@ -20,51 +20,6 @@
 /* Struct definitions */
 
 /**
- * Use this struct in a search request.
- *
- */
-typedef struct
-{
-    unsigned char *haystack;	/* the string to be searched */
-    unsigned char *needle;		/* the string we are searching for */
-    _Bool forward_search;
-    _Bool case_sensitive;
-    size_t start_offset;		/* offset within the string to start search */
-    size_t end_offset;			/* offset with the string to end search */
-} Search_request;
-
-typedef struct
-{
-    size_t start_match;		/* offset of matched substring within string */
-    size_t end_match;		/* offset of last matched char within string */
-} Match;
-
-#define WE_MAX_ERR 1024
-
-/**
- * The search functions use this struct to store the results of the search
- */
-typedef struct
-{
-    enum {error, match_found, match_not_found} match_result;
-    char error_msg[WE_MAX_ERR];	/* on error, the error_message contains a string */
-    size_t nr_hits;				/* The number of matches, and the length of the matches array */
-    size_t nr_matches_allocated;	/* The size of the matches array */
-    Match *matches;				/* The set of matches for the search string provided */
-} Search_result;
-
-/**
- * Use this struct in a search request by regular expression.
- */
-typedef struct
-{
-    _Bool forward_search;
-    size_t start_offset;		/* offset within the string to start search */
-    size_t end_offset;		/* offset with the string to end search */
-    _Bool case_sensitive;		/* true for case sensitive, false to ignore case */
-} Regex_request;
-
-/**
  * The FIND structure is in use for searching.
  */
 typedef struct FND
@@ -119,15 +74,6 @@ _Bool find_ignore_case (unsigned int sw);
 _Bool find_case_sensitive (unsigned int sw);
 
 /**
- *  Searches for a fixed string in a text depending on the
- *  provided search request criteria (includes the search string).
- *
- *  Search expression must have non-zero length.
- *
- */
-Search_result e_search_line (Search_request * request);
-
-/**
  * find string in text line and return position if successful. Optionally search
  * in a case sensitive manner. If start_offset is larger than end_offset, we search backwards.
  *
@@ -141,8 +87,6 @@ Search_result e_search_line (Search_request * request);
  *
  */
 int e_strstr (int x, int n, unsigned char *s, unsigned char *f, _Bool case_sensitive);
-/** @obsolete This function is no longer necessary, use e_strstr in stead */
-int e_ustrstr (int x, int n, unsigned char *s, unsigned char *f);
 /**
  *  search a string with a regular expression. Optionally search
  *  in a case sensitive manner.
