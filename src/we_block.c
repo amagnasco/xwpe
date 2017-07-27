@@ -972,7 +972,7 @@ e_blck_write (We_window * f)
  *
  *   */
 int
-e_rep_search (We_window * window)
+e_repeat_search (We_window * window)
 {
     we_screen *screen;
     BUFFER *buffer;
@@ -1170,7 +1170,7 @@ e_find (We_window * current_window)
     }
     freeostr (o);
     if (ret != WPE_ESC)
-        e_rep_search (current_window);
+        e_repeat_search (current_window);
     return (0);
 }
 
@@ -1267,7 +1267,7 @@ e_replace (We_window * f)
     freeostr (o);
     if (ret != WPE_ESC)
     {
-        while (e_rep_search (f) && ((ret == AltA) || (!found)))
+        while (e_repeat_search (f) && ((ret == AltA) || (!found)))
         {
             found++;
             if (f->a.y < 11)

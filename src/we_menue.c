@@ -173,7 +173,7 @@ WpeHandleMainmenu (int n, We_window * f)
         mainmenu[3].menuitems[1] =
             WpeFillSubmenuItem ("Replace Shift F3 / ^O A", 0, 'R', e_replace);
         mainmenu[3].menuitems[2] =
-            WpeFillSubmenuItem ("Search again         F3", 0, 'S', e_rep_search);
+            WpeFillSubmenuItem ("Search again         F3", 0, 'S', e_repeat_search);
     }
     else
     {
@@ -182,7 +182,7 @@ WpeHandleMainmenu (int n, We_window * f)
         mainmenu[3].menuitems[1] =
             WpeFillSubmenuItem ("Replace   Alt F4 / ^O A", 0, 'R', e_replace);
         mainmenu[3].menuitems[2] =
-            WpeFillSubmenuItem ("Search again         ^L", 0, 'S', e_rep_search);
+            WpeFillSubmenuItem ("Search again         ^L", 0, 'S', e_repeat_search);
     }
     mainmenu[3].menuitems[3] =
         WpeFillSubmenuItem ("Go to Line        Alt G", 0, 'G', e_goto_line);

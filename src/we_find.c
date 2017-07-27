@@ -61,6 +61,15 @@ e_strstr (int start_offset, int end_offset,
     return (-1);
 }
 
+/**
+ * e_rstrstr: search for a match using a regular expression.
+ * 
+ * This method searches using a regular expression and optionally case_sensitive
+ * with forward or backward search.
+ * 
+ * This match ignores submatches when using parentheses.
+ * 
+ */
 int
 e_rstrstr (size_t start_offset,
            size_t end_offset,
@@ -68,28 +77,24 @@ e_rstrstr (size_t start_offset,
            unsigned char *regular_expression,
            size_t * end_match, _Bool case_sensitive)
 {
+	// TODO: start > end means backward search
+	// Adapt regex search to this phenomenon
+	_Bool search_forward = start_offset <= end_offset;
     regex_t regz[1];
     regmatch_t *matches = NULL;
-    size_t start, end, nr_chars_search_str;
+    size_t start, end, len_search_str;
     size_t nr_matches;
     int start_match;
 
     // copy and sanity check the input variables
-    nr_chars_search_str = strlen ((const char *) search_string);
+    len_search_str = strlen ((const char *) search_string);
     start = start_offset;
     end = end_offset;
-    if (start > end || start > nr_chars_search_str || end > nr_chars_search_str)
-    {
-        char *msg =
-            "Regex search with: start=%lu, end=%lu, string=\"%s\", reg_exp=\"%s\"\n";
-        printf (msg, start, end, search_string, regular_expression);
-        print_stacktrace ();
-        return -1;
-    }
-    unsigned char str[nr_chars_search_str + 1];
+
+    unsigned char str[len_search_str + 1];
     /* copy excluding null byte */
-    strncpy ((char *) str, (const char *) search_string, nr_chars_search_str);
-    str[nr_chars_search_str] = '\0';
+    strncpy ((char *) str, (const char *) search_string, len_search_str);
+    str[len_search_str] = '\0';
 
     // Compile regular expression, return -1 if compile fails.
     int cflags = case_sensitive

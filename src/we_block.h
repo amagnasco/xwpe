@@ -27,6 +27,6 @@ int e_blck_to_left (We_window * f);
 int e_blck_to_right (We_window * f);
 int e_blck_read (We_window * f);
 int e_blck_write (We_window * f);
-int e_rep_search (We_window * f);
+int e_repeat_search (We_window * f);
 
 #endif

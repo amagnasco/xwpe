@@ -4003,7 +4003,7 @@ e_data_eingabe (ECNT * cn)
             else if (f->ins == 2)
             {
                 e_edit (f->ed, fw->df->name[fw->nf]);
-                e_rep_search (f->ed->f[f->ed->mxedt]);
+                e_repeat_search (f->ed->f[f->ed->mxedt]);
             }
             else if (f->ins == 3)
             {

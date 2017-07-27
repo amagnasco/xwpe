@@ -911,7 +911,7 @@ e_tst_fkt (int c, ECNT * e)
                 e_replace (f);
                 break;
             case F3:
-                e_rep_search (f);
+                e_repeat_search (f);
                 break;
             default:
                 return (c);
@@ -933,7 +933,7 @@ e_tst_fkt (int c, ECNT * e)
                 break;
             case CtrlL:
             case CF4:
-                e_rep_search (f);
+                e_repeat_search (f);
                 break;
             default:
                 return (c);
