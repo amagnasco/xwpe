@@ -962,6 +962,12 @@ e_blck_write (We_window * f)
     return (0);
 }
 
+int
+e_first_search (We_window * window)
+{
+	return e_repeat_search(window);
+}
+
 /**
  *    Find + Find again
  *
@@ -1095,82 +1101,83 @@ e_goto_line (We_window * f)
 }
 
 int
-e_find (We_window * current_window)
+e_find (We_window * window)
 {
     we_screen *wind_screen;
     BUFFER *buffer;
-    FIND *find = &(current_window->ed->fd);
+    FIND *find = &(window->ed->fd);
     int i, ret;
     char strTemp[80];
-    W_OPTSTR *o = e_init_opt_kst (current_window);
+    W_OPTSTR *find_dialog = e_init_opt_kst (window);
 
-    if (!o)
+    if (!find_dialog)
         return (-1);
-    for (i = current_window->ed->mxedt;
-            i > 0 && !DTMD_ISTEXT (current_window->ed->f[i]->dtmd); i--);
+    for (i = window->ed->mxedt;
+            i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (current_window->ed->edt[i], current_window);
-    current_window = current_window->ed->f[current_window->ed->mxedt];
-    buffer = current_window->b;
-    wind_screen = current_window->s;
-    if (e_blck_dup (strTemp, current_window))
+    e_switch_window (window->ed->edt[i], window);
+    window = window->ed->f[window->ed->mxedt];
+    buffer = window->b;
+    wind_screen = window->s;
+    if (e_blck_dup (strTemp, window))
     {
         strcpy (find->search, strTemp);
         find->sn = strlen (find->search);
     }
-    o->xa = 7;
-    o->ya = 3;
-    o->xe = 63;
-    o->ye = 18;
-    o->bgsw = 0;
-    o->crsw = AltO;
-    o->name = "Find";
-    e_add_txtstr (32, 4, "Direction:", o);
-    e_add_txtstr (4, 4, "Options:", o);
-    e_add_txtstr (4, 9, "Scope:", o);
-    e_add_txtstr (32, 9, "Begin:", o);
+    find_dialog->xa = 7;
+    find_dialog->ya = 3;
+    find_dialog->xe = 63;
+    find_dialog->ye = 18;
+    find_dialog->bgsw = 0;
+    find_dialog->crsw = AltO;
+    find_dialog->name = "Find";
+    e_add_txtstr (32, 4, "Direction:", find_dialog);
+    e_add_txtstr (4, 4, "Options:", find_dialog);
+    e_add_txtstr (4, 9, "Scope:", find_dialog);
+    e_add_txtstr (32, 9, "Begin:", find_dialog);
     e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
-                 &current_window->ed->sdf, o);
-    e_add_sswstr (5, 5, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", o);
-    e_add_sswstr (5, 6, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", o);
-    e_add_sswstr (5, 7, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", o);
-    e_add_pswstr (0, 33, 5, 6, AltD, 0, "ForwarD        ", o);
-    e_add_pswstr (0, 33, 6, 0, AltB, find->sw & 4 ? 1 : 0, "Backward       ", o);
-    e_add_pswstr (1, 5, 10, 0, AltG, 0, "Global            ", o);
+                 &window->ed->sdf, find_dialog);
+    e_add_sswstr (5, 5, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", find_dialog);
+    e_add_sswstr (5, 6, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", find_dialog);
+    e_add_sswstr (5, 7, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", find_dialog);
+    e_add_pswstr (0, 33, 5, 6, AltD, 0, "ForwarD        ", find_dialog);
+    e_add_pswstr (0, 33, 6, 0, AltB, find->sw & 4 ? 1 : 0, "Backward       ", find_dialog);
+    e_add_pswstr (1, 5, 10, 0, AltG, 0, "Global            ", find_dialog);
     e_add_pswstr (1, 5, 11, 0, AltS, find->sw & 8 ? 1 : 0,
-                  "Selected Text     ", o);
-    e_add_pswstr (2, 33, 10, 0, AltF, 0, "From Cursor    ", o);
-    e_add_pswstr (2, 33, 11, 0, AltE, find->sw & 2 ? 1 : 0, "Entire Scope   ", o);
-    e_add_bttstr (16, 13, 1, AltO, " Ok ", NULL, o);
-    e_add_bttstr (34, 13, -1, WPE_ESC, "Cancel", NULL, o);
-    ret = e_opt_kst (o);
+                  "Selected Text     ", find_dialog);
+    e_add_pswstr (2, 33, 10, 0, AltF, 0, "From Cursor    ", find_dialog);
+    e_add_pswstr (2, 33, 11, 0, AltE, find->sw & 2 ? 1 : 0, "Entire Scope   ", find_dialog);
+    e_add_bttstr (16, 13, 1, AltO, " Ok ", NULL, find_dialog);
+    e_add_bttstr (34, 13, -1, WPE_ESC, "Cancel", NULL, find_dialog);
+    ret = e_opt_kst (find_dialog);
     if (ret != WPE_ESC)
     {
-        find->sw = (o->pstr[0]->num << 2) + (o->pstr[1]->num << 3) +
-                   (o->pstr[2]->num << 1) + (o->sstr[0]->num << 7) +
-                   (o->sstr[1]->num << 6) + (o->sstr[2]->num << 5);
-        strcpy (find->search, o->wstr[0]->txt);
+        find->sw = (find_dialog->pstr[0]->num << 2) + (find_dialog->pstr[1]->num << 3) +
+                   (find_dialog->pstr[2]->num << 1) + (find_dialog->sstr[0]->num << 7) +
+                   (find_dialog->sstr[1]->num << 6) + (find_dialog->sstr[2]->num << 5);
+        strcpy (find->search, find_dialog->wstr[0]->txt);
         find->sn = strlen (find->search);
-        if ((find->sw & 2) != 0)
+        if (find_entire_scope(find->sw))
         {
-            if ((find->sw & 4) == 0)
+            if (find_search_forward(find->sw))
             {
-                buffer->b.x = (find->sw & 8) == 0 ? 0 : wind_screen->mark_begin.x;
-                buffer->b.y = (find->sw & 8) == 0 ? 0 : wind_screen->mark_begin.y;
+                buffer->b.x = find_global_scope(find->sw) ? 0 : wind_screen->mark_begin.x;
+                buffer->b.y = find_global_scope(find->sw) ? 0 : wind_screen->mark_begin.y;
             }
             else
             {
-                buffer->b.x = (find->sw & 8) == 0 ? buffer->bf[buffer->mxlines - 1].len
+                buffer->b.x = find_global_scope(find->sw) ? buffer->bf[buffer->mxlines - 1].len
                               : wind_screen->mark_end.x;
-                buffer->b.y = (find->sw & 8) == 0 ? buffer->mxlines - 1
+                buffer->b.y = find_global_scope(find->sw) ? buffer->mxlines - 1
                               : wind_screen->mark_end.y;
             }
         }
     }
-    freeostr (o);
+    freeostr (find_dialog);
     if (ret != WPE_ESC)
-        e_repeat_search (current_window);
+		// FIXME: don't do a repeat search, but do a first search here
+        e_first_search (window);
     return (0);
 }
 

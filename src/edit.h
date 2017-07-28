@@ -207,26 +207,26 @@ typedef struct
 
 typedef struct FNST
 {
-    POINT a;			/* start corner of the box */
-    POINT e;			/* other corner of the box */
+    POINT a;				/* start corner of the box */
+    POINT e;				/* other corner of the box */
     POINT sa;
     POINT se;
     char zoom;
-    we_colorset *fb;			/* color scheme */
-    view *pic;			/* picture save below the box ??? */
+    we_colorset *fb;		/* color scheme */
+    view *pic;				/* picture save below the box ??? */
     char *dirct;			/* working/actual directory */
     char *datnam;			/* window header text */
-    int winnum;			/* ID number in parents structure ??? */
+    int winnum;	
     char ins;
-    char dtmd;			/* (See DTMD_* defines) */
+    char dtmd;				/* (See DTMD_* defines) */
     int save;
     char *hlp_str;
-    WOPT *blst;			/* status line text */
-    int nblst;			/* no of options in the status line */
+    WOPT *blst;				/* status line text */
+    int nblst;				/* no of options in the status line */
     int filemode, flg;
     int *c_sw;
     struct wpeSyntaxRule *c_st;
-    struct CNT *ed;		/* parent control structure ??? */
+    struct CNT *ed;			/* control structure */
     struct BFF *b;
     struct SCHRM *s;
     FIND fd;
