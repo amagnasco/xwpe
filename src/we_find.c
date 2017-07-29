@@ -67,7 +67,7 @@ e_strstr (int start_offset, int end_offset,
  * This method searches using a regular expression and optionally case_sensitive
  * with forward or backward search.
  * 
- * This match ignores submatches when using parentheses.
+ * This match ignores submatches when using parentheses in the regular expression.
  * 
  */
 int
@@ -75,51 +75,51 @@ e_rstrstr (size_t start_offset,
            size_t end_offset,
            unsigned char *search_string,
            unsigned char *regular_expression,
-           size_t * end_match, _Bool case_sensitive)
+           size_t * end_match_return, _Bool case_sensitive)
 {
-	// TODO: start > end means backward search
-	// Adapt regex search to this phenomenon
-	_Bool search_forward = start_offset <= end_offset;
+	_Bool forward_search = start_offset <= end_offset;
+
     regex_t *preg = malloc(sizeof(regex_t));
-    regmatch_t *matches;  // is set directly after compile
-    size_t start, end, len_search_str;
-    size_t nr_matches;
-    int start_match;
 
-    // copy input variables
-    len_search_str = strlen ((const char *) search_string);
-    start = start_offset;
-    end = end_offset;
-
-    unsigned char str[len_search_str + 1];
-    /* copy excluding null byte */
-    strncpy ((char *) str, (const char *) search_string, len_search_str);
-    str[len_search_str] = '\0';
+	//calculate pointer
+	unsigned char *pstr = search_string;
+	pstr = forward_search ? pstr + start_offset : pstr + end_offset;
 
     // Compile regular expression, return -1 if compile fails.
 	int errcode = compile_regex(preg, regular_expression, case_sensitive);
 	if (errcode != 0)
 		return -1;
 
-    // Note the number of submatches the compile has found and add 1 for the entire match.
-	// Allocate matches. Submatches will be ignored ... for now.
-    nr_matches = preg->re_nsub + 1;
-    matches = malloc (nr_matches * sizeof (regmatch_t));
+	// Allocate matches. 
+    size_t nr_matches = preg->re_nsub + 1;
+    regmatch_t *matches = malloc (nr_matches * sizeof (regmatch_t));
 
-    unsigned char old = search_string[end];	/* Save char */
-    str[end] = '\0';
-	errcode = search_regex(preg, &str[start], nr_matches, matches);
-    str[end] = old;		/* Restore char */
-	if (errcode != 0)	// no match found or an error occurred.
+	// First search
+	errcode = search_regex(preg, pstr, nr_matches, matches);
+	if (errcode != 0)
 	{
 		regfree(preg);
 		free(matches);
 		return -1;
 	}
 
-	// Now process the match found relative to the start position of searching
-	start_match = matches[0].rm_so+start;
-	*end_match = matches[0].rm_eo+start;
+	// for backwards we need to find the last occurrence within the [start, end] range
+	size_t len = matches[0].rm_eo - matches[0].rm_so;
+	if (!forward_search)
+	{
+		pstr = pstr + matches[0].rm_so + 1; // one past the last match
+		while (errcode == 0)
+		{
+			errcode = search_regex(preg, pstr, nr_matches, matches);
+			pstr = errcode == 0 ? pstr + matches[0].rm_so + 1 : pstr;
+			len = matches[0].rm_eo - matches[0].rm_so;
+		}
+		pstr--;		// return to the last match
+	}
+	
+	// Now process the match found relative to the start position of searching and offset for backw.
+	size_t start_match = pstr - search_string;
+	*end_match_return = pstr + len - search_string;
 
     regfree (preg);		/* Obliged internal free */
     free (matches);

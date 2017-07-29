@@ -74,7 +74,7 @@ int compile_regex(regex_t *preg, unsigned char *regular_expression, _Bool case_s
 		return -1;
 
     int cflags = REG_EXTENDED | REG_NEWLINE;
-    cflags = case_sensitive ? cflags | REG_ICASE : cflags;
+    cflags = case_sensitive ? cflags : cflags | REG_ICASE;
 
     int errcode = regcomp(preg, (const char *) regular_expression, cflags);
     if (errcode != 0)
