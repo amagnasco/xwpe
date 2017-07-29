@@ -14,6 +14,7 @@
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <regex.h>
 #include <unistd.h>
 #include "utils.h"
 
@@ -64,5 +65,56 @@ print_stacktrace ()
 
     // Remark: only free the toplevel strings, not the string below (see man page).
     free (strings);
+    return;
+}
+
+int compile_regex(regex_t *preg, unsigned char *regular_expression, _Bool case_sensitive)
+{
+	if (!preg)
+		return -1;
+
+    int cflags = REG_EXTENDED | REG_NEWLINE;
+    cflags = case_sensitive ? cflags | REG_ICASE : cflags;
+
+    int errcode = regcomp(preg, (const char *) regular_expression, cflags);
+    if (errcode != 0)
+    {
+        const size_t buff_size = 1024;
+        char *err_buff;
+        err_buff = malloc(buff_size * sizeof(char));
+        regerror (errcode, preg, err_buff, buff_size);
+        printf ("[regex search] error message: %s\n", err_buff);
+        free(err_buff);
+        regfree (preg);		/* Obliged internal free */
+        return -1;
+    }
+    return 0;
+}
+
+int search_regex(regex_t *preg, unsigned char * search_string,
+                 int nr_matches, regmatch_t * matches)
+{
+    int errcode =
+        regexec (preg, (const char *)search_string, nr_matches, matches, REG_NOTBOL | REG_NOTEOL);
+    if (errcode == REG_NOMATCH)
+    {
+        return -1;
+    }
+    else if (errcode != 0)
+    {
+        print_regerror(errcode, preg);
+        return -1;
+    }
+    return 0;
+}
+
+void print_regerror(int errcode, regex_t *preg)
+{
+    const size_t buff_size = 1024;
+    char *err_buff;
+    err_buff = malloc(buff_size * sizeof(char));
+    regerror (errcode, preg, err_buff, buff_size);
+    printf ("[regex search] error message: %s\n", err_buff);
+    free(err_buff);
     return;
 }

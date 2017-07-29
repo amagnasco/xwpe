@@ -984,7 +984,8 @@ e_repeat_search (We_window * window)
     BUFFER *buffer;
     FIND *find = &(window->ed->fd);
     int i, j, iend, jend;
-    int start_offset, end_offset;
+    int start_offset;
+	size_t end_offset;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);
     if (i <= 0)
@@ -1035,7 +1036,7 @@ e_repeat_search (We_window * window)
                 start_offset = (start_offset >= 0) ? start_offset : 0;
                 start_offset = e_rstrstr (start_offset, end_offset, buffer->bf[j].s,
                                           (unsigned char *) find->search,
-                                          &(find->sn),
+                                          &end_offset,
                                           find_case_sensitive(find->sw));
             }
             if (find_search_forward(find->sw) && j == jend && start_offset > iend)
@@ -1048,6 +1049,7 @@ e_repeat_search (We_window * window)
                             && (start_offset == 0
                                 || isalnum (*(buffer->bf[j].s + start_offset - 1)) == 0))))
             {
+				find->sn = end_offset - start_offset;
                 screen->fa.x = start_offset;
                 buffer->b.y = screen->fa.y = screen->fe.y = j;
                 screen->fe.x = start_offset + find->sn;
