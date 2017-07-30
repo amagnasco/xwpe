@@ -49,7 +49,7 @@ e_strstr (int start_offset, int end_offset,
     int end = end_offset;
 
     int i = start <= end ? start : -1 * (start - 1);
-    int i_end = start <= end ? end - 1 : -1 * end;
+    int i_end = start <= end ? end : -1 * end;
 
     for ( ; i <= i_end; i++)
     {

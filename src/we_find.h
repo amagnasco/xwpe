@@ -75,7 +75,7 @@ _Bool find_case_sensitive (unsigned int sw);
 
 /**
  * find string in text line and return position if successful. Optionally search
- * in a case sensitive manner. If start_offset is larger than end_offset, we search backwards.
+ * in a case sensitive manner. Reversing start_offset and end_offset triggers a backward search.
  *
  * @param start_offset			int representing the starting offset from within the search_string
  * @param end_offset			int representing the ending offset from within the search string
@@ -89,7 +89,8 @@ _Bool find_case_sensitive (unsigned int sw);
 int e_strstr (int x, int n, unsigned char *s, unsigned char *f, _Bool case_sensitive);
 /**
  *  search a string with a regular expression. Optionally search
- *  in a case sensitive manner.
+ *  in a case sensitive manner. Reversing start_offset and
+ *  end_offset triggers a backward search.
  *
  * @param start_offset			int representing the starting offset from within the search_string
  * @param end_offset			int representing the ending offset from within the search string
