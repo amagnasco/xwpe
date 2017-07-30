@@ -81,10 +81,6 @@ e_rstrstr (size_t start_offset,
 
     regex_t *preg = malloc(sizeof(regex_t));
 
-	//calculate pointer
-	unsigned char *pstr = search_string;
-	pstr = forward_search ? pstr + start_offset : pstr + end_offset;
-
     // Compile regular expression, return -1 if compile fails.
 	int errcode = compile_regex(preg, regular_expression, case_sensitive);
 	if (errcode != 0)
@@ -93,6 +89,10 @@ e_rstrstr (size_t start_offset,
 	// Allocate matches. 
     size_t nr_matches = preg->re_nsub + 1;
     regmatch_t *matches = malloc (nr_matches * sizeof (regmatch_t));
+
+	//calculate pointer
+	unsigned char *pstr = forward_search ? 
+		search_string + start_offset : search_string + end_offset;
 
 	// First search
 	errcode = search_regex(preg, pstr, nr_matches, matches);
@@ -103,18 +103,27 @@ e_rstrstr (size_t start_offset,
 		return -1;
 	}
 
+	// Length of the result depends on the specific match of the reg expr.
+	size_t len;
 	// for backwards we need to find the last occurrence within the [start, end] range
-	size_t len = matches[0].rm_eo - matches[0].rm_so;
 	if (!forward_search)
 	{
-		pstr = pstr + matches[0].rm_so + 1; // one past the last match
 		while (errcode == 0)
 		{
-			errcode = search_regex(preg, pstr, nr_matches, matches);
-			pstr = errcode == 0 ? pstr + matches[0].rm_so + 1 : pstr;
 			len = matches[0].rm_eo - matches[0].rm_so;
+			pstr = pstr + matches[0].rm_so;
+			pstr++; 				 // one past the last match
+			errcode = search_regex(preg, pstr, nr_matches, matches);
 		}
-		pstr--;		// return to the last match
+		pstr--;					// return to the last match
+	}
+
+	// Saving the result of the forward search
+	if (errcode == 0)
+	{
+		// set pointer and calc length
+		len = matches[0].rm_eo - matches[0].rm_so;
+		pstr = pstr + matches[0].rm_so;
 	}
 	
 	// Now process the match found relative to the start position of searching and offset for backw.
