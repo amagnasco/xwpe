@@ -88,5 +88,5 @@ AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale])
 AC_CHECK_FUNCS([strchr strdup strrchr strstr])
 AC_CHECK_FUNCS([backtrace])
 
-AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile tests/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile test/Makefile])
 AC_OUTPUT

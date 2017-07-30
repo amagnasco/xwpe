@@ -90,7 +90,7 @@ build_triplet = @build@
 host_triplet = @host@
 TESTS = check_search$(EXEEXT)
 check_PROGRAMS = check_search$(EXEEXT)
-subdir = tests
+subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -148,7 +148,7 @@ check_search_OBJECTS = $(am_check_search_OBJECTS)
 check_search_DEPENDENCIES = $(top_builddir)/src/libxwpe-term.la \
 	$(top_builddir)/src/libxwpe-x11.la \
 	$(top_builddir)/src/libxwpe.la \
-	$(top_builddir)/tests/libxwpe_tests.la
+	$(top_builddir)/test/libxwpe_tests.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -519,7 +519,7 @@ check_search_SOURCES = main.c
 check_search_LDADD = $(top_builddir)/src/libxwpe-term.la \
 	$(top_builddir)/src/libxwpe-x11.la \
 	$(top_builddir)/src/libxwpe.la \
-	$(top_builddir)/tests/libxwpe_tests.la
+	$(top_builddir)/test/libxwpe_tests.la
 all: all-am
 
 .SUFFIXES:
@@ -533,9 +533,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu tests/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu test/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu tests/Makefile
+	  $(AUTOMAKE) --gnu test/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
