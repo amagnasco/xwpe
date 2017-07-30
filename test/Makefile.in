@@ -132,23 +132,23 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libxwpe_tests_la_LIBADD =
-am_libxwpe_tests_la_OBJECTS = check_search.lo
-libxwpe_tests_la_OBJECTS = $(am_libxwpe_tests_la_OBJECTS)
+libxwpe_test_la_LIBADD =
+am_libxwpe_test_la_OBJECTS = check_search.lo
+libxwpe_test_la_OBJECTS = $(am_libxwpe_test_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libxwpe_tests_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+libxwpe_test_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(libxwpe_tests_la_LDFLAGS) $(LDFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS) $(libxwpe_test_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_check_search_OBJECTS = main.$(OBJEXT)
 check_search_OBJECTS = $(am_check_search_OBJECTS)
 check_search_DEPENDENCIES = $(top_builddir)/src/libxwpe-term.la \
 	$(top_builddir)/src/libxwpe-x11.la \
 	$(top_builddir)/src/libxwpe.la \
-	$(top_builddir)/test/libxwpe_tests.la
+	$(top_builddir)/test/libxwpe_test.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -183,8 +183,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libxwpe_tests_la_SOURCES) $(check_search_SOURCES)
-DIST_SOURCES = $(libxwpe_tests_la_SOURCES) $(check_search_SOURCES)
+SOURCES = $(libxwpe_test_la_SOURCES) $(check_search_SOURCES)
+DIST_SOURCES = $(libxwpe_test_la_SOURCES) $(check_search_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -512,14 +512,14 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_LDFLAGS = -rdynamic
-lib_LTLIBRARIES = libxwpe_tests.la
-libxwpe_tests_la_SOURCES = check_search.c
-libxwpe_tests_la_LDFLAGS = -version-info 0:0:0
+lib_LTLIBRARIES = libxwpe_test.la
+libxwpe_test_la_SOURCES = check_search.c
+libxwpe_test_la_LDFLAGS = -version-info 0:0:0
 check_search_SOURCES = main.c
 check_search_LDADD = $(top_builddir)/src/libxwpe-term.la \
 	$(top_builddir)/src/libxwpe-x11.la \
 	$(top_builddir)/src/libxwpe.la \
-	$(top_builddir)/test/libxwpe_tests.la
+	$(top_builddir)/test/libxwpe_test.la
 all: all-am
 
 .SUFFIXES:
@@ -589,8 +589,8 @@ clean-libLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libxwpe_tests.la: $(libxwpe_tests_la_OBJECTS) $(libxwpe_tests_la_DEPENDENCIES) $(EXTRA_libxwpe_tests_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libxwpe_tests_la_LINK) -rpath $(libdir) $(libxwpe_tests_la_OBJECTS) $(libxwpe_tests_la_LIBADD) $(LIBS)
+libxwpe_test.la: $(libxwpe_test_la_OBJECTS) $(libxwpe_test_la_DEPENDENCIES) $(EXTRA_libxwpe_test_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libxwpe_test_la_LINK) -rpath $(libdir) $(libxwpe_test_la_OBJECTS) $(libxwpe_test_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
