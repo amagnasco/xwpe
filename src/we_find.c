@@ -65,7 +65,9 @@ e_strstr (int start_offset, int end_offset,
  * e_rstrstr: search for a match using a regular expression.
  * 
  * This method searches using a regular expression and optionally case_sensitive
- * with forward or backward search.
+ * with forward or backward search. An empty regular expression will always generate a match.
+ * If that is not what you want, then don't call this function with an empty 
+ * regular expression.
  * 
  * This match ignores submatches when using parentheses in the regular expression.
  * 
