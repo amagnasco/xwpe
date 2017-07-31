@@ -42,4 +42,19 @@ int search_regex(regex_t *preg, const unsigned char * search_string,
  */
 void print_regerror(int errcode, regex_t *preg);
 
+#ifndef __USE_MISC
+/**
+ * compares strings ignoring case.
+ * 
+ * This function is only defined if __USE_MISC is not defined through one of the
+ * feature macro's _BSD_SOURCE or _SVID_SOURCE. Normally we do not define
+ * these features. We use _XOPEN_SOURCE 700 in stead which does not include either feature.
+ * So we define strncasecmp in our own implementation copied from 
+ * https://stackoverflow.com/questions/7299119/source-code-for-strncasecmp-function.
+ *  
+ */
+int
+strncasecmp (const char *s1, const char *s2, size_t n);
+#endif
+
 #endif // #ifndef MAKRO_H

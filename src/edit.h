@@ -8,7 +8,7 @@
 /*
                      Header file for FK-editor
 */
-
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,6 +1,7 @@
 #ifndef WE_FL_FKT_H
 #define WE_FL_FKT_H
 
+#include "config.h"
 #include <stdlib.h>
 #include "we_edit.h"
 #include "we_e_aus.h"

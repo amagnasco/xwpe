@@ -8,8 +8,8 @@
 
 /* we_linux.c -- Created by Sebastiano Suraci */
 
-#include <sys/ioctl.h>
 #include "config.h"
+#include <sys/ioctl.h>
 #include "WeLinux.h"
 
 int

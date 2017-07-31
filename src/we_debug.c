@@ -4,12 +4,12 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "config.h"
 #include <ctype.h>
 #include <string.h>
 #if defined HAVE_LIBNCURSES || HAVE_LIBCURSES
 #include <curses.h>
 #endif
-#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"

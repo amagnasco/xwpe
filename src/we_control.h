@@ -28,6 +28,7 @@
 #ifndef WE_CONTROL_H
 #define WE_CONTROL_H
 
+#include "config.h"
 #include "edit.h"
 
 extern char *e_hlp;

@@ -13404,6 +13404,9 @@ fi
 $as_echo "#define UNUSED(X) (void)(X)" >>confdefs.h
 
 
+$as_echo "#define _XOPEN_SOURCE 700" >>confdefs.h
+
+
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 
@@ -14152,13 +14155,38 @@ else
 $as_echo "libraries $x_libraries, headers $x_includes" >&6; }
 fi
 
-for ac_header in fcntl.h limits.h locale.h stdlib.h string.h sys/ioctl.h termios.h unistd.h
+for ac_header in fcntl.h limits.h locale.h stdlib.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
 if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
 #define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in string.h sys/ioctl.h termios.h unistd.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in check.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "check.h" "ac_cv_header_check_h" "$ac_includes_default"
+if test "x$ac_cv_header_check_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CHECK_H 1
 _ACEOF
 
 fi

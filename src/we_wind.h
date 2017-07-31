@@ -1,6 +1,7 @@
 #ifndef WE_WIND_H
 #define WE_WIND_H
 
+#include "config.h"
 #include "globals.h"
 #include "we_main.h"
 #include "we_mouse.h"

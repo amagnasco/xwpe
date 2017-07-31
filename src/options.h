@@ -7,6 +7,8 @@
   3/27/98   Kenn F.     Created to handle f->ed-> stuff.
 \*-------------------------------------------------------------------------*/
 
+#include "config.h"
+
 /* we_window f -> CNT ed -> flopt */
 
 #define FM_SHOW_HIDDEN_FILES  0x0001

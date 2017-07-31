@@ -12,6 +12,7 @@ extern "C"
 {
 #endif
 
+#include "config.h"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeStrnccmp - Case-insensitive compare of two strings for a number of

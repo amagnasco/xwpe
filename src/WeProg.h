@@ -12,6 +12,8 @@ extern "C"
 {
 #endif
 
+#include "config.h"
+
 /* needed for the time being to call old routines and data types */
 #include "model.h"
 #include "edit.h"

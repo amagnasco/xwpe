@@ -1,6 +1,7 @@
 #ifndef WE_MAIN_H
 #define WE_MAIN_H
 
+#include "config.h"
 #include <stdlib.h>
 #include "globals.h"
 #include "we_edit.h"

@@ -1,6 +1,7 @@
 #ifndef WE_DEBUG_H
 #define WE_DEBUG_H
 
+#include "config.h"
 #include "globals.h"
 #include "we_wind.h"
 

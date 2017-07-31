@@ -36,6 +36,7 @@ AM_CONDITIONAL([HAVE_X11], [test "X$no_x" != "Xyes"])
 
 # Specific defines
 AC_DEFINE([UNUSED(X)], [(void)(X)], [Define for arguments in a header that are not going to be used.])
+AC_DEFINE([_XOPEN_SOURCE], [700], [Single UNIX specification version 4. Subsumes _POSIX_C_SOURCE])
 
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
@@ -73,7 +74,9 @@ fi
 
 # Checks for header files.
 AC_PATH_X
-AC_CHECK_HEADERS([fcntl.h limits.h locale.h stdlib.h string.h sys/ioctl.h termios.h unistd.h])
+AC_CHECK_HEADERS([fcntl.h limits.h locale.h stdlib.h])
+AC_CHECK_HEADERS([string.h sys/ioctl.h termios.h unistd.h])
+AC_CHECK_HEADERS([check.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T

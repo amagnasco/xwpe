@@ -4,11 +4,12 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
-#include <string.h>
 #include "config.h"
+#include <string.h>
 #include "keys.h"
 #include "model.h"		/* exchange for D.S.  */
 #include "options.h"
+#include <signal.h>
 
 #ifdef UNIX
 #include <unistd.h>

@@ -10,6 +10,7 @@
  *
  */
 
+#include "config.h"
 #include <ctype.h>
 #include <execinfo.h>
 #include <stdio.h>
@@ -119,3 +120,22 @@ void print_regerror(int errcode, regex_t *preg)
     free(err_buff);
     return;
 }
+
+#ifndef __USE_MISC
+int
+strncasecmp (const char *s1, const char *s2, size_t n)
+{
+  if (n == 0)
+    return 0;
+
+  while (n-- != 0 && tolower(*s1) == tolower(*s2))
+    {
+      if (n == 0 || *s1 == '\0' || *s2 == '\0')
+    break;
+      s1++;
+      s2++;
+    }
+
+  return tolower(*(unsigned char *) s1) - tolower(*(unsigned char *) s2);
+}
+#endif

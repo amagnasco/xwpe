@@ -7,6 +7,8 @@
 #ifndef MESSAGES_H
 #define MESSAGES_H
 
+#include "config.h"
+
 /* errors defined in e_msg */
 #define	ERR_LOWMEM	0
 #define	ERR_VER_OPF	1

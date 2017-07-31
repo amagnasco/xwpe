@@ -1,6 +1,7 @@
 #ifndef WE_UNIX_H
 #define WE_UNIX_H
 
+#include "config.h"
 #include "globals.h"
 #include "we_main.h"
 #include "we_edit.h"

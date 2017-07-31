@@ -25,8 +25,8 @@
  *
  */
 
-#include <string.h>
 #include "config.h"
+#include <string.h>
 #include "messages.h"
 #include "keys.h"
 #include "we_mouse.h"

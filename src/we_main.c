@@ -10,9 +10,9 @@
                                        Copyright by F.Kruse       */
 
 /* includes */
+#include "config.h"
 #include <string.h>
 #include <signal.h>
-#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "options.h"

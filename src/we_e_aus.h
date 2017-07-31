@@ -1,6 +1,7 @@
 #ifndef WE_E_AUS_H
 #define WE_E_AUS_H
 
+#include "config.h"
 #include "globals.h"
 #include "we_edit.h"
 #include "we_mouse.h"

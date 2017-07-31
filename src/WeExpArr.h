@@ -12,6 +12,7 @@ extern "C"
 {
 #endif
 
+#include "config.h"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   WpeExpArrayCreate - Creates an expandable array.

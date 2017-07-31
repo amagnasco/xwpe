@@ -4,10 +4,10 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "config.h"
 #include <ctype.h>
 #include <string.h>
 #include <signal.h>
-#include "config.h"
 #include "keys.h"
 #include "messages.h"
 #include "model.h"

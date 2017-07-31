@@ -1,6 +1,7 @@
 #ifndef WE_MENUE_H
 #define WE_MENUE_H
 
+#include "config.h"
 #include "we_block.h"
 #include "we_edit.h"
 #include "we_mouse.h"

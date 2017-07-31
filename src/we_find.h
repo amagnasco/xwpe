@@ -14,8 +14,8 @@
  *
  */
 
-#include <string.h>
 #include "config.h"
+#include <string.h>
 
 /* Struct definitions */
 

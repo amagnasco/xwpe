@@ -12,6 +12,7 @@
  *
  */
 
+#include "config.h"
 #include <ctype.h>
 #include <string.h>
 #include <regex.h>
