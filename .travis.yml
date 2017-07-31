@@ -70,10 +70,12 @@ before_install:
 #  - sudo apt-get -qq update
 #  - sudo apt-get install -y gcc
 #  - sudo apt-get install libncurses5-dev
+#  - sudo apt-get install -y check
   
 script:
   - autoreconf -ivf
   - ./configure
   - make
+  - make check
   - sudo make install
   - make clean
