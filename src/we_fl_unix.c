@@ -1631,7 +1631,8 @@ WpeGrepFile (char *file, char *string, int sw)
         {
             ret =
                 e_strstr (0, strlen (str), (unsigned char *) str,
-                          (unsigned char *) string, find_case_sensitive(sw));
+                          (unsigned char *) string, &end_string,
+                          find_case_sensitive(sw));
         }
         else
         {

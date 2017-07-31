@@ -68,10 +68,11 @@ print_stacktrace ()
     return;
 }
 
-int compile_regex(regex_t *preg, unsigned char *regular_expression, _Bool case_sensitive)
+int compile_regex(regex_t *preg, const unsigned char *regular_expression,
+                  const _Bool case_sensitive)
 {
-	if (!preg)
-		return -1;
+    if (!preg)
+        return -1;
 
     int cflags = REG_EXTENDED | REG_NEWLINE;
     cflags = case_sensitive ? cflags : cflags | REG_ICASE;
@@ -91,7 +92,7 @@ int compile_regex(regex_t *preg, unsigned char *regular_expression, _Bool case_s
     return 0;
 }
 
-int search_regex(regex_t *preg, unsigned char * search_string,
+int search_regex(regex_t *preg, const unsigned char * search_string,
                  int nr_matches, regmatch_t * matches)
 {
     int errcode =

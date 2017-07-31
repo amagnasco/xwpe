@@ -216,7 +216,7 @@ typedef struct FNST
     view *pic;				/* picture save below the box ??? */
     char *dirct;			/* working/actual directory */
     char *datnam;			/* window header text */
-    int winnum;	
+    int winnum;
     char ins;
     char dtmd;				/* (See DTMD_* defines) */
     int save;

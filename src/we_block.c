@@ -965,7 +965,7 @@ e_blck_write (We_window * f)
 int
 e_first_search (We_window * window)
 {
-	return e_repeat_search(window);
+    return e_repeat_search(window);
 }
 
 /**
@@ -985,7 +985,7 @@ e_repeat_search (We_window * window)
     FIND *find = &(window->ed->fd);
     int i, j, iend, jend;
     int start_offset;
-	size_t end_offset;
+    size_t end_offset;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);
     if (i <= 0)
@@ -994,8 +994,6 @@ e_repeat_search (We_window * window)
     window = window->ed->f[window->ed->mxedt];
     buffer = window->b;
     screen = window->s;
-    start_offset = buffer->b.x;
-    j = buffer->b.y;
     if (find_global_scope(find->sw))
     {
         jend = find_search_backward(find->sw) ? 0 : buffer->mxlines - 1;
@@ -1006,6 +1004,8 @@ e_repeat_search (We_window * window)
         jend = find_search_backward(find->sw) ? screen->mark_begin.y : screen->mark_end.y;
         iend = find_search_backward(find->sw) ? screen->mark_begin.x : screen->mark_end.x;
     }
+    start_offset = buffer->b.x;
+    j = buffer->b.y;
 
     // Search the text line by line for matches
     for (;; start_offset = -1)
@@ -1014,6 +1014,22 @@ e_repeat_search (We_window * window)
             break;
         else if (find_search_backward(find->sw) && j < jend)
             break;
+        if (find_search_backward(find->sw))
+        {
+            // set search to previous line end if we are at line start
+            if (start_offset == 0)
+            {
+                if (j == jend)
+                {
+                    break;		// end of file, break away
+                }
+                else
+                {
+                    j--;
+                    start_offset = buffer->bf[j].len;
+                }
+            }
+        }
         // search through a line for the next match
         do
         {
@@ -1029,7 +1045,9 @@ e_repeat_search (We_window * window)
             {
                 start_offset =
                     e_strstr (start_offset, end_offset, buffer->bf[j].s,
-                              (unsigned char *) find->search, find_case_sensitive(find->sw));
+                              (unsigned char *) find->search,
+                              &end_offset,
+                              find_case_sensitive(find->sw));
             }
             else
             {
@@ -1049,7 +1067,7 @@ e_repeat_search (We_window * window)
                             && (start_offset == 0
                                 || isalnum (*(buffer->bf[j].s + start_offset - 1)) == 0))))
             {
-				find->sn = end_offset - start_offset;
+                find->sn = end_offset - start_offset;
                 screen->fa.x = start_offset;
                 buffer->b.y = screen->fa.y = screen->fe.y = j;
                 screen->fe.x = start_offset + find->sn;
@@ -1178,7 +1196,7 @@ e_find (We_window * window)
     }
     freeostr (find_dialog);
     if (ret != WPE_ESC)
-		// FIXME: don't do a repeat search, but do a first search here
+        // FIXME: don't do a repeat search, but do a first search here
         e_first_search (window);
     return (0);
 }

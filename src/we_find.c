@@ -23,8 +23,9 @@
 int
 e_strstr (int start_offset, int end_offset,
           unsigned char *search_string, unsigned char *search_expression,
-          _Bool case_sensitive)
+          size_t *end_match_return, _Bool case_sensitive)
 {
+    _Bool forward_search = start_offset <= end_offset;
     int (*compare)(const char *s1, const char *s2, size_t len);
     compare = case_sensitive ? strncmp : strncasecmp;
 
@@ -48,14 +49,18 @@ e_strstr (int start_offset, int end_offset,
     int start = start_offset < 0 ? 0 : start_offset;
     int end = end_offset;
 
-    int i = start <= end ? start : -1 * (start - 1);
-    int i_end = start <= end ? end : -1 * end;
+    int i = forward_search ? start : -1 * (start - 1);
+    int i_end = forward_search ? end : -1 * end;
 
     for ( ; i <= i_end; i++)
     {
         if (0 == compare((const char *) search_string + abs(i),
                          (const char *) search_expression, len_search_expr))
-            return(abs(i));
+        {
+            size_t start_match_return = abs(i);
+            *end_match_return = abs(i) + len_search_expr;
+            return(start_match_return);
+        }
     }
 
     // return -1 if nothing was found
@@ -74,13 +79,19 @@ e_strstr (int start_offset, int end_offset,
  *
  */
 int
-e_rstrstr (size_t start_offset,
-           size_t end_offset,
-           unsigned char *search_string,
-           unsigned char *regular_expression,
-           size_t * end_match_return, _Bool case_sensitive)
+e_rstrstr (const size_t start_offset,
+           const size_t end_offset,
+           const unsigned char *search_string,
+           const unsigned char *regular_expression,
+           size_t * end_match_return, const _Bool case_sensitive)
 {
     _Bool forward_search = start_offset <= end_offset;
+    size_t start = forward_search ? start_offset : end_offset;
+    size_t end = forward_search ? end_offset : start_offset;
+
+    size_t len_search_string = strlen((const char *)search_string);
+    if (end > len_search_string)
+        return -1;
 
     regex_t *preg = malloc(sizeof(regex_t));
 
@@ -93,9 +104,16 @@ e_rstrstr (size_t start_offset,
     size_t nr_matches = preg->re_nsub + 1;
     regmatch_t *matches = malloc (nr_matches * sizeof (regmatch_t));
 
+    // we work on a copy of the search string (str)
+    unsigned char *str;
+    size_t len_str = end - start;
+    str = calloc(len_str + 1, sizeof(unsigned char *));
+    if (!str)
+        return -1;
+    strncpy((char *)str, (const char *)search_string+start, len_str);
+
     //calculate pointer
-    unsigned char *pstr = forward_search ?
-                          search_string + start_offset : search_string + end_offset;
+    unsigned char *pstr = str + start;
 
     // First search
     errcode = search_regex(preg, pstr, nr_matches, matches);
@@ -111,6 +129,12 @@ e_rstrstr (size_t start_offset,
     // for backwards we need to find the last occurrence within the [start, end] range
     if (!forward_search)
     {
+        unsigned char save_char;
+        if (strlen((const char *)search_string) > 0)
+        {
+            save_char = str[end];
+            str[end] = '\0';
+        }
         while (errcode == 0)
         {
             len = matches[0].rm_eo - matches[0].rm_so;
@@ -119,6 +143,10 @@ e_rstrstr (size_t start_offset,
             errcode = search_regex(preg, pstr, nr_matches, matches);
         }
         pstr--;					// return to the last match
+        if (strlen((const char *)search_string) > 0)
+        {
+            str[end] = save_char;
+        }
     }
 
     // Saving the result of the forward search
@@ -130,8 +158,8 @@ e_rstrstr (size_t start_offset,
     }
 
     // Now process the match found relative to the start position of searching and offset for backw.
-    size_t start_match = pstr - search_string;
-    *end_match_return = pstr + len - search_string;
+    size_t start_match = pstr - str;
+    *end_match_return = pstr + len - str;
 
     regfree (preg);		/* Obliged internal free */
     free (matches);

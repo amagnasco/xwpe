@@ -28,13 +28,17 @@ START_TEST(test_search_empty_string_empty)
 {
     unsigned char *str = (unsigned char *)"";
     int start_offset = 0;
-    int end_offset = strlen((const char *)str);
+    size_t end_offset = strlen((const char *)str);
     unsigned char *search_expr = (unsigned char *)"";
     _Bool case_sensitive = 1;
+    size_t end_match;
     int start_match = e_strstr(start_offset, end_offset,
-                                str, search_expr, case_sensitive);
+                                str, search_expr, &end_match,
+				case_sensitive);
     int expected_start_match = 0;
+    int expected_end_match = 0;
     ck_assert_int_eq(expected_start_match,start_match);
+    ck_assert_int_eq(expected_end_match,end_match);
 }
 END_TEST
 
@@ -47,7 +51,8 @@ START_TEST(test_search_string)
     _Bool case_sensitive = 1;
     size_t end_match = 0;
     int start_match = e_strstr(start_offset, end_offset,
-                                str, search_expr, case_sensitive);
+                                str, search_expr, &end_match,
+				case_sensitive);
     int expected_start_match = 2;
     size_t expected_end_match = 4;
     ck_assert_int_eq(expected_start_match,start_match);

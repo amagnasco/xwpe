@@ -18,7 +18,8 @@ void print_stacktrace ();
  *
  * @return zero if compile ok, -1 if not ok.
  */
-int compile_regex(regex_t *preg, unsigned char *regular_expression, _Bool case_sensitive);
+int compile_regex(regex_t *preg, const unsigned char *regular_expression,
+                  const _Bool case_sensitive);
 /**
  * Search a string for a regular expression using regexec.
  *
@@ -34,7 +35,7 @@ int compile_regex(regex_t *preg, unsigned char *regular_expression, _Bool case_s
  * @return int errcode 0 if a match was found, an errorcode if no match was found or
  *			any other error occurred.
  */
-int search_regex(regex_t *preg, unsigned char * search_string,
+int search_regex(regex_t *preg, const unsigned char * search_string,
                  int nr_matches, regmatch_t * matches);
 /**
  * Do a print to std output of the error and the error description from regerror.

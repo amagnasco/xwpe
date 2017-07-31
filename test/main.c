@@ -36,8 +36,8 @@ int main(void)
     s = search_suite();
     sr = srunner_create(s);
 
-    // CK_FORK for fork, CK_NOFORK for no forks.
-    srunner_set_fork_status(sr, CK_NOFORK);
+    // CK_FORK for fork, CK_NOFORK or no forks.
+    srunner_set_fork_status(sr, CK_FORK);
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);

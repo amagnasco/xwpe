@@ -86,7 +86,10 @@ _Bool find_case_sensitive (unsigned int sw);
  * @return -1 if not found, position starting from 0 if found
  *
  */
-int e_strstr (int x, int n, unsigned char *s, unsigned char *f, _Bool case_sensitive);
+int
+e_strstr (int start_offset, int end_offset,
+          unsigned char *search_string, unsigned char *search_expression,
+          size_t *end_match_return, _Bool case_sensitive);
 /**
  *  search a string with a regular expression. Optionally search
  *  in a case sensitive manner. Reversing start_offset and
@@ -103,9 +106,10 @@ int e_strstr (int x, int n, unsigned char *s, unsigned char *f, _Bool case_sensi
  * @return -1 if not found, position starting from 0 if found
  *
  */
-int e_rstrstr (size_t start_offset, size_t end_offset,
-               unsigned char *search_string,
-               unsigned char *regular_expression,
-               size_t * end_match_str, _Bool case_sensitive);
+int e_rstrstr (const size_t start_offset,
+               const size_t end_offset,
+               const unsigned char *search_string,
+               const unsigned char *regular_expression,
+               size_t * end_match_str, const _Bool case_sensitive);
 
 #endif
