@@ -74,8 +74,8 @@ before_install:
   
 script:
   - autoreconf -ivf
-    mkdir -p build
-    cd build
+  - mkdir -p build
+  - cd build
   - ../configure
   - make
   - make check
