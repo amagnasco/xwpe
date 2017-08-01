@@ -14,6 +14,7 @@ AC_CONFIG_SRCDIR([src/keys.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
+# AM_PROG_AR		# defines the correct AR program for the platform, not needed now
 LT_INIT				# working with libtool
 LT_PREREQ([2.4.0])		# At least version 2.4 for libtool
 AM_INIT_AUTOMAKE
@@ -56,7 +57,11 @@ AC_CHECK_LIB([SM], [main])
 AC_CHECK_LIB([ICE], [main])
 AC_CHECK_LIB([gpm], [main])
 AC_CHECK_LIB([z], [main])
-AC_CHECK_LIB([check], [tcase_create])
+# AC_CHECK_LIB([check], [tcase_create])
+# Ubuntu does not install the dynamic library for check, but check and check_pic
+# The search statement below checks for check_pic first, because libcheck.a does
+# not contain symbols.
+AC_SEARCH_LIBS([tcase_create], [check_pic check])
 
 # Check printer command: empty if necessary
 AC_CHECK_PROG([PRNTCMD], [lpr], [lpr])	# preferred value for printer
