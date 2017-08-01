@@ -130,7 +130,7 @@ e_rstrstr (const size_t start_offset,
     // for backwards we need to find the last occurrence within the [start, end] range
     if (!forward_search)
     {
-        unsigned char save_char;
+        unsigned char save_char = '\0';
         if (strlen((const char *)search_string) > 0)
         {
             save_char = str[end];
