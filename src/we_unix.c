@@ -29,7 +29,6 @@ int WpeTermInit (int *argc, char **argv);
 #include <dirent.h>
 #include <signal.h>
 #include <locale.h>
-//#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 #include<curses.h>
 #endif
