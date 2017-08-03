@@ -136,31 +136,18 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libxwpe_term_la_LIBADD =
-am_libxwpe_term_la_OBJECTS = we_term.lo
-libxwpe_term_la_OBJECTS = $(am_libxwpe_term_la_OBJECTS)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
-libxwpe_term_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(libxwpe_term_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
-libxwpe_x11_la_LIBADD =
-am_libxwpe_x11_la_OBJECTS = we_xterm.lo WeXterm.lo
-libxwpe_x11_la_OBJECTS = $(am_libxwpe_x11_la_OBJECTS)
-libxwpe_x11_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(libxwpe_x11_la_LDFLAGS) $(LDFLAGS) -o \
-	$@
 libxwpe_la_LIBADD =
 am_libxwpe_la_OBJECTS = we_block.lo we_unix.lo we_e_aus.lo we_edit.lo \
 	we_fl_fkt.lo we_fl_unix.lo we_hfkt.lo we_menue.lo we_mouse.lo \
 	we_opt.lo we_wind.lo we_prog.lo we_progn.lo we_debug.lo \
 	WeString.lo WeSyntax.lo WeExpArr.lo WeLinux.lo we_gpm.lo \
-	utils.lo we_find.lo we_control.lo
+	utils.lo we_find.lo we_control.lo we_xterm.lo WeXterm.lo \
+	we_term.lo
 libxwpe_la_OBJECTS = $(am_libxwpe_la_OBJECTS)
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 libxwpe_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(libxwpe_la_LDFLAGS) $(LDFLAGS) -o $@
@@ -168,20 +155,18 @@ libxwpe_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 PROGRAMS = $(bin_PROGRAMS)
 am_we_OBJECTS = we_main.$(OBJEXT)
 we_OBJECTS = $(am_we_OBJECTS)
-we_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la libxwpe.la
+we_DEPENDENCIES = libxwpe.la
 am_wpe_OBJECTS = we_main.$(OBJEXT)
 wpe_OBJECTS = $(am_wpe_OBJECTS)
-wpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la libxwpe.la
+wpe_DEPENDENCIES = libxwpe.la
 am__xwe_SOURCES_DIST = we_main.c
 @HAVE_X11_TRUE@am_xwe_OBJECTS = we_main.$(OBJEXT)
 xwe_OBJECTS = $(am_xwe_OBJECTS)
-@HAVE_X11_TRUE@xwe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la \
-@HAVE_X11_TRUE@	libxwpe.la
+@HAVE_X11_TRUE@xwe_DEPENDENCIES = libxwpe.la
 am__xwpe_SOURCES_DIST = we_main.c
 @HAVE_X11_TRUE@am_xwpe_OBJECTS = we_main.$(OBJEXT)
 xwpe_OBJECTS = $(am_xwpe_OBJECTS)
-@HAVE_X11_TRUE@xwpe_DEPENDENCIES = libxwpe-x11.la libxwpe-term.la \
-@HAVE_X11_TRUE@	libxwpe.la
+@HAVE_X11_TRUE@xwpe_DEPENDENCIES = libxwpe.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -216,11 +201,9 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libxwpe_term_la_SOURCES) $(libxwpe_x11_la_SOURCES) \
-	$(libxwpe_la_SOURCES) $(we_SOURCES) $(wpe_SOURCES) \
+SOURCES = $(libxwpe_la_SOURCES) $(we_SOURCES) $(wpe_SOURCES) \
 	$(xwe_SOURCES) $(xwpe_SOURCES)
-DIST_SOURCES = $(libxwpe_term_la_SOURCES) $(libxwpe_x11_la_SOURCES) \
-	$(libxwpe_la_SOURCES) $(we_SOURCES) $(wpe_SOURCES) \
+DIST_SOURCES = $(libxwpe_la_SOURCES) $(we_SOURCES) $(wpe_SOURCES) \
 	$(am__xwe_SOURCES_DIST) $(am__xwpe_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -375,32 +358,34 @@ AM_CFLAGS = -Wall -Wextra -std=c11
 AM_CPPFLAGS = -DLIBRARY_DIR=\"@libdir@/xwpe\" -DRANLIB=\"@RANLIB@\" \
 	-DDATADIR=\"@datadir@/xwpe\"
 AM_LDFLAGS = -rdynamic
-lib_LTLIBRARIES = libxwpe-x11.la libxwpe-term.la libxwpe.la
-libxwpe_x11_la_SOURCES = we_xterm.c WeXterm.c
-libxwpe_x11_la_LDFLAGS = -version-info 0:0:0
-libxwpe_term_la_SOURCES = we_term.c
-libxwpe_term_la_LDFLAGS = -version-info 0:0:0
+lib_LTLIBRARIES = libxwpe.la
 libxwpe_la_SOURCES = we_block.c we_unix.c we_e_aus.c \
 		we_edit.c we_fl_fkt.c we_fl_unix.c we_hfkt.c \
 		we_menue.c we_mouse.c we_opt.c we_wind.c \
 		we_prog.c we_progn.c we_debug.c WeString.c \
 		WeSyntax.c WeExpArr.c WeLinux.c we_gpm.c \
-		utils.c we_find.c we_control.c
+		utils.c we_find.c we_control.c \
+		we_xterm.c WeXterm.c we_term.c
 
 libxwpe_la_LDFLAGS = -version-info 0:0:0
 wpe_SOURCES = we_main.c 
-wpe_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
+wpe_LDADD = libxwpe.la
 we_SOURCES = we_main.c 
-we_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
-include_HEADERS = attrb.h edit.h keys.h \
-		model.h unixkeys.h unixmakr.h \
-		WeString.h WeXterm.h WeProg.h WeExpArr.h \
-		utils.h we_find.h we_control.h
+we_LDADD = libxwpe.la
+include_HEADERS = attrb.h edit.h globals.h keys.h \
+		messages.h model.h options.h unixkeys.h unixmakr.h \
+		utils.h we_block.h we_control.h we_debug.h \
+		we_e_aus.h we_edit.h WeExpArr.h we_find.h \
+		we_fl_fkt.h we_fl_unix.h we_gpm.h we_hfkt.h \
+		WeLinux.h we_main.h we_menue.h we_mouse.h \
+		we_opt.h we_prog.h WeProg.h we_progn.h \
+		WeString.h WeSyntax.h we_term.h we_unix.h \
+		we_wind.h we_xterm.h WeXterm.h
 
 @HAVE_X11_TRUE@xwpe_SOURCES = we_main.c 
-@HAVE_X11_TRUE@xwpe_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
+@HAVE_X11_TRUE@xwpe_LDADD = libxwpe.la
 @HAVE_X11_TRUE@xwe_SOURCES = we_main.c 
-@HAVE_X11_TRUE@xwe_LDADD = libxwpe-x11.la libxwpe-term.la libxwpe.la
+@HAVE_X11_TRUE@xwe_LDADD = libxwpe.la
 all: all-am
 
 .SUFFIXES:
@@ -469,12 +454,6 @@ clean-libLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
-
-libxwpe-term.la: $(libxwpe_term_la_OBJECTS) $(libxwpe_term_la_DEPENDENCIES) $(EXTRA_libxwpe_term_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libxwpe_term_la_LINK) -rpath $(libdir) $(libxwpe_term_la_OBJECTS) $(libxwpe_term_la_LIBADD) $(LIBS)
-
-libxwpe-x11.la: $(libxwpe_x11_la_OBJECTS) $(libxwpe_x11_la_DEPENDENCIES) $(EXTRA_libxwpe_x11_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libxwpe_x11_la_LINK) -rpath $(libdir) $(libxwpe_x11_la_OBJECTS) $(libxwpe_x11_la_LIBADD) $(LIBS)
 
 libxwpe.la: $(libxwpe_la_OBJECTS) $(libxwpe_la_DEPENDENCIES) $(EXTRA_libxwpe_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libxwpe_la_LINK) -rpath $(libdir) $(libxwpe_la_OBJECTS) $(libxwpe_la_LIBADD) $(LIBS)
