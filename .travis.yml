@@ -78,7 +78,7 @@ script:
   - cd build
   - ../configure
   - make
-  - nm -D src/libxwpe.so
+  - nm -D src/libxwpe.a
   - make check
   - sudo make install
   - make clean
