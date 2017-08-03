@@ -14,12 +14,13 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
-#ifndef NO_XWINDOWS
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Includes
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 #include "config.h"
+
+#ifndef NO_XWINDOWS
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

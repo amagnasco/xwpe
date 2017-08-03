@@ -12,8 +12,8 @@
  *
  */
 
-#include "we_find.h"
 #include "config.h"
+#include "we_find.h"
 #include "utils.h"
 #include <ctype.h>
 #include <regex.h>

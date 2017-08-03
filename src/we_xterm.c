@@ -4,9 +4,10 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "config.h"
+
 #ifndef NO_XWINDOWS
 
-#include "config.h"
 #include <ctype.h>
 #include "keys.h"
 #include "model.h"
