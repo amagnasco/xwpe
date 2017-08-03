@@ -195,18 +195,18 @@ WpeDllInit (int *argc, char **argv)
      RD5 = '-';
        RD6 = '|';
     *//*
- RE1 = '.';
- RE2 = '.';
- RE3 = '.';
- RE4 = '.';
- RE5 = '.';
- RE6 = ':';
- WBT = '#';
- ctree[0] = "|__";
- ctree[1] = "|__";
- ctree[2] = "|__";
- ctree[3] = "|__";
- ctree[4] = "|__";
+RE1 = '.';
+RE2 = '.';
+RE3 = '.';
+RE4 = '.';
+RE5 = '.';
+RE6 = ':';
+WBT = '#';
+ctree[0] = "|__";
+ctree[1] = "|__";
+ctree[2] = "|__";
+ctree[3] = "|__";
+ctree[4] = "|__";
 */
     return 0;
 }

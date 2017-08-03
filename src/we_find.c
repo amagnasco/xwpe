@@ -12,25 +12,24 @@
  *
  */
 
-#include "config.h"
-#include <ctype.h>
-#include <string.h>
-#include <regex.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include "we_find.h"
+#include "config.h"
 #include "utils.h"
+#include <ctype.h>
+#include <regex.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int
-e_strstr (int start_offset, int end_offset,
-          unsigned char *search_string, unsigned char *search_expression,
-          size_t *end_match_return, _Bool case_sensitive)
+int e_strstr(int start_offset, int end_offset,
+             unsigned char* search_string, unsigned char* search_expression,
+             size_t* end_match_return, _Bool case_sensitive)
 {
     _Bool forward_search = start_offset <= end_offset;
-    int (*compare)(const char *s1, const char *s2, size_t len);
+    int (*compare)(const char* s1, const char* s2, size_t len);
     compare = case_sensitive ? strncmp : strncasecmp;
 
-    int len_search_expr = strlen ((const char *) search_expression);
+    int len_search_expr = strlen((const char*)search_expression);
 
     /**
      *  Search forward or backward.
@@ -53,14 +52,14 @@ e_strstr (int start_offset, int end_offset,
     int i = forward_search ? start : -1 * (start - 1);
     int i_end = forward_search ? end : -1 * end;
 
-    for ( ; i <= i_end; i++)
+    for (; i <= i_end; i++)
     {
-        if (0 == compare((const char *) search_string + abs(i),
-                         (const char *) search_expression, len_search_expr))
+        if (0 == compare((const char*)search_string + abs(i),
+                         (const char*)search_expression, len_search_expr))
         {
             size_t start_match_return = abs(i);
             *end_match_return = abs(i) + len_search_expr;
-            return(start_match_return);
+            return (start_match_return);
         }
     }
 
@@ -79,22 +78,21 @@ e_strstr (int start_offset, int end_offset,
  * This match ignores submatches when using parentheses in the regular expression.
  *
  */
-int
-e_rstrstr (const size_t start_offset,
-           const size_t end_offset,
-           const unsigned char *search_string,
-           const unsigned char *regular_expression,
-           size_t * end_match_return, const _Bool case_sensitive)
+int e_rstrstr(const size_t start_offset,
+              const size_t end_offset,
+              const unsigned char* search_string,
+              const unsigned char* regular_expression,
+              size_t* end_match_return, const _Bool case_sensitive)
 {
     _Bool forward_search = start_offset <= end_offset;
     size_t start = forward_search ? start_offset : end_offset;
     size_t end = forward_search ? end_offset : start_offset;
 
-    size_t len_search_string = strlen((const char *)search_string);
+    size_t len_search_string = strlen((const char*)search_string);
     if (end > len_search_string)
         return -1;
 
-    regex_t *preg = malloc(sizeof(regex_t));
+    regex_t* preg = malloc(sizeof(regex_t));
 
     // Compile regular expression, return -1 if compile fails.
     int errcode = compile_regex(preg, regular_expression, case_sensitive);
@@ -103,18 +101,18 @@ e_rstrstr (const size_t start_offset,
 
     // Allocate matches.
     size_t nr_matches = preg->re_nsub + 1;
-    regmatch_t *matches = malloc (nr_matches * sizeof (regmatch_t));
+    regmatch_t* matches = malloc(nr_matches * sizeof(regmatch_t));
 
     // we work on a copy of the search string (str)
-    unsigned char *str;
+    unsigned char* str;
     size_t len_str = end - start;
-    str = calloc(len_str + 1, sizeof(unsigned char *));
+    str = calloc(len_str + 1, sizeof(unsigned char*));
     if (!str)
         return -1;
-    strncpy((char *)str, (const char *)search_string+start, len_str);
+    strncpy((char*)str, (const char*)search_string + start, len_str);
 
     //calculate pointer
-    unsigned char *pstr = str + start;
+    unsigned char* pstr = str + start;
 
     // First search
     errcode = search_regex(preg, pstr, nr_matches, matches);
@@ -131,7 +129,7 @@ e_rstrstr (const size_t start_offset,
     if (!forward_search)
     {
         unsigned char save_char = '\0';
-        if (strlen((const char *)search_string) > 0)
+        if (strlen((const char*)search_string) > 0)
         {
             save_char = str[end];
             str[end] = '\0';
@@ -140,11 +138,11 @@ e_rstrstr (const size_t start_offset,
         {
             len = matches[0].rm_eo - matches[0].rm_so;
             pstr = pstr + matches[0].rm_so;
-            pstr++; 				 // one past the last match
+            pstr++; // one past the last match
             errcode = search_regex(preg, pstr, nr_matches, matches);
         }
-        pstr--;					// return to the last match
-        if (strlen((const char *)search_string) > 0)
+        pstr--; // return to the last match
+        if (strlen((const char*)search_string) > 0)
         {
             str[end] = save_char;
         }
@@ -162,79 +160,67 @@ e_rstrstr (const size_t start_offset,
     size_t start_match = pstr - str;
     *end_match_return = pstr + len - str;
 
-    regfree (preg);		/* Obliged internal free */
-    free (matches);
+    regfree(preg); /* Obliged internal free */
+    free(matches);
     return start_match;
 }
 
-_Bool
-find_replace (unsigned int sw)
+_Bool find_replace(unsigned int sw)
 {
     return (sw & 1) != 0;
 }
 
-_Bool
-find_from_cursor (unsigned int sw)
+_Bool find_from_cursor(unsigned int sw)
 {
     return (sw & 2) == 0;
 }
 
-_Bool
-find_entire_scope (unsigned int sw)
+_Bool find_entire_scope(unsigned int sw)
 {
     return (sw & 2) != 0;
 }
 
-_Bool
-find_search_forward (unsigned int sw)
+_Bool find_search_forward(unsigned int sw)
 {
     return (sw & 4) == 0;
 }
 
-_Bool
-find_search_backward (unsigned int sw)
+_Bool find_search_backward(unsigned int sw)
 {
     return (sw & 4) != 0;
 }
 
-_Bool
-find_global_scope (unsigned int sw)
+_Bool find_global_scope(unsigned int sw)
 {
     return (sw & 8) == 0;
 }
 
-_Bool
-find_selection (unsigned int sw)
+_Bool find_selection(unsigned int sw)
 {
     return (sw & 8) != 0;
 }
 
-_Bool
-find_confirm_replace (unsigned int sw)
+_Bool find_confirm_replace(unsigned int sw)
 {
     return (sw & 16) != 0;
 }
 
-_Bool
-find_regular_expression (unsigned int sw)
+_Bool find_regular_expression(unsigned int sw)
 {
     return (sw & 32) != 0;
 }
 
-_Bool
-find_word_boundary (unsigned int sw)
+_Bool find_word_boundary(unsigned int sw)
 {
     return (sw & 64) != 0;
 }
 
-_Bool
-find_ignore_case (unsigned int sw)
+_Bool find_ignore_case(unsigned int sw)
 {
     return (sw & 128) == 0;
 }
 
-_Bool
-find_case_sensitive (unsigned int sw)
+_Bool find_case_sensitive(unsigned int sw)
 {
     return (sw & 128) != 0;
 }
