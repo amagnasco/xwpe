@@ -55,33 +55,43 @@ time to complete.
 
 ## Use ##
 
-See INSTALL for how to compile and install. In short get
+See INSTALL for generic instructions on compile and install. This
+README is tailored to our project and how we work. Get
 to the main project directory and execute:
 
-`mkdir build`
-
-and from build subdirectory run:
-
-`../configure ` 
-	OR `../configure CFLAGS="-g -O0"` if you want to debug
-`make`
-[optional: `make check`]
-`sudo make install`
+    `autoreconf -iv`
+    `mkdir build # if necessary`
+    `cd build`
+    `../configure ` 
+    `make`
+    `sudo make install`
 
 From then on xwpe/xwe/wpe/we will be installed in /usr/local/bin. If you
 don't have X11, only wpe/we will be installed.
 
+Should you want to check the result, do a `make check`.
+
 REMARK: 
-Always compile from a separate build directory to prevent cluttering the source
-directory. However, should you have used `./configure` from the project root first,
-then when switching to a build directory, do a `make distclean` first, to remove all
-cached files.
+
+* Always compile from a separate build directory to prevent cluttering the source
+directory. Should you have used `./configure` from the project root first,
+then do a `make distclean` first, to remove cached files. 
+Then follow the above instructions.
 
 ## Development ##
 
 if you want to develop and use debugging do:
 
-`./configure CFLAGS="-g -O0"
+    `../configure CFLAGS="-g -O0"`
+
+from the build directory in stead of `../configure`
+
+## PDF ##
+
+If you want this file or any other markdown file (.md files) in PDF,
+then you could use the tool `pandoc`. In its simplest form do: 
+
+    `pandoc -o README.pdf README.md`.
 
 ## Copyright ##
 
@@ -97,7 +107,6 @@ This version is an unofficial update to xwpe and is not supported
 by Fred Kruse. Updates have previously been made available on the unofficial 
 xwpe-alpha homepage, http://www.identicalsoftware.com/xwpe/. The previous
 maintainer was Dennis Payne, dulsi@identicalsoftware.com.
-
 
 As evidenced by their discussion list, xwpe-alpha has not seen active 
 development since at least 2003. This GitHub version is maintained by 
