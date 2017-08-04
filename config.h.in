@@ -1,5 +1,11 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the `backtrace' function. */
+#undef HAVE_BACKTRACE
+
+/* Define to 1 if you have the <check.h> header file. */
+#undef HAVE_CHECK_H
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -197,6 +203,9 @@
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
+
+/* Single UNIX specification version 4. Subsumes _POSIX_C_SOURCE */
+#undef _XOPEN_SOURCE
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

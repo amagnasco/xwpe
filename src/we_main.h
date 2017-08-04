@@ -1,6 +1,7 @@
 #ifndef WE_MAIN_H
 #define WE_MAIN_H
 
+#include "config.h"
 #include <stdlib.h>
 #include "globals.h"
 #include "we_edit.h"
@@ -12,8 +13,8 @@
 #include "we_unix.h"
 
 void e_ini_desk (ECNT * cn);
-void FARBE_Init (FARBE * fb);
-FARBE *e_ini_farbe ();
+void we_colorset_Init (we_colorset * fb);
+we_colorset *e_ini_farbe ();
 int e_switch_blst (ECNT * cn);
 void e_free_find (FIND * fd);
 

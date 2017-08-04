@@ -2315,6 +2315,7 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 
 
+# AM_PROG_AR		# defines the correct AR program for the platform, not needed now
 case `pwd` in
   *\ * | *\	*)
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
@@ -13404,6 +13405,9 @@ fi
 $as_echo "#define UNUSED(X) (void)(X)" >>confdefs.h
 
 
+$as_echo "#define _XOPEN_SOURCE 700" >>confdefs.h
+
+
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
 
@@ -13818,6 +13822,66 @@ _ACEOF
 
 fi
 
+# AC_CHECK_LIB([check], [tcase_create])
+# Ubuntu does not install the dynamic library for check, but check and check_pic
+# The search statement below checks for check_pic first, because libcheck.a does
+# not contain symbols.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing tcase_create" >&5
+$as_echo_n "checking for library containing tcase_create... " >&6; }
+if ${ac_cv_search_tcase_create+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char tcase_create ();
+int
+main ()
+{
+return tcase_create ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' check_pic check; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_tcase_create=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_tcase_create+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_tcase_create+:} false; then :
+
+else
+  ac_cv_search_tcase_create=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_tcase_create" >&5
+$as_echo "$ac_cv_search_tcase_create" >&6; }
+ac_res=$ac_cv_search_tcase_create
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
 
 # Check printer command: empty if necessary
 # Extract the first word of "lpr", so it can be a program name with args.
@@ -14107,13 +14171,38 @@ else
 $as_echo "libraries $x_libraries, headers $x_includes" >&6; }
 fi
 
-for ac_header in fcntl.h limits.h locale.h stdlib.h string.h sys/ioctl.h termios.h unistd.h
+for ac_header in fcntl.h limits.h locale.h stdlib.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
 if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
 #define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in string.h sys/ioctl.h termios.h unistd.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in check.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "check.h" "ac_cv_header_check_h" "$ac_includes_default"
+if test "x$ac_cv_header_check_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CHECK_H 1
 _ACEOF
 
 fi
@@ -14567,7 +14656,7 @@ _ACEOF
 fi
 done
 
-for ac_func in getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strchr strdup strrchr strstr
+for ac_func in getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
@@ -14579,8 +14668,31 @@ _ACEOF
 fi
 done
 
+for ac_func in strchr strdup strrchr strstr
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
 
-ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile man/Makefile"
+fi
+done
+
+for ac_func in backtrace
+do :
+  ac_fn_c_check_func "$LINENO" "backtrace" "ac_cv_func_backtrace"
+if test "x$ac_cv_func_backtrace" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_BACKTRACE 1
+_ACEOF
+
+fi
+done
+
+
+ac_config_files="$ac_config_files Makefile src/Makefile data/Makefile man/Makefile test/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -15601,6 +15713,7 @@ do
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "data/Makefile") CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
     "man/Makefile") CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
+    "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

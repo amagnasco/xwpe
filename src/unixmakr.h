@@ -13,23 +13,16 @@ char *getcwd (char *dir, int n);
 
 
 /**
- * tputs is necessary to add padding for termcap or terminfo 
- * capabilities. For curses or ncurses this function is not 
+ * tputs is necessary to add padding for termcap or terminfo
+ * capabilities. For curses or ncurses this function is not
  * necessary
  */
-//#ifdef NCURSES
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-#define e_putp(s) 1
-#else
+#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 #define e_putp(s) tputs((s), 1, fk_u_putchar)
 #endif
 
 extern int cur_on;
 
-// Disabled DEFPGC because getc() is part of <stdio.h>
-//#ifdef DEFPGC
-//#define getc(fp) fgetc((fp))
-//#endif
 //#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #define fk_getch() getch()
@@ -41,6 +34,7 @@ extern int cur_on;
 #define fk_getch() fgetc(stdin)
 #endif
 #endif
+
 #define WpeExit(n) e_exit((n))
 
 extern char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, *schirm;

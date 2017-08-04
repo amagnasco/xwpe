@@ -1,0 +1,12 @@
+workspace xwpe-git {
+	ro_prefix "/usr/include"
+	define LIBRARY_DIR "/usr/local/lib/"
+	project xwpe {
+		cd "src"
+		ipath ".."
+		file we_block.c we_edit.c we_fl_unix.c WeLinux.c we_mouse.c 
+		file we_progn.c we_term.c we_xterm.c we_debug.c WeExpArr.c we_gpm.c 
+ 		file we_main.c we_opt.c WeString.c we_unix.c WeXterm.c we_e_aus.c 
+		file we_fl_fkt.c we_hfkt.c we_menue.c we_prog.c WeSyntax.c we_wind.c
+	}
+}

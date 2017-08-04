@@ -4,273 +4,124 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "config.h"
 #include <ctype.h>
 #include <string.h>
-#include "config.h"
+#include <regex.h>
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
 #include "WeString.h"
 #include "we_hfkt.h"
-#include <regex.h>
-
-/*        find string in text line    */
-int
-e_strstr (int x, int n, unsigned char *s, unsigned char *f)
-{
-  int i, j, nf = strlen ((const char *) f);
-
-  if (x > n)
-    {
-      for (i = x - nf; i >= n; i--)
-	{
-	  for (j = 0; j < nf; j++)
-	    if (s[i + j] != f[j])
-	      break;
-	  if (j == nf)
-	    return (i);
-	}
-    }
-  else
-    {
-      for (i = x >= 0 ? x : 0;
-	   i <= n - nf /* && s[i] != '\0' && s[i] != WR */ ; i++)
-	{
-	  for (j = 0; j < nf; j++)
-	    if (s[i + j] != f[j])
-	      break;
-	  if (j == nf)
-	    return (i);
-	}
-    }
-  return (-1);
-}
-
-/*        Find string in line (ignoring case)   */
-int
-e_ustrstr (int x, int n, unsigned char *s, unsigned char *f)
-{
-  int i, j, nf = strlen ((const char *) f);
-
-  if (x > n)
-    {
-      for (i = x - nf; i >= n; i--)
-	{
-	  for (j = 0; j < nf; j++)
-	    if (toupper (s[i + j]) != toupper (f[j]))
-	      break;
-	  if (j == nf)
-	    return (i);
-	}
-    }
-  else
-    {
-      for (i = x < 0 ? 0 : x; i <= n - nf; i++)
-	{
-	  for (j = 0; j < nf; j++)
-	    if (toupper (s[i + j]) != toupper (f[j]))
-	      break;
-	  if (j == nf)
-	    return (i);
-	}
-    }
-  return (-1);
-}
-
-/*   find string in text line (including control chars), case insensitive */
-int
-e_urstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
-{
-  int i;
-  unsigned char *str;
-  unsigned char *ft =
-    malloc ((strlen ((const char *) f) + 1) * sizeof (unsigned char));
-
-  if (x <= n)
-    {
-      str = malloc ((n + 1) * sizeof (unsigned char));
-      for (i = 0; i < n; i++)
-	str[i] = toupper (s[i]);
-      str[n] = '\0';
-    }
-  else
-    {
-      str = malloc ((x + 1) * sizeof (unsigned char));
-      for (i = 0; i < x; i++)
-	str[i] = toupper (s[i]);
-      str[x] = '\0';
-    }
-  for (i = 0; (ft[i] = toupper (f[i])) != '\0'; i++)
-    ;
-
-  i = e_rstrstr (x, n, str, ft, nn);
-  free (str);
-  free (ft);
-  return (i);
-}
-
-/*   find string in text line (including control chars) */
-int
-e_rstrstr (int x, int n, unsigned char *s, unsigned char *f, int *nn)
-{
-  regex_t *regz;
-  regmatch_t *matches = NULL;
-  int start, end, i, len;
-  int res;
-  unsigned char old;
-
-  regz = malloc (sizeof (regex_t));
-  if (regcomp (regz, (const char *) f, REG_EXTENDED))
-    {
-      free (regz);
-      return (-1);
-    }
-  len = regz->re_nsub;
-  if (len)
-    matches = malloc (len * sizeof (regmatch_t));
-  start = (x < n) ? x : n;
-  end = (n > x) ? n : x;
-  if (start < 0)
-    start = 0;
-  old = s[end];			/* Save char */
-  s[end] = '\0';
-  res =
-    regexec (regz, (const char *) &s[start], len, matches,
-	     REG_NOTBOL | REG_NOTEOL);
-  s[end] = old;			/* Restore char */
-  regfree (regz);
-  free (regz);
-  if (res != 0)
-    {
-      free (matches);
-      return (-1);		/* Can't find any occurences */
-    }
-  start = strlen ((const char *) s);
-  end = 0;
-
-  for (i = 0; i < len; i++)
-    {
-      start = (matches[i].rm_so < start) ? matches[i].rm_so : start;
-      end = (matches[i].rm_eo > end) ? matches[i].rm_eo : end;
-    }
-  if (start > end)		/* Whole line matches regex */
-    {
-      end = start;
-      start = 0;
-    }
-  if (matches)
-    free (matches);
-  *nn = end;
-  return start;
-}
+#include "utils.h"
 
 /*   numbers box (numbers input/edit)     */
 int
-e_num_kst (char *s, int num, int max, FENSTER * f, int n, int sw)
+e_num_kst (char *s, int num, int max, We_window * f, int n, int sw)
 {
-  int ret, nz = WpeNumberOfPlaces (max);
-  char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
-  W_OPTSTR *o = e_init_opt_kst (f);
+    int ret, nz = WpeNumberOfPlaces (max);
+    char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
+    W_OPTSTR *o = e_init_opt_kst (f);
 
-  if (!o || !tmp)
-    return (-1);
-  o->xa = 20;
-  o->ya = 4;
-  o->xe = 52;
-  o->ye = 10;
-  o->bgsw = 0;
-  o->name = s;
-  o->crsw = AltO;
-  sprintf (tmp, "%s:", s);
-  e_add_numstr (3, 2, 29 - nz, 2, nz, max, n, sw, tmp, num, o);
-  free (tmp);
-  e_add_bttstr (6, 4, 1, AltO, " Ok ", NULL, o);
-  e_add_bttstr (21, 4, -1, WPE_ESC, "Cancel", NULL, o);
-  ret = e_opt_kst (o);
-  if (ret != WPE_ESC)
-    num = o->nstr[0]->num;
-  freeostr (o);
-  return (num);
+    if (!o || !tmp)
+        return (-1);
+    o->xa = 20;
+    o->ya = 4;
+    o->xe = 52;
+    o->ye = 10;
+    o->bgsw = 0;
+    o->name = s;
+    o->crsw = AltO;
+    sprintf (tmp, "%s:", s);
+    e_add_numstr (3, 2, 29 - nz, 2, nz, max, n, sw, tmp, num, o);
+    free (tmp);
+    e_add_bttstr (6, 4, 1, AltO, " Ok ", NULL, o);
+    e_add_bttstr (21, 4, -1, WPE_ESC, "Cancel", NULL, o);
+    ret = e_opt_kst (o);
+    if (ret != WPE_ESC)
+        num = o->nstr[0]->num;
+    freeostr (o);
+    return (num);
 }
 
-/*   determine string length */
+/*   determine string length delimited by null or newline (WPE_WR == 10) */
 int
 e_str_len (unsigned char *s)
 {
-  int i;
+    int i;
 
-  for (i = 0; *(s + i) != '\0' && *(s + i) != WPE_WR; i++)
-    ;
-  return (i);
+    for (i = 0; *(s + i) != '\0' && *(s + i) != WPE_WR; i++)
+        ;
+    return (i);
 }
 
 /*           COLOR - fill struct with constants           */
 COLOR
 e_s_x_clr (int f, int b)
 {
-  COLOR c;
+    COLOR c;
 
-  c.f = f;
-  c.b = b;
-  c.fb = 16 * b + f;
-  return (c);
+    c.f = f;
+    c.b = b;
+    c.fb = 16 * b + f;
+    return (c);
 }
 
 COLOR
 e_n_x_clr (int fb)
 {
-  COLOR f;
+    COLOR f;
 
-  f.fb = fb;
-  f.b = fb / 16;
-  f.f = fb % 16;
-  return (f);
+    f.fb = fb;
+    f.b = fb / 16;
+    f.f = fb % 16;
+    return (f);
 }
 
 COLOR
 e_s_t_clr (int f, int b)
 {
-  COLOR c;
+    COLOR c;
 
-  c.f = f;
-  c.b = b;
-  c.fb = f;
-  return (c);
+    c.f = f;
+    c.b = b;
+    c.fb = f;
+    return (c);
 }
 
 COLOR
 e_n_t_clr (int fb)
 {
-  COLOR f;
+    COLOR f;
 
-  f.fb = fb;
-  f.b = fb;
-  f.f = fb;
-  return (f);
+    f.fb = fb;
+    f.b = fb;
+    f.f = fb;
+    return (f);
 }
 
 /*            POINT - fill struct with constants            */
 POINT
 e_set_pnt (int x, int y)
 {
-  POINT p;
+    POINT p;
 
-  p.x = x;
-  p.y = y;
-  return (p);
+    p.x = x;
+    p.y = y;
+    return (p);
 }
 
 int
-e_pr_uul (FARBE * fb)
+e_pr_uul (we_colorset * fb)
 {
-  extern WOPT *blst;
-  extern int nblst;
-  int i;
+    extern WOPT *blst;
+    extern int nblst;
+    int i;
 
-  e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fb);
-  for (i = 0; i < nblst && blst[i].x < MAXSCOL; ++i)
-    e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fb,
-		   blst[i].s, blst[i].n, fb->ms.fb, blst[i].x,
-		   i == nblst - 1 ? MAXSCOL - 1 : blst[i + 1].x - 1);
-  return (i);
+    e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fb);
+    for (i = 0; i < nblst && blst[i].x < MAXSCOL; ++i)
+        e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fb,
+                       blst[i].s, blst[i].n, fb->ms.fb, blst[i].x,
+                       i == nblst - 1 ? MAXSCOL - 1 : blst[i + 1].x - 1);
+    return (i);
 }

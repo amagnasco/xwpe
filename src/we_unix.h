@@ -1,6 +1,7 @@
 #ifndef WE_UNIX_H
 #define WE_UNIX_H
 
+#include "config.h"
 #include "globals.h"
 #include "we_main.h"
 #include "we_edit.h"
@@ -10,8 +11,8 @@
 
 typedef enum wpeMouseShape
 {
-  WpeEditingShape, WpeDebuggingShape, WpeWorkingShape, WpeErrorShape,
-  WpeSelectionShape, WpeLastShape
+    WpeEditingShape, WpeDebuggingShape, WpeWorkingShape, WpeErrorShape,
+    WpeSelectionShape, WpeLastShape
 } WpeMouseShape;
 
 /*   we_unix.c   */
@@ -29,8 +30,8 @@ struct dirfile *e_find_dir (char *sufile, int sw);
 char *e_file_info (char *filen, char *str, int *num, int sw);
 void ini_repaint (ECNT * cn);
 void end_repaint (void);
-int e_frb_t_menue (int sw, int xa, int ya, FENSTER * f, int md);
-void e_pr_t_col_kasten (int xa, int ya, int x, int y, FENSTER * f, int sw);
+int e_frb_t_menue (int sw, int xa, int ya, We_window * f, int md);
+void e_pr_t_col_kasten (int xa, int ya, int x, int y, We_window * f, int sw);
 int e_ini_unix (int *argc, char **argv);
 int e_recover (ECNT * cn);
 int e_ini_schirm (int argc, char **argv);
@@ -40,11 +41,11 @@ extern int (*fk_u_cursor) (int x);
 extern int (*e_u_initscr) (int argc, char *argv[]);
 extern int (*fk_u_putchar) (int c);
 extern int (*u_bioskey) (void);
-extern int (*e_frb_u_menue) (int sw, int xa, int ya, FENSTER * f, int md);
+extern int (*e_frb_u_menue) (int sw, int xa, int ya, We_window * f, int md);
 extern COLOR (*e_s_u_clr) (int f, int b);
 extern COLOR (*e_n_u_clr) (int fb);
 extern void (*e_pr_u_col_kasten) (int xa, int ya, int x,
-				  int y, FENSTER * f, int sw);
+                                  int y, We_window * f, int sw);
 extern int (*fk_mouse) (int g[]);
 extern int (*e_u_refresh) (void);
 extern int (*e_u_getch) (void);
@@ -54,10 +55,10 @@ extern void (*WpeMouseChangeShape) (WpeMouseShape new_shape);
 extern void (*WpeMouseRestoreShape) (void);
 extern int (*e_u_d_switch_out) (int sw);
 extern int (*e_u_switch_screen) (int sw);
-extern int (*e_u_deb_out) (FENSTER * f);
-extern int (*e_u_cp_X_to_buffer) (FENSTER * f);
-extern int (*e_u_copy_X_buffer) (FENSTER * f);
-extern int (*e_u_paste_X_buffer) (FENSTER * f);
+extern int (*e_u_deb_out) (We_window * f);
+extern int (*e_u_cp_X_to_buffer) (We_window * f);
+extern int (*e_u_copy_X_buffer) (We_window * f);
+extern int (*e_u_paste_X_buffer) (We_window * f);
 extern int (*e_u_change) (view * pic);
 //extern int (*e_u_ini_size)(void);
 extern int (*e_u_s_sys_end) (void);

@@ -1,6 +1,8 @@
 #ifndef WE_GLOBALS_H
 #define WE_GLOBALS_H
 
+#include "config.h"
+
 extern struct CNT *WpeEditor;
 
 

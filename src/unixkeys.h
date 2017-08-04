@@ -7,6 +7,8 @@
 #ifndef UNIXKEYS_H
 #define UNIXKEYS_H
 
+#include "config.h"
+
 #ifndef LIBRARY_DIR
 #error "LIBRARY_DIR is not defined. Must be a compile time define containing path to xwpe library directory."
 #endif

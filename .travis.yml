@@ -67,13 +67,17 @@ matrix:
 before_install:
   - eval "${MATRIX_EVAL}"
   - autoconf --version
-#  - sudo apt-get -qq update
+  - sudo apt-get -qq update
 #  - sudo apt-get install -y gcc
 #  - sudo apt-get install libncurses5-dev
+  - sudo apt-get install -y check
   
 script:
   - autoreconf -ivf
-  - ./configure
+  - mkdir -p build
+  - cd build
+  - ../configure
   - make
+  - make check
   - sudo make install
   - make clean

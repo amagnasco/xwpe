@@ -6,6 +6,8 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "config.h"
+
 /*
    General Model Definitions      */
 

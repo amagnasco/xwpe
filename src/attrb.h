@@ -6,6 +6,8 @@
 
 /*  define proprietary attribute byte  */
 
+#include "config.h"
+
 #undef A_STANDOUT
 #undef A_UNDERLINE
 #undef A_REVERSE

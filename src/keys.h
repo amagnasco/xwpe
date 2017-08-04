@@ -4,6 +4,8 @@
 /* modify it under the terms of the                       */
 /* GNU General Public License, see the file COPYING.      */
 
+#include "config.h"
+
 /*  		Definition of Keyboard-Keys		*/
 
 #define CtrlA 1

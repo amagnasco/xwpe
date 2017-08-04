@@ -1,6 +1,6 @@
 #ifndef WESYNTAX_H
 #define WESYNTAX_H
 
-#include "we_wind.h"
+#include "config.h"
 
 #endif

@@ -14,6 +14,7 @@ AC_CONFIG_SRCDIR([src/keys.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
+# AM_PROG_AR		# defines the correct AR program for the platform, not needed now
 LT_INIT				# working with libtool
 LT_PREREQ([2.4.0])		# At least version 2.4 for libtool
 AM_INIT_AUTOMAKE
@@ -36,6 +37,7 @@ AM_CONDITIONAL([HAVE_X11], [test "X$no_x" != "Xyes"])
 
 # Specific defines
 AC_DEFINE([UNUSED(X)], [(void)(X)], [Define for arguments in a header that are not going to be used.])
+AC_DEFINE([_XOPEN_SOURCE], [700], [Single UNIX specification version 4. Subsumes _POSIX_C_SOURCE])
 
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
@@ -55,6 +57,11 @@ AC_CHECK_LIB([SM], [main])
 AC_CHECK_LIB([ICE], [main])
 AC_CHECK_LIB([gpm], [main])
 AC_CHECK_LIB([z], [main])
+# AC_CHECK_LIB([check], [tcase_create])
+# Ubuntu does not install the dynamic library for check, but check and check_pic
+# The search statement below checks for check_pic first, because libcheck.a does
+# not contain symbols.
+AC_SEARCH_LIBS([tcase_create], [check_pic check])
 
 # Check printer command: empty if necessary
 AC_CHECK_PROG([PRNTCMD], [lpr], [lpr])	# preferred value for printer
@@ -72,7 +79,9 @@ fi
 
 # Checks for header files.
 AC_PATH_X
-AC_CHECK_HEADERS([fcntl.h limits.h locale.h stdlib.h string.h sys/ioctl.h termios.h unistd.h])
+AC_CHECK_HEADERS([fcntl.h limits.h locale.h stdlib.h])
+AC_CHECK_HEADERS([string.h sys/ioctl.h termios.h unistd.h])
+AC_CHECK_HEADERS([check.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -83,7 +92,9 @@ AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([symlink tparm mkdtemp tempnam]) 
-AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale strchr strdup strrchr strstr])
+AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale])
+AC_CHECK_FUNCS([strchr strdup strrchr strstr])
+AC_CHECK_FUNCS([backtrace])
 
-AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile test/Makefile])
 AC_OUTPUT

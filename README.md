@@ -53,6 +53,36 @@ inadvertently break compilation on another system.  Also understanding and
 modifying the structure of xwpe is a large undertaking and will take a long
 time to complete.
 
+## Use ##
+
+See INSTALL for how to compile and install. In short get
+to the main project directory and execute:
+
+`mkdir build`
+
+and from build subdirectory run:
+
+`../configure ` 
+	OR `../configure CFLAGS="-g -O0"` if you want to debug
+`make`
+[optional: `make check`]
+`sudo make install`
+
+From then on xwpe/xwe/wpe/we will be installed in /usr/local/bin. If you
+don't have X11, only wpe/we will be installed.
+
+REMARK: 
+Always compile from a separate build directory to prevent cluttering the source
+directory. However, should you have used `./configure` from the project root first,
+then when switching to a build directory, do a `make distclean` first, to remove all
+cached files.
+
+## Development ##
+
+if you want to develop and use debugging do:
+
+`./configure CFLAGS="-g -O0"
+
 ## Copyright ##
 
 Copyright (C) 1993 Fred Kruse. xwpe is free; anyone may
