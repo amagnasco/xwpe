@@ -78,7 +78,6 @@ script:
   - cd build
   - ../configure
   - make
-  - nm -D src/.libs/libxwpe.so | grep -iE "e_strstr|e_rstrstr"
   - make check
   - sudo make install
   - make clean
