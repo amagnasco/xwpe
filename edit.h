@@ -793,7 +793,7 @@ int e_d_reinit_watches(FENSTER *f,char * prj);
 
 /* we_gpm.c */
 #ifdef HAVE_LIBGPM
-int WpeGpmInit(void);
+int WpeGpmMouseInit(void);
 int WpeGpmMouse(int *g);
 #endif
 
