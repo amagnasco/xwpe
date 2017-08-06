@@ -57,10 +57,10 @@ e_mkfilename (char *dr, char *fn)
 }
 
 /*   read file routine     */
-POINT
+we_point_t
 e_readin (int i, int j, FILE * fp, BUFFER * b, char *type)
 {
-    POINT pkt;
+    we_point_t pkt;
     int ii, k, n = 1, hb = 0;
     signed char cc, c = 0;
 

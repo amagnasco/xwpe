@@ -9,7 +9,7 @@ typedef struct
 {
     FILE* fp;
     BUFFER* b;
-    POINT p;
+    we_point_t p;
 } E_AFILE;
 
 int* e_sc_txt(int* c_sw, BUFFER* b);

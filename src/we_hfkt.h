@@ -15,7 +15,7 @@ we_color_t e_n_x_clr(int fb);
 we_color_t e_s_t_clr(int f, int b);
 we_color_t e_n_t_clr(int fb);
 #endif
-POINT e_set_pnt(int x, int y);
+we_point_t e_set_pnt(int x, int y);
 int e_pr_uul(we_colorset_t* fb);
 
 #endif

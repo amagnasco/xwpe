@@ -100,11 +100,11 @@ e_n_t_clr (int fb)
     return (f);
 }
 
-/*            POINT - fill struct with constants            */
-POINT
+/*            we_point_t - fill struct with constants            */
+we_point_t
 e_set_pnt (int x, int y)
 {
-    POINT p;
+    we_point_t p;
 
     p.x = x;
     p.y = y;

@@ -15,7 +15,7 @@ extern char* e_tmp_dir;
 
 /*   we_fl_fkt.c   */
 char* e_mkfilename(char* dr, char* fn);
-POINT e_readin(int i, int j, FILE* fp, BUFFER* b, char* sw);
+we_point_t e_readin(int i, int j, FILE* fp, BUFFER* b, char* sw);
 int e_new(we_window_t* f);
 int e_m_save(we_window_t* f);
 int e_save(we_window_t* f);

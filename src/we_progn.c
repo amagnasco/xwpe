@@ -2217,7 +2217,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
     int *ifvekr = malloc (sizeof (int));
     int *vkcs = malloc (sizeof (int));
     int *vkcb = malloc (sizeof (int));
-    POINT sa, se, sb;
+    we_point_t sa, se, sb;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--)
         ;

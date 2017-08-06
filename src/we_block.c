@@ -292,7 +292,7 @@ e_blck_move (we_window_t * f)
 {
     BUFFER *b;
     int i;
-    POINT ka;
+    we_point_t ka;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
     if (i <= 0)

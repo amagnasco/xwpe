@@ -656,11 +656,11 @@ e_eck_mouse (we_window_t * f, int sw)
 {
     int g[4];			/*  = { 3, 1, 0, 0 };  */
     int xold, yold, x, y, xa, xmin = 26, ymin = 3;
-    POINT fa, fe;
+    we_point_t fa, fe;
 
     e_ed_rahmen (f, 0);
-    memcpy (&fa, &f->a, sizeof (POINT));
-    memcpy (&fe, &f->e, sizeof (POINT));
+    memcpy (&fa, &f->a, sizeof (we_point_t));
+    memcpy (&fe, &f->e, sizeof (we_point_t));
     g[0] = 3;
     g[1] = 1;
     fk_mouse (g);
@@ -759,8 +759,8 @@ e_eck_mouse (we_window_t * f, int sw)
         g[0] = 3;
         fk_mouse (g);
     }
-    if ((memcmp (&fa, &f->a, sizeof (POINT))) ||
-            (memcmp (&fe, &f->e, sizeof (POINT))))
+    if ((memcmp (&fa, &f->a, sizeof (we_point_t))) ||
+            (memcmp (&fe, &f->e, sizeof (we_point_t))))
         f->zoom = 0;
     e_ed_rahmen (f, 1);
 }
@@ -978,7 +978,7 @@ we_window_t *f;
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
     we_screen *s = f->ed->f[f->ed->mxedt]->s;
-    POINT bs;
+    we_point_t bs;
     bs.x = b->b.x;
     bs.y = b->b.y;
     e_mouse_cursor (b, s, f);

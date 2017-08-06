@@ -1054,8 +1054,8 @@ int
 e_ed_tile (we_window_t * f)
 {
     ECNT *cn = f->ed;
-    POINT atmp[MAXEDT + 1];
-    POINT etmp[MAXEDT + 1];
+    we_point_t atmp[MAXEDT + 1];
+    we_point_t etmp[MAXEDT + 1];
     int i, j, ni, nj;
     int editwin = 0;		/* number of editor windows */
     int editorwin[MAXEDT + 1];

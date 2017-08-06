@@ -9,11 +9,11 @@
 /*******************************************************************************/
 /* (we_window_t *)f                                   */
 /*            |                                   */
-/*            +->(POINT)e.(int)x,y                */
+/*            +->(we_point_t)e.(int)x,y                */
 /*            |         e.x=max_visible_cols_+1   */
 /*            |         e.y=max_visible_lines_+1  */
 /*            |                                   */
-/*            +->(POINT)a.(int)x,y                */
+/*            +->(we_point_t)a.(int)x,y                */
 /*            |         a.x=seems to always be 0  */
 /*            |         a.y=seems to always be 1  */
 /*            |                                   */

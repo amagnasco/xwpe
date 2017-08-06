@@ -60,7 +60,7 @@ typedef struct PNT
 {
     int x;
     int y;
-} POINT;
+} we_point_t;
 
 typedef struct we_color_struct
 {
@@ -72,8 +72,8 @@ typedef struct we_color_struct
 typedef struct view_struct
 {
     char* p;
-    POINT a;
-    POINT e;
+    we_point_t a;
+    we_point_t e;
 } we_view_t;
 
 typedef struct frb
@@ -122,7 +122,7 @@ typedef struct frb
 typedef struct undo
 {
     int type;
-    POINT b, a, e;
+    we_point_t b, a, e;
     union
     {
         char c;
@@ -142,8 +142,8 @@ typedef struct STR
 typedef struct BFF
 {
     STRING* bf;  /* bf[i] is the i-th line of the buffer */
-    POINT b;     /* cursor coordinates in window (at least in some contexts) */
-    POINT mx;    /* maximum column and line */
+    we_point_t b;     /* cursor coordinates in window (at least in some contexts) */
+    we_point_t mx;    /* maximum column and line */
     int mxlines; /* number of lines */
     int cl, clsv;
     Undo *ud, *rd;
@@ -154,23 +154,23 @@ typedef struct BFF
 
 typedef struct SCHRM
 {
-    POINT mark_begin;
-    POINT mark_end;
-    POINT ks;
+    we_point_t mark_begin;
+    we_point_t mark_end;
+    we_point_t ks;
     /** 10 marks you can set with Ctrl-K n and get to with Ctrl-O n */
-    POINT pt[9];
+    we_point_t pt[9];
     /** Is starting point of something related to marks (needs more research) */
-    POINT fa;
+    we_point_t fa;
     /** Is ending point of something related to marks (needs more research) */
-    POINT fe;
+    we_point_t fe;
     /** starting point of something */
-    POINT a;
+    we_point_t a;
     /** ending point of something */
-    POINT e;
-    POINT c;
+    we_point_t e;
+    we_point_t c;
     we_colorset_t* fb;
 #ifdef DEBUGGER
-    POINT da, de;
+    we_point_t da, de;
     int* brp;
 #endif
 } we_screen;
@@ -207,10 +207,10 @@ typedef struct
 
 typedef struct FNST
 {
-    POINT a; /* start corner of the box */
-    POINT e; /* other corner of the box */
-    POINT sa;
-    POINT se;
+    we_point_t a; /* start corner of the box */
+    we_point_t e; /* other corner of the box */
+    we_point_t sa;
+    we_point_t se;
     char zoom;
     we_colorset_t* fb; /* color scheme */
     we_view_t* pic;	 /* picture save below the box ??? */
