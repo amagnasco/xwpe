@@ -33,7 +33,7 @@
 
 int e_run_sh (we_window_t * f);
 int e_make_library (char *library, char *ofile, we_window_t * f);
-int e_p_exec (int file, we_window_t * f, view * pic);
+int e_p_exec (int file, we_window_t * f, we_view_t * pic);
 
 int wfildes[2], efildes[2];
 char *wfile = NULL, *efile = NULL;
@@ -167,7 +167,7 @@ e_p_make (we_window_t * f)
     char ostr[128], estr[128], mstr[80];
     int len, i, file = -1;
     struct stat cbuf[1], obuf[1];
-    view *pic = NULL;
+    we_view_t *pic = NULL;
     int linkRequest = 1;		/* assume linking has to be done */
 
     WpeMouseChangeShape (WpeWorkingShape);
@@ -320,7 +320,7 @@ int
 e_comp (we_window_t * f)
 {
     ECNT *cn = f->ed;
-    view *pic = NULL;
+    we_view_t *pic = NULL;
     char **arg = NULL, fstr[128], ostr[128];
     int i, file = -1, len, argc;
 #ifdef CHECKHEADER
@@ -491,7 +491,7 @@ e_print_arg (FILE * fp, char *s, char **argv, int n)
 }
 
 int
-e_p_exec (int file, we_window_t * f, view * pic)
+e_p_exec (int file, we_window_t * f, we_view_t * pic)
 {
     UNUSED (file);
     ECNT *cn = f->ed;
@@ -1569,7 +1569,7 @@ e_make_library (char *library, char *ofile, we_window_t * f)
 {
     char *ar_arg[5] = { NULL, NULL, NULL, NULL, NULL };
     int ret = 0, file = -1;
-    view *pic = NULL;
+    we_view_t *pic = NULL;
 
     ar_arg[0] = "ar";
     if (access (library, F_OK))
@@ -1610,7 +1610,7 @@ e_system (char *estr, ECNT * cn)
     int g[4];
 #endif
     int ret;
-    view *outp;
+    we_view_t *outp;
 
 #if  MOUSE
     g[0] = 2;
@@ -2301,7 +2301,7 @@ e_c_project (we_window_t * f)
 #else
     struct stat lbuf[1], cbuf[1], obuf[1];
 #endif
-    view *pic = NULL;
+    we_view_t *pic = NULL;
 
     last_time = (M_TIME) 0;
     e_p_l_comp = 0;
@@ -3127,7 +3127,7 @@ e_p_del_df (FLWND * fw, int sw)
 }
 
 int
-e_p_mess_win (char *header, int argc, char **argv, view ** pic, we_window_t * f)
+e_p_mess_win (char *header, int argc, char **argv, we_view_t ** pic, we_window_t * f)
 {
     char *tmp = malloc (sizeof (char));
     int i, ret;

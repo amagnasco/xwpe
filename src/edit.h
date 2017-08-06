@@ -74,7 +74,7 @@ typedef struct view_struct
     char* p;
     POINT a;
     POINT e;
-} view;
+} we_view_t;
 
 typedef struct frb
 {
@@ -213,7 +213,7 @@ typedef struct FNST
     POINT se;
     char zoom;
     we_colorset_t* fb; /* color scheme */
-    view* pic;	 /* picture save below the box ??? */
+    we_view_t* pic;	 /* picture save below the box ??? */
     char* dirct;       /* working/actual directory */
     char* datnam;      /* window header text */
     int winnum;
@@ -331,7 +331,7 @@ typedef struct
     int fbs, fbz, fwt, fws;
     int tn, sn, pn, bn, wn, nn;
     char* name;
-    view* pic;
+    we_view_t* pic;
     W_O_TXTSTR** tstr;
     W_O_SSWSTR** sstr;
     W_O_PSWSTR** pstr;
@@ -349,8 +349,8 @@ typedef struct wpeOptionSection
 
 #ifdef UNIX
 
-int e_put_pic_xrect(view* pic);
-int e_get_pic_xrect(int xa, int ya, int xe, int ye, view* pic);
+int e_put_pic_xrect(we_view_t* pic);
+int e_get_pic_xrect(int xa, int ya, int xe, int ye, we_view_t* pic);
 
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
 int e_make_xrect(int xa, int ya, int xe, int ye, int sw);

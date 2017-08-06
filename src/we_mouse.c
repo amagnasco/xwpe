@@ -1328,7 +1328,7 @@ W_OPTSTR *o;
 {
     int g[4];
     int xold, yold, x, y, xa;
-    view *pic;
+    we_view_t *pic;
     e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
     if (!WpeIsXwin ())

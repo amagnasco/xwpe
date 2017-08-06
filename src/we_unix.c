@@ -79,13 +79,13 @@ int (*e_u_cp_X_to_buffer) (struct FNST * f);
 int (*e_u_copy_X_buffer) (struct FNST * f);
 int (*e_u_paste_X_buffer) (struct FNST * f);
 int (*e_u_kbhit) (void);
-int (*e_u_change) (view * pic);
+int (*e_u_change) (we_view_t * pic);
 int (*e_u_ini_size) (void);
 int (*e_get_pic_urect) (int xa, int ya, int xe, int ye,
                         struct view_struct * pic);
 int (*e_u_s_sys_end) (void);
 int (*e_u_s_sys_ini) (void);
-void (*e_u_setlastpic) (view * pic);
+void (*e_u_setlastpic) (we_view_t * pic);
 
 we_colorset_t *u_fb, *x_fb;
 
@@ -107,7 +107,7 @@ void *libxwpe;
 char *extbyte = NULL, *altextbyte = NULL;
 #endif
 char *altschirm = NULL;
-view *e_X_l_pic = NULL;
+we_view_t *e_X_l_pic = NULL;
 
 void
 WpeNullFunction (void)
