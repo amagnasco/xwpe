@@ -321,7 +321,7 @@ e_ad_colors_md (we_window_t * f, int md)
 int
 e_dif_colors (int sw, int xa, int ya, we_window_t * f, int md)
 {
-    COLOR *frb = &(f->fb->er);
+    we_color_t *frb = &(f->fb->er);
     int c = 0, bg, num;
 
     if (md == 1)
@@ -431,7 +431,7 @@ e_pr_dif_colors (int sw, int xa, int ya, we_window_t * f, int sw2, int md)
 int
 e_frb_x_menue (int sw, int xa, int ya, we_window_t * f, int md)
 {
-    COLOR *frb = &(f->fb->er);
+    we_color_t *frb = &(f->fb->er);
     int c = 1, fsv = frb[sw].fb, x, y;
 
     if (md == 1)
@@ -536,7 +536,7 @@ e_pr_x_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
 void
 e_pr_ed_beispiel (int xa, int ya, we_window_t * f, int sw, int md)
 {
-    COLOR *frb = &(f->fb->er);
+    we_color_t *frb = &(f->fb->er);
     we_colorset_t *fb = f->fb;
     int i, j, xe = xa + 31, ye = ya + 19;
 
@@ -781,7 +781,7 @@ int
 WpeReadColor (ECNT * cn, char *section, char *option, char *value)
 {
     we_colorset_t *fb = NULL;
-    COLOR *c = NULL;
+    we_color_t *c = NULL;
     int convert = 0;		/* Convert old X11 colors to new colors */
 
     if (WpeStrccmp ("Term", section + strlen (OPT_SECTION_COLOR) + 1) == 0)

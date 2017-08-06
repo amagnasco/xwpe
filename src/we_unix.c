@@ -61,8 +61,8 @@ int (*e_u_initscr) (int argc, char *argv[]);
 int (*fk_u_putchar) (int c);
 int (*u_bioskey) (void);
 int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * f, int md);
-COLOR (*e_s_u_clr) (int f, int b);
-COLOR (*e_n_u_clr) (int fb);
+we_color_t (*e_s_u_clr) (int f, int b);
+we_color_t (*e_n_u_clr) (int fb);
 void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * f, int sw);
 int (*fk_mouse) (int g[]);
 int (*e_u_refresh) (void);
@@ -855,7 +855,7 @@ e_recover (ECNT * cn)
 int
 e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
 {
-    COLOR *frb = &(f->fb->er);
+    we_color_t *frb = &(f->fb->er);
     int i, j, y, c = 1, fb, fsv;
 
     if (md == 1)

@@ -55,11 +55,11 @@ e_str_len (unsigned char *s)
     return (i);
 }
 
-/*           COLOR - fill struct with constants           */
-COLOR
+/*           we_color_t - fill struct with constants           */
+we_color_t
 e_s_x_clr (int f, int b)
 {
-    COLOR c;
+    we_color_t c;
 
     c.f = f;
     c.b = b;
@@ -67,10 +67,10 @@ e_s_x_clr (int f, int b)
     return (c);
 }
 
-COLOR
+we_color_t
 e_n_x_clr (int fb)
 {
-    COLOR f;
+    we_color_t f;
 
     f.fb = fb;
     f.b = fb / 16;
@@ -78,10 +78,10 @@ e_n_x_clr (int fb)
     return (f);
 }
 
-COLOR
+we_color_t
 e_s_t_clr (int f, int b)
 {
-    COLOR c;
+    we_color_t c;
 
     c.f = f;
     c.b = b;
@@ -89,10 +89,10 @@ e_s_t_clr (int f, int b)
     return (c);
 }
 
-COLOR
+we_color_t
 e_n_t_clr (int fb)
 {
-    COLOR f;
+    we_color_t f;
 
     f.fb = fb;
     f.b = fb;
