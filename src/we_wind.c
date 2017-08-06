@@ -227,7 +227,7 @@ e_pr_filetype (we_window_t * f)
 we_view_t *
 e_open_view (int xa, int ya, int xe, int ye, int col, int sw)
 {
-    we_view_t *pic = malloc (sizeof (view));
+    we_view_t *pic = malloc (sizeof (we_view_t));
     int i, j;
 
     if (pic == NULL)

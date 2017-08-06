@@ -85,7 +85,7 @@ int e_schirm(we_window_t* f, int sw);
 int e_size_move(we_window_t* f);
 we_view_t* e_std_kst(int xa, int ya, int xe, int ye, char* name, int sw, int fr,
                      int ft, int fes);
-we_view_t* e_ed_kst(we_window_t* f, view* pic, int sw);
+we_view_t* e_ed_kst(we_window_t* f, we_view_t* pic, int sw);
 int e_close_window(we_window_t* f);
 void e_switch_window(int num, we_window_t* f);
 int e_ed_zoom(we_window_t* f);
@@ -93,7 +93,7 @@ int e_ed_cascade(we_window_t* f);
 int e_ed_tile(we_window_t* f);
 int e_ed_next(we_window_t* f);
 int e_mess_win(char* header, char* str, we_view_t** pic, we_window_t* f);
-we_view_t* e_change_pic(int xa, int ya, int xe, int ye, view* pic, int sw,
+we_view_t* e_change_pic(int xa, int ya, int xe, int ye, we_view_t* pic, int sw,
                         int frb);
 struct dirfile* e_add_df(char* str, struct dirfile* df);
 int e_schr_nchar_wsv(char* str, int x, int y, int n, int max, int col,
