@@ -475,7 +475,7 @@ e_d_p_exec (We_window * f)
     if (ret == 1)
     {
         e_new_line (i, b);
-        for (j = 0; j < NUM_COLS_ON_SCREEN_SAFE - 2 && str[j] != '\n' &&
+        for (j = 0; j < num_cols_on_screen_safe(f) - 2 && str[j] != '\n' &&
                 str[j] != '\0'; j++)
             *(b->bf[i].s + j) = str[j];
         b->b.y = i;
@@ -1095,7 +1095,7 @@ e_d_p_stack (We_window * f, int sw)
             for (; isspace (str[k]); k++)
                 ;
             for (;
-                    j < NUM_COLS_ON_SCREEN_SAFE - 2 && str[k] != '\n'
+                    j < num_cols_on_screen_safe(f) - 2 && str[k] != '\n'
                     && str[k] != '\0'; j++, k++)
                 *(b->bf[i].s + j) = str[k];
             if (str[k] != '\0')

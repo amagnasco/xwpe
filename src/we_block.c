@@ -1196,7 +1196,7 @@ e_find (We_window * window)
     }
     freeostr (find_dialog);
     if (ret != WPE_ESC)
-        // FIXME: don't do a repeat search, but do a first search here
+        // FIXME: for now first search is the same as repeat search, maybe refactoring could help
         e_first_search (window);
     return (0);
 }
@@ -1212,122 +1212,122 @@ e_find (We_window * window)
   occurrences found and the number actually replaced.
 */
 int
-e_replace (We_window * f)
+e_replace (We_window * window)
 {
-    we_screen *s;
-    BUFFER *b;
-    FIND *fd = &(f->ed->fd);
+    we_screen *screen;
+    BUFFER *buffer;
+    FIND *find = &(window->ed->fd);
     int i, ret, c, rep = 0, found = 0;
     char strTemp[80];
-    W_OPTSTR *o = e_init_opt_kst (f);
+    W_OPTSTR *optstr = e_init_opt_kst (window);
 
-    if (!o)
+    if (!optstr)
         return (-1);
-    for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
+    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (f->ed->edt[i], f);
-    f = f->ed->f[f->ed->mxedt];
-    b = f->b;
-    s = f->s;
-    if (e_blck_dup (strTemp, f))
+    e_switch_window (window->ed->edt[i], window);
+    window = window->ed->f[window->ed->mxedt];
+    buffer = window->b;
+    screen = window->s;
+    if (e_blck_dup (strTemp, window))
     {
-        strcpy (fd->search, strTemp);
-        fd->sn = strlen (fd->search);
+        strcpy (find->search, strTemp);
+        find->sn = strlen (find->search);
     }
-    o->xa = 7;
-    o->ya = 3;
-    o->xe = 67;
-    o->ye = 17;
-    o->bgsw = 0;
-    o->name = "Replace";
-    o->crsw = AltO;
-    e_add_txtstr (4, 6, "Options:", o);
-    e_add_txtstr (32, 6, "Scope:", o);
-    e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", fd->search,
-                 &f->ed->sdf, o);
-    e_add_wrstr (4, 4, 18, 4, 35, 128, 0, AltN, "New Text:", fd->replace,
-                 &f->ed->rdf, o);
-    e_add_sswstr (5, 7, 0, AltC, fd->sw & 128 ? 1 : 0, "Case sensitive    ", o);
-    e_add_sswstr (5, 8, 0, AltW, fd->sw & 64 ? 1 : 0, "Whole words only  ", o);
-    e_add_sswstr (5, 9, 0, AltR, fd->sw & 32 ? 1 : 0, "Regular expression", o);
-    e_add_sswstr (5, 10, 0, AltP, 1, "Prompt on Replace ", o);
-    e_add_pswstr (0, 33, 7, 0, AltF, 0, "Forward from Cursor", o);
-    e_add_pswstr (0, 33, 8, 0, AltB, fd->sw & 4 ? 1 : 0,
-                  "Back from Cursor   ", o);
-    e_add_pswstr (0, 33, 9, 0, AltG, fd->sw & 2 ? 1 : 0,
-                  "Global Replace     ", o);
-    if (s->mark_end.y)
-        e_add_pswstr (0, 33, 10, 0, AltS, fd->sw & 10 ? 1 : 0,
-                      "Selected Text      ", o);
-    e_add_bttstr (10, 12, 1, AltO, " Ok ", NULL, o);
-    e_add_bttstr (41, 12, -1, WPE_ESC, "Cancel", NULL, o);
-    e_add_bttstr (22, 12, 7, AltA, "Change All", NULL, o);
-    ret = e_opt_kst (o);
+    optstr->xa = 7;
+    optstr->ya = 3;
+    optstr->xe = 67;
+    optstr->ye = 17;
+    optstr->bgsw = 0;
+    optstr->name = "Replace";
+    optstr->crsw = AltO;
+    e_add_txtstr (4, 6, "Options:", optstr);
+    e_add_txtstr (32, 6, "Scope:", optstr);
+    e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
+                 &window->ed->sdf, optstr);
+    e_add_wrstr (4, 4, 18, 4, 35, 128, 0, AltN, "New Text:", find->replace,
+                 &window->ed->rdf, optstr);
+    e_add_sswstr (5, 7, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", optstr);
+    e_add_sswstr (5, 8, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", optstr);
+    e_add_sswstr (5, 9, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", optstr);
+    e_add_sswstr (5, 10, 0, AltP, 1, "Prompt on Replace ", optstr);
+    e_add_pswstr (0, 33, 7, 0, AltF, 0, "Forward from Cursor", optstr);
+    e_add_pswstr (0, 33, 8, 0, AltB, find->sw & 4 ? 1 : 0,
+                  "Back from Cursor   ", optstr);
+    e_add_pswstr (0, 33, 9, 0, AltG, find->sw & 2 ? 1 : 0,
+                  "Global Replace     ", optstr);
+    if (screen->mark_end.y)
+        e_add_pswstr (0, 33, 10, 0, AltS, find->sw & 10 ? 1 : 0,
+                      "Selected Text      ", optstr);
+    e_add_bttstr (10, 12, 1, AltO, " Ok ", NULL, optstr);
+    e_add_bttstr (41, 12, -1, WPE_ESC, "Cancel", NULL, optstr);
+    e_add_bttstr (22, 12, 7, AltA, "Change All", NULL, optstr);
+    ret = e_opt_kst (optstr);
     if (ret != WPE_ESC)
     {
-        strcpy (fd->search, o->wstr[0]->txt);
-        fd->sn = strlen (fd->search);
-        strcpy (fd->replace, o->wstr[1]->txt);
-        fd->rn = strlen (fd->replace);
-        fd->sw = 1 + (o->sstr[0]->num << 7) + (o->sstr[1]->num << 6)
-                 + (o->sstr[2]->num << 5) + (o->sstr[3]->num << 4);
-        switch (o->pstr[0]->num)
+        strcpy (find->search, optstr->wstr[0]->txt);
+        find->sn = strlen (find->search);
+        strcpy (find->replace, optstr->wstr[1]->txt);
+        find->rn = strlen (find->replace);
+        find->sw = 1 + (optstr->sstr[0]->num << 7) + (optstr->sstr[1]->num << 6)
+                   + (optstr->sstr[2]->num << 5) + (optstr->sstr[3]->num << 4);
+        switch (optstr->pstr[0]->num)
         {
         case 2:
-            fd->sw |= 2;
-            b->b.x = b->b.y = 0;
+            find->sw |= 2;
+            buffer->b.x = buffer->b.y = 0;
             break;
         case 1:
-            fd->sw |= 4;
-            b->b.x = b->bf[b->mxlines - 1].len;
-            b->b.y = b->mxlines - 1;
+            find->sw |= 4;
+            buffer->b.x = buffer->bf[buffer->mxlines - 1].len;
+            buffer->b.y = buffer->mxlines - 1;
             break;
         case 3:
-            fd->sw |= 10;
-            b->b.x = s->mark_begin.x;
-            b->b.y = s->mark_begin.y;
+            find->sw |= 10;
+            buffer->b.x = screen->mark_begin.x;
+            buffer->b.y = screen->mark_begin.y;
         default:
             break;
         }
     }
-    freeostr (o);
+    freeostr (optstr);
     if (ret != WPE_ESC)
     {
-        while (e_repeat_search (f) && ((ret == AltA) || (!found)))
+        while (e_repeat_search (window) && ((ret == AltA) || (!found)))
         {
             found++;
-            if (f->a.y < 11)
+            if (window->a.y < 11)
             {
-                s->c.y = b->b.y - 1;
+                screen->c.y = buffer->b.y - 1;
             }
-            e_schirm (f, 1);
+            e_schirm (window, 1);
             c = 'Y';
-            if (fd->sw & 16)
-                c = e_message (1, "String found:\nReplace this occurrence ?", f);
+            if (find->sw & 16)
+                c = e_message (1, "String found:\nReplace this occurrence ?", window);
             if (c == WPE_ESC)
                 break;
             if (c == 'Y')
             {
                 rep++;
-                e_add_undo ('s', b, s->fa.x, b->b.y, fd->sn);
+                e_add_undo ('s', buffer, screen->fa.x, buffer->b.y, find->sn);
                 e_undo_sw = 1;
-                e_del_nchar (b, s, s->fa.x, b->b.y, fd->sn);
-                e_ins_nchar (b, s, (unsigned char *) fd->replace, s->fa.x,
-                             b->b.y, fd->rn);
+                e_del_nchar (buffer, screen, screen->fa.x, buffer->b.y, find->sn);
+                e_ins_nchar (buffer, screen, (unsigned char *) find->replace, screen->fa.x,
+                             buffer->b.y, find->rn);
                 e_undo_sw = 0;
-                s->fe.x = s->fa.x + fd->rn;
-                b->b.x = !(fd->sw & 4) ? s->fe.x : s->fa.x;
-                e_schirm (f, 1);
+                screen->fe.x = screen->fa.x + find->rn;
+                buffer->b.x = !(find->sw & 4) ? screen->fe.x : screen->fa.x;
+                e_schirm (window, 1);
             }
         }
         if (found)
         {
             sprintf (strTemp, "Found %d\nReplaced %d", found, rep);
-            e_message (0, strTemp, f);
+            e_message (0, strTemp, window);
         }
         else
-            e_message (0, e_msg[ERR_GETSTRING], f);
+            e_message (0, e_msg[ERR_GETSTRING], window);
     }
-    return (0);
+    return 0;
 }

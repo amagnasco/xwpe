@@ -319,75 +319,75 @@ WpeDrawFileManager (We_window * f)
         for (i = f->a.x + 1; i < f->e.x; i++)
             e_pr_char (i, j, ' ', f->fb->nt.fb);
 
-    if (NUM_LINES_ON_SCREEN <= 17)
+    if (num_lines_on_screen(f) <= 17)
         by = -1;
-    else if (b->sw != 0 || NUM_LINES_ON_SCREEN <= 19)
+    else if (b->sw != 0 || num_lines_on_screen(f) <= 19)
         by = 2;
 
-    if (NUM_LINES_ON_SCREEN > 17)
+    if (num_lines_on_screen(f) > 17)
     {
         e_pr_str ((f->a.x + 4), f->e.y - by, "Cancel", f->fb->nz.fb, -1, -1,
                   f->fb->ns.fb, f->fb->nt.fb);
         e_pr_str ((f->a.x + 14), f->e.y - by, "Change Dir", f->fb->nz.fb, 0, -1,
                   f->fb->ns.fb, f->fb->nt.fb);
-        if (b->sw == 1 && NUM_COLS_ON_SCREEN >= 34)
+        if (b->sw == 1 && num_cols_on_screen(f) >= 34)
             e_pr_str ((f->a.x + 28), f->e.y - by, "Read", f->fb->nz.fb, 0, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
-        else if (b->sw == 2 && NUM_COLS_ON_SCREEN >= 35)
+        else if (b->sw == 2 && num_cols_on_screen(f) >= 35)
             e_pr_str ((f->a.x + 28), f->e.y - by, "Write", f->fb->nz.fb, 0, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
         else if (b->sw == 4)
         {
-            if (NUM_COLS_ON_SCREEN >= 34)
+            if (num_cols_on_screen(f) >= 34)
                 e_pr_str ((f->a.x + 28), f->e.y - by, "Save", f->fb->nz.fb, 0, -1,
                           f->fb->ns.fb, f->fb->nt.fb);
         }
-        else if (b->sw == 3 && NUM_COLS_ON_SCREEN >= 37)
+        else if (b->sw == 3 && num_cols_on_screen(f) >= 37)
             e_pr_str ((f->a.x + 28), f->e.y - by, "Execute", f->fb->nz.fb, 0, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
-        else if (b->sw == 5 && NUM_COLS_ON_SCREEN >= 33)
+        else if (b->sw == 5 && num_cols_on_screen(f) >= 33)
             e_pr_str ((f->a.x + 28), f->e.y - by, "Add", f->fb->nz.fb, 0, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
         else if (b->sw == 0)
         {
-            if (NUM_COLS_ON_SCREEN >= 35)
+            if (num_cols_on_screen(f) >= 35)
                 e_pr_str ((f->a.x + 28), f->e.y - by, "MKdir", f->fb->nz.fb, 1,
                           -1, f->fb->ns.fb, f->fb->nt.fb);
-            if (NUM_COLS_ON_SCREEN >= 49)
+            if (num_cols_on_screen(f) >= 49)
                 e_pr_str ((f->a.x + 37), f->e.y - by, "Attributes", f->fb->nz.fb,
                           0, -1, f->fb->ns.fb, f->fb->nt.fb);
         }
     }
-    if (b->sw == 0 && NUM_LINES_ON_SCREEN > 19)
+    if (b->sw == 0 && num_lines_on_screen(f) > 19)
     {
         e_pr_str ((f->a.x + 4), f->e.y - 2, "Move", f->fb->nz.fb, 0, -1,
                   f->fb->ns.fb, f->fb->nt.fb);
 
-        if (NUM_COLS_ON_SCREEN >= 21)
+        if (num_cols_on_screen(f) >= 21)
             e_pr_str ((f->a.x + 13), f->e.y - 2, "Remove", f->fb->nz.fb, 0, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
 
-        if (NUM_COLS_ON_SCREEN >= 30)
+        if (num_cols_on_screen(f) >= 30)
             e_pr_str ((f->a.x + 24), f->e.y - 2, "Link", f->fb->nz.fb, 0, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
 
-        if (NUM_COLS_ON_SCREEN >= 39)
+        if (num_cols_on_screen(f) >= 39)
             e_pr_str ((f->a.x + 33), f->e.y - 2, "COpy", f->fb->nz.fb, 1, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
 
-        if (NUM_COLS_ON_SCREEN >= 48)
+        if (num_cols_on_screen(f) >= 48)
             e_pr_str ((f->a.x + 42), f->e.y - 2, "Edit", f->fb->nz.fb, 0, -1,
                       f->fb->ns.fb, f->fb->nt.fb);
 
     }
-    if (NUM_COLS_ON_SCREEN < 45)
+    if (num_cols_on_screen(f) < 45)
         bx3 = 0;
-    if (NUM_COLS_ON_SCREEN < 44)
+    if (num_cols_on_screen(f) < 44)
         bx2 = 0;
-    if (NUM_COLS_ON_SCREEN < 43)
+    if (num_cols_on_screen(f) < 43)
         bx1 = 0;
-    b->xfd = (NUM_COLS_ON_SCREEN - bx1 - bx2 - bx3 - 6) / 2;
-    b->xdd = NUM_COLS_ON_SCREEN - bx1 - bx2 - bx3 - b->xfd - 6;
+    b->xfd = (num_cols_on_screen(f) - bx1 - bx2 - bx3 - 6) / 2;
+    b->xdd = num_cols_on_screen(f) - bx1 - bx2 - bx3 - b->xfd - 6;
     b->xda = 2 + bx1;
     b->xfa = 4 + bx1 + bx2 + b->xdd;
 
@@ -3913,7 +3913,7 @@ e_data_schirm (We_window * f)
         for (i = f->a.x + 1; i < f->e.x; i++)
             e_pr_char (i, j, ' ', f->fb->nt.fb);
 
-    if (NUM_COLS_ON_SCREEN > 25)
+    if (num_cols_on_screen(f) > 25)
     {
         if (f->ins < 4 || f->ins == 7)
             e_pr_str ((f->e.x - 9), f->e.y - 4, "Show", f->fb->nz.fb, 0, -1,
@@ -3936,7 +3936,7 @@ e_data_schirm (We_window * f)
                   f->fb->ns.fb, f->fb->nt.fb);
     }
 
-    if (NUM_COLS_ON_SCREEN > 25)
+    if (num_cols_on_screen(f) > 25)
     {
         fw->xa = f->a.x + 3;
         fw->xe = f->e.x - 13;

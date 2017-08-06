@@ -16,6 +16,7 @@
 #include "we_prog.h"
 #include "WeProg.h"
 #include "WeString.h"
+#include "we_wind.h"
 
 #ifdef UNIX
 #include <unistd.h>
@@ -661,7 +662,7 @@ e_pr_c_line (int y, We_window * f)
             break;
         }
     for (j = s->c.x;
-            i < b->bf[y].len && j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1; i++, j++)
+            i < b->bf[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
     {
         e_mk_col (b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
@@ -673,7 +674,7 @@ e_pr_c_line (int y, We_window * f)
             frb = s->fb->ek.fb;
 #else
     for (j = s->c.x;
-            i < b->bf[y].len && j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1; i++, j++)
+            i < b->bf[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
     {
         e_mk_col (b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
@@ -689,7 +690,7 @@ e_pr_c_line (int y, We_window * f)
             frb = s->fb->ez.fb;
         if (*(b->bf[y].s + i) == WPE_TAB)
             for (k = f->ed->tabn - j % f->ed->tabn;
-                    k > 1 && j < NUM_COLS_ON_SCREEN + s->c.x - 2; k--, j++)
+                    k > 1 && j < num_cols_on_screen(f) + s->c.x - 2; k--, j++)
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, ' ',
                            frb);
 #ifdef UNIX
@@ -697,14 +698,14 @@ e_pr_c_line (int y, We_window * f)
         {
             e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, '@',
                        frb);
-            if (++j >= NUM_COLS_ON_SCREEN + s->c.x - 1)
+            if (++j >= num_cols_on_screen(f) + s->c.x - 1)
                 return;
             if (((unsigned char) *(b->bf[y].s + i)) < 128 + ' '
-                    && j < NUM_COLS_ON_SCREEN + s->c.x - 1)
+                    && j < num_cols_on_screen(f) + s->c.x - 1)
             {
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
                            '^', frb);
-                if (++j >= NUM_COLS_ON_SCREEN + s->c.x - 1)
+                if (++j >= num_cols_on_screen(f) + s->c.x - 1)
                     return;
             }
         }
@@ -712,7 +713,7 @@ e_pr_c_line (int y, We_window * f)
         {
             e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, '^',
                        frb);
-            if (++j >= NUM_COLS_ON_SCREEN + s->c.x - 1)
+            if (++j >= num_cols_on_screen(f) + s->c.x - 1)
                 return;
         }
 #endif
@@ -721,7 +722,7 @@ e_pr_c_line (int y, We_window * f)
                        frb);
 #ifdef UNIX
         else if (!WpeIsXwin () && ((unsigned char) *(b->bf[y].s + i)) > 126 &&
-                 j < NUM_COLS_ON_SCREEN + s->c.x - 1)
+                 j < num_cols_on_screen(f) + s->c.x - 1)
         {
             if (((unsigned char) *(b->bf[y].s + i)) < 128 + ' ')
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
@@ -730,7 +731,7 @@ e_pr_c_line (int y, We_window * f)
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
                            ((unsigned char) *(b->bf[y].s + i)) - 128, frb);
         }
-        else if (*(b->bf[y].s + i) < ' ' && j < NUM_COLS_ON_SCREEN + s->c.x - 1)
+        else if (*(b->bf[y].s + i) < ' ' && j < num_cols_on_screen(f) + s->c.x - 1)
             e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
                        *(b->bf[y].s + i) + 'A' - 1, frb);
 #endif
@@ -744,7 +745,7 @@ e_pr_c_line (int y, We_window * f)
 
     if ((i == b->bf[y].len) && (f->ed->edopt & ED_SHOW_ENDMARKS) &&
             (DTMD_ISMARKABLE (f->dtmd))
-            && (j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1))
+            && (j < num_cols_on_screen_safe(f) + s->c.x - 1))
     {
         if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                    (y == s->mark_begin.y
@@ -771,7 +772,7 @@ e_pr_c_line (int y, We_window * f)
         }
         j++;
     }
-    for (; j < NUM_COLS_ON_SCREEN + s->c.x - 1; j++)
+    for (; j < num_cols_on_screen(f) + s->c.x - 1; j++)
         e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, ' ', frb);
 }
 

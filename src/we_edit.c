@@ -17,6 +17,7 @@
 #include "we_progn.h"
 #include "we_prog.h"
 #include "WeString.h"
+#include "we_wind.h"
 
 #ifdef UNIX
 #include<sys/types.h>		/*  included for digital station  */
@@ -190,9 +191,9 @@ e_edit (ECNT * cn, char *filename)
             f->e = e_set_pnt (cn->f[i]->e.x, cn->f[i]->e.y);
         }
     }
-    if (NUM_COLS_ON_SCREEN < 26)
+    if (num_cols_on_screen(f) < 26)
         f->a.x = f->e.x - 26;
-    if (NUM_LINES_ON_SCREEN < 3)
+    if (num_lines_on_screen(f) < 3)
         f->a.y = f->e.y - 3;
     f->winnum = cn->curedt;
     f->dtmd = cn->dtmd;
@@ -651,7 +652,7 @@ e_tst_cur (int c, ECNT * e)
         break;
     case BDO:
     case BDO + 512:
-        b->b.y = b->b.y + NUM_LINES_ON_SCREEN - 2;
+        b->b.y = b->b.y + num_lines_on_screen(f) - 2;
         if (b->b.y > b->mxlines - 1)
             b->b.y = b->mxlines - 1;
         e_schirm (f, 1);
@@ -682,8 +683,8 @@ e_tst_cur (int c, ECNT * e)
         break;
     case CEND:
     case CEND + 512:
-        if (LINE_NUM_ON_SCREEN_BOTTOM < b->mxlines)
-            b->b.y = LINE_NUM_ON_SCREEN_BOTTOM - 1;
+        if (line_num_on_screen_bottom(f) < b->mxlines)
+            b->b.y = line_num_on_screen_bottom(f) - 1;
         else
             b->b.y = b->mxlines - 1;
         b->b.x = b->bf[b->b.y].len;
@@ -1665,14 +1666,14 @@ e_car_ret (BUFFER * b, we_screen * s)
 
 /*   cursor placement */
 void
-e_cursor (We_window * f, int sw)
+e_cursor (We_window * window, int sw)
 {
-    BUFFER *b = f->b;
-    we_screen *s = f->s;
+    BUFFER *b = window->b;
+    we_screen *s = window->s;
     static int iold = 0, jold = 0;
     int i, j;
 
-    if (!DTMD_ISTEXT (f->dtmd))
+    if (!DTMD_ISTEXT (window->dtmd))
         return;
     if (b->b.y > b->mxlines - 1)
         b->b.y = b->mxlines - 1;
@@ -1687,7 +1688,7 @@ e_cursor (We_window * f, int sw)
     for (i = j = 0; i < b->b.x; i++)
     {
         if (*(b->bf[b->b.y].s + i) == WPE_TAB)
-            j += (f->ed->tabn - ((j + i) % f->ed->tabn) - 1);
+            j += (window->ed->tabn - ((j + i) % window->ed->tabn) - 1);
         else if (!WpeIsXwin ()
                  && ((unsigned char) *(b->bf[b->b.y].s + i)) > 126)
         {
@@ -1697,7 +1698,7 @@ e_cursor (We_window * f, int sw)
         }
         else if (*(b->bf[b->b.y].s + i) < ' ')
             j++;
-        if (f->dtmd == DTMD_HELP)
+        if (window->dtmd == DTMD_HELP)
         {
             if (b->bf[b->b.y].s[i] == HBG || b->bf[b->b.y].s[i] == HED ||
                     b->bf[b->b.y].s[i] == HHD || b->bf[b->b.y].s[i] == HFE ||
@@ -1706,10 +1707,10 @@ e_cursor (We_window * f, int sw)
                 j -= 2;
         }
     }
-    if (b->b.y - s->c.y < 0 || b->b.y - s->c.y >= NUM_LINES_ON_SCREEN - 1 ||
+    if (b->b.y - s->c.y < 0 || b->b.y - s->c.y >= num_lines_on_screen(window) - 1 ||
             s->c.y < 0 || s->c.y >= b->mxlines ||
             b->b.x + j - s->c.x < 0 ||
-            b->b.x + j - s->c.x >= NUM_COLS_ON_SCREEN - 1)
+            b->b.x + j - s->c.x >= num_cols_on_screen(window) - 1)
     {
 #if defined(UNIX)
         /*if(b->b.y - s->c.y < 0) s->c.y = b->b.y - (f->e.y - f->a.y)/2;
@@ -1717,25 +1718,25 @@ e_cursor (We_window * f, int sw)
            s->c.y = b->b.y - (f->e.y - f->a.y)/2; */
         if (b->b.y - s->c.y < -1)
         {
-            s->c.y = b->b.y - (NUM_LINES_ON_SCREEN) / 2;
+            s->c.y = b->b.y - (num_lines_on_screen(window)) / 2;
         }
         else if (b->b.y - s->c.y == -1)
         {
             s->c.y -= 1;
         }
-        else if (b->b.y - s->c.y > NUM_LINES_ON_SCREEN - 1)
+        else if (b->b.y - s->c.y > num_lines_on_screen(window) - 1)
         {
-            s->c.y = b->b.y - (NUM_LINES_ON_SCREEN) / 2;
+            s->c.y = b->b.y - (num_lines_on_screen(window)) / 2;
         }
-        else if (b->b.y - s->c.y == NUM_LINES_ON_SCREEN - 1)
+        else if (b->b.y - s->c.y == num_lines_on_screen(window) - 1)
         {
             s->c.y += 1;
         }
 #else
         if (b->b.y - s->c.y < 0)
             s->c.y = b->b.y;
-        else if (b->b.y - s->c.y >= NUM_LINES_ON_SCREEN - 1)
-            (s->c.y) = b->b.y - f->e.y + f->a.y + 2;
+        else if (b->b.y - s->c.y >= num_lines_on_screen(window) - 1)
+            (s->c.y) = b->b.y - window->e.y + window->a.y + 2;
 #endif
         if (s->c.y >= b->mxlines - 1)
             s->c.y = b->mxlines - 2;
@@ -1743,31 +1744,31 @@ e_cursor (We_window * f, int sw)
             s->c.y = 0;
 
         if (b->b.x + j - s->c.x < 0)
-            (s->c.x) = b->b.x + j - (NUM_COLS_ON_SCREEN) / 2;
-        else if (b->b.x + j - s->c.x >= NUM_COLS_ON_SCREEN - 1)
-            (s->c.x) = b->b.x + j - (NUM_COLS_ON_SCREEN) / 2;
+            (s->c.x) = b->b.x + j - (num_cols_on_screen(window)) / 2;
+        else if (b->b.x + j - s->c.x >= num_cols_on_screen(window) - 1)
+            (s->c.x) = b->b.x + j - (num_cols_on_screen(window)) / 2;
         if (s->c.x < 0)
             s->c.x = 0;
         else if (s->c.x >= b->bf[b->b.y].len + j)
             s->c.x = b->bf[b->b.y].len + j;
-        e_schirm (f, sw);
+        e_schirm (window, sw);
     }
     if (s->fa.y == -1)
     {
-        e_schirm (f, sw);
+        e_schirm (window, sw);
         s->fa.y--;
     }
     else if (s->fa.y > -1)
         s->fa.y = -1;
     if (sw != 0)
     {
-        iold = e_lst_zeichen (f->e.x, f->a.y + 1, f->e.y - f->a.y - 1, 0,
-                              f->fb->em.fb, b->mxlines, iold, b->b.y);
-        jold = e_lst_zeichen (f->a.x + 19, f->e.y, f->e.x - f->a.x - 20, 1,
-                              f->fb->em.fb, b->mx.x, jold, b->b.x);
+        iold = e_lst_zeichen (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
+                              window->fb->em.fb, b->mxlines, iold, b->b.y);
+        jold = e_lst_zeichen (window->a.x + 19, window->e.y, window->e.x - window->a.x - 20, 1,
+                              window->fb->em.fb, b->mx.x, jold, b->b.x);
     }
     b->cl = b->b.x + j;
-    fk_locate (f->a.x + b->b.x - s->c.x + j + 1, f->a.y + b->b.y - s->c.y + 1);
+    fk_locate (window->a.x + b->b.x - s->c.x + j + 1, window->a.y + b->b.y - s->c.y + 1);
 }
 
 /*   delete one line */
@@ -2070,7 +2071,6 @@ e_su_lblk (int xa, unsigned char *s)
 }
 
 /*     Search left (left end of word)     */
-/** FIXME: is unsigned char * really necessary? Do we expect value > 127? */
 int
 e_su_rblk (int xa, unsigned char *s)
 {
@@ -2330,7 +2330,7 @@ e_remove_undo (Undo * ud, int sw)
  *  r	Uses r to remember deleted characters on one line
  *  p	Guess: ?? put char over another char (replace) TODO: verify meaning
  *  y	Guess: ?? redo a previous undo TODO: verify meaning
- *  s	Guess: ?? replace a string of characters TODO: verify meaning
+ *  s	replace a string of characters (verified with test)
  *
  *  Remark: the **global** e_undo_sw is a disabler for this function.
  *  if e_undo_sw is true, this function does nothing.
