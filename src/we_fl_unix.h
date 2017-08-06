@@ -3,51 +3,51 @@
 
 #include "config.h"
 #include "we_block.h"
-#include "we_wind.h"
+#include "we_debug.h"
 #include "we_fl_fkt.h"
 #include "we_mouse.h"
 #include "we_opt.h"
-#include "we_debug.h"
+#include "we_wind.h"
 
 #ifdef UNIX
 
-int e_data_eingabe (ECNT * cn);
+int e_data_eingabe(ECNT* cn);
 
-char *WpeGetCurrentDir (ECNT * cn);
-struct dirfile *WpeCreateWorkingDirTree (int sw, ECNT * cn);
-char *WpeAssemblePath (char *pth, struct dirfile *cd, struct dirfile *dd,
-                       int n, We_window * f);
-struct dirfile *WpeGraphicalFileList (struct dirfile *df, int sw, ECNT * cn);
-struct dirfile *WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd,
-                                     ECNT * cn);
-int e_funct (We_window * f);
-int e_funct_in (We_window * f);
-int e_data_first (int sw, ECNT * cn, char *nstr);
-int e_data_schirm (We_window * f);
+char* WpeGetCurrentDir(ECNT* cn);
+struct dirfile* WpeCreateWorkingDirTree(int sw, ECNT* cn);
+char* WpeAssemblePath(char* pth, struct dirfile* cd, struct dirfile* dd,
+                      int n, we_window_t* f);
+struct dirfile* WpeGraphicalFileList(struct dirfile* df, int sw, ECNT* cn);
+struct dirfile* WpeGraphicalDirTree(struct dirfile* cd, struct dirfile* dd,
+                                    ECNT* cn);
+int e_funct(we_window_t* f);
+int e_funct_in(we_window_t* f);
+int e_data_first(int sw, ECNT* cn, char* nstr);
+int e_data_schirm(we_window_t* f);
 
 #endif
 
-int e_ed_man (unsigned char *str, We_window * f);
-int e_rename (char *file, char *newname, We_window * f);
-int e_copy (char *file, char *newname, We_window * f);
-int e_link (char *file, char *newname, We_window * f);
-int e_duplicate (char *file, We_window * f);
+int e_ed_man(unsigned char* str, we_window_t* f);
+int e_rename(char* file, char* newname, we_window_t* f);
+int e_copy(char* file, char* newname, we_window_t* f);
+int e_link(char* file, char* newname, we_window_t* f);
+int e_duplicate(char* file, we_window_t* f);
 
-int WpeManager (We_window * f);
-int WpeManagerFirst (We_window * f);
-int WpeHandleFileManager (ECNT * cn);
-int WpeCreateFileManager (int sw, ECNT * cn, char *dirct);
-int WpeFileManagerOptions (We_window * f);
-int WpeDrawFileManager (We_window * f);
-int WpeFindWindow (We_window * f);
-int WpeGrepWindow (We_window * f);
-int WpePrintFile (We_window * f);
-int WpeShowWastebasket (We_window * f);
-int WpeDelWastebasket (We_window * f);
-int WpeQuitWastebasket (We_window * f);
-int WpeSaveAsManager (We_window * f);
-int WpeExecuteManager (We_window * f);
-int WpeRenameCopy (char *file, char *newname, We_window * f, int sw);
-int WpeShell (We_window * f);
+int WpeManager(we_window_t* f);
+int WpeManagerFirst(we_window_t* f);
+int WpeHandleFileManager(ECNT* cn);
+int WpeCreateFileManager(int sw, ECNT* cn, char* dirct);
+int WpeFileManagerOptions(we_window_t* f);
+int WpeDrawFileManager(we_window_t* f);
+int WpeFindWindow(we_window_t* f);
+int WpeGrepWindow(we_window_t* f);
+int WpePrintFile(we_window_t* f);
+int WpeShowWastebasket(we_window_t* f);
+int WpeDelWastebasket(we_window_t* f);
+int WpeQuitWastebasket(we_window_t* f);
+int WpeSaveAsManager(we_window_t* f);
+int WpeExecuteManager(we_window_t* f);
+int WpeRenameCopy(char* file, char* newname, we_window_t* f, int sw);
+int WpeShell(we_window_t* f);
 
 #endif

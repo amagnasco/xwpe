@@ -46,7 +46,7 @@ e_edit (ECNT * cn, char *filename)
     extern char *e_hlp_str[];
     extern WOPT *eblst, *hblst, *mblst, *dblst;
     FILE *fp = NULL;
-    We_window *f, *fo;
+    we_window_t *f, *fo;
     char *complete_fname, *path, *file;
     int ftype = 0, i, j, st = 0;
     struct stat buf[1];
@@ -119,7 +119,7 @@ e_edit (ECNT * cn, char *filename)
     (cn->mxedt)++;
     cn->edt[cn->mxedt] = j;
 
-    if ((f = (We_window *) malloc (sizeof (We_window))) == NULL)
+    if ((f = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
 
     f->fb = cn->fb;
@@ -415,7 +415,7 @@ e_eingabe (ECNT * e)
 {
     BUFFER *b = e->f[e->mxedt]->b;
     we_screen *s = e->f[e->mxedt]->s;
-    We_window *f = e->f[e->mxedt];
+    we_window_t *f = e->f[e->mxedt];
     int ret, c = 0;
     unsigned char cc;
 
@@ -575,7 +575,7 @@ weiter:
 int
 e_tst_cur (int c, ECNT * e)
 {
-    We_window *f = e->f[e->mxedt];
+    we_window_t *f = e->f[e->mxedt];
     BUFFER *b = f->b;
     we_screen *s = f->s;
 
@@ -824,7 +824,7 @@ e_tst_fkt (int c, ECNT * e)
 {
     extern OPT opt[];
     int i;
-    We_window *f = e->f[e->mxedt];
+    we_window_t *f = e->f[e->mxedt];
 
 #ifdef PROG
     if (e_tst_dfkt (f, c) == 0 || ((WpeIsProg ()) && e_prog_switch (f, c) == 0))
@@ -947,7 +947,7 @@ e_tst_fkt (int c, ECNT * e)
 }
 
 int
-e_ctrl_k (We_window * window)
+e_ctrl_k (we_window_t * window)
 {
     BUFFER *b = window->ed->f[window->ed->mxedt]->b;
     we_screen *screen = window->ed->f[window->ed->mxedt]->s;
@@ -1049,7 +1049,7 @@ e_ctrl_k (We_window * window)
 
 /*   Ctrl - O - Dispatcher     */
 int
-e_ctrl_o (We_window * f)
+e_ctrl_o (we_window_t * f)
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
     we_screen *s = f->ed->f[f->ed->mxedt]->s;
@@ -1184,7 +1184,7 @@ e_ctrl_o (We_window * f)
    basically, every time when it returns with zero
    something has happened */
 int
-e_tst_dfkt (We_window * f, int c)
+e_tst_dfkt (we_window_t * f, int c)
 {
     if (c >= Alt1 && c <= Alt9)
     {
@@ -1305,7 +1305,7 @@ e_tst_dfkt (We_window * f, int c)
 }
 
 int
-e_chr_sp (int x, BUFFER * b, We_window * f)
+e_chr_sp (int x, BUFFER * b, we_window_t * f)
 {
     int i, j;
 
@@ -1666,7 +1666,7 @@ e_car_ret (BUFFER * b, we_screen * s)
 
 /*   cursor placement */
 void
-e_cursor (We_window * window, int sw)
+e_cursor (we_window_t * window, int sw)
 {
     BUFFER *b = window->b;
     we_screen *s = window->s;
@@ -1813,7 +1813,7 @@ e_del_line (int yd, BUFFER * b, we_screen * s)
 int
 e_del_nchar (BUFFER * b, we_screen * s, int x, int y, int n)
 {
-    We_window *f = WpeEditor->f[WpeEditor->mxedt];
+    we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
     int len, i, j;
 
     (f->save) += n;
@@ -1872,7 +1872,7 @@ int
 e_ins_nchar (BUFFER * b, we_screen * sch, unsigned char *s, int xa, int ya,
              int n)
 {
-    We_window *f = WpeEditor->f[WpeEditor->mxedt];
+    we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
     int i, j;
 
     (f->save) += n;
@@ -2091,7 +2091,7 @@ e_su_rblk (int xa, unsigned char *s)
 
 /* Prints out the line number and column of cursor */
 void
-e_zlsplt (We_window * f)
+e_zlsplt (we_window_t * f)
 {
     char str[20];
 
@@ -2252,7 +2252,7 @@ e_mouse_bar (int x, int y, int n, int sw, int frb)
 }
 
 int
-e_autosave (We_window * f)
+e_autosave (we_window_t * f)
 {
     char *tmp, *str;
     unsigned long maxname;
@@ -2394,8 +2394,8 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
     {
         BUFFER *bn = malloc (sizeof (BUFFER));
         we_screen *sn = malloc (sizeof (we_screen));
-        We_window *fn = malloc (sizeof (We_window));
-        We_window *f = b->cn->f[b->cn->mxedt];
+        we_window_t *fn = malloc (sizeof (we_window_t));
+        we_window_t *f = b->cn->f[b->cn->mxedt];
 
         bn->bf = (STRING *) malloc (MAXLINES * sizeof (STRING));
         if (bn == NULL || sn == 0 || bn->bf == NULL)
@@ -2437,19 +2437,19 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
 }
 
 int
-e_make_undo (We_window * f)
+e_make_undo (we_window_t * f)
 {
     return (e_make_rudo (f, 0));
 }
 
 int
-e_make_redo (We_window * f)
+e_make_redo (we_window_t * f)
 {
     return (e_make_rudo (f, 1));
 }
 
 int
-e_make_rudo (We_window * f, int sw)
+e_make_rudo (we_window_t * f, int sw)
 {
     BUFFER *b;
     we_screen *s;

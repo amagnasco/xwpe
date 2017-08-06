@@ -136,7 +136,7 @@ e_msg_mouse (int x, int y, int x1, int x2, int yy)
 }
 
 int
-e_rahmen_mouse (We_window * f)
+e_rahmen_mouse (we_window_t * f)
 {
     extern struct mouse e_mouse;
     int c = 1;
@@ -163,7 +163,7 @@ e_rahmen_mouse (We_window * f)
 }
 
 int
-WpeMngMouseInFileManager (We_window * f)
+WpeMngMouseInFileManager (we_window_t * f)
 {
     extern struct mouse e_mouse;
     ECNT *cn = f->ed;
@@ -287,7 +287,7 @@ WpeMngMouseInFileManager (We_window * f)
 }
 
 int
-WpeMouseInFileDirList (int k, int sw, We_window * f)
+WpeMouseInFileDirList (int k, int sw, we_window_t * f)
 {
     extern struct mouse e_mouse;
     ECNT *cn = f->ed;
@@ -652,7 +652,7 @@ int nf;
 
 /*   mouse window resizer control */
 void
-e_eck_mouse (We_window * f, int sw)
+e_eck_mouse (we_window_t * f, int sw)
 {
     int g[4];			/*  = { 3, 1, 0, 0 };  */
     int xold, yold, x, y, xa, xmin = 26, ymin = 3;
@@ -767,7 +767,7 @@ e_eck_mouse (We_window * f, int sw)
 
 /*       Mouse edit window control   */
 int
-e_edt_mouse (int c, We_window * f)
+e_edt_mouse (int c, we_window_t * f)
 {
     int i, ret = 0;
     extern struct mouse e_mouse;
@@ -935,7 +935,7 @@ e_edt_mouse (int c, We_window * f)
 }
 
 int
-e_mouse_cursor (BUFFER * b, we_screen * s, We_window * f)
+e_mouse_cursor (BUFFER * b, we_screen * s, we_window_t * f)
 {
     extern struct mouse e_mouse;
 
@@ -950,7 +950,7 @@ e_mouse_cursor (BUFFER * b, we_screen * s, We_window * f)
 
 /*  Copy, Cut and Paste functions    */
 int
-e_ccp_mouse (int c, We_window * f)
+e_ccp_mouse (int c, we_window_t * f)
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
     we_screen *s = f->ed->f[f->ed->mxedt]->s;
@@ -974,7 +974,7 @@ e_ccp_mouse (int c, We_window * f)
 /*       Mouse cursor in edit window control   */
 void
 e_cur_mouse (f)
-We_window *f;
+we_window_t *f;
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
     we_screen *s = f->ed->f[f->ed->mxedt]->s;
@@ -1260,7 +1260,7 @@ e_opt_bs_mouse ()
 
 int
 e_data_ein_mouse (f)
-We_window *f;
+we_window_t *f;
 {
     extern struct mouse e_mouse;
     FLWND *fw = (FLWND *) f->b;

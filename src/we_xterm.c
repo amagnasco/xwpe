@@ -40,11 +40,11 @@ int e_x_sys_end (void);
 int fk_x_putchar (int c);
 int x_bioskey (void);
 int e_x_system (const char *exe);
-int e_x_cp_X_to_buffer (We_window * f);
-int e_x_copy_X_buffer (We_window * f);
-int e_x_paste_X_buffer (We_window * f);
+int e_x_cp_X_to_buffer (we_window_t * f);
+int e_x_copy_X_buffer (we_window_t * f);
+int e_x_paste_X_buffer (we_window_t * f);
 int e_x_change (view * pic);
-int e_x_repaint_desk (We_window * f);
+int e_x_repaint_desk (we_window_t * f);
 void e_setlastpic (view * pic);
 int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
 int e_x_kbhit (void);
@@ -365,7 +365,7 @@ e_ini_size ()
 int
 e_X_sw_color ()
 {
-    we_colorset *fb = WpeEditor->fb;
+    we_colorset_t *fb = WpeEditor->fb;
     fb->er = e_n_clr (A_Normal);
     fb->et = e_n_clr (A_Normal);
     fb->ez = e_n_clr (A_Reverse);
@@ -991,7 +991,7 @@ e_x_system (const char *exe)
 }
 
 int
-e_x_repaint_desk (We_window * f)
+e_x_repaint_desk (we_window_t * f)
 {
     ECNT *cn = f->ed;
     int i, g[4];
@@ -1090,7 +1090,7 @@ fk_x_mouse (int *g)
 }
 
 int
-e_x_cp_X_to_buffer (We_window * f)
+e_x_cp_X_to_buffer (we_window_t * f)
 {
     BUFFER *b0 = f->ed->f[0]->b;
     we_screen *s0 = f->ed->f[0]->s;
@@ -1180,7 +1180,7 @@ e_x_cp_X_to_buffer (We_window * f)
 }
 
 int
-e_x_copy_X_buffer (We_window * f)
+e_x_copy_X_buffer (we_window_t * f)
 {
     e_cp_X_to_buffer (f);
     e_edt_einf (f);
@@ -1188,7 +1188,7 @@ e_x_copy_X_buffer (We_window * f)
 }
 
 int
-e_x_paste_X_buffer (We_window * f)
+e_x_paste_X_buffer (we_window_t * f)
 {
     BUFFER *b0 = f->ed->f[0]->b;
     we_screen *s0 = f->ed->f[0]->s;

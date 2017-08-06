@@ -23,13 +23,13 @@
 #define MAXSVSTR 20
 
 int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
-extern int num_lines_off_screen_top(We_window *window);
-extern int num_lines_on_screen(We_window *window);
-extern int line_num_on_screen_bottom(We_window *window);
-extern int num_cols_on_screen(We_window *window);
-extern int num_cols_off_screen_left(We_window *window);
-extern int num_cols_on_screen_safe(We_window *window);
-extern int col_num_on_screen_right(We_window *window);
+extern int num_lines_off_screen_top(we_window_t *window);
+extern int num_lines_on_screen(we_window_t *window);
+extern int line_num_on_screen_bottom(we_window_t *window);
+extern int num_cols_on_screen(we_window_t *window);
+extern int num_cols_off_screen_left(we_window_t *window);
+extern int num_cols_on_screen_safe(we_window_t *window);
+extern int col_num_on_screen_right(we_window_t *window);
 
 /* break string into multiple line to fit into windows
 
@@ -83,7 +83,7 @@ StringToStringArray (char *str, int *maxLen, int minWidth, int *nr_lines_return)
 /*
       Print error message        */
 int
-e_error (char *text, int sw, we_colorset * f)
+e_error (char *text, int sw, we_colorset_t * f)
 {
     view *pic = NULL;
     int len, i, xa, xe, ya = 8, ye = 14;
@@ -149,7 +149,7 @@ e_error (char *text, int sw, we_colorset * f)
 
 /*   message with selection        */
 int
-e_message (int sw, char *str, We_window * f)
+e_message (int sw, char *str, we_window_t * f)
 {
     int i, ret, mxlen = 0, nr_lines = 0;
     char **s;
@@ -195,7 +195,7 @@ e_message (int sw, char *str, We_window * f)
 
 /*         First opening of a window                 */
 void
-e_firstl (We_window * f, int sw)
+e_firstl (we_window_t * f, int sw)
 {
     f->pic = NULL;
     f->pic = e_ed_kst (f, f->pic, sw);
@@ -205,7 +205,7 @@ e_firstl (We_window * f, int sw)
 
 /*         Writing of the file type    */
 int
-e_pr_filetype (We_window * f)
+e_pr_filetype (we_window_t * f)
 {
     int frb = f->fb->es.fb;
 
@@ -347,7 +347,7 @@ e_close_view (view * pic, int sw)
 
 /*    Frame for edit window   */
 void
-e_ed_rahmen (We_window * f, int sw)
+e_ed_rahmen (we_window_t * f, int sw)
 {
     extern char *e_hlp;
     extern int nblst;
@@ -484,7 +484,7 @@ e_ed_rahmen (We_window * f, int sw)
 
 /*   Output - screen content */
 int
-e_schirm (We_window * f, int sw)
+e_schirm (we_window_t * f, int sw)
 {
     int j;
 
@@ -517,7 +517,7 @@ e_schirm (We_window * f, int sw)
 
 /*   Move and modify window */
 int
-e_size_move (We_window * f)
+e_size_move (we_window_t * f)
 {
     int xa = f->a.x, ya = f->a.y, xe = f->e.x, ye = f->e.y;
     int c = 0, xmin = 26, ymin = 3;
@@ -789,7 +789,7 @@ e_change_pic (int xa, int ya, int xe, int ye, view * pic, int sw, int frb)
 }
 
 view *
-e_ed_kst (We_window * f, view * pic, int sw)
+e_ed_kst (we_window_t * f, view * pic, int sw)
 {
     view *newpic = e_change_pic (f->a.x, f->a.y, f->e.x,
                                  f->e.y, pic, sw, f->fb->er.fb);
@@ -823,10 +823,10 @@ e_close_buffer (BUFFER * b)
 
 /*    close window */
 int
-e_close_window (We_window * f)
+e_close_window (we_window_t * f)
 {
     ECNT *cn = f->ed;
-    We_window *f0 = f->ed->f[0];
+    we_window_t *f0 = f->ed->f[0];
     int c = 0;
     unsigned long maxname;
     char text[256];
@@ -962,10 +962,10 @@ e_rep_win_tree (ECNT * cn)
 }
 
 void
-e_switch_window (int num, We_window * f)
+e_switch_window (int num, we_window_t * f)
 {
     ECNT *cn = f->ed;
-    We_window *ft;
+    we_window_t *ft;
     int n, i, te;
 
     for (n = 1; cn->edt[n] != num && n < cn->mxedt; n++)
@@ -992,7 +992,7 @@ e_switch_window (int num, We_window * f)
 
 /*    zoom windows   */
 int
-e_ed_zoom (We_window * f)
+e_ed_zoom (we_window_t * f)
 {
     if (f->ed->mxedt > 0)
     {
@@ -1021,7 +1021,7 @@ e_ed_zoom (We_window * f)
 
 /*   cascade windows   */
 int
-e_ed_cascade (We_window * f)
+e_ed_cascade (we_window_t * f)
 {
     ECNT *cn = f->ed;
     int i;
@@ -1051,7 +1051,7 @@ e_ed_cascade (We_window * f)
 
 /*   Tile windows   */
 int
-e_ed_tile (We_window * f)
+e_ed_tile (we_window_t * f)
 {
     ECNT *cn = f->ed;
     POINT atmp[MAXEDT + 1];
@@ -1190,7 +1190,7 @@ e_ed_tile (We_window * f)
 
 /*   call next window   */
 int
-e_ed_next (We_window * f)
+e_ed_next (we_window_t * f)
 {
     if (f->ed->mxedt > 0)
         e_switch_window (f->ed->edt[1], f);
@@ -1199,7 +1199,7 @@ e_ed_next (We_window * f)
 
 /*   write a line (screen content)     */
 void
-e_pr_line (int y, We_window * f)
+e_pr_line (int y, we_window_t * f)
 {
     BUFFER *b = f->b;
     we_screen *s = f->s;
@@ -1553,14 +1553,14 @@ e_add_df (char *str, struct dirfile *df)
 }
 
 int
-e_sv_window (int xa, int ya, int *n, struct dirfile *df, We_window * f)
+e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
 {
     ECNT *cn = f->ed;
     int ret, ye = ya + 6;
     int xe = xa + 21;
     FLWND *fw = malloc (sizeof (FLWND));
 
-    if ((f = (We_window *) malloc (sizeof (We_window))) == NULL)
+    if ((f = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
     if (xe > MAXSCOL - 3)
     {
@@ -1622,7 +1622,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, We_window * f)
 
 int
 e_schr_lst_wsv (char *str, int xa, int ya, int n, int len, int ft,
-                int fz, struct dirfile **df, We_window * f)
+                int fz, struct dirfile **df, we_window_t * f)
 {
 #if MOUSE
     extern struct mouse e_mouse;
@@ -1678,7 +1678,7 @@ e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col, int csw)
 #endif
 
 int
-e_mess_win (char *header, char *str, view ** pic, We_window * f)
+e_mess_win (char *header, char *str, view ** pic, we_window_t * f)
 {
     ECNT *cn = f->ed;
     extern int (*e_u_kbhit) (void);
@@ -1753,7 +1753,7 @@ e_mess_win (char *header, char *str, view ** pic, We_window * f)
 }
 
 int
-e_opt_sec_box (int xa, int ya, int num, OPTK * opt, We_window * f, int sw)
+e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
 {
     view *pic;
     int n, nold, max = 0, i, c = 0, xe, ye = ya + num + 1;
@@ -1817,7 +1817,7 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, We_window * f, int sw)
 }
 
 struct dirfile *
-e_make_win_list (We_window * f)
+e_make_win_list (we_window_t * f)
 {
     int i;
     struct dirfile *df;
@@ -1861,7 +1861,7 @@ e_make_win_list (We_window * f)
 }
 
 int
-e_list_all_win (We_window * f)
+e_list_all_win (we_window_t * f)
 {
     int i;
 

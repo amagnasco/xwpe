@@ -40,7 +40,7 @@
 int
 main (int argc, char **argv)
 {
-    we_colorset *fb;
+    we_colorset_t *fb;
     ECNT *cn;
     int i, err = 0, g[4];
     int so = 0, sd = 1;
@@ -183,4 +183,3 @@ main (int argc, char **argv)
     WpeExit (0);
     return 0;
 }
-

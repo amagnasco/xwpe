@@ -31,9 +31,9 @@
 
 #define CHECKHEADER		// moved from model.h, only in use in we_prog.c
 
-int e_run_sh (We_window * f);
-int e_make_library (char *library, char *ofile, We_window * f);
-int e_p_exec (int file, We_window * f, view * pic);
+int e_run_sh (we_window_t * f);
+int e_make_library (char *library, char *ofile, we_window_t * f);
+int e_p_exec (int file, we_window_t * f, view * pic);
 
 int wfildes[2], efildes[2];
 char *wfile = NULL, *efile = NULL;
@@ -103,7 +103,7 @@ char *e_p_msg[] =
 
 
 int
-e_prog_switch (We_window * f, int c)
+e_prog_switch (we_window_t * f, int c)
 {
     switch (c)
     {
@@ -148,7 +148,7 @@ e_prog_switch (We_window * f, int c)
 }
 
 int
-e_compile (We_window * f)
+e_compile (we_window_t * f)
 {
     int ret;
 
@@ -161,7 +161,7 @@ e_compile (We_window * f)
 }
 
 int
-e_p_make (We_window * f)
+e_p_make (we_window_t * f)
 {
     ECNT *cn = f->ed;
     char ostr[128], estr[128], mstr[80];
@@ -250,7 +250,7 @@ e_p_make (We_window * f)
 }
 
 int
-e_run (We_window * f)
+e_run (we_window_t * f)
 {
     ECNT *cn = f->ed;
     BUFFER *b;
@@ -317,7 +317,7 @@ e_run (We_window * f)
 }
 
 int
-e_comp (We_window * f)
+e_comp (we_window_t * f)
 {
     ECNT *cn = f->ed;
     view *pic = NULL;
@@ -413,7 +413,7 @@ e_comp (We_window * f)
 }
 
 int
-e_exec_inf (We_window * f, char **argv, int n)
+e_exec_inf (we_window_t * f, char **argv, int n)
 {
     int pid;
     char tstr[128];
@@ -491,7 +491,7 @@ e_print_arg (FILE * fp, char *s, char **argv, int n)
 }
 
 int
-e_p_exec (int file, We_window * f, view * pic)
+e_p_exec (int file, we_window_t * f, view * pic)
 {
     UNUSED (file);
     ECNT *cn = f->ed;
@@ -563,7 +563,7 @@ e_p_exec (int file, We_window * f, view * pic)
 
 /* show source-position of error number "n" from actual errorlist */
 int
-e_show_error (int n, We_window * f)
+e_show_error (int n, we_window_t * f)
 {
     ECNT *cn = f->ed;
     BUFFER *b = cn->f[cn->mxedt]->b;
@@ -685,7 +685,7 @@ e_pure_bin (char *str, int ch)
 }
 
 int
-e_make_error_list (We_window * f)
+e_make_error_list (we_window_t * f)
 {
     char file[256];
     ECNT *cn = f->ed;
@@ -780,7 +780,7 @@ e_make_error_list (We_window * f)
 }
 
 int
-e_previous_error (We_window * f)
+e_previous_error (we_window_t * f)
 {
     if (err_no > 0)
         return (e_show_error (--err_no, f));
@@ -789,7 +789,7 @@ e_previous_error (We_window * f)
 }
 
 int
-e_next_error (We_window * f)
+e_next_error (we_window_t * f)
 {
     if (err_no < err_num - 1)
         return (e_show_error (++err_no, f));
@@ -798,7 +798,7 @@ e_next_error (We_window * f)
 }
 
 int
-e_cur_error (int y, We_window * f)
+e_cur_error (int y, we_window_t * f)
 {
     int i;
 
@@ -812,7 +812,7 @@ e_cur_error (int y, We_window * f)
 }
 
 int
-e_d_car_ret (We_window * f)
+e_d_car_ret (we_window_t * f)
 {
     if (!strcmp (f->datnam, "Messages"))
         return (e_cur_error (f->ed->f[f->ed->mxedt]->b->b.y, f));
@@ -842,7 +842,7 @@ e_line_read (int n, char *s, int max)
 }
 
 int
-e_arguments (We_window * f)
+e_arguments (we_window_t * f)
 {
     char str[80];
 
@@ -1136,7 +1136,7 @@ e_copy_prog (struct e_s_prog *out, struct e_s_prog *in)
 }
 
 int
-e_prj_ob_btt (We_window * f, int sw)
+e_prj_ob_btt (we_window_t * f, int sw)
 {
     FLWND *fw;
 
@@ -1157,31 +1157,31 @@ e_prj_ob_btt (We_window * f, int sw)
 }
 
 int
-e_prj_ob_file (We_window * f)
+e_prj_ob_file (we_window_t * f)
 {
     return (e_prj_ob_btt (f, 0));
 }
 
 int
-e_prj_ob_varb (We_window * f)
+e_prj_ob_varb (we_window_t * f)
 {
     return (e_prj_ob_btt (f, 1));
 }
 
 int
-e_prj_ob_inst (We_window * f)
+e_prj_ob_inst (we_window_t * f)
 {
     return (e_prj_ob_btt (f, 2));
 }
 
 int
-e_prj_ob_svas (We_window * f)
+e_prj_ob_svas (we_window_t * f)
 {
     return (e_project_name (f) ? 0 : AltS);
 }
 
 int
-e_project_options (We_window * f)
+e_project_options (we_window_t * f)
 {
     int ret;
     W_OPTSTR *o = e_init_opt_kst (f);
@@ -1252,7 +1252,7 @@ e_project_options (We_window * f)
 }
 
 int
-e_run_c_options (We_window * f)
+e_run_c_options (we_window_t * f)
 {
     int i, j, ret;
     W_OPTSTR *o = e_init_opt_kst (f);
@@ -1346,7 +1346,7 @@ e_run_c_options (We_window * f)
 }
 
 int
-e_run_options (We_window * f)
+e_run_options (we_window_t * f)
 {
     int i, n, xa = 48, ya = 2, num = 2 + e_prog.num;
     OPTK *opt = malloc (num * sizeof (OPTK));
@@ -1435,7 +1435,7 @@ e_run_options (We_window * f)
 }
 
 int
-e_project_name (We_window * f)
+e_project_name (we_window_t * f)
 {
     char str[80];
 
@@ -1455,7 +1455,7 @@ e_project_name (We_window * f)
 }
 
 int
-e_project (We_window * f)
+e_project (we_window_t * f)
 {
     ECNT *cn = f->ed;
     int i;
@@ -1479,7 +1479,7 @@ e_project (We_window * f)
 }
 
 int
-e_show_project (We_window * f)
+e_show_project (we_window_t * f)
 {
     ECNT *cn = f->ed;
     int i;
@@ -1498,7 +1498,7 @@ e_show_project (We_window * f)
 }
 
 int
-e_cl_project (We_window * f)
+e_cl_project (we_window_t * f)
 {
     ECNT *cn = f->ed;
     int i;
@@ -1520,7 +1520,7 @@ e_cl_project (We_window * f)
 }
 
 int
-e_p_add_item (We_window * f)
+e_p_add_item (we_window_t * f)
 {
     ECNT *cn = f->ed;
     int i;
@@ -1546,7 +1546,7 @@ e_p_add_item (We_window * f)
 }
 
 int
-e_p_del_item (We_window * f)
+e_p_del_item (we_window_t * f)
 {
     ECNT *cn = f->ed;
     int i;
@@ -1565,7 +1565,7 @@ e_p_del_item (We_window * f)
 }
 
 int
-e_make_library (char *library, char *ofile, We_window * f)
+e_make_library (char *library, char *ofile, we_window_t * f)
 {
     char *ar_arg[5] = { NULL, NULL, NULL, NULL, NULL };
     int ret = 0, file = -1;
@@ -1705,7 +1705,7 @@ print_to_end_of_buffer (BUFFER * b, char *str, int wrap_limit)
 
 /* print to message window */
 int
-e_d_p_message (char *str, We_window * f, int sw)
+e_d_p_message (char *str, we_window_t * f, int sw)
 {
     ECNT *cn = f->ed;
     BUFFER *b;
@@ -1749,7 +1749,7 @@ e_d_p_message (char *str, We_window * f, int sw)
 
 #if MOUSE
 int
-e_d_car_mouse (We_window * f)
+e_d_car_mouse (we_window_t * f)
 {
     extern struct mouse e_mouse;
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
@@ -1767,7 +1767,7 @@ e_d_car_mouse (We_window * f)
 #endif
 
 int
-e_exec_make (We_window * f)
+e_exec_make (we_window_t * f)
 {
     ECNT *cn = f->ed;
     char **arg = NULL;
@@ -1816,7 +1816,7 @@ e_exec_make (We_window * f)
 }
 
 int
-e_run_sh (We_window * f)
+e_run_sh (we_window_t * f)
 {
     int ret, len = strlen (f->datnam);
     char estr[128];
@@ -1875,7 +1875,7 @@ e_interpr_var (char *string)
 }
 
 char *
-e_expand_var (char *string, We_window * f)
+e_expand_var (char *string, we_window_t * f)
 {
     int i, j = 0, k, len, kl = 0;
     char *var = NULL, *v_string, *tmp;
@@ -2003,7 +2003,7 @@ e_expand_var (char *string, We_window * f)
 }
 
 int
-e_read_var (We_window * f)
+e_read_var (we_window_t * f)
 {
     struct proj_var **tmp;
     FILE *fp;
@@ -2132,7 +2132,7 @@ e_read_var (We_window * f)
 }
 
 int
-e_install (We_window * f)
+e_install (we_window_t * f)
 {
     char *tp, *sp, *string, *tmp, text[256];
     FILE *fp;
@@ -2289,7 +2289,7 @@ e_p_get_var (char *string)
 }
 
 int
-e_c_project (We_window * f)
+e_c_project (we_window_t * f)
 {
     ECNT *cn = f->ed;
     struct dirfile *df = NULL;
@@ -2630,7 +2630,7 @@ e_find_var (char *var)
 ****/
 
 int
-e_rel_brkwtch (We_window * f)
+e_rel_brkwtch (we_window_t * f)
 {
     int i;
 
@@ -2657,7 +2657,7 @@ e_rel_brkwtch (We_window * f)
   and BREAKPOINTS.
 ****/
 struct dirfile **
-e_make_prj_opt (We_window * f)
+e_make_prj_opt (we_window_t * f)
 {
     int i, j, ret;
     char **tmp, *sp, *tp, text[256];
@@ -2946,7 +2946,7 @@ freedfN (struct dirfile **df, int n)
 }
 
 int
-e_wrt_prj_fl (We_window * f)
+e_wrt_prj_fl (we_window_t * f)
 {
     int i, len;
     FILE *fp;
@@ -3041,7 +3041,7 @@ e_wrt_prj_fl (We_window * f)
 }
 
 int
-e_p_update_prj_fl (We_window * f)
+e_p_update_prj_fl (we_window_t * f)
 {
     if (!e_make_prj_opt (f))
         return (-1);
@@ -3127,7 +3127,7 @@ e_p_del_df (FLWND * fw, int sw)
 }
 
 int
-e_p_mess_win (char *header, int argc, char **argv, view ** pic, We_window * f)
+e_p_mess_win (char *header, int argc, char **argv, view ** pic, we_window_t * f)
 {
     char *tmp = malloc (sizeof (char));
     int i, ret;
@@ -3171,7 +3171,7 @@ e_p_red_buffer (BUFFER * b)
 }
 
 int
-e_new_message (We_window * f)
+e_new_message (we_window_t * f)
 {
     int i;
 
@@ -3191,7 +3191,7 @@ e_new_message (We_window * f)
 }
 
 int
-e_p_show_messages (We_window * f)
+e_p_show_messages (we_window_t * f)
 {
     int i;
 
