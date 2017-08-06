@@ -62,7 +62,7 @@ typedef struct PNT
     int y;
 } POINT;
 
-typedef struct CLR
+typedef struct we_color_struct
 {
     int f;
     int b;
@@ -115,7 +115,7 @@ typedef struct frb
     we_color_t ck; /* constants in program */
     we_color_t cp; /* preprocessor command */
     we_color_t cc; /* comments in program */
-    char dc;  /* desktop fill character */
+    char dc;       /* desktop fill character */
     char ws;
 } we_colorset_t;
 
