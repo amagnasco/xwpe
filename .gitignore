@@ -1,5 +1,10 @@
 Makefile
 *Makefile.in
+aclocal.m4
+depcomp
+configure
+missing
+install-sh
 configure.scan
 config.status
 config.h
