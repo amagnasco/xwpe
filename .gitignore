@@ -1,5 +1,6 @@
 Makefile
 *Makefile.in
+config.h.in
 aclocal.m4
 depcomp
 configure
