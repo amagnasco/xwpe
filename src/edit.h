@@ -56,7 +56,7 @@ struct dirfile
     char** name;  /* the list elements */
 };
 
-typedef struct PNT
+typedef struct we_point_struct
 {
     int x;
     int y;
@@ -76,7 +76,7 @@ typedef struct view_struct
     we_point_t e;
 } we_view_t;
 
-typedef struct frb
+typedef struct we_colorset_struct
 {
     we_color_t er;   /* editor window border and text */
     we_color_t es;   /* special signs (maximize/kill) on editor window border */
@@ -141,10 +141,10 @@ typedef struct STR
 
 typedef struct BFF
 {
-    STRING* bf;  /* bf[i] is the i-th line of the buffer */
-    we_point_t b;     /* cursor coordinates in window (at least in some contexts) */
-    we_point_t mx;    /* maximum column and line */
-    int mxlines; /* number of lines */
+    STRING* bf;    /* bf[i] is the i-th line of the buffer */
+    we_point_t b;  /* cursor coordinates in window (at least in some contexts) */
+    we_point_t mx; /* maximum column and line */
+    int mxlines;   /* number of lines */
     int cl, clsv;
     Undo *ud, *rd;
     struct CNT* cn;
@@ -213,7 +213,7 @@ typedef struct FNST
     we_point_t se;
     char zoom;
     we_colorset_t* fb; /* color scheme */
-    we_view_t* pic;	 /* picture save below the box ??? */
+    we_view_t* pic;    /* picture save below the box ??? */
     char* dirct;       /* working/actual directory */
     char* datnam;      /* window header text */
     int winnum;

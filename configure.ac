@@ -3,7 +3,8 @@
 #
 # Normally use autoreconf or autoreconf -i -v to process this file
 # autoreconf calls all necessary autotools including autoconf, autoheader, automake etc.
-# if autoreconf runs successfully, you can use ./configure to finalize the configuration.
+# if autoreconf runs successfully, you can use ../configure from the build directory 
+# to finalize the configuration.
 # However, mark any warning autoreconf gives. They are not to be ignored.
 #
 
@@ -61,7 +62,8 @@ AC_CHECK_LIB([z], [main])
 # Ubuntu does not install the dynamic library for check, but check and check_pic
 # The search statement below checks for check_pic first, because libcheck.a does
 # not contain symbols.
-AC_SEARCH_LIBS([tcase_create], [check_pic check])
+AC_SEARCH_LIBS([tcase_create], [check_pic check],\
+			   [], [], [-lrt -lpthread -lm])
 
 # Check printer command: empty if necessary
 AC_CHECK_PROG([PRNTCMD], [lpr], [lpr])	# preferred value for printer

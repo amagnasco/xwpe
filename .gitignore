@@ -1,4 +1,5 @@
 Makefile
+*Makefile.in
 configure.scan
 config.status
 config.h
