@@ -59,17 +59,17 @@ AC_CHECK_LIB([ICE], [main])
 AC_CHECK_LIB([gpm], [main])
 AC_CHECK_LIB([z], [main])
 AC_CHECK_LIB([m], [floor], \
-			 [], [AC_MSG_ERROR([We need the math library])], [])
+			 , [AC_MSG_ERROR([We need the math library])], [])
 AC_CHECK_LIB([rt], [timer_create], \
-			 [], [AC_MSG_ERROR([We need the rt library for `make check`])], [])
+			 , [AC_MSG_ERROR([We need the rt library for `make check`])], [])
 AC_CHECK_LIB([pthread], [__pthread_register_cancel], \
-			 [], [AC_MSG_ERROR([We need the pthread library for `make check`])], [])
+			 , [AC_MSG_ERROR([We need the pthread library for `make check`])], [])
 # AC_CHECK_LIB([check], [tcase_create])
 # Ubuntu does not install the dynamic library for check, but check and check_pic
 # The search statement below checks for check_pic first, because libcheck.a does
 # not contain symbols.
 AC_SEARCH_LIBS([tcase_create], [check_pic check],\
-			   [], [AC_MSG_ERROR([We need check library for `make check`])], [-lrt -lpthread -lm])
+			   , [AC_MSG_ERROR([We need check library for `make check`])], [-lrt -lpthread -lm])
 
 # Check printer command: empty if necessary
 AC_CHECK_PROG([PRNTCMD], [lpr], [lpr])	# preferred value for printer
