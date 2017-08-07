@@ -530,7 +530,10 @@ WpeHandleFileManager (ECNT * cn)
     we_screen *se = NULL;
     int c = AltC, i, j, t;
     int winnum = 0, nco, svmode = -1, fmode, len, start;
-    int g[4], cold = AltN;
+    int cold = AltN;
+#if MOUSE
+    int g[4];
+#endif
     char filen[128], *ftmp, *dtp = NULL, *ftp = NULL, *svdir = NULL;
     char *dirtmp = NULL;
     we_view_t *outp = NULL;

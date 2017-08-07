@@ -462,6 +462,7 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
         if ((c = e_getch ()) < 0)
             c = fl_wnd_mouse (sw, c, fw);
 #else
+        UNUSED(sw);
         c = e_getch ();
 #endif
         if (fw->df->nr_files <= 0)
@@ -833,7 +834,7 @@ e_i_fopen (char *path, char *stat)
         printf ("System call command %s failed with code 127\n%s\n%s\n%s\n",
                 command,
                 "This could mean one of two things:",
-                "1. No shell was available (should never happen unless using chroot)"
+                "1. No shell was available (should never happen unless using chroot)",
                 "2. The command returned 127.\n");
     }
     else if (ret != 0)

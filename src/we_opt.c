@@ -161,7 +161,10 @@ e_repaint_desk (we_window_t * f)
 {
     /* int j; */
     ECNT *cn = f->ed;
-    int i, g[4];
+    int i;
+#if MOUSE
+    int g[4];
+#endif
 #ifndef NO_XWINDOWS
     extern we_view_t *e_X_l_pic;
     we_view_t *sv_pic = NULL, *nw_pic = NULL;

@@ -2235,9 +2235,13 @@ e_mouse_bar (int x, int y, int n, int sw, int frb)
         e_pr_char (x, y + n - 1, MCD, frb);
         for (; n > 2; n--)
             e_pr_char (x, y + n - 2, MCI, frb);
+#if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
         e_make_xrect (x, y + 1, x, y + sv - 2, 0);
         e_make_xrect (x, y, x, y, 0);
         e_make_xrect (x, y + sv - 1, x, y + sv - 1, 0);
+#else
+        UNUSED(sv);
+#endif
     }
     else
     {

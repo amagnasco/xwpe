@@ -42,7 +42,10 @@ main (int argc, char **argv)
 {
     we_colorset_t *fb;
     ECNT *cn;
-    int i, err = 0, g[4];
+    int i, err = 0;
+#if MOUSE
+    int g[4];
+#endif
     int so = 0, sd = 1;
     char *tp;
 
