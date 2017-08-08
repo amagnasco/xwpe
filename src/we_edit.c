@@ -2379,10 +2379,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
             str[i] = b->bf[y].s[x + i];
         next->u.pt = str;
 
-        /* !!! obsolete !!!
-          next->a.y = b->cn->fd.rn;
-        */
-        next->a.y = b->f->fd.rn;
+        next->a.y = b->cn->fd.rn;
 
     }
     else if (sw == 'l')
