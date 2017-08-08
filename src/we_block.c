@@ -1211,16 +1211,16 @@ e_find (we_window_t * window)
   occurrences found and the number actually replaced.
 */
 int
-e_replace (we_window_t * window)
+e_replace (we_window_t *window)
 {
     we_screen *screen;
     BUFFER *buffer;
     FIND *find = &(window->ed->fd);
     int i, ret, c, rep = 0, found = 0;
     char strTemp[80];
-    W_OPTSTR *optstr = e_init_opt_kst (window);
+    W_OPTSTR *replace_dialog = e_init_opt_kst (window);
 
-    if (!optstr)
+    if (!replace_dialog)
         return (-1);
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);
     if (i <= 0)
@@ -1234,44 +1234,44 @@ e_replace (we_window_t * window)
         strcpy (find->search, strTemp);
         find->sn = strlen (find->search);
     }
-    optstr->xa = 7;
-    optstr->ya = 3;
-    optstr->xe = 67;
-    optstr->ye = 17;
-    optstr->bgsw = 0;
-    optstr->name = "Replace";
-    optstr->crsw = AltO;
-    e_add_txtstr (4, 6, "Options:", optstr);
-    e_add_txtstr (32, 6, "Scope:", optstr);
+    replace_dialog->xa = 7;
+    replace_dialog->ya = 3;
+    replace_dialog->xe = 67;
+    replace_dialog->ye = 17;
+    replace_dialog->bgsw = 0;
+    replace_dialog->name = "Replace";
+    replace_dialog->crsw = AltO;
+    e_add_txtstr (4, 6, "Options:", replace_dialog);
+    e_add_txtstr (32, 6, "Scope:", replace_dialog);
     e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
-                 &window->ed->sdf, optstr);
+                 &window->ed->sdf, replace_dialog);
     e_add_wrstr (4, 4, 18, 4, 35, 128, 0, AltN, "New Text:", find->replace,
-                 &window->ed->rdf, optstr);
-    e_add_sswstr (5, 7, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", optstr);
-    e_add_sswstr (5, 8, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", optstr);
-    e_add_sswstr (5, 9, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", optstr);
-    e_add_sswstr (5, 10, 0, AltP, 1, "Prompt on Replace ", optstr);
-    e_add_pswstr (0, 33, 7, 0, AltF, 0, "Forward from Cursor", optstr);
+                 &window->ed->rdf, replace_dialog);
+    e_add_sswstr (5, 7, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", replace_dialog);
+    e_add_sswstr (5, 8, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", replace_dialog);
+    e_add_sswstr (5, 9, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", replace_dialog);
+    e_add_sswstr (5, 10, 0, AltP, 1, "Prompt on Replace ", replace_dialog);
+    e_add_pswstr (0, 33, 7, 0, AltF, 0, "Forward from Cursor", replace_dialog);
     e_add_pswstr (0, 33, 8, 0, AltB, find->sw & 4 ? 1 : 0,
-                  "Back from Cursor   ", optstr);
+                  "Back from Cursor   ", replace_dialog);
     e_add_pswstr (0, 33, 9, 0, AltG, find->sw & 2 ? 1 : 0,
-                  "Global Replace     ", optstr);
+                  "Global Replace     ", replace_dialog);
     if (screen->mark_end.y)
         e_add_pswstr (0, 33, 10, 0, AltS, find->sw & 10 ? 1 : 0,
-                      "Selected Text      ", optstr);
-    e_add_bttstr (10, 12, 1, AltO, " Ok ", NULL, optstr);
-    e_add_bttstr (41, 12, -1, WPE_ESC, "Cancel", NULL, optstr);
-    e_add_bttstr (22, 12, 7, AltA, "Change All", NULL, optstr);
-    ret = e_opt_kst (optstr);
+                      "Selected Text      ", replace_dialog);
+    e_add_bttstr (10, 12, 1, AltO, " Ok ", NULL, replace_dialog);
+    e_add_bttstr (41, 12, -1, WPE_ESC, "Cancel", NULL, replace_dialog);
+    e_add_bttstr (22, 12, 7, AltA, "Change All", NULL, replace_dialog);
+    ret = e_opt_kst (replace_dialog);
     if (ret != WPE_ESC)
     {
-        strcpy (find->search, optstr->wstr[0]->txt);
+        strcpy (find->search, replace_dialog->wstr[0]->txt);
         find->sn = strlen (find->search);
-        strcpy (find->replace, optstr->wstr[1]->txt);
+        strcpy (find->replace, replace_dialog->wstr[1]->txt);
         find->rn = strlen (find->replace);
-        find->sw = 1 + (optstr->sstr[0]->num << 7) + (optstr->sstr[1]->num << 6)
-                   + (optstr->sstr[2]->num << 5) + (optstr->sstr[3]->num << 4);
-        switch (optstr->pstr[0]->num)
+        find->sw = 1 + (replace_dialog->sstr[0]->num << 7) + (replace_dialog->sstr[1]->num << 6)
+                   + (replace_dialog->sstr[2]->num << 5) + (replace_dialog->sstr[3]->num << 4);
+        switch (replace_dialog->pstr[0]->num)
         {
         case 2:
             find->sw |= 2;
@@ -1290,7 +1290,7 @@ e_replace (we_window_t * window)
             break;
         }
     }
-    freeostr (optstr);
+    freeostr (replace_dialog);
     if (ret != WPE_ESC)
     {
         while (e_repeat_search (window) && ((ret == AltA) || (!found)))

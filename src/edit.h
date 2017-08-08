@@ -218,17 +218,17 @@ typedef struct FNST
     char* datnam;      /* window header text */
     int winnum;
     char ins;
-    char dtmd; /* (See DTMD_* defines) */
+    char dtmd;			/* (See DTMD_* defines) */
     int save;
     char* hlp_str;
-    WOPT* blst; /* status line text */
-    int nblst;  /* no of options in the status line */
+    WOPT* blst;			/* status line text */
+    int nblst;			/* no of options in the status line */
     int filemode, flg;
     int* c_sw;
     struct wpeSyntaxRule* c_st;
-    struct CNT* ed; /* control structure */
-    struct BFF* b;
-    struct SCHRM* s;
+    struct CNT* ed;		/* edit control structure */
+    struct BFF* b;		/* Buffer */
+    struct SCHRM* s;	/* screen */
     FIND fd;
 } we_window_t;
 
@@ -326,11 +326,18 @@ typedef struct
 
 typedef struct
 {
-    int xa, ya, xe, ye, bgsw, crsw;
-    int frt, frs, ftt, fts, fst, fss, fsa, fbt;
-    int fbs, fbz, fwt, fws;
+    int xa, ya;			/* Upperleft corner */
+    int xe, ye;			/* Lowerright corner */
+    int bgsw;
+    int crsw;
+    int frt, frs;
+    int ftt, fts;
+    int fst, fss;
+    int fsa, fbt;
+    int fbs, fbz;
+    int fwt, fws;
     int tn, sn, pn, bn, wn, nn;
-    char* name;
+    char* name;			/* name of the dialog: "Replace" or "Find" */
     we_view_t* pic;
     W_O_TXTSTR** tstr;
     W_O_SSWSTR** sstr;
