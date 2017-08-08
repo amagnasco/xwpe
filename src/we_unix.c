@@ -437,7 +437,7 @@ static int e_bool_exit = 0;
 void
 e_err_save ()
 {
-    ECNT *cn = WpeEditor;
+    we_control_t *cn = WpeEditor;
     int i;
     unsigned long maxname;
     we_window_t *f;
@@ -802,7 +802,7 @@ e_file_info (char *filen, char *str, int *num, int sw)
 }
 
 void
-ini_repaint (ECNT * cn)
+ini_repaint (we_control_t * cn)
 {
     e_cls (cn->fb->df.fb, cn->fb->dc);
     e_ini_desk (cn);
@@ -815,12 +815,12 @@ end_repaint ()
 }
 
 int
-e_recover (ECNT * cn)
+e_recover (we_control_t * cn)
 {
     struct dirfile *files;
     we_window_t *f = NULL;
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int i;
 
     files = e_find_files ("*.ESV", 1);

@@ -222,7 +222,7 @@ int
 e_saveall (we_window_t * f)
 {
     int i, ret = 0;
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
 
     for (i = cn->mxedt; i > 0; i--)
     {
@@ -244,7 +244,7 @@ e_quit (we_window_t * f)
 #if  MOUSE
     int g[4];
 #endif
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
 #ifdef DEBUGGER
     e_d_quit_basic (f);
 #endif

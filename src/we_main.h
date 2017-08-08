@@ -12,10 +12,10 @@
 #include "we_unix.h"
 #include <stdlib.h>
 
-void e_ini_desk(ECNT* cn);
+void e_ini_desk(we_control_t* cn);
 void we_colorset_Init(we_colorset_t* fb);
 we_colorset_t* e_ini_farbe();
-int e_switch_blst(ECNT* cn);
+int e_switch_blst(we_control_t* cn);
 void e_free_find(FIND* fd);
 
 extern char* e_msg[];

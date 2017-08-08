@@ -83,7 +83,7 @@ WpeReservedWordCompare (const void *x, const void *y)
       cn           (In)  Part of old code needed for e_error
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 void
-WpeSyntaxReadFile (ECNT * cn)
+WpeSyntaxReadFile (we_control_t * cn)
 {
     FILE *syntax_file;
     WpeSyntaxExt *new_syntax;

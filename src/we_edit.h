@@ -13,22 +13,22 @@
 #include "we_wind.h"
 
 /*   we_edit.c   */
-int e_edit(ECNT* cn, char* filename);
-int e_eingabe(ECNT* e);
-int e_tst_cur(int c, ECNT* e);
-int e_tst_fkt(int c, ECNT* e);
+int e_edit(we_control_t* cn, char* filename);
+int e_eingabe(we_control_t* e);
+int e_tst_cur(int c, we_control_t* e);
+int e_tst_fkt(int c, we_control_t* e);
 int e_ctrl_k(we_window_t* f);
 int e_ctrl_o(we_window_t* f);
 int e_tst_dfkt(we_window_t* f, int c);
 int e_blk(int anz, int xa, int ya, int col);
-int e_car_ret(BUFFER* b, we_screen* s);
+int e_car_ret(BUFFER* b, we_screen_t* s);
 void e_cursor(we_window_t* f, int sw);
-int e_del_line(int yd, BUFFER* b, we_screen* s);
-int e_del_nchar(BUFFER* b, we_screen* s, int x, int y, int n);
-int e_ins_nchar(BUFFER* b, we_screen* sch, unsigned char* s, int xa, int ya,
+int e_del_line(int yd, BUFFER* b, we_screen_t* s);
+int e_del_nchar(BUFFER* b, we_screen_t* s, int x, int y, int n);
+int e_ins_nchar(BUFFER* b, we_screen_t* sch, unsigned char* s, int xa, int ya,
                 int n);
 int e_new_line(int yd, BUFFER* b);
-int e_put_char(int c, BUFFER* b, we_screen* s);
+int e_put_char(int c, BUFFER* b, we_screen_t* s);
 int e_su_lblk(int xa, unsigned char* s);
 int e_su_rblk(int xa, unsigned char* s);
 void e_zlsplt(we_window_t* f);

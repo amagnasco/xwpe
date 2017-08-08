@@ -26,7 +26,7 @@ void e_pr_x_col_kasten(int xa, int ya, int x, int y, we_window_t* f, int sw);
 void e_pr_ed_beispiel(int xa, int ya, we_window_t* f, int sw, int md);
 int e_opt_save(we_window_t* f);
 int e_save_opt(we_window_t* f);
-int e_opt_read(ECNT* cn);
+int e_opt_read(we_control_t* cn);
 int e_add_arguments(char* str, char* head, we_window_t* f, int n, int sw,
                     struct dirfile** df);
 W_O_TXTSTR** e_add_txtstr(int x, int y, char* txt, W_OPTSTR* o);

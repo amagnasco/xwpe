@@ -163,7 +163,7 @@ e_compile (we_window_t * f)
 int
 e_p_make (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     char ostr[128], estr[128], mstr[80];
     int len, i, file = -1;
     struct stat cbuf[1], obuf[1];
@@ -252,7 +252,7 @@ e_p_make (we_window_t * f)
 int
 e_run (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b;
     char estr[256];
     int len, ret;
@@ -319,7 +319,7 @@ e_run (we_window_t * f)
 int
 e_comp (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     we_view_t *pic = NULL;
     char **arg = NULL, fstr[128], ostr[128];
     int i, file = -1, len, argc;
@@ -494,7 +494,7 @@ int
 e_p_exec (int file, we_window_t * f, we_view_t * pic)
 {
     UNUSED (file);
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b = cn->f[cn->mxedt]->b;
     int ret = 0, i = 0, is, fd, stat_loc;
     char str[128];
@@ -565,7 +565,7 @@ e_p_exec (int file, we_window_t * f, we_view_t * pic)
 int
 e_show_error (int n, we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b = cn->f[cn->mxedt]->b;
     int i, j, bg = 0;
     char *filename;
@@ -688,7 +688,7 @@ int
 e_make_error_list (we_window_t * f)
 {
     char file[256];
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b = cn->f[cn->mxedt]->b;
     int i, j, k = 0, ret = 0;
     char *spt;
@@ -883,7 +883,7 @@ e_check_c_file (char *name)
 #ifdef CHECKHEADER
 
 int
-e_check_header (char *file, M_TIME otime, ECNT * cn, int sw)
+e_check_header (char *file, M_TIME otime, we_control_t * cn, int sw)
 {
     struct stat cbuf[1];
     FILE *fp;
@@ -1024,7 +1024,7 @@ e_add_arg (char ***arg, char *str, int n, int argc)
 }
 
 int
-e_ini_prog (ECNT * cn)
+e_ini_prog (we_control_t * cn)
 {
     UNUSED (cn);
     int i;
@@ -1457,7 +1457,7 @@ e_project_name (we_window_t * f)
 int
 e_project (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
     if (!e_project_name (f))
     {
@@ -1481,7 +1481,7 @@ e_project (we_window_t * f)
 int
 e_show_project (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 
     for (i = cn->mxedt;
@@ -1500,7 +1500,7 @@ e_show_project (we_window_t * f)
 int
 e_cl_project (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 
     if (!e_prog.project)
@@ -1522,7 +1522,7 @@ e_cl_project (we_window_t * f)
 int
 e_p_add_item (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 
     for (i = cn->mxedt;
@@ -1548,7 +1548,7 @@ e_p_add_item (we_window_t * f)
 int
 e_p_del_item (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 
     for (i = cn->mxedt;
@@ -1604,7 +1604,7 @@ e_make_library (char *library, char *ofile, we_window_t * f)
 }
 
 int
-e_system (char *estr, ECNT * cn)
+e_system (char *estr, we_control_t * cn)
 {
 #if MOUSE
     int g[4];
@@ -1707,7 +1707,7 @@ print_to_end_of_buffer (BUFFER * b, char *str, int wrap_limit)
 int
 e_d_p_message (char *str, we_window_t * f, int sw)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b;
     int i;
 
@@ -1753,7 +1753,7 @@ e_d_car_mouse (we_window_t * f)
 {
     extern struct mouse e_mouse;
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-    we_screen *s = f->ed->f[f->ed->mxedt]->s;
+    we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
 
     if (e_mouse.y - f->a.y + s->c.y - 1 == b->b.y)
         return (WPE_CR);
@@ -1769,7 +1769,7 @@ e_d_car_mouse (we_window_t * f)
 int
 e_exec_make (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     char **arg = NULL;
     int i, file, argc;
 
@@ -2291,7 +2291,7 @@ e_p_get_var (char *string)
 int
 e_c_project (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     struct dirfile *df = NULL;
     char **arg;
     int i, j, k, file = -1, len, elen, argc, libsw = 0, exlib = 0, sccs = 0;

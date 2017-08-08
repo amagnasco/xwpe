@@ -32,12 +32,12 @@ int e_compstr(char* a, char* b);
 struct dirfile* e_find_files(char* sufile, int sw);
 struct dirfile* e_find_dir(char* sufile, int sw);
 char* e_file_info(char* filen, char* str, int* num, int sw);
-void ini_repaint(ECNT* cn);
+void ini_repaint(we_control_t* cn);
 void end_repaint(void);
 int e_frb_t_menue(int sw, int xa, int ya, we_window_t* f, int md);
 void e_pr_t_col_kasten(int xa, int ya, int x, int y, we_window_t* f, int sw);
 int e_ini_unix(int* argc, char** argv);
-int e_recover(ECNT* cn);
+int e_recover(we_control_t* cn);
 int e_ini_schirm(int argc, char** argv);
 
 extern int (*fk_u_locate)(int x, int y);

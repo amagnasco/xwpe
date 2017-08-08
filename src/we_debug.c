@@ -123,7 +123,7 @@ extern char *e_p_msg[];
 int
 e_deb_inp (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int c = 0;
 
     f = cn->f[cn->mxedt];
@@ -449,7 +449,7 @@ e_d_dum_read ()
 int
 e_d_p_exec (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b;
     int ret, i, is, j;
     char str[512];
@@ -636,7 +636,7 @@ e_d_quit_basic (we_window_t * f)
 int
 e_d_quit (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
     e_d_quit_basic (f);
     e_d_p_message (e_d_msg[ERR_ENDDEBUG], f, 1);
@@ -671,7 +671,7 @@ e_d_add_watch (char *str, we_window_t * f)
 int
 e_remove_all_watches (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i, n;
 
     if (e_d_nwtchs < 1)
@@ -698,7 +698,7 @@ e_remove_all_watches (we_window_t * f)
 int
 e_delete_watches (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b = cn->f[cn->mxedt]->b;
     int n;
 
@@ -801,7 +801,7 @@ e_edit_watches (we_window_t * f)
 int
 e_d_p_watches (we_window_t * f, int sw)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b;
     int iw, k = 0, l, ret;
     char str1[256], *str;		/* is 256 always large enough? */
@@ -1025,9 +1025,9 @@ e_deb_stack (we_window_t * f)
 int
 e_d_p_stack (we_window_t * f, int sw)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int is, i, j, k, l, ret;
     char str[256];
 
@@ -1258,7 +1258,7 @@ e_brk_schirm (we_window_t * f)
     int i;
     int n;
 
-    we_screen *s = f->s;
+    we_screen_t *s = f->s;
     s->brp = realloc (s->brp, sizeof (int));
     s->brp[0] = 0;
     for (i = 0; i < e_d_nbrpts; i++)
@@ -1357,7 +1357,7 @@ e_d_reinit_brks (we_window_t * f, char *prj)
 int
 e_brk_recalc (we_window_t * f, int start, int len)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b;
     int n, rend, count, yline;
     int *br_lines;
@@ -1424,7 +1424,7 @@ e_breakpoint (we_window_t * f)
 int
 e_remove_breakpoints (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 
     if (e_d_swtch)
@@ -1655,8 +1655,8 @@ e_mk_brk_main (we_window_t * f, int sw)
 int
 e_make_breakpoint (we_window_t * f, int sw)
 {
-    ECNT *cn = f->ed;
-    we_screen *s = cn->f[cn->mxedt]->s;
+    we_control_t *cn = f->ed;
+    we_screen_t *s = cn->f[cn->mxedt]->s;
     BUFFER *b = cn->f[cn->mxedt]->b;
     int ret, i;
     char eing[128], str[256];
@@ -2130,7 +2130,7 @@ e_exec_deb (we_window_t * f, char *prog)
 int
 e_start_debug (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i, file;
     char estr[128];
 
@@ -2220,7 +2220,7 @@ e_start_debug (we_window_t * f)
 int
 e_run_debug (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int kbdflgs, ret;
 
     if (e_d_swtch < 1 && (ret = e_start_debug (f)) < 0)
@@ -2257,7 +2257,7 @@ e_run_debug (we_window_t * f)
 int
 e_deb_run (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     char eing[256];
     int ret, len, prsw = 0;
 
@@ -2412,7 +2412,7 @@ e_d_step_next (we_window_t * f, int sw)
 int
 e_d_goto_func (we_window_t * f, int flag)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b = cn->f[cn->mxedt]->b;
     int ret = 0, main_brk = 0;
     char str[128];
@@ -2985,9 +2985,9 @@ e_make_line_num2 (char *str, char *file)
 int
 e_d_goto_break (char *file, int line, we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     we_window_t ftmp;
     int i;
     char str[120];
@@ -3040,7 +3040,7 @@ e_d_goto_break (char *file, int line, we_window_t * f)
 int
 e_d_delbreak (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 
     for (i = cn->mxedt; i >= 0; i--)

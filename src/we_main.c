@@ -41,7 +41,7 @@ int
 main (int argc, char **argv)
 {
     we_colorset_t *fb;
-    ECNT *cn;
+    we_control_t *cn;
     int i, err = 0;
 #if MOUSE
     int g[4];
@@ -49,7 +49,7 @@ main (int argc, char **argv)
     int so = 0, sd = 1;
     char *tp;
 
-    if ((cn = (ECNT *) malloc (sizeof (ECNT))) == NULL)
+    if ((cn = (we_control_t *) malloc (sizeof (we_control_t))) == NULL)
     {
         printf (" Fatal Error: %s\n", e_msg[ERR_LOWMEM]);
         return 0;

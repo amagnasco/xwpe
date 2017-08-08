@@ -96,7 +96,7 @@ int WpeRenameLink (char *old, char *ln, char *fl, we_window_t * f);
 
 */
 int
-WpeCreateFileManager (int sw, ECNT * cn, char *dirct)
+WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
 {
     extern char *e_hlp_str[];
     extern WOPT *fblst, *rblst, *wblst, *xblst, *sblst, *ablst;
@@ -522,12 +522,12 @@ WpeSaveAsManager (we_window_t * f)
 
 /* File Manager Handler */
 int
-WpeHandleFileManager (ECNT * cn)
+WpeHandleFileManager (we_control_t * cn)
 {
     we_window_t *f = cn->f[cn->mxedt], *fe = NULL;
     FLBFFR *b = (FLBFFR *) f->b;
     BUFFER *be = NULL;
-    we_screen *se = NULL;
+    we_screen_t *se = NULL;
     int c = AltC, i, j, t;
     int winnum = 0, nco, svmode = -1, fmode, len, start;
     int cold = AltN;
@@ -1758,7 +1758,7 @@ WpeFileDirAttributes (char *filen, we_window_t * f)
                        - otherwise exit with "system error"
  */
 char *
-WpeGetCurrentDir (ECNT * cn)
+WpeGetCurrentDir (we_control_t * cn)
 {
     int allocate_size;
     char *current_dir = NULL, *check_dir, *dirtmp;
@@ -1906,7 +1906,7 @@ WpeAssemblePath (char *pth, struct dirfile *cd, struct dirfile *dd, int n,
 
 /* create tree structure up to working directory */
 struct dirfile *
-WpeCreateWorkingDirTree (int sw, ECNT * cn)
+WpeCreateWorkingDirTree (int sw, we_control_t * cn)
 {
     struct dirfile *df;
     char *buf;
@@ -2080,7 +2080,7 @@ WpeGetWastefile (char *file)
 }
 
 struct dirfile *
-WpeGraphicalFileList (struct dirfile *df, int sw, ECNT * cn)
+WpeGraphicalFileList (struct dirfile *df, int sw, we_control_t * cn)
 {
     struct dirfile *edf;
     char **name, **ename, *stmp, str[256];
@@ -2158,7 +2158,7 @@ WpeGraphicalFileList (struct dirfile *df, int sw, ECNT * cn)
 }
 
 struct dirfile *
-WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, ECNT * cn)
+WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, we_control_t * cn)
 {
     extern char *ctree[5];
     struct dirfile *edf;
@@ -3782,7 +3782,7 @@ extern struct dirfile **e_p_df;
 #endif
 
 int
-e_data_first (int sw, ECNT * cn, char *nstr)
+e_data_first (int sw, we_control_t * cn, char *nstr)
 {
     extern char *e_hlp_str[];
     extern WOPT *gblst, *oblst;
@@ -3973,7 +3973,7 @@ e_data_schirm (we_window_t * f)
 }
 
 int
-e_data_eingabe (ECNT * cn)
+e_data_eingabe (we_control_t * cn)
 {
     we_window_t *f = cn->f[cn->mxedt];
     FLWND *fw = (FLWND *) f->b;

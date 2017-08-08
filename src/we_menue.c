@@ -43,7 +43,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
     int i, c = 255, nold = n <= 0 ? 1 : n - 1;
     extern OPT opt[];
     extern char *e_hlp, *e_hlp_str[];
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     MENU *mainmenu = malloc (MENOPT * sizeof (MENU));
 
     for (i = 0; i < MENOPT; i++)

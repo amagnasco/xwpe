@@ -825,7 +825,7 @@ e_close_buffer (BUFFER * b)
 int
 e_close_window (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     we_window_t *f0 = f->ed->f[0];
     int c = 0;
     unsigned long maxname;
@@ -942,7 +942,7 @@ e_close_window (we_window_t * f)
 
 /*    Toggle among windows  */
 int
-e_rep_win_tree (ECNT * cn)
+e_rep_win_tree (we_control_t * cn)
 {
     int i;
 
@@ -964,7 +964,7 @@ e_rep_win_tree (ECNT * cn)
 void
 e_switch_window (int num, we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     we_window_t *ft;
     int n, i, te;
 
@@ -1023,7 +1023,7 @@ e_ed_zoom (we_window_t * f)
 int
 e_ed_cascade (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 
     if (cn->mxedt < 1)
@@ -1053,7 +1053,7 @@ e_ed_cascade (we_window_t * f)
 int
 e_ed_tile (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     we_point_t atmp[MAXEDT + 1];
     we_point_t etmp[MAXEDT + 1];
     int i, j, ni, nj;
@@ -1202,7 +1202,7 @@ void
 e_pr_line (int y, we_window_t * f)
 {
     BUFFER *b = f->b;
-    we_screen *s = f->s;
+    we_screen_t *s = f->s;
     int i, j, k, frb;
 #ifdef DEBUGGER
     int fsw = 0;
@@ -1555,7 +1555,7 @@ e_add_df (char *str, struct dirfile *df)
 int
 e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int ret, ye = ya + 6;
     int xe = xa + 21;
     FLWND *fw = malloc (sizeof (FLWND));
@@ -1680,7 +1680,7 @@ e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col, int csw)
 int
 e_mess_win (char *header, char *str, we_view_t ** pic, we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     extern int (*e_u_kbhit) (void);
 #if MOUSE
     extern struct mouse e_mouse;

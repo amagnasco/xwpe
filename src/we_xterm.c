@@ -993,7 +993,7 @@ e_x_system (const char *exe)
 int
 e_x_repaint_desk (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i, g[4];
     extern we_view_t *e_X_l_pic;
     we_view_t *sv_pic = NULL, *nw_pic = NULL;
@@ -1093,7 +1093,7 @@ int
 e_x_cp_X_to_buffer (we_window_t * f)
 {
     BUFFER *b0 = f->ed->f[0]->b;
-    we_screen *s0 = f->ed->f[0]->s;
+    we_screen_t *s0 = f->ed->f[0]->s;
     int i, j, k, n;
     unsigned char *str;
     XEvent report;
@@ -1191,7 +1191,7 @@ int
 e_x_paste_X_buffer (we_window_t * f)
 {
     BUFFER *b0 = f->ed->f[0]->b;
-    we_screen *s0 = f->ed->f[0]->s;
+    we_screen_t *s0 = f->ed->f[0]->s;
     int i, n;
     unsigned int j;
 

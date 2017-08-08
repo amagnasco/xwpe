@@ -41,7 +41,7 @@ BUFFER *e_p_w_buffer = NULL;
 
 /* open edit window */
 int
-e_edit (ECNT * cn, char *filename)
+e_edit (we_control_t * cn, char *filename)
 {
     extern char *e_hlp_str[];
     extern WOPT *eblst, *hblst, *mblst, *dblst;
@@ -127,7 +127,7 @@ e_edit (ECNT * cn, char *filename)
 
     if ((f->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->fb);
-    if ((f->s = (we_screen *) malloc (sizeof (we_screen))) == NULL)
+    if ((f->s = (we_screen_t *) malloc (sizeof (we_screen_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->fb);
     if ((f->b->bf = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->fb);
@@ -411,10 +411,10 @@ e_edit (ECNT * cn, char *filename)
 
 /*   keyboard output routine */
 int
-e_eingabe (ECNT * e)
+e_eingabe (we_control_t * e)
 {
     BUFFER *b = e->f[e->mxedt]->b;
-    we_screen *s = e->f[e->mxedt]->s;
+    we_screen_t *s = e->f[e->mxedt]->s;
     we_window_t *f = e->f[e->mxedt];
     int ret, c = 0;
     unsigned char cc;
@@ -573,11 +573,11 @@ weiter:
 /*              Interpretation of cursor keys
                      ( Primitive editor )                    */
 int
-e_tst_cur (int c, ECNT * e)
+e_tst_cur (int c, we_control_t * e)
 {
     we_window_t *f = e->f[e->mxedt];
     BUFFER *b = f->b;
-    we_screen *s = f->s;
+    we_screen_t *s = f->s;
 
     switch (c)
     {
@@ -820,7 +820,7 @@ e_tst_cur (int c, ECNT * e)
 
 /*   function key (F1-F12) evaluation, editor only */
 int
-e_tst_fkt (int c, ECNT * e)
+e_tst_fkt (int c, we_control_t * e)
 {
     extern OPT opt[];
     int i;
@@ -950,7 +950,7 @@ int
 e_ctrl_k (we_window_t * window)
 {
     BUFFER *b = window->ed->f[window->ed->mxedt]->b;
-    we_screen *screen = window->ed->f[window->ed->mxedt]->s;
+    we_screen_t *screen = window->ed->f[window->ed->mxedt]->s;
     int c;
 
     c = toupper (e_getch ());
@@ -1052,7 +1052,7 @@ int
 e_ctrl_o (we_window_t * f)
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-    we_screen *s = f->ed->f[f->ed->mxedt]->s;
+    we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
     int i, c;
     unsigned char cc;
 
@@ -1396,7 +1396,7 @@ GetCharNumOfX (BUFFER * b, int line, int char_x)
 
 /* New version of auto-indent */
 int
-e_tab_a_ind (BUFFER * b, we_screen * s)
+e_tab_a_ind (BUFFER * b, we_screen_t * s)
 {
     int a_indent = b->cn->autoindent;
     int line, x, k, char_to_ins;
@@ -1515,7 +1515,7 @@ e_tab_a_ind (BUFFER * b, we_screen * s)
 }
 
 int
-e_del_a_ind (BUFFER * b, we_screen * s)
+e_del_a_ind (BUFFER * b, we_screen_t * s)
 {
     int i = 1, j = -1, k;
 
@@ -1571,7 +1571,7 @@ e_del_a_ind (BUFFER * b, we_screen * s)
 }
 
 int
-e_car_a_ind (BUFFER * b, we_screen * s)
+e_car_a_ind (BUFFER * b, we_screen_t * s)
 {
     int i, j, k;
     unsigned char *str;
@@ -1614,7 +1614,7 @@ e_blk (int anz, int xa, int ya, int col)
 
 /*       insert Carriage Return     */
 int
-e_car_ret (BUFFER * b, we_screen * s)
+e_car_ret (BUFFER * b, we_screen_t * s)
 {
     int len, i;
     len = b->bf[b->b.y].len;
@@ -1669,7 +1669,7 @@ void
 e_cursor (we_window_t * window, int sw)
 {
     BUFFER *b = window->b;
-    we_screen *s = window->s;
+    we_screen_t *s = window->s;
     static int iold = 0, jold = 0;
     int i, j;
 
@@ -1773,7 +1773,7 @@ e_cursor (we_window_t * window, int sw)
 
 /*   delete one line */
 int
-e_del_line (int yd, BUFFER * b, we_screen * s)
+e_del_line (int yd, BUFFER * b, we_screen_t * s)
 {
     int i;
 
@@ -1811,7 +1811,7 @@ e_del_line (int yd, BUFFER * b, we_screen * s)
 
 /*   delete N chars from buffer */
 int
-e_del_nchar (BUFFER * b, we_screen * s, int x, int y, int n)
+e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
 {
     we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
     int len, i, j;
@@ -1869,7 +1869,7 @@ e_del_nchar (BUFFER * b, we_screen * s, int x, int y, int n)
 
 /*   insert N chars in buffer */
 int
-e_ins_nchar (BUFFER * b, we_screen * sch, unsigned char *s, int xa, int ya,
+e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
              int n)
 {
     we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
@@ -2038,7 +2038,7 @@ e_new_line (int yd, BUFFER * b)
 
 /*     Overwriting of a character       */
 int
-e_put_char (int c, BUFFER * b, we_screen * s)
+e_put_char (int c, BUFFER * b, we_screen_t * s)
 {
     unsigned char cc = c;
 
@@ -2389,7 +2389,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         next->u.pt = b->bf[y].s;
     else if (sw == 'c' || sw == 'v')
     {
-        we_screen *s = b->cn->f[b->cn->mxedt]->s;
+        we_screen_t *s = b->cn->f[b->cn->mxedt]->s;
 
         next->a = s->mark_begin;
         next->e = s->mark_end;
@@ -2397,7 +2397,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
     else if (sw == 'd')
     {
         BUFFER *bn = malloc (sizeof (BUFFER));
-        we_screen *sn = malloc (sizeof (we_screen));
+        we_screen_t *sn = malloc (sizeof (we_screen_t));
         we_window_t *fn = malloc (sizeof (we_window_t));
         we_window_t *f = b->cn->f[b->cn->mxedt];
 
@@ -2456,7 +2456,7 @@ int
 e_make_rudo (we_window_t * f, int sw)
 {
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     Undo *ud;
     int i;
 

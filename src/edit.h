@@ -173,7 +173,7 @@ typedef struct SCHRM
     we_point_t da, de;
     int* brp;
 #endif
-} we_screen;
+} we_screen_t;
 
 typedef struct OPTION
 {
@@ -250,7 +250,7 @@ typedef struct CNT
     we_colorset_t* fb;
     we_window_t* f[MAXEDT + 1];
     char dtmd, autosv;
-} ECNT;
+} we_control_t;
 
 /* structure for the windows in the file manager ??? */
 typedef struct fl_wnd
@@ -351,7 +351,7 @@ typedef struct
 typedef struct wpeOptionSection
 {
     char* section;
-    int (*function)(ECNT* cn, char* section, char* option, char* value);
+    int (*function)(we_control_t* cn, char* section, char* option, char* value);
 } WpeOptionSection;
 
 #ifdef UNIX

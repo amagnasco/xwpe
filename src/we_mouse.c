@@ -166,7 +166,7 @@ int
 WpeMngMouseInFileManager (we_window_t * f)
 {
     extern struct mouse e_mouse;
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     FLBFFR *b = (FLBFFR *) f->b;
     int i, c = 0, by = 4;
 
@@ -290,7 +290,7 @@ int
 WpeMouseInFileDirList (int k, int sw, we_window_t * f)
 {
     extern struct mouse e_mouse;
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     FLBFFR *b = (FLBFFR *) f->b;
     int i;
     char tmp[256];
@@ -771,7 +771,7 @@ e_edt_mouse (int c, we_window_t * f)
 {
     int i, ret = 0;
     extern struct mouse e_mouse;
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
 
     if (e_mouse.y == 0)
         return (e_m1_mouse ());
@@ -935,7 +935,7 @@ e_edt_mouse (int c, we_window_t * f)
 }
 
 int
-e_mouse_cursor (BUFFER * b, we_screen * s, we_window_t * f)
+e_mouse_cursor (BUFFER * b, we_screen_t * s, we_window_t * f)
 {
     extern struct mouse e_mouse;
 
@@ -953,7 +953,7 @@ int
 e_ccp_mouse (int c, we_window_t * f)
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-    we_screen *s = f->ed->f[f->ed->mxedt]->s;
+    we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
 
     while (e_mshit () != 0)
         ;
@@ -977,7 +977,7 @@ e_cur_mouse (f)
 we_window_t *f;
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-    we_screen *s = f->ed->f[f->ed->mxedt]->s;
+    we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
     we_point_t bs;
     bs.x = b->b.x;
     bs.y = b->b.y;
@@ -1264,7 +1264,7 @@ we_window_t *f;
 {
     extern struct mouse e_mouse;
     FLWND *fw = (FLWND *) f->b;
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i, c = 0;
     if (e_mouse.y == 0)
         return (AltBl);

@@ -20,14 +20,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int WpeReadGeneral (ECNT * cn, char *section, char *option, char *value);
-int WpeWriteGeneral (ECNT * cn, char *section, FILE * opt_file);
-int WpeReadColor (ECNT * cn, char *section, char *option, char *value);
-int WpeWriteColor (ECNT * cn, char *section, FILE * opt_file);
-int WpeReadProgramming (ECNT * cn, char *section, char *option, char *value);
-int WpeWriteProgramming (ECNT * cn, char *section, FILE * opt_file);
-int WpeReadLanguage (ECNT * cn, char *section, char *option, char *value);
-int WpeWriteLanguage (ECNT * cn, char *section, FILE * opt_file);
+int WpeReadGeneral (we_control_t * cn, char *section, char *option, char *value);
+int WpeWriteGeneral (we_control_t * cn, char *section, FILE * opt_file);
+int WpeReadColor (we_control_t * cn, char *section, char *option, char *value);
+int WpeWriteColor (we_control_t * cn, char *section, FILE * opt_file);
+int WpeReadProgramming (we_control_t * cn, char *section, char *option, char *value);
+int WpeWriteProgramming (we_control_t * cn, char *section, FILE * opt_file);
+int WpeReadLanguage (we_control_t * cn, char *section, char *option, char *value);
+int WpeWriteLanguage (we_control_t * cn, char *section, FILE * opt_file);
 
 #define E_HLP_NUM 26
 char *e_hlp_str[E_HLP_NUM];
@@ -130,7 +130,7 @@ int
 e_clear_desk (we_window_t * f)
 {
     int i;
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
 #if  MOUSE
     int g[4];			/*  = { 2, 0, 0, 0, };  */
 
@@ -160,7 +160,7 @@ int
 e_repaint_desk (we_window_t * f)
 {
     /* int j; */
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     int i;
 #if MOUSE
     int g[4];
@@ -729,7 +729,7 @@ WpeValueToString (const char *value)
 }
 
 int
-WpeReadGeneral (ECNT * cn, char *section, char *option, char *value)
+WpeReadGeneral (we_control_t * cn, char *section, char *option, char *value)
 {
     UNUSED (section);
     if (WpeStrccmp ("Data", option) == 0)
@@ -762,7 +762,7 @@ WpeReadGeneral (ECNT * cn, char *section, char *option, char *value)
 }
 
 int
-WpeWriteGeneral (ECNT * cn, char *section, FILE * opt_file)
+WpeWriteGeneral (we_control_t * cn, char *section, FILE * opt_file)
 {
     UNUSED (section);
     fprintf (opt_file, "Version : %s\n", VERSION);
@@ -781,7 +781,7 @@ WpeWriteGeneral (ECNT * cn, char *section, FILE * opt_file)
 }
 
 int
-WpeReadColor (ECNT * cn, char *section, char *option, char *value)
+WpeReadColor (we_control_t * cn, char *section, char *option, char *value)
 {
     we_colorset_t *fb = NULL;
     we_color_t *c = NULL;
@@ -955,7 +955,7 @@ WpeReadColor (ECNT * cn, char *section, char *option, char *value)
 }
 
 int
-WpeWriteColor (ECNT * cn, char *section, FILE * opt_file)
+WpeWriteColor (we_control_t * cn, char *section, FILE * opt_file)
 {
     UNUSED (cn);
     we_colorset_t *fb = 0;
@@ -1007,7 +1007,7 @@ WpeWriteColor (ECNT * cn, char *section, FILE * opt_file)
 }
 
 int
-WpeReadProgramming (ECNT * cn, char *section, char *option, char *value)
+WpeReadProgramming (we_control_t * cn, char *section, char *option, char *value)
 {
     UNUSED (cn);
     UNUSED (section);
@@ -1025,7 +1025,7 @@ WpeReadProgramming (ECNT * cn, char *section, char *option, char *value)
 }
 
 int
-WpeWriteProgramming (ECNT * cn, char *section, FILE * opt_file)
+WpeWriteProgramming (we_control_t * cn, char *section, FILE * opt_file)
 {
     UNUSED (cn);
     UNUSED (section);
@@ -1038,7 +1038,7 @@ WpeWriteProgramming (ECNT * cn, char *section, FILE * opt_file)
 }
 
 int
-WpeReadLanguage (ECNT * cn, char *section, char *option, char *value)
+WpeReadLanguage (we_control_t * cn, char *section, char *option, char *value)
 {
     UNUSED (cn);
     int i, j;
@@ -1121,7 +1121,7 @@ WpeReadLanguage (ECNT * cn, char *section, char *option, char *value)
 }
 
 int
-WpeWriteLanguage (ECNT * cn, char *section, FILE * opt_file)
+WpeWriteLanguage (we_control_t * cn, char *section, FILE * opt_file)
 {
     UNUSED (cn);
     int i, j;
@@ -1157,7 +1157,7 @@ WpeWriteLanguage (ECNT * cn, char *section, FILE * opt_file)
 int
 e_save_opt (we_window_t * f)
 {
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     FILE *fp;
     int i;
     char *str_line;
@@ -1216,7 +1216,7 @@ e_save_opt (we_window_t * f)
 }
 
 int
-e_opt_read (ECNT * cn)
+e_opt_read (we_control_t * cn)
 {
     FILE *fp;
     char *str_line;

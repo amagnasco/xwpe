@@ -304,7 +304,7 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
 };
 
 void
-ECNT_Init (ECNT * cn)
+ECNT_Init (we_control_t * cn)
 {
     cn->mxedt = -1;
     cn->curedt = 0;
@@ -341,7 +341,7 @@ ECNT_Init (ECNT * cn)
 }
 
 int
-e_switch_blst (ECNT * cn)
+e_switch_blst (we_control_t * cn)
 {
     int i;
     we_window_t *f;
@@ -412,7 +412,7 @@ e_switch_blst (ECNT * cn)
 }
 
 void
-e_ini_desk (ECNT * cn)
+e_ini_desk (we_control_t * cn)
 {
     extern int e_mn_men;
     int i;
