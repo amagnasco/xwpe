@@ -77,7 +77,7 @@ void e_firstl(we_window_t* f, int sw);
 int e_pr_filetype(we_window_t* f);
 we_view_t* e_open_view(int xa, int ya, int xe, int ye, int col, int sw);
 int e_close_view(we_view_t* pic, int sw);
-void e_pr_line(int y, we_window_t* f);
+void e_pr_line(int y, we_window_t* window);
 void e_std_rahmen(int xa, int ya, int xe, int ye, char* name, int sw,
                   int frb, int fes);
 void e_ed_rahmen(we_window_t* f, int sw);

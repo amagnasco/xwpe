@@ -2334,7 +2334,7 @@ e_remove_undo (Undo * ud, int sw)
  *  r	Uses r to remember deleted characters on one line
  *  p	Guess: ?? put char over another char (replace) TODO: verify meaning
  *  y	Guess: ?? redo a previous undo TODO: verify meaning
- *  s	replace a string of characters (verified with test)
+ *  s	Uses s to replace a string of characters (verified with test)
  *
  *  Remark: the **global** e_undo_sw is a disabler for this function.
  *  if e_undo_sw is true, this function does nothing.
@@ -2438,128 +2438,128 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
 }
 
 int
-e_make_undo (we_window_t * f)
+e_make_undo (we_window_t * window)
 {
-    return (e_make_rudo (f, 0));
+    return (e_make_rudo (window, 0));
 }
 
 int
-e_make_redo (we_window_t * f)
+e_make_redo (we_window_t * window)
 {
-    return (e_make_rudo (f, 1));
+    return (e_make_rudo (window, 1));
 }
 
 int
-e_make_rudo (we_window_t * f, int sw)
+e_make_rudo (we_window_t * window, int sw)
 {
     BUFFER *b;
     we_screen_t *s;
-    Undo *ud;
+    Undo *undo;
     int i;
 
-    for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
+    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (f->ed->edt[i], f);
-    f = f->ed->f[f->ed->mxedt];
-    b = f->b;
-    s = f->s;
+    e_switch_window (window->ed->edt[i], window);
+    window = window->ed->f[window->ed->mxedt];
+    b = window->b;
+    s = window->s;
     if (!sw)
-        ud = b->ud;
+        undo = b->ud;
     else
-        ud = b->rd;
-    if (ud == NULL)
+        undo = b->rd;
+    if (undo == NULL)
     {
         e_error ((!sw ? e_msg[ERR_UNDO] : e_msg[ERR_REDO]), 0, b->fb);
         return (-1);
     }
-    f = f->ed->f[f->ed->mxedt];
+    window = window->ed->f[window->ed->mxedt];
     if (!sw)
         e_redo_sw = 1;
     else
         e_redo_sw = 2;
-    b->b = ud->b;
-    if (ud->type == 'r' || ud->type == 's')
+    b->b = undo->b;
+    if (undo->type == 'r' || undo->type == 's')
     {
-        if (ud->type == 's')
+        if (undo->type == 's')
         {
-            e_add_undo ('s', b, ud->b.x, ud->b.y, ud->a.y);
+            e_add_undo ('s', b, undo->b.x, undo->b.y, undo->a.y);
             e_undo_sw = 1;
-            e_del_nchar (b, s, ud->b.x, ud->b.y, ud->a.y);
+            e_del_nchar (b, s, undo->b.x, undo->b.y, undo->a.y);
         }
-        if (*((char *) ud->u.pt) == '\n' && ud->a.x == 1)
+        if (*((char *) undo->u.pt) == '\n' && undo->a.x == 1)
             e_car_ret (b, s);
-        else if (*((char *) ud->u.pt + ud->a.x - 1) == '\n')
+        else if (*((char *) undo->u.pt + undo->a.x - 1) == '\n')
         {
-            e_ins_nchar (b, s, ((unsigned char *) ud->u.pt), ud->b.x, ud->b.y,
-                         ud->a.x - 1);
+            e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->b.x, undo->b.y,
+                         undo->a.x - 1);
             e_car_ret (b, s);
         }
         else
-            e_ins_nchar (b, s, ((unsigned char *) ud->u.pt), ud->b.x, ud->b.y,
-                         ud->a.x);
+            e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->b.x, undo->b.y,
+                         undo->a.x);
         e_undo_sw = 0;
-        s->mark_begin = ud->b;
-        s->mark_end.y = ud->b.y;
-        s->mark_end.x = ud->b.x + ud->a.x;
-        free (ud->u.pt);
+        s->mark_begin = undo->b;
+        s->mark_end.y = undo->b.y;
+        s->mark_end.x = undo->b.x + undo->a.x;
+        free (undo->u.pt);
     }
-    else if (ud->type == 'l')
+    else if (undo->type == 'l')
     {
-        for (i = b->mxlines; i > ud->b.y; i--)
+        for (i = b->mxlines; i > undo->b.y; i--)
             b->bf[i] = b->bf[i - 1];
         (b->mxlines)++;
-        b->bf[b->b.y].s = ud->u.pt;
+        b->bf[b->b.y].s = undo->u.pt;
         b->bf[b->b.y].len = e_str_len (b->bf[b->b.y].s);
         b->bf[b->b.y].nrc = strlen ((const char *) b->bf[b->b.y].s);
-        s->mark_begin = ud->b;
-        s->mark_end.y = ud->b.y + 1;
+        s->mark_begin = undo->b;
+        s->mark_end.y = undo->b.y + 1;
         s->mark_end.x = 0;
         e_add_undo ('y', b, 0, b->b.y, 0);
     }
-    else if (ud->type == 'y')
+    else if (undo->type == 'y')
         e_del_line (b->b.y, b, s);
-    else if (ud->type == 'a')
-        e_del_nchar (b, s, ud->b.x, ud->b.y, ud->a.x);
-    else if (ud->type == 'p')
-        b->bf[ud->b.y].s[ud->b.x] = ud->u.c;
-    else if (ud->type == 'c')
+    else if (undo->type == 'a')
+        e_del_nchar (b, s, undo->b.x, undo->b.y, undo->a.x);
+    else if (undo->type == 'p')
+        b->bf[undo->b.y].s[undo->b.x] = undo->u.c;
+    else if (undo->type == 'c')
     {
-        b->b = s->mark_begin = ud->a;
-        s->mark_end = ud->e;
+        b->b = s->mark_begin = undo->a;
+        s->mark_end = undo->e;
         /*	e_blck_clear(b, s);   */
-        e_blck_del (f);
+        e_blck_del (window);
     }
-    else if (ud->type == 'v')
+    else if (undo->type == 'v')
     {
-        b->b = ud->b;
-        s->mark_begin = ud->a;
-        s->mark_end = ud->e;
-        e_blck_move (f);
+        b->b = undo->b;
+        s->mark_begin = undo->a;
+        s->mark_end = undo->e;
+        e_blck_move (window);
     }
-    else if (ud->type == 'd')
+    else if (undo->type == 'd')
     {
-        BUFFER *bn = (BUFFER *) ud->u.pt;
+        BUFFER *bn = (BUFFER *) undo->u.pt;
         e_undo_sw = 1;
         s->mark_begin = bn->f->s->mark_begin;
         s->mark_end = bn->f->s->mark_end;
-        e_move_block (ud->b.x, ud->b.y, bn, b, f);
+        e_move_block (undo->b.x, undo->b.y, bn, b, window);
         e_undo_sw = 0;
         free (bn->f->s);
         free (bn->f);
         free (bn->bf[0].s);
         free (bn->bf);
-        free (ud->u.pt);
-        e_add_undo ('c', b, ud->b.x, ud->b.y, 0);
+        free (undo->u.pt);
+        e_add_undo ('c', b, undo->b.x, undo->b.y, 0);
     }
     if (!sw)
-        b->ud = ud->next;
+        b->ud = undo->next;
     else
-        b->rd = ud->next;
+        b->rd = undo->next;
     e_redo_sw = 0;
-    free (ud);
-    e_schirm (f, 1);
-    e_cursor (f, 1);
+    free (undo);
+    e_schirm (window, 1);
+    e_cursor (window, 1);
     return (0);
 }
 
