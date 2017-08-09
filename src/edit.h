@@ -110,31 +110,79 @@ typedef struct we_colorset_struct
     we_color_t ns;   /* button shortkey text */
     we_color_t nm;   /* active button text */
     we_color_t of;
-    we_color_t ct; /* normal program text */
-    we_color_t cr; /* reserved keywords in program */
-    we_color_t ck; /* constants in program */
-    we_color_t cp; /* preprocessor command */
-    we_color_t cc; /* comments in program */
-    char dc;       /* desktop fill character */
+    we_color_t ct;   /* normal program text */
+    we_color_t cr;   /* reserved keywords in program */
+    we_color_t ck;   /* constants in program */
+    we_color_t cp;   /* preprocessor command */
+    we_color_t cc;   /* comments in program */
+    char dc;         /* desktop fill character */
     char ws;
 } we_colorset_t;
 
+/**
+ * undo and redo struct.
+ *
+ *	Containing points b, a and e. plus either a char c
+ *  or a pointer to void.
+ *
+ *  The types that undo/redo struct exist as are:
+ *
+ *  'a'
+ *  'c' Undo / redo struct for copy of a block
+ *  'd' Undo / redo struct for delete of characters.
+ *  'l'
+ *  'r'
+ *  'p'
+ *  's' Undo / redo struct for insertion of a string.
+ *  'r'
+ *  'v'
+ *  'y'
+ *
+ *
+ */
 typedef struct undo
 {
     int type;
-    we_point_t b, a, e;
+    we_point_t b; /* the starting (?) (x, y) cursor position */
+    /**
+     * Marks
+     *  'a' (x,y)=begin of block
+     *  'r' a.x=len(search_string) a.y=len(result_string)
+     *	's' a.x=len(search_string) a.y=len(result_string)
+     */
+    we_point_t a;
+    /**
+     * Marks
+     *  'a' (x,y)=end of block
+     *  'r' no value
+     *  's' no value
+     */
+    we_point_t e;
     union
     {
+        /**
+         * 'p' one character
+         *
+         */
         char c;
+        /**
+         *   'd' pointer to a deleted buffer
+         *   'l' pointer to start of the line
+         *   'r' pointer to string
+         *   's' pointer to string
+         */
         void* pt;
     } u;
+    /**
+     * Pointer to the next undo or redo struct
+     */
     struct undo* next;
 } Undo;
 
 typedef struct STR
 {
     unsigned char* s;
-    int len; /* Length of string not counting '\n' at the end */
+    int len;       /* Length of string not counting '\n' at the end */
     size_t nrc;
     /*int size; */ /* Memory allocated for the string */
 } STRING;
@@ -146,7 +194,7 @@ typedef struct BFF
     we_point_t mx; /* maximum column and line */
     int mxlines;   /* number of lines */
     int cl, clsv;
-    Undo *ud, *rd;
+    Undo *ud, *rd;	/* pointers to undo and redo structs */
     struct CNT* cn;
     struct FNST* f;
     we_colorset_t* fb;
