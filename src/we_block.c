@@ -18,6 +18,18 @@
 extern int e_undo_sw;
 
 /*	delete block */
+/**
+ * e_blck_del.
+ *
+ * f we_window_t the window struct used for all windows.
+ *
+ * f->s is the screen containing the marked block.
+ * f->s->mark_begin (x, y) mark the beginning and should be sane values or
+ *                         the function will return zero.
+ * f->s->mark_end (x, y)   mark the end and should be sane values.
+ *
+ *
+ */
 int
 e_blck_del (we_window_t * f)
 {
@@ -48,19 +60,16 @@ e_blck_del (we_window_t * f)
     }
     else
     {
-        /***********************/
+        e_add_undo ('d', b, s->mark_begin.x, s->mark_begin.y, 0);
+        f->save = b->cn->maxchg + 1;
+
+        /*********** start debugging code ************/
         y = s->mark_begin.y;
         if (s->mark_begin.x > 0)
             y++;
         len = y - s->mark_end.y + 1;
-        /***********************/
-
-        e_add_undo ('d', b, s->mark_begin.x, s->mark_begin.y, 0);
-        f->save = b->cn->maxchg + 1;
-
-        /***********************/
-        e_brk_recalc (f, y, len);
-        /***********************/
+        e_brk_recalc (f, y, len);		// recalculate breakpoints
+        /*********** start debugging code ************/
     }
     if (f->c_sw)
     {
@@ -276,7 +285,7 @@ e_edt_einf (we_window_t * f)
 
     /**********************/
     len = b0->f->s->mark_end.y - b0->f->s->mark_begin.y;
-    e_brk_recalc (f, y, len);
+    e_brk_recalc (f, y, len);		// recalculate breakpoints
     /**********************/
 
     e_undo_sw = 0;

@@ -1817,7 +1817,7 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
     we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
     int len, i, j;
 
-    (f->save) += n;
+    f->save += n;
     e_add_undo ('r', b, x, y, n);
     e_undo_sw++;
     len = b->bf[y].len;
@@ -1876,7 +1876,7 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
     we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
     int i, j;
 
-    (f->save) += n;
+    f->save += n;
     e_add_undo ('a', b, xa, ya, n);
     e_undo_sw++;
     if (b->bf[ya].len + n >= b->mx.x - 1)
@@ -2328,8 +2328,8 @@ e_remove_undo (Undo * ud, int sw)
  * sw  action
  * --  ------
  *  d	Uses d to remember delete characters in a block
- *  c	Uses c to remember a copy of a block
- *  v   Guess: ?? paste block TODO: verify meaning
+ *  c	Uses c to remember a block copy
+ *  v   Uses v to paste block
  *  a	Guess: ?? add characters TODO: verify meaning
  *  l	Guess: ?? Delete line TODO: verify meaning
  *  r	Uses r to remember deleted characters on one line
@@ -2548,10 +2548,10 @@ e_make_rudo (we_window_t * window, int doing_redo)
         free (undo->u.pt);
         e_add_undo ('c', b, undo->b.x, undo->b.y, 0);
     }
-    if (!doing_redo)
-        b->ud = undo->next;
-    else
+    if (doing_redo)
         b->rd = undo->next;
+    else
+        b->ud = undo->next;
     e_redo_sw = 0;
     free (undo);
     e_schirm (window, 1);

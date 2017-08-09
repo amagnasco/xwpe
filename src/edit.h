@@ -127,16 +127,15 @@ typedef struct we_colorset_struct
  *
  *  The types that undo/redo struct exist as are:
  *
- *  'a'
- *  'c' Undo / redo struct for copy of a block
- *  'd' Undo / redo struct for delete of characters.
- *  'l'
- *  'r'
- *  'p'
- *  's' Undo / redo struct for insertion of a string.
- *  'r'
- *  'v'
- *  'y'
+ *  'a' Undo / redo struct for character insertion.
+ *  'c' Undo / redo struct for block copy.
+ *  'd' Undo / redo struct for block delete.
+ *  'l' Undo / redo struct for line delete.
+ *  'p' Undo / redo struct for character overwrite ('put').
+ *  'r' Undo / redo struct for character deletion.
+ *  's' Undo / redo struct for search / replace.
+ *  'v' Undo / redo struct for block paste.
+ *  'y' Undo / redo struct for line delete ( counters undo of 'l'?)
  *
  *
  */
@@ -146,14 +145,14 @@ typedef struct undo
     we_point_t b; /* the starting (?) (x, y) cursor position */
     /**
      * Marks
-     *  'a' (x,y)=begin of block
+     *  'a' (x,y)=begin of characters to be copied
      *  'r' a.x=len(search_string) a.y=len(result_string)
      *	's' a.x=len(search_string) a.y=len(result_string)
      */
     we_point_t a;
     /**
      * Marks
-     *  'a' (x,y)=end of block
+     *  'a' (x,y)=end of characters to be copied
      *  'r' no value
      *  's' no value
      */
