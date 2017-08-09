@@ -31,6 +31,7 @@ char *e_make_postf ();
 int e_del_a_ind ();
 int e_tab_a_ind ();
 int e_help_next ();
+int e_car_ret(BUFFER* b, we_screen_t* s);
 
 #ifdef PROG
 BUFFER *e_p_m_buffer = NULL;
@@ -2366,7 +2367,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         next->u.c = b->bf[y].s[x];
     else if (sw == 'r' || sw == 's')
     {
-        char *str = malloc (n);
+        char *str = malloc (n+1);
         int i;
 
         if (str == NULL)
@@ -2377,9 +2378,10 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         }
         for (i = 0; i < n; i++)
             str[i] = b->bf[y].s[x + i];
+        str[n] = '\0';
         next->u.pt = str;
 
-        next->a.y = b->cn->fd.rn;
+        next->a.y = e_redo_sw == 1 ? b->cn->fd.sn : b->cn->fd.rn;
 
     }
     else if (sw == 'l')
@@ -2450,7 +2452,7 @@ e_make_redo (we_window_t * window)
 }
 
 int
-e_make_rudo (we_window_t * window, int sw)
+e_make_rudo (we_window_t * window, int doing_redo)
 {
     BUFFER *b;
     we_screen_t *s;
@@ -2464,20 +2466,14 @@ e_make_rudo (we_window_t * window, int sw)
     window = window->ed->f[window->ed->mxedt];
     b = window->b;
     s = window->s;
-    if (!sw)
-        undo = b->ud;
-    else
-        undo = b->rd;
+    undo = doing_redo ? b->rd : b->ud;
     if (undo == NULL)
     {
-        e_error ((!sw ? e_msg[ERR_UNDO] : e_msg[ERR_REDO]), 0, b->fb);
+        e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), 0, b->fb);
         return (-1);
     }
     window = window->ed->f[window->ed->mxedt];
-    if (!sw)
-        e_redo_sw = 1;
-    else
-        e_redo_sw = 2;
+    e_redo_sw = doing_redo ? 2 : 1;
     b->b = undo->b;
     if (undo->type == 'r' || undo->type == 's')
     {
@@ -2552,7 +2548,7 @@ e_make_rudo (we_window_t * window, int sw)
         free (undo->u.pt);
         e_add_undo ('c', b, undo->b.x, undo->b.y, 0);
     }
-    if (!sw)
+    if (!doing_redo)
         b->ud = undo->next;
     else
         b->rd = undo->next;

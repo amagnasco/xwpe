@@ -21,7 +21,6 @@ int e_ctrl_k(we_window_t* f);
 int e_ctrl_o(we_window_t* f);
 int e_tst_dfkt(we_window_t* f, int c);
 int e_blk(int anz, int xa, int ya, int col);
-int e_car_ret(BUFFER* b, we_screen_t* s);
 void e_cursor(we_window_t* f, int sw);
 int e_del_line(int yd, BUFFER* b, we_screen_t* s);
 int e_del_nchar(BUFFER* b, we_screen_t* s, int x, int y, int n);
