@@ -56,7 +56,7 @@ int e_t_initscr (void);
 int e_t_kbhit (void);
 int e_t_d_switch_out (int sw);
 int e_t_switch_screen (int sw);
-int e_t_deb_out (We_window * f);
+int e_t_deb_out (we_window_t * f);
 int e_s_sys_end ();
 int e_s_sys_ini ();
 
@@ -1412,7 +1412,7 @@ e_t_switch_screen (int sw)
 }
 
 int
-e_t_deb_out (We_window * f)
+e_t_deb_out (we_window_t * f)
 {
 //#ifndef NCURSES
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)

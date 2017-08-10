@@ -16,6 +16,7 @@
 #include "we_prog.h"
 #include "WeProg.h"
 #include "WeString.h"
+#include "we_wind.h"
 
 #ifdef UNIX
 #include <unistd.h>
@@ -67,7 +68,7 @@ extern char *e_p_msg[];
  *
  * The variable s hidden in a macro FRB1 .. FRB5 refers to an element of a screen.
  *
- * we_screen *s:	reference to an element of f->s
+ * we_screen_t *s:	reference to an element of f->s
  *
  * This function is in desparate need of refactoring. But testing first.
  *
@@ -75,7 +76,7 @@ extern char *e_p_msg[];
 void
 e_mk_col (unsigned char *str, int l, int n, int *frb,
           struct wpeSyntaxRule *cs, int n_nd, int *n_bg, int *mcsw, int *bssw,
-          int *svmsw, we_screen * s)
+          int *svmsw, we_screen_t * s)
 {
     if (n < l)
     {
@@ -430,7 +431,7 @@ e_scfbol (int n, int mcsw, unsigned char *str, WpeSyntaxRule * cs)
 }
 
 int
-e_sc_all (We_window * f, int sw)
+e_sc_all (we_window_t * f, int sw)
 {
     int i;
 
@@ -465,7 +466,7 @@ e_sc_all (We_window * f, int sw)
 }
 
 int
-e_program_opt (We_window * f)
+e_program_opt (we_window_t * f)
 {
     int ret, sw = f->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0;
     W_OPTSTR *o = e_init_opt_kst (f);
@@ -622,10 +623,10 @@ e_sc_txt (int *c_sw, BUFFER * b)
 
 /*       Writing of a line (content of a screen)      */
 void
-e_pr_c_line (int y, We_window * f)
+e_pr_c_line (int y, we_window_t * f)
 {
     BUFFER *b = f->b;
-    we_screen *s = f->s;
+    we_screen_t *s = f->s;
     int i, j, k, frb = 0;
     int mcsw = f->c_sw[y], svmsw = f->c_sw[y] == 5 ? 5 : 0, bssw = 0;
     int n_bg = -1, n_nd = strlen ((const char *) f->c_st->end_comment) - 1;
@@ -661,7 +662,7 @@ e_pr_c_line (int y, We_window * f)
             break;
         }
     for (j = s->c.x;
-            i < b->bf[y].len && j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1; i++, j++)
+            i < b->bf[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
     {
         e_mk_col (b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
@@ -673,7 +674,7 @@ e_pr_c_line (int y, We_window * f)
             frb = s->fb->ek.fb;
 #else
     for (j = s->c.x;
-            i < b->bf[y].len && j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1; i++, j++)
+            i < b->bf[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
     {
         e_mk_col (b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
@@ -689,7 +690,7 @@ e_pr_c_line (int y, We_window * f)
             frb = s->fb->ez.fb;
         if (*(b->bf[y].s + i) == WPE_TAB)
             for (k = f->ed->tabn - j % f->ed->tabn;
-                    k > 1 && j < NUM_COLS_ON_SCREEN + s->c.x - 2; k--, j++)
+                    k > 1 && j < num_cols_on_screen(f) + s->c.x - 2; k--, j++)
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, ' ',
                            frb);
 #ifdef UNIX
@@ -697,14 +698,14 @@ e_pr_c_line (int y, We_window * f)
         {
             e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, '@',
                        frb);
-            if (++j >= NUM_COLS_ON_SCREEN + s->c.x - 1)
+            if (++j >= num_cols_on_screen(f) + s->c.x - 1)
                 return;
             if (((unsigned char) *(b->bf[y].s + i)) < 128 + ' '
-                    && j < NUM_COLS_ON_SCREEN + s->c.x - 1)
+                    && j < num_cols_on_screen(f) + s->c.x - 1)
             {
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
                            '^', frb);
-                if (++j >= NUM_COLS_ON_SCREEN + s->c.x - 1)
+                if (++j >= num_cols_on_screen(f) + s->c.x - 1)
                     return;
             }
         }
@@ -712,7 +713,7 @@ e_pr_c_line (int y, We_window * f)
         {
             e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, '^',
                        frb);
-            if (++j >= NUM_COLS_ON_SCREEN + s->c.x - 1)
+            if (++j >= num_cols_on_screen(f) + s->c.x - 1)
                 return;
         }
 #endif
@@ -721,7 +722,7 @@ e_pr_c_line (int y, We_window * f)
                        frb);
 #ifdef UNIX
         else if (!WpeIsXwin () && ((unsigned char) *(b->bf[y].s + i)) > 126 &&
-                 j < NUM_COLS_ON_SCREEN + s->c.x - 1)
+                 j < num_cols_on_screen(f) + s->c.x - 1)
         {
             if (((unsigned char) *(b->bf[y].s + i)) < 128 + ' ')
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
@@ -730,7 +731,7 @@ e_pr_c_line (int y, We_window * f)
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
                            ((unsigned char) *(b->bf[y].s + i)) - 128, frb);
         }
-        else if (*(b->bf[y].s + i) < ' ' && j < NUM_COLS_ON_SCREEN + s->c.x - 1)
+        else if (*(b->bf[y].s + i) < ' ' && j < num_cols_on_screen(f) + s->c.x - 1)
             e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
                        *(b->bf[y].s + i) + 'A' - 1, frb);
 #endif
@@ -744,7 +745,7 @@ e_pr_c_line (int y, We_window * f)
 
     if ((i == b->bf[y].len) && (f->ed->edopt & ED_SHOW_ENDMARKS) &&
             (DTMD_ISMARKABLE (f->dtmd))
-            && (j < NUM_COLS_ON_SCREEN_SAFE + s->c.x - 1))
+            && (j < num_cols_on_screen_safe(f) + s->c.x - 1))
     {
         if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                    (y == s->mark_begin.y
@@ -771,12 +772,12 @@ e_pr_c_line (int y, We_window * f)
         }
         j++;
     }
-    for (; j < NUM_COLS_ON_SCREEN + s->c.x - 1; j++)
+    for (; j < num_cols_on_screen(f) + s->c.x - 1; j++)
         e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, ' ', frb);
 }
 
 int
-e_add_synt_tl (char *filename, We_window * f)
+e_add_synt_tl (char *filename, we_window_t * f)
 {
     int i, k;
 
@@ -806,7 +807,7 @@ e_add_synt_tl (char *filename, We_window * f)
 E_AFILE *
 e_aopen (char *name, char *path, int mode)
 {
-    ECNT *cn = WpeEditor;
+    we_control_t *cn = WpeEditor;
     E_AFILE *ep = malloc (sizeof (E_AFILE));
     char str[256];
     int i, j;
@@ -1681,7 +1682,7 @@ b_end:
 }
 
 int
-e_show_nm_f (char *name, We_window * f, int oldn, char **oldname)
+e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
 {
     int i, j, len, ret, num, x, first = oldn < 0 ? 1 : 0;
     char str[128], file[128], *filename;
@@ -1790,7 +1791,7 @@ struct
 };
 
 int
-e_sh_def (We_window * f)
+e_sh_def (we_window_t * f)
 {
     char str[80];
 
@@ -1816,7 +1817,7 @@ e_sh_def (We_window * f)
 }
 
 int
-e_sh_nxt_def (We_window * f)
+e_sh_nxt_def (we_window_t * f)
 {
     if (sh_df.num >= 0 && sh_df.str && sh_df.file)
     {
@@ -1826,7 +1827,7 @@ e_sh_nxt_def (We_window * f)
 }
 
 int
-e_nxt_brk (We_window * f)
+e_nxt_brk (we_window_t * f)
 {
     int c = f->b->bf[f->b->b.y].s[f->b->b.x];
     int i, j, ob, cb, bsp, brk, nif;
@@ -2203,10 +2204,10 @@ e_mbt_cnd (BUFFER * b, int *ii, int *jj, int n, int sw, int *cmnd)
 }
 
 int
-e_mk_beauty (int sw, int ndif, We_window * f)
+e_mk_beauty (int sw, int ndif, we_window_t * f)
 {
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int bg, nd, m, n, i, j, k, brk, cbrk = 0, nif = 0, nic = 0;
     int nstrct = 0, cmnd, cm_sv;
     char *tstr = malloc (sizeof (char));
@@ -2216,7 +2217,7 @@ e_mk_beauty (int sw, int ndif, We_window * f)
     int *ifvekr = malloc (sizeof (int));
     int *vkcs = malloc (sizeof (int));
     int *vkcb = malloc (sizeof (int));
-    POINT sa, se, sb;
+    we_point_t sa, se, sb;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--)
         ;
@@ -2590,7 +2591,7 @@ e_mk_beauty (int sw, int ndif, We_window * f)
 }
 
 int
-e_p_beautify (We_window * f)
+e_p_beautify (we_window_t * f)
 {
     static int b_sw = 0;
     int ret;

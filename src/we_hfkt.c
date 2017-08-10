@@ -17,7 +17,7 @@
 
 /*   numbers box (numbers input/edit)     */
 int
-e_num_kst (char *s, int num, int max, We_window * f, int n, int sw)
+e_num_kst (char *s, int num, int max, we_window_t * f, int n, int sw)
 {
     int ret, nz = WpeNumberOfPlaces (max);
     char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
@@ -55,11 +55,11 @@ e_str_len (unsigned char *s)
     return (i);
 }
 
-/*           COLOR - fill struct with constants           */
-COLOR
+/*           we_color_t - fill struct with constants           */
+we_color_t
 e_s_x_clr (int f, int b)
 {
-    COLOR c;
+    we_color_t c;
 
     c.f = f;
     c.b = b;
@@ -67,10 +67,10 @@ e_s_x_clr (int f, int b)
     return (c);
 }
 
-COLOR
+we_color_t
 e_n_x_clr (int fb)
 {
-    COLOR f;
+    we_color_t f;
 
     f.fb = fb;
     f.b = fb / 16;
@@ -78,10 +78,10 @@ e_n_x_clr (int fb)
     return (f);
 }
 
-COLOR
+we_color_t
 e_s_t_clr (int f, int b)
 {
-    COLOR c;
+    we_color_t c;
 
     c.f = f;
     c.b = b;
@@ -89,10 +89,10 @@ e_s_t_clr (int f, int b)
     return (c);
 }
 
-COLOR
+we_color_t
 e_n_t_clr (int fb)
 {
-    COLOR f;
+    we_color_t f;
 
     f.fb = fb;
     f.b = fb;
@@ -100,11 +100,11 @@ e_n_t_clr (int fb)
     return (f);
 }
 
-/*            POINT - fill struct with constants            */
-POINT
+/*            we_point_t - fill struct with constants            */
+we_point_t
 e_set_pnt (int x, int y)
 {
-    POINT p;
+    we_point_t p;
 
     p.x = x;
     p.y = y;
@@ -112,7 +112,7 @@ e_set_pnt (int x, int y)
 }
 
 int
-e_pr_uul (we_colorset * fb)
+e_pr_uul (we_colorset_t * fb)
 {
     extern WOPT *blst;
     extern int nblst;

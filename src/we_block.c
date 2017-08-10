@@ -18,11 +18,23 @@
 extern int e_undo_sw;
 
 /*	delete block */
+/**
+ * e_blck_del.
+ *
+ * f we_window_t the window struct used for all windows.
+ *
+ * f->s is the screen containing the marked block.
+ * f->s->mark_begin (x, y) mark the beginning and should be sane values or
+ *                         the function will return zero.
+ * f->s->mark_end (x, y)   mark the end and should be sane values.
+ *
+ *
+ */
 int
-e_blck_del (We_window * f)
+e_blck_del (we_window_t * f)
 {
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int i, y, len;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -48,19 +60,16 @@ e_blck_del (We_window * f)
     }
     else
     {
-        /***********************/
+        e_add_undo ('d', b, s->mark_begin.x, s->mark_begin.y, 0);
+        f->save = b->cn->maxchg + 1;
+
+        /*********** start debugging code ************/
         y = s->mark_begin.y;
         if (s->mark_begin.x > 0)
             y++;
         len = y - s->mark_end.y + 1;
-        /***********************/
-
-        e_add_undo ('d', b, s->mark_begin.x, s->mark_begin.y, 0);
-        f->save = b->cn->maxchg + 1;
-
-        /***********************/
-        e_brk_recalc (f, y, len);
-        /***********************/
+        e_brk_recalc (f, y, len);		// recalculate breakpoints
+        /*********** start debugging code ************/
     }
     if (f->c_sw)
     {
@@ -73,10 +82,10 @@ e_blck_del (We_window * f)
 
 /*      dup selected block BD*/
 int
-e_blck_dup (char *dup, We_window * f)
+e_blck_dup (char *dup, we_window_t * f)
 {
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int i;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -101,7 +110,7 @@ e_blck_dup (char *dup, We_window * f)
 }
 
 int
-e_blck_clear (BUFFER * b, we_screen * s)
+e_blck_clear (BUFFER * b, we_screen_t * s)
 {
     int i;
     int len = (s->mark_end.y - s->mark_begin.y - 1);
@@ -132,10 +141,10 @@ e_blck_clear (BUFFER * b, we_screen * s)
 
 /*   write buffer to screen */
 int
-e_show_clipboard (We_window * f)
+e_show_clipboard (we_window_t * f)
 {
-    ECNT *cn = f->ed;
-    We_window *fo;
+    we_control_t *cn = f->ed;
+    we_window_t *fo;
     int i, j;
 
     for (j = 1; j <= cn->mxedt; j++)
@@ -209,7 +218,7 @@ e_show_clipboard (We_window * f)
 
 /*   move block to buffer */
 int
-e_edt_del (We_window * f)
+e_edt_del (we_window_t * f)
 {
     e_edt_copy (f);
     e_blck_del (f);
@@ -218,7 +227,7 @@ e_edt_del (We_window * f)
 
 /* copy block to buffer */
 int
-e_edt_copy (We_window * f)
+e_edt_copy (we_window_t * f)
 {
     BUFFER *b;
     BUFFER *b0 = f->ed->f[0]->b;
@@ -250,7 +259,7 @@ e_edt_copy (We_window * f)
 
 /*            Copy block buffer into window  */
 int
-e_edt_einf (We_window * f)
+e_edt_einf (we_window_t * f)
 {
     BUFFER *b;
     BUFFER *b0 = f->ed->f[0]->b;
@@ -276,7 +285,7 @@ e_edt_einf (We_window * f)
 
     /**********************/
     len = b0->f->s->mark_end.y - b0->f->s->mark_begin.y;
-    e_brk_recalc (f, y, len);
+    e_brk_recalc (f, y, len);		// recalculate breakpoints
     /**********************/
 
     e_undo_sw = 0;
@@ -288,11 +297,11 @@ e_edt_einf (We_window * f)
 
 /*   move block within window */
 int
-e_blck_move (We_window * f)
+e_blck_move (we_window_t * f)
 {
     BUFFER *b;
     int i;
-    POINT ka;
+    we_point_t ka;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
     if (i <= 0)
@@ -321,11 +330,11 @@ e_blck_move (We_window * f)
 
 /*    move Block    */
 void
-e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, We_window * f)
+e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window_t * f)
 {
-    we_screen *s = f->ed->f[f->ed->mxedt]->s;
-    we_screen *sv = bv->f->s;
-    we_screen *sz = bz->f->s;
+    we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
+    we_screen_t *sv = bv->f->s;
+    we_screen_t *sz = bz->f->s;
     int sw = (y < s->mark_begin.y) ? 0 : 1, i, n =
                  s->mark_end.y - s->mark_begin.y - 1;
     int kax = s->mark_begin.x, kay = s->mark_begin.y, kex =
@@ -502,7 +511,7 @@ e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, We_window * f)
 
 /*   copy block within window   */
 int
-e_blck_copy (We_window * f)
+e_blck_copy (we_window_t * f)
 {
     BUFFER *b;
     int i;
@@ -528,11 +537,11 @@ e_blck_copy (We_window * f)
 /*   copy block  */
 void
 e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
-              We_window * f)
+              we_window_t * f)
 {
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-    we_screen *s_src = buffer_src->f->s;
-    we_screen *s_dst = buffer_dst->f->s;
+    we_screen_t *s_src = buffer_src->f->s;
+    we_screen_t *s_dst = buffer_dst->f->s;
     int i, j, n = s_src->mark_end.y - s_src->mark_begin.y - 1;
     int kax = s_src->mark_begin.x, kay = s_src->mark_begin.y, kex =
             s_src->mark_end.x, key = s_src->mark_end.y;
@@ -650,9 +659,9 @@ e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
 
 /*   delete block marks   */
 int
-e_blck_hide (We_window * f)
+e_blck_hide (we_window_t * f)
 {
-    we_screen *s;
+    we_screen_t *s;
     int i;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -669,7 +678,7 @@ e_blck_hide (We_window * f)
 
 /*   mark begin of block   */
 int
-e_blck_begin (We_window * f)
+e_blck_begin (we_window_t * f)
 {
     int i;
 
@@ -685,7 +694,7 @@ e_blck_begin (We_window * f)
 
 /*           Set end of block   */
 int
-e_blck_end (We_window * f)
+e_blck_end (we_window_t * f)
 {
     int i;
 
@@ -701,7 +710,7 @@ e_blck_end (We_window * f)
 
 /* goto begin of block   */
 int
-e_blck_gt_beg (We_window * f)
+e_blck_gt_beg (we_window_t * f)
 {
     int i;
 
@@ -717,7 +726,7 @@ e_blck_gt_beg (We_window * f)
 
 /*   goto end of block   */
 int
-e_blck_gt_end (We_window * f)
+e_blck_gt_end (we_window_t * f)
 {
     int i;
 
@@ -733,7 +742,7 @@ e_blck_gt_end (We_window * f)
 
 /*   mark text line in block   */
 int
-e_blck_mrk_all (We_window * f)
+e_blck_mrk_all (we_window_t * f)
 {
     int i;
 
@@ -752,7 +761,7 @@ e_blck_mrk_all (We_window * f)
 
 /*   mark text line in block   */
 int
-e_blck_mrk_line (We_window * f)
+e_blck_mrk_line (we_window_t * f)
 {
     int i;
 
@@ -783,10 +792,10 @@ mode=1 every character upcase
 mode=2 first character in each word upcase
 mode=3 first character in each line upcase   */
 int
-e_blck_changecase (We_window * f, int mode)
+e_blck_changecase (we_window_t * f, int mode)
 {
     BUFFER *b;
-    we_screen *screen;
+    we_screen_t *screen;
     int i, x, y, x_begin, x_end;
 
     for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
@@ -825,7 +834,7 @@ e_blck_changecase (We_window * f, int mode)
 }
 
 int
-e_changecase_dialog (We_window * f)
+e_changecase_dialog (we_window_t * f)
 {
     static int b_sw = 0;
     int ret;
@@ -859,10 +868,10 @@ e_changecase_dialog (We_window * f)
 
 /*   unindent block   */
 int
-e_blck_to_left (We_window * f)
+e_blck_to_left (we_window_t * f)
 {
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int n = f->ed->tabn / 2, i, j, k, l, m, nn;
     unsigned char *tstr = malloc ((n + 2) * sizeof (char));
 
@@ -913,10 +922,10 @@ e_blck_to_left (We_window * f)
 
 /*   indent block   */
 int
-e_blck_to_right (We_window * f)
+e_blck_to_right (we_window_t * f)
 {
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int n = f->ed->tabn / 2, i, j;
     unsigned char *tstr = malloc ((n + 1) * sizeof (char));
 
@@ -945,7 +954,7 @@ e_blck_to_right (We_window * f)
 
 /*            Read block from file   */
 int
-e_blck_read (We_window * f)
+e_blck_read (we_window_t * f)
 {
     if (f->ins == 8)
         return (WPE_ESC);
@@ -956,14 +965,14 @@ e_blck_read (We_window * f)
 
 /*   write block to file   */
 int
-e_blck_write (We_window * f)
+e_blck_write (we_window_t * f)
 {
     WpeCreateFileManager (2, f->ed, "");
     return (0);
 }
 
 int
-e_first_search (We_window * window)
+e_first_search (we_window_t * window)
 {
     return e_repeat_search(window);
 }
@@ -978,9 +987,9 @@ e_first_search (We_window * window)
  *
  *   */
 int
-e_repeat_search (We_window * window)
+e_repeat_search (we_window_t * window)
 {
-    we_screen *screen;
+    we_screen_t *screen;
     BUFFER *buffer;
     FIND *find = &(window->ed->fd);
     int i, j, iend, jend;
@@ -1099,7 +1108,7 @@ e_repeat_search (We_window * window)
 
 /*   goto line  */
 int
-e_goto_line (We_window * f)
+e_goto_line (we_window_t * f)
 {
     int i, num;
     BUFFER *b;
@@ -1121,9 +1130,9 @@ e_goto_line (We_window * f)
 }
 
 int
-e_find (We_window * window)
+e_find (we_window_t * window)
 {
-    we_screen *wind_screen;
+    we_screen_t *wind_screen;
     BUFFER *buffer;
     FIND *find = &(window->ed->fd);
     int i, ret;
@@ -1196,7 +1205,6 @@ e_find (We_window * window)
     }
     freeostr (find_dialog);
     if (ret != WPE_ESC)
-        // FIXME: don't do a repeat search, but do a first search here
         e_first_search (window);
     return (0);
 }
@@ -1212,122 +1220,122 @@ e_find (We_window * window)
   occurrences found and the number actually replaced.
 */
 int
-e_replace (We_window * f)
+e_replace (we_window_t *window)
 {
-    we_screen *s;
-    BUFFER *b;
-    FIND *fd = &(f->ed->fd);
+    we_screen_t *screen;
+    BUFFER *buffer;
+    FIND *find = &(window->ed->fd);
     int i, ret, c, rep = 0, found = 0;
     char strTemp[80];
-    W_OPTSTR *o = e_init_opt_kst (f);
+    W_OPTSTR *replace_options = e_init_opt_kst (window);
 
-    if (!o)
+    if (!replace_options)
         return (-1);
-    for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--);
+    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (f->ed->edt[i], f);
-    f = f->ed->f[f->ed->mxedt];
-    b = f->b;
-    s = f->s;
-    if (e_blck_dup (strTemp, f))
+    e_switch_window (window->ed->edt[i], window);
+    window = window->ed->f[window->ed->mxedt];
+    buffer = window->b;
+    screen = window->s;
+    if (e_blck_dup (strTemp, window))
     {
-        strcpy (fd->search, strTemp);
-        fd->sn = strlen (fd->search);
+        strcpy (find->search, strTemp);
+        find->sn = strlen (find->search);
     }
-    o->xa = 7;
-    o->ya = 3;
-    o->xe = 67;
-    o->ye = 17;
-    o->bgsw = 0;
-    o->name = "Replace";
-    o->crsw = AltO;
-    e_add_txtstr (4, 6, "Options:", o);
-    e_add_txtstr (32, 6, "Scope:", o);
-    e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", fd->search,
-                 &f->ed->sdf, o);
-    e_add_wrstr (4, 4, 18, 4, 35, 128, 0, AltN, "New Text:", fd->replace,
-                 &f->ed->rdf, o);
-    e_add_sswstr (5, 7, 0, AltC, fd->sw & 128 ? 1 : 0, "Case sensitive    ", o);
-    e_add_sswstr (5, 8, 0, AltW, fd->sw & 64 ? 1 : 0, "Whole words only  ", o);
-    e_add_sswstr (5, 9, 0, AltR, fd->sw & 32 ? 1 : 0, "Regular expression", o);
-    e_add_sswstr (5, 10, 0, AltP, 1, "Prompt on Replace ", o);
-    e_add_pswstr (0, 33, 7, 0, AltF, 0, "Forward from Cursor", o);
-    e_add_pswstr (0, 33, 8, 0, AltB, fd->sw & 4 ? 1 : 0,
-                  "Back from Cursor   ", o);
-    e_add_pswstr (0, 33, 9, 0, AltG, fd->sw & 2 ? 1 : 0,
-                  "Global Replace     ", o);
-    if (s->mark_end.y)
-        e_add_pswstr (0, 33, 10, 0, AltS, fd->sw & 10 ? 1 : 0,
-                      "Selected Text      ", o);
-    e_add_bttstr (10, 12, 1, AltO, " Ok ", NULL, o);
-    e_add_bttstr (41, 12, -1, WPE_ESC, "Cancel", NULL, o);
-    e_add_bttstr (22, 12, 7, AltA, "Change All", NULL, o);
-    ret = e_opt_kst (o);
+    replace_options->xa = 7;
+    replace_options->ya = 3;
+    replace_options->xe = 67;
+    replace_options->ye = 17;
+    replace_options->bgsw = 0;
+    replace_options->name = "Replace";
+    replace_options->crsw = AltO;
+    e_add_txtstr (4, 6, "Options:", replace_options);
+    e_add_txtstr (32, 6, "Scope:", replace_options);
+    e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
+                 &window->ed->sdf, replace_options);
+    e_add_wrstr (4, 4, 18, 4, 35, 128, 0, AltN, "New Text:", find->replace,
+                 &window->ed->rdf, replace_options);
+    e_add_sswstr (5, 7, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", replace_options);
+    e_add_sswstr (5, 8, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", replace_options);
+    e_add_sswstr (5, 9, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", replace_options);
+    e_add_sswstr (5, 10, 0, AltP, 1, "Prompt on Replace ", replace_options);
+    e_add_pswstr (0, 33, 7, 0, AltF, 0, "Forward from Cursor", replace_options);
+    e_add_pswstr (0, 33, 8, 0, AltB, find->sw & 4 ? 1 : 0,
+                  "Back from Cursor   ", replace_options);
+    e_add_pswstr (0, 33, 9, 0, AltG, find->sw & 2 ? 1 : 0,
+                  "Global Replace     ", replace_options);
+    if (screen->mark_end.y)
+        e_add_pswstr (0, 33, 10, 0, AltS, find->sw & 10 ? 1 : 0,
+                      "Selected Text      ", replace_options);
+    e_add_bttstr (10, 12, 1, AltO, " Ok ", NULL, replace_options);
+    e_add_bttstr (41, 12, -1, WPE_ESC, "Cancel", NULL, replace_options);
+    e_add_bttstr (22, 12, 7, AltA, "Change All", NULL, replace_options);
+    ret = e_opt_kst (replace_options);
     if (ret != WPE_ESC)
     {
-        strcpy (fd->search, o->wstr[0]->txt);
-        fd->sn = strlen (fd->search);
-        strcpy (fd->replace, o->wstr[1]->txt);
-        fd->rn = strlen (fd->replace);
-        fd->sw = 1 + (o->sstr[0]->num << 7) + (o->sstr[1]->num << 6)
-                 + (o->sstr[2]->num << 5) + (o->sstr[3]->num << 4);
-        switch (o->pstr[0]->num)
+        strcpy (find->search, replace_options->wstr[0]->txt);
+        find->sn = strlen (find->search);
+        strcpy (find->replace, replace_options->wstr[1]->txt);
+        find->rn = strlen (find->replace);
+        find->sw = 1 + (replace_options->sstr[0]->num << 7) + (replace_options->sstr[1]->num << 6)
+                   + (replace_options->sstr[2]->num << 5) + (replace_options->sstr[3]->num << 4);
+        switch (replace_options->pstr[0]->num)
         {
         case 2:
-            fd->sw |= 2;
-            b->b.x = b->b.y = 0;
+            find->sw |= 2;
+            buffer->b.x = buffer->b.y = 0;
             break;
         case 1:
-            fd->sw |= 4;
-            b->b.x = b->bf[b->mxlines - 1].len;
-            b->b.y = b->mxlines - 1;
+            find->sw |= 4;
+            buffer->b.x = buffer->bf[buffer->mxlines - 1].len;
+            buffer->b.y = buffer->mxlines - 1;
             break;
         case 3:
-            fd->sw |= 10;
-            b->b.x = s->mark_begin.x;
-            b->b.y = s->mark_begin.y;
+            find->sw |= 10;
+            buffer->b.x = screen->mark_begin.x;
+            buffer->b.y = screen->mark_begin.y;
         default:
             break;
         }
     }
-    freeostr (o);
+    freeostr (replace_options);
     if (ret != WPE_ESC)
     {
-        while (e_repeat_search (f) && ((ret == AltA) || (!found)))
+        while (e_repeat_search (window) && ((ret == AltA) || (!found)))
         {
             found++;
-            if (f->a.y < 11)
+            if (window->a.y < 11)
             {
-                s->c.y = b->b.y - 1;
+                screen->c.y = buffer->b.y - 1;
             }
-            e_schirm (f, 1);
+            e_schirm (window, 1);
             c = 'Y';
-            if (fd->sw & 16)
-                c = e_message (1, "String found:\nReplace this occurrence ?", f);
+            if (find->sw & 16)
+                c = e_message (1, "String found:\nReplace this occurrence ?", window);
             if (c == WPE_ESC)
                 break;
             if (c == 'Y')
             {
                 rep++;
-                e_add_undo ('s', b, s->fa.x, b->b.y, fd->sn);
+                e_add_undo ('s', buffer, screen->fa.x, buffer->b.y, find->sn);
                 e_undo_sw = 1;
-                e_del_nchar (b, s, s->fa.x, b->b.y, fd->sn);
-                e_ins_nchar (b, s, (unsigned char *) fd->replace, s->fa.x,
-                             b->b.y, fd->rn);
+                e_del_nchar (buffer, screen, screen->fa.x, buffer->b.y, find->sn);
+                e_ins_nchar (buffer, screen, (unsigned char *) find->replace, screen->fa.x,
+                             buffer->b.y, find->rn);
                 e_undo_sw = 0;
-                s->fe.x = s->fa.x + fd->rn;
-                b->b.x = !(fd->sw & 4) ? s->fe.x : s->fa.x;
-                e_schirm (f, 1);
+                screen->fe.x = screen->fa.x + find->rn;
+                buffer->b.x = !(find->sw & 4) ? screen->fe.x : screen->fa.x;
+                e_schirm (window, 1);
             }
         }
         if (found)
         {
             sprintf (strTemp, "Found %d\nReplaced %d", found, rep);
-            e_message (0, strTemp, f);
+            e_message (0, strTemp, window);
         }
         else
-            e_message (0, e_msg[ERR_GETSTRING], f);
+            e_message (0, e_msg[ERR_GETSTRING], window);
     }
-    return (0);
+    return 0;
 }

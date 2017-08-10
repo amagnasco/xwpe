@@ -40,13 +40,16 @@
 int
 main (int argc, char **argv)
 {
-    we_colorset *fb;
-    ECNT *cn;
-    int i, err = 0, g[4];
+    we_colorset_t *fb;
+    we_control_t *cn;
+    int i, err = 0;
+#if MOUSE
+    int g[4];
+#endif
     int so = 0, sd = 1;
     char *tp;
 
-    if ((cn = (ECNT *) malloc (sizeof (ECNT))) == NULL)
+    if ((cn = (we_control_t *) malloc (sizeof (we_control_t))) == NULL)
     {
         printf (" Fatal Error: %s\n", e_msg[ERR_LOWMEM]);
         return 0;
@@ -183,4 +186,3 @@ main (int argc, char **argv)
     WpeExit (0);
     return 0;
 }
-

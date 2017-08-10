@@ -15,35 +15,35 @@
 #include "we_progn.h"
 #include "we_prog.h"
 
-int e_p_show_messages (We_window * f);
-int e_p_show_watches (We_window * f);
-int e_blck_gt_beg (We_window * f);
-int e_blck_gt_end (We_window * f);
-int e_blck_mrk_line (We_window * f);
-int e_blck_mrk_all (We_window * f);
-int e_blck_to_left (We_window * f);
-int e_blck_to_right (We_window * f);
-int e_cl_project (We_window * f);
-int e_p_add_item (We_window * f);
-int e_p_del_item (We_window * f);
-int e_show_project (We_window * f);
-int e_info (We_window * f);
-int e_help_options (We_window * f);
-int e_hp_ret (We_window * f);
-int e_hp_back (We_window * f);
-int e_hp_prev (We_window * f);
-int e_hp_next (We_window * f);
+int e_p_show_messages (we_window_t * f);
+int e_p_show_watches (we_window_t * f);
+int e_blck_gt_beg (we_window_t * f);
+int e_blck_gt_end (we_window_t * f);
+int e_blck_mrk_line (we_window_t * f);
+int e_blck_mrk_all (we_window_t * f);
+int e_blck_to_left (we_window_t * f);
+int e_blck_to_right (we_window_t * f);
+int e_cl_project (we_window_t * f);
+int e_p_add_item (we_window_t * f);
+int e_p_del_item (we_window_t * f);
+int e_show_project (we_window_t * f);
+int e_info (we_window_t * f);
+int e_help_options (we_window_t * f);
+int e_hp_ret (we_window_t * f);
+int e_hp_back (we_window_t * f);
+int e_hp_prev (we_window_t * f);
+int e_hp_next (we_window_t * f);
 OPTK WpeFillSubmenuItem (char *t, int x, char o, int (*fkt) ());
 
 /* main menu control bar */
 int
-WpeHandleMainmenu (int n, We_window * f)
+WpeHandleMainmenu (int n, we_window_t * f)
 {
     extern int e_mn_men;
     int i, c = 255, nold = n <= 0 ? 1 : n - 1;
     extern OPT opt[];
     extern char *e_hlp, *e_hlp_str[];
-    ECNT *cn = f->ed;
+    we_control_t *cn = f->ed;
     MENU *mainmenu = malloc (MENOPT * sizeof (MENU));
 
     for (i = 0; i < MENOPT; i++)
@@ -624,13 +624,13 @@ WpeHandleMainmenu (int n, We_window * f)
 /* sub menu box */
 int
 WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
-                  We_window * f)
+                  we_window_t * f)
 {
 #if MOUSE
     extern struct mouse e_mouse;
     extern int e_mn_men;
 #endif
-    view *pic;
+    we_view_t *pic;
     int i, n = 0, nold = 1, c = 0;
     extern OPT opt[];
 

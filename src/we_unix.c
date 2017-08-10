@@ -60,10 +60,10 @@ int (*fk_u_cursor) (int x);
 int (*e_u_initscr) (int argc, char *argv[]);
 int (*fk_u_putchar) (int c);
 int (*u_bioskey) (void);
-int (*e_frb_u_menue) (int sw, int xa, int ya, We_window * f, int md);
-COLOR (*e_s_u_clr) (int f, int b);
-COLOR (*e_n_u_clr) (int fb);
-void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, We_window * f, int sw);
+int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * f, int md);
+we_color_t (*e_s_u_clr) (int f, int b);
+we_color_t (*e_n_u_clr) (int fb);
+void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * f, int sw);
 int (*fk_mouse) (int g[]);
 int (*e_u_refresh) (void);
 int (*e_u_getch) (void);
@@ -79,15 +79,15 @@ int (*e_u_cp_X_to_buffer) (struct FNST * f);
 int (*e_u_copy_X_buffer) (struct FNST * f);
 int (*e_u_paste_X_buffer) (struct FNST * f);
 int (*e_u_kbhit) (void);
-int (*e_u_change) (view * pic);
+int (*e_u_change) (we_view_t * pic);
 int (*e_u_ini_size) (void);
 int (*e_get_pic_urect) (int xa, int ya, int xe, int ye,
                         struct view_struct * pic);
 int (*e_u_s_sys_end) (void);
 int (*e_u_s_sys_ini) (void);
-void (*e_u_setlastpic) (view * pic);
+void (*e_u_setlastpic) (we_view_t * pic);
 
-we_colorset *u_fb, *x_fb;
+we_colorset_t *u_fb, *x_fb;
 
 char MCI, MCA, RD1, RD2, RD3, RD4, RD5, RD6, WBT;
 char RE1, RE2, RE3, RE4, RE5, RE6;
@@ -107,7 +107,7 @@ void *libxwpe;
 char *extbyte = NULL, *altextbyte = NULL;
 #endif
 char *altschirm = NULL;
-view *e_X_l_pic = NULL;
+we_view_t *e_X_l_pic = NULL;
 
 void
 WpeNullFunction (void)
@@ -437,10 +437,10 @@ static int e_bool_exit = 0;
 void
 e_err_save ()
 {
-    ECNT *cn = WpeEditor;
+    we_control_t *cn = WpeEditor;
     int i;
     unsigned long maxname;
-    We_window *f;
+    we_window_t *f;
     BUFFER *b;
 
     /* Quick fix to multiple emergency save problems */
@@ -802,7 +802,7 @@ e_file_info (char *filen, char *str, int *num, int sw)
 }
 
 void
-ini_repaint (ECNT * cn)
+ini_repaint (we_control_t * cn)
 {
     e_cls (cn->fb->df.fb, cn->fb->dc);
     e_ini_desk (cn);
@@ -815,12 +815,12 @@ end_repaint ()
 }
 
 int
-e_recover (ECNT * cn)
+e_recover (we_control_t * cn)
 {
     struct dirfile *files;
-    We_window *f = NULL;
+    we_window_t *f = NULL;
     BUFFER *b;
-    we_screen *s;
+    we_screen_t *s;
     int i;
 
     files = e_find_files ("*.ESV", 1);
@@ -853,9 +853,9 @@ e_recover (ECNT * cn)
 }
 
 int
-e_frb_t_menue (int sw, int xa, int ya, We_window * f, int md)
+e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
 {
-    COLOR *frb = &(f->fb->er);
+    we_color_t *frb = &(f->fb->er);
     int i, j, y, c = 1, fb, fsv;
 
     if (md == 1)
@@ -899,7 +899,7 @@ e_frb_t_menue (int sw, int xa, int ya, We_window * f, int md)
 
 /*   draw colors box  */
 void
-e_pr_t_col_kasten (int xa, int ya, int x, int y, We_window * f, int sw)
+e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
 {
     int rfrb, xe = xa + 14, ye = ya + 8;
 
