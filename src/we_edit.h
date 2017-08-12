@@ -12,7 +12,8 @@
 #include "we_mouse.h"
 #include "we_wind.h"
 
-/*   we_edit.c   */
+extern int e_undo_sw;
+
 int e_edit(we_control_t* cn, char* filename);
 int e_eingabe(we_control_t* e);
 int e_tst_cur(int c, we_control_t* e);

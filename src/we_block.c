@@ -15,8 +15,6 @@
 #include "we_edit.h"
 #include <ctype.h>
 
-extern int e_undo_sw;
-
 /*	delete block */
 /**
  * e_blck_del.
