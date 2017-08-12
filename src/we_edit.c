@@ -1864,7 +1864,8 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
         b->bf[y].nrc = strlen ((const char *) b->bf[y].s);
     }
     e_undo_sw--;
-    sc_txt_4 (y, b, 0);
+    if(b->f->c_sw && !e_undo_sw)
+        e_sc_nw_txt(y, b, 0);
     return (x + n);
 }
 
@@ -1942,7 +1943,8 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
             *(b->bf[ya + 1].s + j - i - 1) = WPE_WR;
             b->bf[ya + 1].len = e_str_len (b->bf[ya + 1].s);
             b->bf[ya + 1].nrc = strlen ((const char *) b->bf[ya + 1].s);
-            sc_txt_4 (ya, b, 1);
+            if(b->f->c_sw && !e_undo_sw)
+                e_sc_nw_txt(ya, b, 1);
         }
         else
         {
@@ -2005,7 +2007,8 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
     b->bf[ya].len = e_str_len (b->bf[ya].s);
     b->bf[ya].nrc = strlen ((const char *) b->bf[ya].s);
     e_undo_sw--;
-    sc_txt_4 (ya, b, 0);
+    if(b->f->c_sw && !e_undo_sw)
+        e_sc_nw_txt(ya, b, 0);
     return (xa + n);
 }
 

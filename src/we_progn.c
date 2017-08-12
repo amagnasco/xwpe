@@ -563,22 +563,8 @@ e_sc_nw_txt (int y, BUFFER * b, int sw)
             for (i = y; i < b->mxlines - 1; i++)
             {
                 out =
-                    isspace (b->bf[i + 1].
-                             s[b->f->c_st->continue_column]) ? 0 : e_scfbol (b->
-                                     bf
-                                     [i].
-                                     len,
-                                     b->
-                                     f->
-                                     c_sw
-                                     [i],
-                                     b->
-                                     bf
-                                     [i].
-                                     s,
-                                     b->
-                                     f->
-                                     c_st);
+                    isspace (b->bf[i + 1].s[b->f->c_st->continue_column]) ?  0
+                    : e_scfbol (b->bf[i].len, b-> f-> c_sw [i], b->bf[i].s, b->f->c_st);
                 if (out == b->f->c_sw[i + 1])
                     break;
                 else
