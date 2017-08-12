@@ -11,6 +11,7 @@
 #include "messages.h"
 #include "options.h"
 #include "model.h"
+#include "we_control.h"
 #include "edit.h"
 #include "we_edit.h"
 #include "utils.h"
@@ -25,7 +26,8 @@
 #include <unistd.h>
 #endif
 
-int disable_add_undo = 0, e_redo_sw = 0;
+int disable_add_undo = 0;
+int e_redo_sw = 0;
 
 char *e_make_postf ();
 int e_del_a_ind ();

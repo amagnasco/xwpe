@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include "keys.h"
 #include "model.h"
+#include "we_control.h"
 #include "edit.h"
 #include "WeString.h"
 #include "we_e_aus.h"

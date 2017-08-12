@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include "keys.h"
 #include "model.h"
+#include "we_control.h"
 #include "edit.h"
 #include "we_unix.h"
 #include "WeString.h"

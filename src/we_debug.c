@@ -14,6 +14,7 @@
 #include "messages.h"
 #include "options.h"
 #include "model.h"
+#include "we_control.h"
 #include "edit.h"
 #include "we_debug.h"
 #include "we_prog.h"

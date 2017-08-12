@@ -8,6 +8,7 @@
 #include <string.h>
 #include "keys.h"
 #include "model.h"		/* exchange for D.S.  */
+#include "we_control.h"
 #include "options.h"
 #include <signal.h>
 
