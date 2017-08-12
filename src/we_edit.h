@@ -12,7 +12,7 @@
 #include "we_mouse.h"
 #include "we_wind.h"
 
-extern int e_undo_sw;
+extern int disable_add_undo;
 
 int e_edit(we_control_t* cn, char* filename);
 int e_eingabe(we_control_t* e);

@@ -25,7 +25,7 @@
 #include <unistd.h>
 #endif
 
-int e_undo_sw = 0, e_redo_sw = 0;
+int disable_add_undo = 0, e_redo_sw = 0;
 
 char *e_make_postf ();
 int e_del_a_ind ();
@@ -1819,7 +1819,7 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
 
     f->save += n;
     e_add_undo ('r', b, x, y, n);
-    e_undo_sw++;
+    disable_add_undo++;
     len = b->bf[y].len;
     if (*(b->bf[y].s + len) == WPE_WR)
         len++;
@@ -1863,8 +1863,8 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
         b->bf[y].len = e_str_len (b->bf[y].s);
         b->bf[y].nrc = strlen ((const char *) b->bf[y].s);
     }
-    e_undo_sw--;
-    if(b->f->c_sw && !e_undo_sw)
+    disable_add_undo--;
+    if(b->f->c_sw && !disable_add_undo)
         e_sc_nw_txt(y, b, 0);
     return (x + n);
 }
@@ -1879,7 +1879,7 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
 
     f->save += n;
     e_add_undo ('a', b, xa, ya, n);
-    e_undo_sw++;
+    disable_add_undo++;
     if (b->bf[ya].len + n >= b->mx.x - 1)
     {
         if (xa < b->bf[ya].len)
@@ -1943,7 +1943,7 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
             *(b->bf[ya + 1].s + j - i - 1) = WPE_WR;
             b->bf[ya + 1].len = e_str_len (b->bf[ya + 1].s);
             b->bf[ya + 1].nrc = strlen ((const char *) b->bf[ya + 1].s);
-            if(b->f->c_sw && !e_undo_sw)
+            if(b->f->c_sw && !disable_add_undo)
                 e_sc_nw_txt(ya, b, 1);
         }
         else
@@ -2006,8 +2006,8 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
     b->b.y = ya;
     b->bf[ya].len = e_str_len (b->bf[ya].s);
     b->bf[ya].nrc = strlen ((const char *) b->bf[ya].s);
-    e_undo_sw--;
-    if(b->f->c_sw && !e_undo_sw)
+    disable_add_undo--;
+    if(b->f->c_sw && !disable_add_undo)
         e_sc_nw_txt(ya, b, 0);
     return (xa + n);
 }
@@ -2333,22 +2333,22 @@ e_remove_undo (Undo * ud, int sw)
  *  d	Uses d to remember delete characters in a block
  *  c	Uses c to remember a block copy
  *  v   Uses v to paste block
- *  a	Guess: ?? add characters TODO: verify meaning
- *  l	Guess: ?? Delete line TODO: verify meaning
+ *  a	Uses a to add characters
+ *  l	Uses l to delete line
  *  r	Uses r to remember deleted characters on one line
- *  p	Guess: ?? put char over another char (replace) TODO: verify meaning
- *  y	Guess: ?? redo a previous undo TODO: verify meaning
+ *  p	Uses p to put char over another char (replace)
+ *  y	Uses y to redo a previous undo of l
  *  s	Uses s to replace a string of characters (verified with test)
  *
- *  Remark: the **global** e_undo_sw is a disabler for this function.
- *  if e_undo_sw is true, this function does nothing.
+ *  Remark: the **global** disable_add_undo is a disabler for this function.
+ *  if disable_add_undo is true, this function does nothing.
  */
 int
 e_add_undo (int sw, BUFFER * b, int x, int y, int n)
 {
     Undo *next;
 
-    if (e_undo_sw)
+    if (disable_add_undo)
         return (0);
     if (!e_redo_sw && b->rd)
         b->rd = e_remove_undo (b->rd, WpeEditor->numundo + 1);
@@ -2428,9 +2428,9 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         bn->bf[0].len = 0;
         bn->bf[0].nrc = 1;
         next->u.pt = bn;
-        e_undo_sw = 1;
+        disable_add_undo = 1;
         e_move_block (0, 0, b, bn, f);
-        e_undo_sw = 0;
+        disable_add_undo = 0;
     }
     if (e_redo_sw == 1)
         b->rd = next;
@@ -2483,7 +2483,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         if (undo->type == 's')
         {
             e_add_undo ('s', b, undo->b.x, undo->b.y, undo->a.y);
-            e_undo_sw = 1;
+            disable_add_undo = 1;
             e_del_nchar (b, s, undo->b.x, undo->b.y, undo->a.y);
         }
         if (*((char *) undo->u.pt) == '\n' && undo->a.x == 1)
@@ -2497,7 +2497,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         else
             e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->b.x, undo->b.y,
                          undo->a.x);
-        e_undo_sw = 0;
+        disable_add_undo = 0;
         s->mark_begin = undo->b;
         s->mark_end.y = undo->b.y;
         s->mark_end.x = undo->b.x + undo->a.x;
@@ -2539,11 +2539,11 @@ e_make_rudo (we_window_t * window, int doing_redo)
     else if (undo->type == 'd')
     {
         BUFFER *bn = (BUFFER *) undo->u.pt;
-        e_undo_sw = 1;
+        disable_add_undo = 1;
         s->mark_begin = bn->f->s->mark_begin;
         s->mark_end = bn->f->s->mark_end;
         e_move_block (undo->b.x, undo->b.y, bn, b, window);
-        e_undo_sw = 0;
+        disable_add_undo = 0;
         free (bn->f->s);
         free (bn->f);
         free (bn->bf[0].s);
