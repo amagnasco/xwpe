@@ -2330,23 +2330,23 @@ e_remove_undo (Undo * ud, int sw)
  * Function to add undo information to the list of things to undo.
  * What the function does depends on the value of the integer sw.
  *
- * sw  action
- * --  ------
- *  d	Uses d to remember delete characters in a block
- *  c	Uses c to remember a block copy
- *  v   Uses v to paste block
- *  a	Uses a to add characters
- *  l	Uses l to delete line
- *  r	Uses r to remember deleted characters on one line
- *  p	Uses p to put char over another char (replace)
- *  y	Uses y to redo a previous undo of l
- *  s	Uses s to replace a string of characters (verified with test)
+ * type  action
+ * ----  ------
+ *  d    Uses d to remember delete characters in a block
+ *  c    Uses c to remember a block copy
+ *  v    Uses v to paste block
+ *  a    Uses a to add characters
+ *  l    Uses l to delete line
+ *  r    Uses r to remember deleted characters on one line
+ *  p    Uses p to put char over another char (replace)
+ *  y    Uses y to redo a previous undo of l
+ *  s    Uses s to replace a string of characters (verified with test)
  *
  *  Remark: the **global** disable_add_undo is a disabler for this function.
  *  if disable_add_undo is true, this function does nothing.
  */
 int
-e_add_undo (int sw, BUFFER * b, int x, int y, int n)
+e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
 {
     Undo *next;
 
@@ -2359,7 +2359,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         e_error (e_msg[ERR_LOWMEM], 0, b->fb);
         return (-1);
     }
-    next->type = sw;
+    next->type = undo_type;
     next->b.x = x;
     next->b.y = y;
     next->a.x = n;
@@ -2367,10 +2367,10 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         next->next = b->rd;
     else
         next->next = b->ud;
-    if (sw == 'a');
-    else if (sw == 'p')
+    if (undo_type == 'a');
+    else if (undo_type == 'p')
         next->u.c = b->bf[y].s[x];
-    else if (sw == 'r' || sw == 's')
+    else if (undo_type == 'r' || undo_type == 's')
     {
         char *str = malloc (n+1);
         int i;
@@ -2389,16 +2389,16 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         next->a.y = e_redo_sw == 1 ? b->cn->fd.sn : b->cn->fd.rn;
 
     }
-    else if (sw == 'l')
+    else if (undo_type == 'l')
         next->u.pt = b->bf[y].s;
-    else if (sw == 'c' || sw == 'v')
+    else if (undo_type == 'c' || undo_type == 'v')
     {
         we_screen_t *s = b->cn->f[b->cn->mxedt]->s;
 
         next->a = s->mark_begin;
         next->e = s->mark_end;
     }
-    else if (sw == 'd')
+    else if (undo_type == 'd')
     {
         BUFFER *bn = malloc (sizeof (BUFFER));
         we_screen_t *sn = malloc (sizeof (we_screen_t));
