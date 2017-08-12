@@ -22,6 +22,7 @@ build*
 *.libs*
 *.la
 *.lo
+.ycm*
 src/we
 src/wpe
 src/xwpe
