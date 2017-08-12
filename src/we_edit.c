@@ -27,7 +27,8 @@
 #endif
 
 int disable_add_undo = 0;
-int e_redo_sw = 0;
+
+static int e_redo_sw = 0;
 
 char *e_make_postf ();
 int e_del_a_ind ();
