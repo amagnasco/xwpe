@@ -271,7 +271,7 @@ e_edt_einf (we_window_t * f)
     b = f->b;
     if (f->ins == 8)
         return (0);
-    disable_add_undo = 1;
+    global_disable_add_undo = 1;
 
     /**********************/
     y = b->b.y;
@@ -286,7 +286,7 @@ e_edt_einf (we_window_t * f)
     e_brk_recalc (f, y, len);		// recalculate breakpoints
     /**********************/
 
-    disable_add_undo = 0;
+    global_disable_add_undo = 0;
     e_add_undo ('c', b, b->b.x, b->b.y, 0);
     sc_txt_2 (f);
     f->save = b->cn->maxchg + 1;
@@ -318,9 +318,9 @@ e_blck_move (we_window_t * f)
             ka.x = f->ed->f[f->ed->mxedt]->s->mark_end.x +
                    f->ed->f[f->ed->mxedt]->s->mark_begin.x - b->b.x;
     }
-    disable_add_undo = 1;
+    global_disable_add_undo = 1;
     e_move_block (b->b.x, b->b.y, b, b, f);
-    disable_add_undo = 0;
+    global_disable_add_undo = 0;
     e_add_undo ('v', b, ka.x, ka.y, 0);
     f->save = b->cn->maxchg + 1;
     return (0);
@@ -523,9 +523,9 @@ e_blck_copy (we_window_t * f)
     if (f->ins == 8)
         return (0);
     f->save = 1;
-    disable_add_undo = 1;
+    global_disable_add_undo = 1;
     e_copy_block (b->b.x, b->b.y, b, b, f);
-    disable_add_undo = 0;
+    global_disable_add_undo = 0;
     e_add_undo ('c', b, b->b.x, b->b.y, 0);
     sc_txt_2 (f);
     f->save = b->cn->maxchg + 1;
@@ -1317,11 +1317,11 @@ e_replace (we_window_t *window)
             {
                 rep++;
                 e_add_undo ('s', buffer, screen->fa.x, buffer->b.y, find->sn);
-                disable_add_undo = 1;
+                global_disable_add_undo = 1;
                 e_del_nchar (buffer, screen, screen->fa.x, buffer->b.y, find->sn);
                 e_ins_nchar (buffer, screen, (unsigned char *) find->replace, screen->fa.x,
                              buffer->b.y, find->rn);
-                disable_add_undo = 0;
+                global_disable_add_undo = 0;
                 screen->fe.x = screen->fa.x + find->rn;
                 buffer->b.x = !(find->sw & 4) ? screen->fe.x : screen->fa.x;
                 e_schirm (window, 1);
