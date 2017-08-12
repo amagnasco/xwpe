@@ -39,6 +39,6 @@ extern WOPT eblst_o[];
 
 void ECNT_Init(we_control_t * cn);
 
-extern struct CNT *WpeEditor;
+extern struct CNT *global_editor_control;
 
 #endif

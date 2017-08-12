@@ -142,7 +142,7 @@ e_error (char *text, int sw, we_colorset_t * f)
         e_cls (0, ' ');
     fk_cursor (1);
     if (sw == 1)
-        e_quit (WpeEditor->f[WpeEditor->mxedt]);
+        e_quit (global_editor_control->f[global_editor_control->mxedt]);
     if (sw > 0)
         WpeExit (sw);
     return (sw);

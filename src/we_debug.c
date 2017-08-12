@@ -520,10 +520,10 @@ e_d_getchar ()
             e_d_switch_out (0);
             i =
                 e_message (1, e_d_msg[ERR_CTRLCPRESS],
-                           WpeEditor->f[WpeEditor->mxedt]);
+                           global_editor_control->f[global_editor_control->mxedt]);
             if (i == 'Y')
             {
-                e_d_quit (WpeEditor->f[WpeEditor->mxedt]);
+                e_d_quit (global_editor_control->f[global_editor_control->mxedt]);
                 return (D_CBREAK);
             }
             else
@@ -3060,7 +3060,7 @@ e_d_error (char *s)
     e_d_switch_out (0);
     if (s[(len = strlen (s) - 1)] == '\n')
         s[len] = '\0';
-    return (e_error (s, 0, WpeEditor->fb));
+    return (e_error (s, 0, global_editor_control->fb));
 }
 
 int

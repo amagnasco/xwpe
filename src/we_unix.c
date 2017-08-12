@@ -438,7 +438,7 @@ static int e_bool_exit = 0;
 void
 e_err_save ()
 {
-    we_control_t *cn = WpeEditor;
+    we_control_t *cn = global_editor_control;
     int i;
     unsigned long maxname;
     we_window_t *f;

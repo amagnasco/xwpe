@@ -53,7 +53,7 @@ extern int col_num;
 extern we_colorset_t *u_fb, *x_fb;
 
 /* globals */
-struct CNT *WpeEditor;
+struct CNT *global_editor_control;
 int fk__cursor = 0;
 
 WOPT *eblst, *fblst, *mblst, *dblst, *xblst, *wblst, *rblst;

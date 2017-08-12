@@ -794,7 +794,7 @@ e_add_synt_tl (char *filename, we_window_t * f)
 E_AFILE *
 e_aopen (char *name, char *path, int mode)
 {
-    we_control_t *cn = WpeEditor;
+    we_control_t *cn = global_editor_control;
     E_AFILE *ep = malloc (sizeof (E_AFILE));
     char str[256];
     int i, j;

@@ -58,7 +58,7 @@ main (int argc, char **argv)
     e_ini_unix (&argc, argv);
     (*e_u_switch_screen) (1);
     fb = e_ini_farbe ();
-    WpeEditor = cn;
+    global_editor_control = cn;
     cn->fb = fb;
 
     info_file = malloc ((strlen (INFO_DIR) + 1) * sizeof (char));

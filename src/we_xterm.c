@@ -366,7 +366,7 @@ e_ini_size ()
 int
 e_X_sw_color ()
 {
-    we_colorset_t *fb = WpeEditor->fb;
+    we_colorset_t *fb = global_editor_control->fb;
     fb->er = e_n_clr (A_Normal);
     fb->et = e_n_clr (A_Normal);
     fb->ez = e_n_clr (A_Reverse);
@@ -534,7 +534,7 @@ e_x_change (we_view_t * pic)
             {
                 MAXSCOL = size_hints.width / WpeXInfo.font_width;
                 MAXSLNS = size_hints.height / WpeXInfo.font_height;
-                e_x_repaint_desk (WpeEditor->f[WpeEditor->mxedt]);
+                e_x_repaint_desk (global_editor_control->f[global_editor_control->mxedt]);
             }
             break;
         case KeyPress:
@@ -627,7 +627,7 @@ e_x_getch ()
             {
                 MAXSCOL = size_hints.width / WpeXInfo.font_width;
                 MAXSLNS = size_hints.height / WpeXInfo.font_height;
-                e_x_repaint_desk (WpeEditor->f[WpeEditor->mxedt]);
+                e_x_repaint_desk (global_editor_control->f[global_editor_control->mxedt]);
             }
             break;
         case ClientMessage:
@@ -642,7 +642,7 @@ e_x_getch ()
                                                    data.l[0] ==
                                                    WpeXInfo.delete_atom)))
             {
-                e_quit (WpeEditor->f[WpeEditor->mxedt]);
+                e_quit (global_editor_control->f[global_editor_control->mxedt]);
             }
             break;
         case KeyPress:

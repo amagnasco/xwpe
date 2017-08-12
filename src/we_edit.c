@@ -1816,7 +1816,7 @@ e_del_line (int yd, BUFFER * b, we_screen_t * s)
 int
 e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
 {
-    we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
+    we_window_t *f = global_editor_control->f[global_editor_control->mxedt];
     int len, i, j;
 
     f->save += n;
@@ -1876,7 +1876,7 @@ int
 e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
              int n)
 {
-    we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
+    we_window_t *f = global_editor_control->f[global_editor_control->mxedt];
     int i, j;
 
     f->save += n;
@@ -2137,13 +2137,13 @@ WpeFilenameToPathFile (char *filename, char **path, char **file)
     }
     if ((!tmp) || ((filename + 1 == tmp) && (*filename == '.')))
     {
-        *path = WpeGetCurrentDir (WpeEditor);
+        *path = WpeGetCurrentDir (global_editor_control);
     }
     else
     {
         if (*filename != DIRC)
         {
-            if ((cur_dir = WpeGetCurrentDir (WpeEditor)) == NULL)
+            if ((cur_dir = WpeGetCurrentDir (global_editor_control)) == NULL)
             {
                 free (*file);
                 *file = NULL;
@@ -2297,7 +2297,7 @@ e_remove_undo (Undo * ud, int sw)
     if (ud == NULL)
         return (ud);
     ud->next = e_remove_undo (ud->next, sw + 1);
-    if (sw > WpeEditor->numundo)
+    if (sw > global_editor_control->numundo)
     {
         if (ud->type == 'l')
             free (ud->u.pt);
@@ -2353,7 +2353,7 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
     if (disable_add_undo)
         return (0);
     if (!e_redo_sw && b->rd)
-        b->rd = e_remove_undo (b->rd, WpeEditor->numundo + 1);
+        b->rd = e_remove_undo (b->rd, global_editor_control->numundo + 1);
     if ((next = malloc (sizeof (Undo))) == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, b->fb);
