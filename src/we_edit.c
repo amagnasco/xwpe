@@ -27,8 +27,18 @@
 #endif
 
 int global_disable_add_undo = 0;
-
-static int e_redo_sw = 0;
+/**
+ * e_phases enumerates the phases of editting as far as undo and redo are concerned.
+ *
+ * In the EDIT_PHASE the program is editting and changes are queued in the undo queue.
+ * In the UNDO_PHASE the program undoes previous changes and moves the undo registration to
+ * the redo queue.
+ * In the UNDO_PHASE the program is redoing an undone action and moved the undo registration
+ * from the redo queue to the undo queue.
+ *
+ */
+enum e_phases {EDIT_PHASE, UNDO_PHASE, REDO_PHASE};
+static enum e_phases e_phase = EDIT_PHASE;
 
 char *e_make_postf ();
 int e_del_a_ind ();
@@ -2328,8 +2338,11 @@ e_remove_undo (Undo * ud, int sw)
 }
 
 /**
- * Function to add undo information to the list of things to undo.
- * What the function does depends on the value of the integer sw.
+ * Function to add undo information to the list of things to undo
+ * or to the list of things to redo.
+ * What the function does depends on the value of the integer undo_type.
+ * Remark that the options file (if it exists) has a maximum number of undo's and redo's.
+ * The default is a maximum of 10 that you can change using the Options/Editor menu-option.
  *
  * type  action
  * ----  ------
@@ -2353,7 +2366,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
 
     if (global_disable_add_undo)
         return (0);
-    if (!e_redo_sw && b->rd)
+    if (e_phase == EDIT_PHASE && b->rd)
         b->rd = e_remove_undo (b->rd, global_editor_control->numundo + 1);
     if ((next = malloc (sizeof (Undo))) == NULL)
     {
@@ -2364,7 +2377,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
     next->b.x = x;
     next->b.y = y;
     next->a.x = n;
-    if (e_redo_sw == 1)
+    if (e_phase == UNDO_PHASE)
         next->next = b->rd;
     else
         next->next = b->ud;
@@ -2387,7 +2400,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         str[n] = '\0';
         next->u.pt = str;
 
-        next->a.y = e_redo_sw == 1 ? b->cn->fd.sn : b->cn->fd.rn;
+        next->a.y = e_phase == UNDO_PHASE ? b->cn->fd.sn : b->cn->fd.rn;
 
     }
     else if (undo_type == 'l')
@@ -2435,7 +2448,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         e_move_block (0, 0, b, bn, f);
         global_disable_add_undo = 0;
     }
-    if (e_redo_sw == 1)
+    if (e_phase == UNDO_PHASE)
         b->rd = next;
     else
     {
@@ -2479,7 +2492,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         return (-1);
     }
     window = window->ed->f[window->ed->mxedt];
-    e_redo_sw = doing_redo ? 2 : 1;
+    e_phase = doing_redo ? REDO_PHASE : UNDO_PHASE;
     b->b = undo->b;
     if (undo->type == 'r' || undo->type == 's')
     {
@@ -2558,7 +2571,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         b->rd = undo->next;
     else
         b->ud = undo->next;
-    e_redo_sw = 0;
+    e_phase = EDIT_PHASE;
     free (undo);
     e_schirm (window, 1);
     e_cursor (window, 1);
