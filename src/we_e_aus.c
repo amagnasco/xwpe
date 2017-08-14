@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include "keys.h"
 #include "model.h"
+#include "we_control.h"
 #include "edit.h"
 #include "WeString.h"
 #include "we_e_aus.h"
@@ -334,10 +335,10 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
                 jc = e_mouse.x - x - 1 < l ? e_mouse.x - x - 1 : l;
                 if (c == -2)
                 {
-                    int len = WpeEditor->f[0]->b->bf[0].len;
+                    int len = global_editor_control->f[0]->b->bf[0].len;
 #ifndef NO_XWINDOWS
                     if (bioskey () & 8)
-                        e_cp_X_to_buffer (WpeEditor->f[WpeEditor->mxedt]);
+                        e_cp_X_to_buffer (global_editor_control->f[global_editor_control->mxedt]);
 #endif
                     while (e_mshit ())
                         ;
@@ -352,7 +353,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
                     for (i = l; i >= jc; i--)
                         tmp[i + len] = tmp[i];
                     for (i = jc; i < jc + len; i++)
-                        tmp[i] = WpeEditor->f[0]->b->bf[0].s[i - jc];
+                        tmp[i] = global_editor_control->f[0]->b->bf[0].s[i - jc];
                     jc += len;
                     l += len;
                 }
@@ -389,10 +390,10 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
             sond = !sond;
         else if (c == PASTE || c == ShiftEin || c == CtrlV || c == AltEin)
         {
-            int len = WpeEditor->f[0]->b->bf[0].len;
+            int len = global_editor_control->f[0]->b->bf[0].len;
 #ifndef NO_XWINDOWS
             if (WpeIsXwin () && c == AltEin)
-                e_cp_X_to_buffer (WpeEditor->f[WpeEditor->mxedt]);
+                e_cp_X_to_buffer (global_editor_control->f[global_editor_control->mxedt]);
 #endif
             if (first == 1)
             {
@@ -405,7 +406,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
             for (i = l; i >= jc; i--)
                 tmp[i + len] = tmp[i];
             for (i = jc; i < jc + len; i++)
-                tmp[i] = WpeEditor->f[0]->b->bf[0].s[i - jc];
+                tmp[i] = global_editor_control->f[0]->b->bf[0].s[i - jc];
             jc += len;
             l += len;
         }

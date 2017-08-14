@@ -109,5 +109,3 @@ extern char *extbyte, *altextbyte;
     }									\
 }
 #define sc_txt_3(y, b, sw) {  if(b->f->c_sw) e_sc_nw_txt(y, b, sw);  }
-#define sc_txt_4(y, b, sw)						\
-{  if(b->f->c_sw && !e_undo_sw) e_sc_nw_txt(y, b, sw);  }

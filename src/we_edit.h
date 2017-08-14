@@ -12,7 +12,8 @@
 #include "we_mouse.h"
 #include "we_wind.h"
 
-/*   we_edit.c   */
+extern int global_disable_add_undo;
+
 int e_edit(we_control_t* cn, char* filename);
 int e_eingabe(we_control_t* e);
 int e_tst_cur(int c, we_control_t* e);
@@ -37,7 +38,7 @@ int e_lst_zeichen(int x, int y, int n, int sw, int frb, int max, int iold,
 void e_mouse_bar(int x, int y, int n, int sw, int frb);
 int e_chr_sp(int x, BUFFER* b, we_window_t* f);
 Undo* e_remove_undo(Undo* ud, int sw);
-int e_add_undo(int sw, BUFFER* b, int x, int y, int n);
+int e_add_undo(int undo_type, BUFFER* b, int x, int y, int n);
 int e_make_undo(we_window_t* f);
 int e_make_redo(we_window_t* f);
 int e_make_rudo(we_window_t* f, int sw);

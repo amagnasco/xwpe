@@ -3,9 +3,6 @@
 
 #include "config.h"
 
-extern struct CNT *WpeEditor;
-
-
 /* Checks if programming editor is running (old variable currently used) */
 #define WpeIsProg() (e_we_sw & 2)
 

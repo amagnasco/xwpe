@@ -10,6 +10,7 @@
 #include "messages.h"
 #include "options.h"
 #include "model.h"
+#include "we_control.h"
 #include "edit.h"
 #include "we_progn.h"
 #include "WeExpArr.h"
@@ -563,22 +564,8 @@ e_sc_nw_txt (int y, BUFFER * b, int sw)
             for (i = y; i < b->mxlines - 1; i++)
             {
                 out =
-                    isspace (b->bf[i + 1].
-                             s[b->f->c_st->continue_column]) ? 0 : e_scfbol (b->
-                                     bf
-                                     [i].
-                                     len,
-                                     b->
-                                     f->
-                                     c_sw
-                                     [i],
-                                     b->
-                                     bf
-                                     [i].
-                                     s,
-                                     b->
-                                     f->
-                                     c_st);
+                    isspace (b->bf[i + 1].s[b->f->c_st->continue_column]) ?  0
+                    : e_scfbol (b->bf[i].len, b-> f-> c_sw [i], b->bf[i].s, b->f->c_st);
                 if (out == b->f->c_sw[i + 1])
                     break;
                 else
@@ -807,7 +794,7 @@ e_add_synt_tl (char *filename, we_window_t * f)
 E_AFILE *
 e_aopen (char *name, char *path, int mode)
 {
-    we_control_t *cn = WpeEditor;
+    we_control_t *cn = global_editor_control;
     E_AFILE *ep = malloc (sizeof (E_AFILE));
     char str[256];
     int i, j;

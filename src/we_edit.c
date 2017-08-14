@@ -11,6 +11,7 @@
 #include "messages.h"
 #include "options.h"
 #include "model.h"
+#include "we_control.h"
 #include "edit.h"
 #include "we_edit.h"
 #include "utils.h"
@@ -25,7 +26,19 @@
 #include <unistd.h>
 #endif
 
-int e_undo_sw = 0, e_redo_sw = 0;
+int global_disable_add_undo = 0;
+/**
+ * e_phases enumerates the phases of editting as far as undo and redo are concerned.
+ *
+ * In the EDIT_PHASE the program is editting and changes are queued in the undo queue.
+ * In the UNDO_PHASE the program undoes previous changes and moves the undo registration to
+ * the redo queue.
+ * In the UNDO_PHASE the program is redoing an undone action and moved the undo registration
+ * from the redo queue to the undo queue.
+ *
+ */
+enum e_phases {EDIT_PHASE, UNDO_PHASE, REDO_PHASE};
+static enum e_phases e_phase = EDIT_PHASE;
 
 char *e_make_postf ();
 int e_del_a_ind ();
@@ -1814,12 +1827,12 @@ e_del_line (int yd, BUFFER * b, we_screen_t * s)
 int
 e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
 {
-    we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
+    we_window_t *f = global_editor_control->f[global_editor_control->mxedt];
     int len, i, j;
 
     f->save += n;
     e_add_undo ('r', b, x, y, n);
-    e_undo_sw++;
+    global_disable_add_undo++;
     len = b->bf[y].len;
     if (*(b->bf[y].s + len) == WPE_WR)
         len++;
@@ -1863,8 +1876,9 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
         b->bf[y].len = e_str_len (b->bf[y].s);
         b->bf[y].nrc = strlen ((const char *) b->bf[y].s);
     }
-    e_undo_sw--;
-    sc_txt_4 (y, b, 0);
+    global_disable_add_undo--;
+    if(b->f->c_sw && !global_disable_add_undo)
+        e_sc_nw_txt(y, b, 0);
     return (x + n);
 }
 
@@ -1873,12 +1887,12 @@ int
 e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
              int n)
 {
-    we_window_t *f = WpeEditor->f[WpeEditor->mxedt];
+    we_window_t *f = global_editor_control->f[global_editor_control->mxedt];
     int i, j;
 
     f->save += n;
     e_add_undo ('a', b, xa, ya, n);
-    e_undo_sw++;
+    global_disable_add_undo++;
     if (b->bf[ya].len + n >= b->mx.x - 1)
     {
         if (xa < b->bf[ya].len)
@@ -1942,7 +1956,8 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
             *(b->bf[ya + 1].s + j - i - 1) = WPE_WR;
             b->bf[ya + 1].len = e_str_len (b->bf[ya + 1].s);
             b->bf[ya + 1].nrc = strlen ((const char *) b->bf[ya + 1].s);
-            sc_txt_4 (ya, b, 1);
+            if(b->f->c_sw && !global_disable_add_undo)
+                e_sc_nw_txt(ya, b, 1);
         }
         else
         {
@@ -2004,8 +2019,9 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
     b->b.y = ya;
     b->bf[ya].len = e_str_len (b->bf[ya].s);
     b->bf[ya].nrc = strlen ((const char *) b->bf[ya].s);
-    e_undo_sw--;
-    sc_txt_4 (ya, b, 0);
+    global_disable_add_undo--;
+    if(b->f->c_sw && !global_disable_add_undo)
+        e_sc_nw_txt(ya, b, 0);
     return (xa + n);
 }
 
@@ -2132,13 +2148,13 @@ WpeFilenameToPathFile (char *filename, char **path, char **file)
     }
     if ((!tmp) || ((filename + 1 == tmp) && (*filename == '.')))
     {
-        *path = WpeGetCurrentDir (WpeEditor);
+        *path = WpeGetCurrentDir (global_editor_control);
     }
     else
     {
         if (*filename != DIRC)
         {
-            if ((cur_dir = WpeGetCurrentDir (WpeEditor)) == NULL)
+            if ((cur_dir = WpeGetCurrentDir (global_editor_control)) == NULL)
             {
                 free (*file);
                 *file = NULL;
@@ -2292,7 +2308,7 @@ e_remove_undo (Undo * ud, int sw)
     if (ud == NULL)
         return (ud);
     ud->next = e_remove_undo (ud->next, sw + 1);
-    if (sw > WpeEditor->numundo)
+    if (sw > global_editor_control->numundo)
     {
         if (ud->type == 'l')
             free (ud->u.pt);
@@ -2322,50 +2338,53 @@ e_remove_undo (Undo * ud, int sw)
 }
 
 /**
- * Function to add undo information to the list of things to undo.
- * What the function does depends on the value of the integer sw.
+ * Function to add undo information to the list of things to undo
+ * or to the list of things to redo.
+ * What the function does depends on the value of the integer undo_type.
+ * Remark that the options file (if it exists) has a maximum number of undo's and redo's.
+ * The default is a maximum of 10 that you can change using the Options/Editor menu-option.
  *
- * sw  action
- * --  ------
- *  d	Uses d to remember delete characters in a block
- *  c	Uses c to remember a block copy
- *  v   Uses v to paste block
- *  a	Guess: ?? add characters TODO: verify meaning
- *  l	Guess: ?? Delete line TODO: verify meaning
- *  r	Uses r to remember deleted characters on one line
- *  p	Guess: ?? put char over another char (replace) TODO: verify meaning
- *  y	Guess: ?? redo a previous undo TODO: verify meaning
- *  s	Uses s to replace a string of characters (verified with test)
+ * type  action
+ * ----  ------
+ *  d    Uses d to remember delete characters in a block
+ *  c    Uses c to remember a block copy
+ *  v    Uses v to paste block
+ *  a    Uses a to add characters
+ *  l    Uses l to delete line
+ *  r    Uses r to remember deleted characters on one line
+ *  p    Uses p to put char over another char (replace)
+ *  y    Uses y to redo a previous undo of l
+ *  s    Uses s to replace a string of characters (verified with test)
  *
- *  Remark: the **global** e_undo_sw is a disabler for this function.
- *  if e_undo_sw is true, this function does nothing.
+ *  Remark: the global_disable_add_undo is a disabler for this function.
+ *  if global_disable_add_undo is true, this function does nothing.
  */
 int
-e_add_undo (int sw, BUFFER * b, int x, int y, int n)
+e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
 {
     Undo *next;
 
-    if (e_undo_sw)
+    if (global_disable_add_undo)
         return (0);
-    if (!e_redo_sw && b->rd)
-        b->rd = e_remove_undo (b->rd, WpeEditor->numundo + 1);
+    if (e_phase == EDIT_PHASE && b->rd)
+        b->rd = e_remove_undo (b->rd, global_editor_control->numundo + 1);
     if ((next = malloc (sizeof (Undo))) == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, b->fb);
         return (-1);
     }
-    next->type = sw;
+    next->type = undo_type;
     next->b.x = x;
     next->b.y = y;
     next->a.x = n;
-    if (e_redo_sw == 1)
+    if (e_phase == UNDO_PHASE)
         next->next = b->rd;
     else
         next->next = b->ud;
-    if (sw == 'a');
-    else if (sw == 'p')
+    if (undo_type == 'a');
+    else if (undo_type == 'p')
         next->u.c = b->bf[y].s[x];
-    else if (sw == 'r' || sw == 's')
+    else if (undo_type == 'r' || undo_type == 's')
     {
         char *str = malloc (n+1);
         int i;
@@ -2381,19 +2400,19 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         str[n] = '\0';
         next->u.pt = str;
 
-        next->a.y = e_redo_sw == 1 ? b->cn->fd.sn : b->cn->fd.rn;
+        next->a.y = e_phase == UNDO_PHASE ? b->cn->fd.sn : b->cn->fd.rn;
 
     }
-    else if (sw == 'l')
+    else if (undo_type == 'l')
         next->u.pt = b->bf[y].s;
-    else if (sw == 'c' || sw == 'v')
+    else if (undo_type == 'c' || undo_type == 'v')
     {
         we_screen_t *s = b->cn->f[b->cn->mxedt]->s;
 
         next->a = s->mark_begin;
         next->e = s->mark_end;
     }
-    else if (sw == 'd')
+    else if (undo_type == 'd')
     {
         BUFFER *bn = malloc (sizeof (BUFFER));
         we_screen_t *sn = malloc (sizeof (we_screen_t));
@@ -2425,11 +2444,11 @@ e_add_undo (int sw, BUFFER * b, int x, int y, int n)
         bn->bf[0].len = 0;
         bn->bf[0].nrc = 1;
         next->u.pt = bn;
-        e_undo_sw = 1;
+        global_disable_add_undo = 1;
         e_move_block (0, 0, b, bn, f);
-        e_undo_sw = 0;
+        global_disable_add_undo = 0;
     }
-    if (e_redo_sw == 1)
+    if (e_phase == UNDO_PHASE)
         b->rd = next;
     else
     {
@@ -2473,14 +2492,14 @@ e_make_rudo (we_window_t * window, int doing_redo)
         return (-1);
     }
     window = window->ed->f[window->ed->mxedt];
-    e_redo_sw = doing_redo ? 2 : 1;
+    e_phase = doing_redo ? REDO_PHASE : UNDO_PHASE;
     b->b = undo->b;
     if (undo->type == 'r' || undo->type == 's')
     {
         if (undo->type == 's')
         {
             e_add_undo ('s', b, undo->b.x, undo->b.y, undo->a.y);
-            e_undo_sw = 1;
+            global_disable_add_undo = 1;
             e_del_nchar (b, s, undo->b.x, undo->b.y, undo->a.y);
         }
         if (*((char *) undo->u.pt) == '\n' && undo->a.x == 1)
@@ -2494,7 +2513,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         else
             e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->b.x, undo->b.y,
                          undo->a.x);
-        e_undo_sw = 0;
+        global_disable_add_undo = 0;
         s->mark_begin = undo->b;
         s->mark_end.y = undo->b.y;
         s->mark_end.x = undo->b.x + undo->a.x;
@@ -2536,11 +2555,11 @@ e_make_rudo (we_window_t * window, int doing_redo)
     else if (undo->type == 'd')
     {
         BUFFER *bn = (BUFFER *) undo->u.pt;
-        e_undo_sw = 1;
+        global_disable_add_undo = 1;
         s->mark_begin = bn->f->s->mark_begin;
         s->mark_end = bn->f->s->mark_end;
         e_move_block (undo->b.x, undo->b.y, bn, b, window);
-        e_undo_sw = 0;
+        global_disable_add_undo = 0;
         free (bn->f->s);
         free (bn->f);
         free (bn->bf[0].s);
@@ -2552,7 +2571,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         b->rd = undo->next;
     else
         b->ud = undo->next;
-    e_redo_sw = 0;
+    e_phase = EDIT_PHASE;
     free (undo);
     e_schirm (window, 1);
     e_cursor (window, 1);
