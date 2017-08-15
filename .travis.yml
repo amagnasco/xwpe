@@ -1,3 +1,9 @@
+#
+# General comments:
+#
+# 1. We test doxygen only on one platform as there is no platform depency change
+#    relevant to doxygen. We test it on the clang platform.
+
 language: c
 
 matrix:
@@ -45,6 +51,9 @@ matrix:
             - llvm-toolchain-precise-3.6
           packages:
             - clang-3.6
+            - doxygen
+            - dot
+            - latex
       env:
         - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
     
