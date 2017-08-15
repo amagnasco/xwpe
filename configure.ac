@@ -77,6 +77,25 @@ else
 	AC_DEFINE([PRNTCMD], [""], [Empty print command if no command found])
 fi
 
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+if test -z "$DOXYGEN"; then
+   AC_MSG_WARN([Doxygen not found - continue without Doxygen support])
+fi
+
+AC_CHECK_PROGS([DOT], [dot])
+if test -z "$DOT"; then
+	AC_MSG_WARN([Doxygen needs dot, please install dot])
+fi
+
+AC_CHECK_PROGS([PDFLATEX], [pdflatex])
+if test -z "$PDFLATEX"; then
+   AC_MSG_WARN([Doxygen needs pdflatex program, it is part of TeX http://www.tug.org/texlive/acquire-netinstall.html])
+fi
+
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Doxyfile])])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Makefile])])
+
 # for we_fl_unix.c
 if man -s 1 ls > /dev/null 2> /dev/null; then
  AC_DEFINE([MAN_S_OPT], [], [Is using man -s option possible?])
