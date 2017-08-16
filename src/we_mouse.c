@@ -1,4 +1,4 @@
-/* \file we_mouse.c                                       */
+/** \file we_mouse.c                                       */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */

@@ -1,4 +1,4 @@
-/* \file we_fl_fkt.c                                      */
+/** \file we_fl_fkt.c                                      */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
