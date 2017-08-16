@@ -1,5 +1,6 @@
 #ifndef __OPTIONS_H
 #define __OPTIONS_H
+/** \file options.h */
 /*-------------------------------------------------------------------------*\
   <options.h> -- Header file for option variables defines, etc.
 

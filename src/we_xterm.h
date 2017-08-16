@@ -1,6 +1,8 @@
 #ifndef WE_XTERM_H
 #define WE_XTERM_H
 
+/** \file we_xterm.h */
+
 #include "config.h"
 #include "globals.h"
 #include "we_main.h"

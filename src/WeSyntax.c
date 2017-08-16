@@ -1,3 +1,4 @@
+/** \file WeSyntax.c */
 /*-------------------------------------------------------------------------*\
   <WeSyntax.c> -- Xwpe routines for syntax highlighting support
 

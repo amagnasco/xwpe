@@ -1,6 +1,8 @@
 #ifndef WE_PROG_H
 #define WE_PROG_H
 
+/** \file we_prog.h */
+
 #include "config.h"
 #include "we_edit.h"
 #include "we_hfkt.h"

@@ -1,4 +1,4 @@
-/* we_control.c                                             */
+/* \file we_control.c */
 /* Copyright (C) 1993 Fred Kruse
    Copyright (C) 2017 Guus Bonnema
 

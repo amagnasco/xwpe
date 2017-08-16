@@ -1,6 +1,8 @@
 #ifndef WE_MENUE_H
 #define WE_MENUE_H
 
+/** \file we_menue.h */
+
 #include "config.h"
 #include "we_block.h"
 #include "we_debug.h"

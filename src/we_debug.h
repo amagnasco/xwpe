@@ -1,5 +1,6 @@
 #ifndef WE_DEBUG_H
 #define WE_DEBUG_H
+/** \file we_debug.h */
 
 #include "config.h"
 #include "globals.h"

@@ -1,6 +1,8 @@
 #ifndef WE_HFKT_H
 #define WE_HFKT_H
 
+/** \file we_hfkt.h */
+
 #include "config.h"
 #include "we_edit.h"
 #include "we_opt.h"

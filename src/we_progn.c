@@ -1,4 +1,4 @@
-/* we_progn.c                                             */
+/* \file we_progn.c                                       */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */

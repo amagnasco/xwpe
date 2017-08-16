@@ -1,5 +1,5 @@
 /**
- *  we_find.c
+ *  \file we_find.c
  *
  *  Copyright (C) 2017 Guus Bonnema
  *

@@ -1,6 +1,8 @@
 #ifndef WE_MAIN_H
 #define WE_MAIN_H
 
+/** \file we_main.h */
+
 #include "config.h"
 #include "globals.h"
 #include "we_e_aus.h"

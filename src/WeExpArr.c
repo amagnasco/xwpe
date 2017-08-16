@@ -1,3 +1,4 @@
+/** \file WeExpArr.c */
 /*-------------------------------------------------------------------------*\
   <WeExpArr.c> -- Xwpe routines for Expanding Arrays
 

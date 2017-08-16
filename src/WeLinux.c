@@ -1,4 +1,5 @@
 #ifdef __linux__
+/** \file WeLinux.c */
 /*-------------------------------------------------------------------------*\
   <WeLinux.c> -- Linux specific routines for Xwpe
 

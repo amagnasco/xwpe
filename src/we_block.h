@@ -1,6 +1,8 @@
 #ifndef WE_BLOCK_H
 #define WE_BLOCK_H
 
+/** \file we_block.h */
+
 #include "config.h"
 #include "we_debug.h"
 #include "we_fl_unix.h"

@@ -1,5 +1,6 @@
 #ifndef __WEEXPARR_H
 #define __WEEXPARR_H
+/** \file WeExpArr.h */
 /*-------------------------------------------------------------------------*\
   <WeExpArr.h> -- Header file of Xwpe routines for Expanding Arrays
 

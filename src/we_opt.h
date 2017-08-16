@@ -1,6 +1,8 @@
 #ifndef WE_OPT_H
 #define WE_OPT_H
 
+/** \file we_opt.h */
+
 #include "config.h"
 #include "edit.h"
 #include "globals.h"

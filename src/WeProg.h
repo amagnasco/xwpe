@@ -1,5 +1,6 @@
 #ifndef __WEPROG_H
 #define __WEPROG_H
+/** \file WeProg.h */
 /*-------------------------------------------------------------------------*\
   <WeProg.h> -- Header file of Xwpe routines for programming support
 

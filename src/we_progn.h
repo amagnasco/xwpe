@@ -1,6 +1,8 @@
 #ifndef WE_PROGN_H
 #define WE_PROGN_H
 
+/** \file we_progn.h */
+
 #include "config.h"
 #include "globals.h"
 #include "we_wind.h"

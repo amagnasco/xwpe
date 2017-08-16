@@ -1,4 +1,6 @@
 /**
+ * \file utils.h
+ *
 Copyright (C) utils.h  Guus Bonnema
 
 This program is free software; you can redistribute it and/or

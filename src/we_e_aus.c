@@ -1,4 +1,4 @@
-/* we_e_aus.c                                             */
+/* \file we_e_aus.c                                       */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */

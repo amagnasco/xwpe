@@ -1,6 +1,8 @@
 #ifndef WE_UNIX_H
 #define WE_UNIX_H
 
+/** \file we_unix.h */
+
 #include "config.h"
 #include "globals.h"
 #include "we_e_aus.h"

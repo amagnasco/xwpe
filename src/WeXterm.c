@@ -1,3 +1,4 @@
+/** \file WeXterm.c */
 /*-------------------------------------------------------------------------*\
   <WeXterm.c> -- Xwpe routines for X window support
 

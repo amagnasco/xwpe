@@ -1,5 +1,6 @@
 #ifndef __WEXTERM_H
 #define __WEXTERM_H
+/** \file WeXterm.h */
 /*-------------------------------------------------------------------------*\
   <WeXterm.h> -- Header file of Xwpe routines for X window support
 

@@ -1,6 +1,8 @@
 #ifndef WE_EDIT_H
 #define WE_EDIT_H
 
+/** \file we_edit.h */
+
 #include "config.h"
 #include "globals.h"
 #include "we_block.h"
