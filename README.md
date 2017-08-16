@@ -69,7 +69,8 @@ to the main project directory and execute:
 From then on xwpe/xwe/wpe/we will be installed in /usr/local/bin. If you
 don't have X11, only wpe/we will be installed.
 
-Should you want to check the result, do a `make check`.
+Should you want to check the result, do a `make check`. This will execute the 
+testprograms running from the framework `check`.
 
 REMARK: 
 
