@@ -72,6 +72,48 @@ don't have X11, only wpe/we will be installed.
 Should you want to check the result, do a `make check`. This will execute the 
 testprograms running from the framework `check`.
 
+## Documentation ##
+
+The original documentation is mostly part of the program in the form of info
+files accessible through the menu. Additionally a man page was provided.
+
+### Doxygen ###
+
+For refactoring of the program we use the `doxygen` software package.
+It generates documentation from the source and diagrams for the struct 
+defines. This eases our refactoring of the system.
+
+If you don't have `doxygen` installed, the program will not generate anything. 
+
+If you do have `doxygen` installed, make sure you also have installed `latex` plus among other 
+`latex` modules `adjustbox`. Finally, make sure you have `graphviz` installed. It generates
+the beautiful graphs with dot.
+
+For Ubuntu we have installed the packages:
+
+* `texlive`
+* `textlive-latex-extra`
+* `graphviz`
+* `doxygen`
+* `doxygen-latex`
+* `doxygen-doc`
+* `doxygen-gui`
+
+For Fedora you need to install the packages:
+
+* `doxygen`
+* `doxygen-doxywizard`
+* `graphviz`
+* `texlive`
+* `texlive-tocloft`
+* `texlive-adjustbox`
+* `texlive-tabu`
+
+For other distributions you will have to figure out the exact package names needed.
+
+You might have to check with the doxygen website to check for required software as this
+may change over time.
+
 REMARK: 
 
 * Always compile from a separate build directory to prevent cluttering the source
@@ -85,7 +127,13 @@ if you want to develop and use debugging do:
 
     `../configure CFLAGS="-g -O0"`
 
-from the build directory in stead of `../configure`
+from the build directory in stead of `../configure`. This enables the debugger
+to show the contents of all accessible variables. You can still debug with `../configure`,
+but the default compile options are `-g -O2`, which means sometimes variables will be 
+`optimized out`.
+
+For debugging I recommend using `cgdb` in place of `gdb`. It is an ncurses interface
+where you see the code in the top half and `gdb` in the lower half.
 
 ## PDF ##
 
