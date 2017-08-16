@@ -1,6 +1,6 @@
 #ifndef __EDIT_H
 #define __EDIT_H
-/* edit.h						  */
+/** \file edit.h */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
@@ -78,64 +78,65 @@ typedef struct view_struct
 
 typedef struct we_colorset_struct
 {
-    we_color_t er;   /* editor window border and text */
-    we_color_t es;   /* special signs (maximize/kill) on editor window border */
-    we_color_t et;   /* normal text in editor window */
-    we_color_t ez;   /* marked text in editor window */
-    we_color_t ek;   /* found/marked word in editor window */
-    we_color_t em;   /* scrollbar */
-    we_color_t hh;   /* Help header */
-    we_color_t hb;   /* button in Help */
-    we_color_t hm;   /* marked word in Help */
-    we_color_t db;   /* breakpoint set */
-    we_color_t dy;   /* stop at breakpoint */
-    we_color_t mr;   /* submenu border */
-    we_color_t ms;   /* menu shortkey text */
-    we_color_t mt;   /* menu text */
-    we_color_t mz;   /* active menu text */
-    we_color_t df;   /* desktop */
-    we_color_t nr;   /* message window border and text */
-    we_color_t ne;   /* special signs (maximize/kill) on message window border */
-    we_color_t nt;   /* normal text for widgets in message window */
-    we_color_t nsnt; /* widget selector shortkey in message window */
-    we_color_t fr;   /* passive entry */
-    we_color_t fa;   /* active entry */
-    we_color_t ft;   /* normal data text */
-    we_color_t fz;   /* active, marked data text */
-    we_color_t frft; /* passive, marked data text */
-    we_color_t fs;   /* passive switch */
-    we_color_t nsft; /* switch selector shortkey */
-    we_color_t fsm;  /* active switch */
-    we_color_t nz;   /* normal/passive button text */
-    we_color_t ns;   /* button shortkey text */
-    we_color_t nm;   /* active button text */
+    we_color_t er;   /**< editor window border and text */
+    we_color_t es;   /**< special signs (maximize/kill) on editor window border */
+    we_color_t et;   /**< normal text in editor window */
+    we_color_t ez;   /**< marked text in editor window */
+    we_color_t ek;   /**< found/marked word in editor window */
+    we_color_t em;   /**< scrollbar */
+    we_color_t hh;   /**< Help header */
+    we_color_t hb;   /**< button in Help */
+    we_color_t hm;   /**< marked word in Help */
+    we_color_t db;   /**< breakpoint set */
+    we_color_t dy;   /**< stop at breakpoint */
+    we_color_t mr;   /**< submenu border */
+    we_color_t ms;   /**< menu shortkey text */
+    we_color_t mt;   /**< menu text */
+    we_color_t mz;   /**< active menu text */
+    we_color_t df;   /**< desktop */
+    we_color_t nr;   /**< message window border and text */
+    we_color_t ne;   /**< special signs (maximize/kill) on message window border */
+    we_color_t nt;   /**< normal text for widgets in message window */
+    we_color_t nsnt; /**< widget selector shortkey in message window */
+    we_color_t fr;   /**< passive entry */
+    we_color_t fa;   /**< active entry */
+    we_color_t ft;   /**< normal data text */
+    we_color_t fz;   /**< active, marked data text */
+    we_color_t frft; /**< passive, marked data text */
+    we_color_t fs;   /**< passive switch */
+    we_color_t nsft; /**< switch selector shortkey */
+    we_color_t fsm;  /**< active switch */
+    we_color_t nz;   /**< normal/passive button text */
+    we_color_t ns;   /**< button shortkey text */
+    we_color_t nm;   /**< active button text */
     we_color_t of;
-    we_color_t ct;   /* normal program text */
-    we_color_t cr;   /* reserved keywords in program */
-    we_color_t ck;   /* constants in program */
-    we_color_t cp;   /* preprocessor command */
-    we_color_t cc;   /* comments in program */
-    char dc;         /* desktop fill character */
+    we_color_t ct;   /**< normal program text */
+    we_color_t cr;   /**< reserved keywords in program */
+    we_color_t ck;   /**< constants in program */
+    we_color_t cp;   /**< preprocessor command */
+    we_color_t cc;   /**< comments in program */
+    char dc;         /**< desktop fill character */
     char ws;
 } we_colorset_t;
 
 /**
- * undo and redo struct.
+ *  \struct undo
  *
- *	Containing points b, a and e. plus either a char c
+ *  \brief The undo struct functions for redo as well.
+ *	Contains points b, a and e. plus either a char c
  *  or a pointer to void.
  *
  *  The types that undo/redo struct exist as are:
  *
- *  'a' Undo / redo struct for character insertion.
- *  'c' Undo / redo struct for block copy.
- *  'd' Undo / redo struct for block delete.
- *  'l' Undo / redo struct for line delete.
- *  'p' Undo / redo struct for character overwrite ('put').
- *  'r' Undo / redo struct for character deletion.
- *  's' Undo / redo struct for search / replace.
- *  'v' Undo / redo struct for block paste.
- *  'y' Undo / redo struct for line delete ( counters undo of 'l'?)
+ *  - 'a' Undo / redo struct for character insertion.
+ *  - 'c' Undo / redo struct for block copy.
+ *  - 'd' Undo / redo struct for block delete.
+ *  - 'l' Undo / redo struct for line delete.
+ *  - 'p' Undo / redo struct for character overwrite ('put').
+ *  - 'r' Undo / redo struct for character deletion.
+ *  - 's' Undo / redo struct for search / replace.
+ *  - 'v' Undo / redo struct for block paste.
+ *  - 'y' Undo / redo struct for line delete ( counters undo of 'l'?)
  *
  *
  */
