@@ -2,7 +2,8 @@
 # General comments:
 #
 # 1. We test doxygen only on one platform as there is no platform depency change
-#    relevant to doxygen. We test it on the clang platform.
+#    relevant to doxygen. We test it on the clang platform. Maybe we should not
+#    integration test the documentation at all. to be decided later.
 
 language: c
 
@@ -17,6 +18,7 @@ matrix:
           packages:
             - g++-4.9
             - libncurses5-dev
+            - check
       env:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
@@ -28,6 +30,7 @@ matrix:
           packages:
             - g++-5
             - libncurses5-dev
+            - check
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
          
@@ -39,6 +42,7 @@ matrix:
           packages:
             - g++-6
             - libncurses5-dev
+            - check
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
         
@@ -51,9 +55,12 @@ matrix:
             - llvm-toolchain-precise-3.6
           packages:
             - clang-3.6
+            - check
             - doxygen
-            - dot
-            - latex
+            - doxygen-latex
+            - texlive
+            - texlive-latex-extra
+            - graphviz
       env:
         - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
     
@@ -79,7 +86,7 @@ before_install:
   - sudo apt-get -qq update
 #  - sudo apt-get install -y gcc
 #  - sudo apt-get install libncurses5-dev
-  - sudo apt-get install -y check
+#  - sudo apt-get install -y check
   
 script:
   - autoreconf -ivf
