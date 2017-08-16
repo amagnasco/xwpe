@@ -805,7 +805,7 @@ e_file_info (char *filen, char *str, int *num, int sw)
 void
 ini_repaint (we_control_t * cn)
 {
-    e_cls (cn->fb->df.fb, cn->fb->dc);
+    e_cls (cn->colorset->df.fb, cn->colorset->dc);
     e_ini_desk (cn);
 }
 
@@ -856,7 +856,7 @@ e_recover (we_control_t * cn)
 int
 e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
 {
-    we_color_t *frb = &(f->fb->er);
+    we_color_t *frb = &(f->colorset->er);
     int i, j, y, c = 1, fb, fsv;
 
     if (md == 1)
@@ -909,10 +909,10 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
     else
         for (rfrb = x, y = 1; rfrb > 1; y++)
             rfrb /= 2;
-    rfrb = sw == 0 ? f->fb->nt.fb : f->fb->fs.fb;
+    rfrb = sw == 0 ? f->colorset->nt.fb : f->colorset->fs.fb;
     e_std_rahmen (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya, "Colors", rfrb, 0, 1,
-                                            f->fb->ms.f+16*(rfrb/16), 0);
+                                            f->colorset->ms.f+16*(rfrb/16), 0);
     */
     e_pr_nstr (xa + 2, ya + 1, xe - xa - 1, "A_NORMAL   ", 0, 0);
     e_pr_nstr (xa + 2, ya + 2, xe - xa - 1, "A_STANDOUT ", A_STANDOUT,

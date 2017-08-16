@@ -357,7 +357,7 @@ e_comp (we_window_t * f)
     if (i == 0)
     {
         sprintf (ostr, e_p_msg[ERR_S_NO_CFILE], f->datnam);
-        e_error (ostr, 0, f->fb);
+        e_error (ostr, 0, f->colorset);
         return (WPE_ESC);
     }
     else if (cn->f[i]->save)
@@ -425,12 +425,12 @@ e_exec_inf (we_window_t * f, char **argv, int n)
     sprintf (tstr, "%s/we_111", e_tmp_dir);
     if ((efildes[1] = creat (tstr, 0777)) < 0)
     {
-        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
         return (0);
     }
     if ((efildes[0] = open (tstr, O_RDONLY)) < 0)
     {
-        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
         return (0);
     }
     efile = malloc ((strlen (tstr) + 1) * sizeof (char));
@@ -438,12 +438,12 @@ e_exec_inf (we_window_t * f, char **argv, int n)
     sprintf (tstr, "%s/we_112", e_tmp_dir);
     if ((wfildes[1] = creat (tstr, 0777)) < 0)
     {
-        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
         return (0);
     }
     if ((wfildes[0] = open (tstr, O_RDONLY)) < 0)
     {
-        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+        e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
         return (0);
     }
     wfile = malloc ((strlen (tstr) + 1) * sizeof (char));
@@ -453,7 +453,7 @@ e_exec_inf (we_window_t * f, char **argv, int n)
         return (efildes[1]);
     else if (pid < 0)
     {
-        e_error (e_p_msg[ERR_PROCESS], 0, f->fb);
+        e_error (e_p_msg[ERR_PROCESS], 0, f->colorset);
         return (0);
     }
 
@@ -611,10 +611,10 @@ e_show_error (int n, we_window_t * f)
     }
     else if (filename != f->datnam)
         free (filename);
-    e_pr_str_wsd (1, MAXSLNS - 1, err_li[n].text, f->fb->mt.fb, -1, 0,
-                  f->fb->mt.fb, 1, MAXSCOL - 2);
+    e_pr_str_wsd (1, MAXSLNS - 1, err_li[n].text, f->colorset->mt.fb, -1, 0,
+                  f->colorset->mt.fb, 1, MAXSCOL - 2);
     /*   e_pr_nstr(2, MAXSLNS - 1, MAXSCOL-2, err_li[n].text,
-                                                    f->fb->mt.fb, f->fb->mt.fb); */
+                                                    f->colorset->mt.fb, f->colorset->mt.fb); */
     b = cn->f[cn->mxedt]->b;
     b->b.y = err_li[n].line > b->mxlines ? b->mxlines - 1 : err_li[n].line - 1;
     if (!err_li[n].srch)
@@ -784,7 +784,7 @@ e_previous_error (we_window_t * f)
 {
     if (err_no > 0)
         return (e_show_error (--err_no, f));
-    e_pr_uul (f->fb);
+    e_pr_uul (f->colorset);
     return (0);
 }
 
@@ -793,7 +793,7 @@ e_next_error (we_window_t * f)
 {
     if (err_no < err_num - 1)
         return (e_show_error (++err_no, f));
-    e_pr_uul (f->fb);
+    e_pr_uul (f->colorset);
     return (0);
 }
 
@@ -807,7 +807,7 @@ e_cur_error (int y, we_window_t * f)
         for (i = 1; i < err_num && err_li[i].y <= y; i++);
         return (e_show_error (err_no = i - 1, f));
     }
-    e_pr_uul (f->fb);
+    e_pr_uul (f->colorset);
     return (0);
 }
 
@@ -1414,7 +1414,7 @@ e_run_options (we_window_t * f)
                 ;
             if (i >= e_prog.num)
             {
-                e_error (e_p_msg[ERR_NO_COMPILER], 0, f->fb);
+                e_error (e_p_msg[ERR_NO_COMPILER], 0, f->colorset);
                 free (opt);
                 return (0);
             }
@@ -1557,7 +1557,7 @@ e_p_del_item (we_window_t * f)
     if (i > 0)
         e_switch_window (cn->edt[i], cn->f[cn->mxedt]);
     else
-        return (e_error (e_p_msg[ERR_NOPROJECT], 0, f->fb));
+        return (e_error (e_p_msg[ERR_NOPROJECT], 0, f->colorset));
     f = cn->f[cn->mxedt];
     f->save = 1;
     e_p_del_df ((FLWND *) f->b, f->ins);
@@ -1616,7 +1616,7 @@ e_system (char *estr, we_control_t * cn)
     g[0] = 2;
     fk_mouse (g);
 #endif
-    outp = e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, cn->fb->ws, 1);
+    outp = e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, cn->colorset->ws, 1);
     fk_locate (0, 0);
     fk_cursor (1);
     (*e_u_s_sys_ini) ();
@@ -1913,7 +1913,7 @@ e_expand_var (char *string, we_window_t * f)
             {
                 if (!(var = malloc ((j - i - 1) * sizeof (char))))
                 {
-                    e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                    e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (string);
                 }
                 for (k = i + 2; k < j; k++)
@@ -1924,7 +1924,7 @@ e_expand_var (char *string, we_window_t * f)
             {
                 if (!(var = malloc (2 * sizeof (char))))
                 {
-                    e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                    e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (string);
                 }
                 var[0] = string[i + 1];
@@ -1954,7 +1954,7 @@ e_expand_var (char *string, we_window_t * f)
                                           string, (strlen (string) + 1) * sizeof (char))))
                 {
                     free (var);
-                    e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                    e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (tmp);
                 }
             }
@@ -1971,7 +1971,7 @@ e_expand_var (char *string, we_window_t * f)
                                                            1) * sizeof (char))))
                     {
                         free (var);
-                        e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                        e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                         return (tmp);
                     }
                     for (k--; k > j + len; k--)
@@ -1991,7 +1991,7 @@ e_expand_var (char *string, we_window_t * f)
                                           (strlen (string) + 1) * sizeof (char))))
                     {
                         free (var);
-                        e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                        e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                         return (tmp);
                     }
                 }
@@ -2031,7 +2031,7 @@ e_read_var (we_window_t * f)
     if (!(p_v = malloc (sizeof (struct proj_var *))))
     {
         fclose (fp);
-        e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
         return (-1);
     }
     while (!feof (fp) && fgets (str, 256, fp))
@@ -2064,20 +2064,20 @@ e_read_var (we_window_t * f)
         {
             p_v = tmp;
             fclose (fp);
-            e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
             return (-1);
         }
         if (!(p_v[p_v_n - 1] = malloc (sizeof (struct proj_var))))
         {
             fclose (fp);
-            e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
             return (-1);
         }
         if (!
                 (p_v[p_v_n - 1]->var = malloc ((strlen (sp1) + 1) * sizeof (char))))
         {
             fclose (fp);
-            e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
             return (-1);
         }
         strcpy (p_v[p_v_n - 1]->var, sp1);
@@ -2086,7 +2086,7 @@ e_read_var (we_window_t * f)
                      malloc ((strlen (sp2) + 1) * sizeof (char))))
         {
             fclose (fp);
-            e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
             return (-1);
         }
         strcpy (p_v[p_v_n - 1]->string, sp2);
@@ -2116,7 +2116,7 @@ e_read_var (we_window_t * f)
             {
                 p_v[p_v_n - 1]->string = stmp;
                 fclose (fp);
-                e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                 return (-1);
             }
             strcat (p_v[p_v_n - 1]->string, str);
@@ -2145,7 +2145,7 @@ e_install (we_window_t * f)
     if ((fp = fopen (e_prog.project, "r")) == NULL)
     {
         sprintf (text, e_msg[ERR_FOPEN], e_prog.project);
-        e_error (text, 0, f->fb);
+        e_error (text, 0, f->colorset);
         return (WPE_ESC);
     }
     while ((tp = fgets (text, 256, fp)))
@@ -2186,7 +2186,7 @@ e_install (we_window_t * f)
         if (!(string = malloc (strlen (sp) + 1)))
         {
             fclose (fp);
-            e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
             return (-1);
         }
         strcpy (string, sp);
@@ -2203,7 +2203,7 @@ e_install (we_window_t * f)
                 {
                     fclose (fp);
                     free (tmp);
-                    e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                    e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (-1);
                 }
                 strcat (string, text);
@@ -2325,7 +2325,7 @@ e_c_project (we_window_t * f)
     if (e_read_var (f))
     {
         sprintf (ofile, e_msg[ERR_FOPEN], e_prog.project);
-        e_error (ofile, 0, f->fb);
+        e_error (ofile, 0, f->colorset);
         return (-1);
     }
     e_arg = (char **) malloc (e_argc * sizeof (char *));
@@ -2333,7 +2333,7 @@ e_c_project (we_window_t * f)
     df = e_p_get_var ("CMP");
     if (!df)
     {
-        e_error (e_p_msg[ERR_NOTHING], 0, f->fb);
+        e_error (e_p_msg[ERR_NOTHING], 0, f->colorset);
         e_free_arg (arg, argc);
         e_free_arg (e_arg, e_argc);
         return (-1);
@@ -2436,7 +2436,7 @@ e_c_project (we_window_t * f)
     df = e_p_get_var ("FILES");
     if (!df)
     {
-        e_error (e_p_msg[ERR_NOTHING], 0, cn->fb);
+        e_error (e_p_msg[ERR_NOTHING], 0, cn->colorset);
         e_free_arg (arg, argc);
         e_free_arg (e_arg, e_argc);
         return (-1);
@@ -2828,7 +2828,7 @@ e_make_prj_opt (we_window_t * f)
     if ((fp = fopen (e_prog.project, "r")) == NULL)
     {
         sprintf (text, e_msg[ERR_FOPEN], e_prog.project);
-        e_error (text, 0, f->fb);
+        e_error (text, 0, f->colorset);
         return (e_p_df);
     }
     while ((tp = fgets (text, 256, fp)))
@@ -2899,7 +2899,7 @@ e_make_prj_opt (we_window_t * f)
                 {
                     fclose (fp);
                     free (sp);
-                    e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                    e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (e_p_df);
                 }
                 strcat (e_p_df[2]->name[e_p_df[2]->nr_files - 1], text);
@@ -2963,7 +2963,7 @@ e_wrt_prj_fl (we_window_t * f)
     if ((fp = fopen (text, "w")) == NULL)
     {
         sprintf (text, e_msg[ERR_FOPEN], e_prog.project);
-        e_error (text, 0, f->fb);
+        e_error (text, 0, f->colorset);
         return (-1);
     }
     fprintf (fp, "#\n# xwpe - project-file: %s\n", e_prog.project);

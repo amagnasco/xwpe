@@ -31,11 +31,11 @@
 extern struct dirfile *e_p_get_var (char *string);
 extern char *e_p_msg[];
 
-#define FRB1 s->fb->cr.fb	/*  key words etc  */
-#define FRB2 s->fb->ck.fb	/*  constants           */
-#define FRB3 s->fb->cp.fb	/*  pre-processor A.     */
-#define FRB4 s->fb->cc.fb	/*  comments           */
-#define FRB5 s->fb->ct.fb	/*  text                 */
+#define FRB1 s->colorset->cr.fb	/*  key words etc  */
+#define FRB2 s->colorset->ck.fb	/*  constants           */
+#define FRB3 s->colorset->cp.fb	/*  pre-processor A.     */
+#define FRB4 s->colorset->cc.fb	/*  comments           */
+#define FRB5 s->colorset->ct.fb	/*  text                 */
 
 #define iscase(s) ( (!strncmp(s, "case", 4) && !isalnum1(*(s+4)))	      \
 		 || (!strncmp(s, "default", 7) && !isalnum1(*(s+7))) )
@@ -654,11 +654,11 @@ e_pr_c_line (int y, we_window_t * f)
         e_mk_col (b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->da.y && i >= s->da.x && i < s->de.x)
-            frb = s->fb->dy.fb;
+            frb = s->colorset->dy.fb;
         else if (fsw)
-            frb = s->fb->db.fb;
+            frb = s->colorset->db.fb;
         else if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
-            frb = s->fb->ek.fb;
+            frb = s->colorset->ek.fb;
 #else
     for (j = s->c.x;
             i < b->bf[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
@@ -666,7 +666,7 @@ e_pr_c_line (int y, we_window_t * f)
         e_mk_col (b->bf[y].s, b->bf[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
-            frb = s->fb->ek.fb;
+            frb = s->colorset->ek.fb;
 #endif
         else if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                         (y == s->mark_begin.y
@@ -674,7 +674,7 @@ e_pr_c_line (int y, we_window_t * f)
                  || (y == s->mark_end.y && i < s->mark_end.x
                      && (y > s->mark_begin.y
                          || (y == s->mark_begin.y && i >= s->mark_begin.x))))
-            frb = s->fb->ez.fb;
+            frb = s->colorset->ez.fb;
         if (*(b->bf[y].s + i) == WPE_TAB)
             for (k = f->ed->tabn - j % f->ed->tabn;
                     k > 1 && j < num_cols_on_screen(f) + s->c.x - 2; k--, j++)
@@ -743,10 +743,10 @@ e_pr_c_line (int y, we_window_t * f)
         {
             if (*(b->bf[y].s + i) == WPE_WR)
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
-                           PWR, s->fb->ez.fb);
+                           PWR, s->colorset->ez.fb);
             else
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
-                           PNL, s->fb->ez.fb);
+                           PNL, s->colorset->ez.fb);
         }
         else
         {
@@ -1686,7 +1686,7 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
             df = e_p_get_var ("FILES");
             if (!df)
             {
-                e_error (e_p_msg[ERR_NOTHING], 0, f->fb);
+                e_error (e_p_msg[ERR_NOTHING], 0, f->colorset);
                 WpeMouseRestoreShape ();
                 return (-1);
             }
@@ -1713,7 +1713,7 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
     if (ret)
     {
         sprintf (str, "%s not found!", name);
-        e_error (str, 0, f->fb);
+        e_error (str, 0, f->colorset);
         WpeMouseRestoreShape ();
         return (-1);
     }
@@ -2088,7 +2088,7 @@ e_nxt_brk (we_window_t * f)
             }
         }
     }
-    return (e_error ("No Matching Bracket!", 0, f->ed->fb));
+    return (e_error ("No Matching Bracket!", 0, f->ed->colorset));
 }
 
 char *

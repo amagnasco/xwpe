@@ -112,7 +112,7 @@ e_edit (we_control_t * cn, char *filename)
 
     if (cn->mxedt >= MAXEDT)
     {
-        e_error (e_msg[ERR_MAXWINS], 0, cn->fb);
+        e_error (e_msg[ERR_MAXWINS], 0, cn->colorset);
         return (-1);
     }
     if (stat (filename, buf) == 0)
@@ -134,17 +134,17 @@ e_edit (we_control_t * cn, char *filename)
     cn->edt[cn->mxedt] = j;
 
     if ((f = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
 
-    f->fb = cn->fb;
+    f->colorset = cn->colorset;
     cn->f[cn->mxedt] = f;
 
     if ((f->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     if ((f->s = (we_screen_t *) malloc (sizeof (we_screen_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     if ((f->b->bf = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
 #ifdef PROG
     for (i = cn->mxedt - 1;
             i > 0 && (!strcmp (cn->f[i]->datnam, "Messages")
@@ -224,7 +224,7 @@ e_edit (we_control_t * cn, char *filename)
     f->b->cl = f->b->clsv = 0;
     f->b->mx = e_set_pnt (cn->maxcol, MAXLINES);
     f->b->mxlines = 0;
-    f->b->fb = f->fb;
+    f->b->colorset = f->colorset;
     f->b->cn = cn;
     f->b->ud = NULL;
     f->b->rd = NULL;
@@ -251,7 +251,7 @@ e_edit (we_control_t * cn, char *filename)
     f->s->mark_end = e_set_pnt (0, 0);
     f->s->fa = e_set_pnt (0, 0);
     f->s->fe = e_set_pnt (0, 0);
-    f->s->fb = f->fb;
+    f->s->colorset = f->colorset;
 #ifdef DEBUGGER
     f->s->brp = malloc (sizeof (int));
     f->s->brp[0] = 0;
@@ -346,7 +346,7 @@ e_edit (we_control_t * cn, char *filename)
     {
         e_readin (0, 0, fp, f->b, &f->dtmd);
         if (fclose (fp) != 0)
-            e_error (e_msg[ERR_FCLOSE], 0, cn->fb);
+            e_error (e_msg[ERR_FCLOSE], 0, cn->colorset);
         if (cn->dtmd == DTMD_HELP)
             cn->dtmd = DTMD_NORMAL;
 #ifdef PROG
@@ -1777,9 +1777,9 @@ e_cursor (we_window_t * window, int sw)
     if (sw != 0)
     {
         iold = e_lst_zeichen (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
-                              window->fb->em.fb, b->mxlines, iold, b->b.y);
+                              window->colorset->em.fb, b->mxlines, iold, b->b.y);
         jold = e_lst_zeichen (window->a.x + 19, window->e.y, window->e.x - window->a.x - 20, 1,
-                              window->fb->em.fb, b->mx.x, jold, b->b.x);
+                              window->colorset->em.fb, b->mx.x, jold, b->b.x);
     }
     b->cl = b->b.x + j;
     fk_locate (window->a.x + b->b.x - s->c.x + j + 1, window->a.y + b->b.y - s->c.y + 1);
@@ -2035,7 +2035,7 @@ e_new_line (int yd, BUFFER * b)
     {
         b->mx.y += MAXLINES;
         if ((b->bf = realloc (b->bf, b->mx.y * sizeof (STRING))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, b->fb);
+            e_error (e_msg[ERR_LOWMEM], 1, b->colorset);
         if (b->f->c_sw)
             b->f->c_sw = realloc (b->f->c_sw, b->mx.y * sizeof (int));
     }
@@ -2046,7 +2046,7 @@ e_new_line (int yd, BUFFER * b)
     (b->mxlines)++;
     b->bf[yd].s = malloc (b->mx.x + 1);
     if (b->bf[yd].s == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, b->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, b->colorset);
     *(b->bf[yd].s) = '\0';
     b->bf[yd].len = 0;
     b->bf[yd].nrc = 0;
@@ -2115,11 +2115,11 @@ e_zlsplt (we_window_t * f)
     if (!DTMD_ISTEXT (f->dtmd))
         return;
     sprintf (str, "%5d:%-4d", f->b->b.y + 1, f->b->cl + 1);
-    e_puts (str, f->a.x + 5, f->e.y, f->fb->er.fb);
+    e_puts (str, f->a.x + 5, f->e.y, f->colorset->er.fb);
     if (f->save)
-        e_pr_char (f->a.x + 3, f->e.y, '*', f->fb->er.fb);
+        e_pr_char (f->a.x + 3, f->e.y, '*', f->colorset->er.fb);
     else
-        e_pr_char (f->a.x + 3, f->e.y, ' ', f->fb->er.fb);
+        e_pr_char (f->a.x + 3, f->e.y, ' ', f->colorset->er.fb);
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
     {
@@ -2370,7 +2370,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         b->rd = e_remove_undo (b->rd, global_editor_control->numundo + 1);
     if ((next = malloc (sizeof (Undo))) == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, b->fb);
+        e_error (e_msg[ERR_LOWMEM], 0, b->colorset);
         return (-1);
     }
     next->type = undo_type;
@@ -2391,7 +2391,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
 
         if (str == NULL)
         {
-            e_error (e_msg[ERR_LOWMEM], 0, b->fb);
+            e_error (e_msg[ERR_LOWMEM], 0, b->colorset);
             free (next);
             return (-1);
         }
@@ -2421,7 +2421,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
 
         bn->bf = (STRING *) malloc (MAXLINES * sizeof (STRING));
         if (bn == NULL || sn == 0 || bn->bf == NULL)
-            return (e_error (e_msg[ERR_LOWMEM], 0, b->fb));
+            return (e_error (e_msg[ERR_LOWMEM], 0, b->colorset));
         fn->b = bn;
         fn->c_sw = NULL;
         fn->c_st = NULL;
@@ -2432,7 +2432,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         bn->b = e_set_pnt (0, 0);
         bn->mx = e_set_pnt (b->cn->maxcol, MAXLINES);
         bn->mxlines = 0;
-        sn->fb = bn->fb = b->fb;
+        sn->colorset = bn->colorset = b->colorset;
         bn->cn = b->cn;
         bn->ud = NULL;
         bn->rd = NULL;
@@ -2488,7 +2488,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     undo = doing_redo ? b->rd : b->ud;
     if (undo == NULL)
     {
-        e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), 0, b->fb);
+        e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), 0, b->colorset);
         return (-1);
     }
     window = window->ed->f[window->ed->mxedt];

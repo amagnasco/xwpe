@@ -283,7 +283,7 @@ e_quit (we_window_t * f)
     g[0] = 2;
     fk_mouse (g);
 #endif
-    e_cls (cn->fb->ws, ' ');
+    e_cls (cn->colorset->ws, ' ');
     fk_locate (0, 0);
     fk_cursor (1);
     e_refresh ();
@@ -319,7 +319,7 @@ e_write (int xa, int ya, int xe, int ye, we_window_t * f, int backup)
     }
     if ((fp = fopen (ptmp, "wb")) == NULL)
     {
-        e_error (e_msg[ERR_FOPEN], 0, f->fb);
+        e_error (e_msg[ERR_FOPEN], 0, f->colorset);
         free (ptmp);
         return (WPE_ESC);
     }
@@ -453,8 +453,8 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
             fw->nf = fw->df->nr_files - 1;
         len = strlen (*(fw->df->name + fw->nf));
     }
-    e_mouse_bar (fw->xe, fw->ya, fw->ye - fw->ya, 0, fw->f->fb->em.fb);
-    e_mouse_bar (fw->xa, fw->ye, fw->xe - fw->xa, 1, fw->f->fb->em.fb);
+    e_mouse_bar (fw->xe, fw->ya, fw->ye - fw->ya, 0, fw->f->colorset->em.fb);
+    e_mouse_bar (fw->xa, fw->ye, fw->xe - fw->xa, 1, fw->f->colorset->em.fb);
     while (1)
     {
         e_pr_file_window (fw, 1, 1, ft, fz, 0);
@@ -608,11 +608,11 @@ e_pr_file_window (FLWND * fw, int c, int sw, int ft, int fz, int fs)
             if (sw)
             {
                 fw->nyfo = e_lst_zeichen (fw->xe, fw->ya, fw->ye - fw->ya, 0,
-                                          fw->f->fb->em.fb, fw->df->nr_files,
+                                          fw->f->colorset->em.fb, fw->df->nr_files,
                                           fw->nyfo, fw->nf);
                 fw->nxfo =
                     e_lst_zeichen (fw->xa, fw->ye, fw->xe - fw->xa, 1,
-                                   fw->f->fb->em.fb, len, fw->nxfo, fw->ja);
+                                   fw->f->colorset->em.fb, len, fw->nxfo, fw->ja);
             }
         }
     }
@@ -880,14 +880,14 @@ e_read_help (char *str, we_window_t * f, int sw)
         return (1);
     e_close_buffer (f->b);
     if ((f->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     if ((f->b->bf = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     f->b->f = f;
     f->b->b = e_set_pnt (0, 0);
     f->b->mx = e_set_pnt (f->ed->maxcol, MAXLINES);
     f->b->mxlines = 0;
-    f->b->fb = f->fb;
+    f->b->colorset = f->colorset;
     f->b->cn = f->ed;
     f->b->ud = NULL;
     e_new_line (0, f->b);
@@ -919,7 +919,7 @@ e_read_help (char *str, we_window_t * f, int sw)
         if (!ptmp)
         {
             e_i_fclose (fp);
-            return (e_error ("No Next Page", 0, f->fb));
+            return (e_error ("No Next Page", 0, f->colorset));
         }
         else
         {
@@ -1108,7 +1108,7 @@ e_help_next (we_window_t * f, int sw)
             last->pstr = NULL;
         }
         else
-            return (e_error (sw ? "No Next Page" : "No Previous Page", 0, f->fb));
+            return (e_error (sw ? "No Next Page" : "No Previous Page", 0, f->colorset));
         e_read_info (last->str, f, last->file);
         f->b->b.x = f->b->b.y = 0;
         e_cursor (f, 1);
@@ -1138,7 +1138,7 @@ e_help_next (we_window_t * f, int sw)
         else
             return (e_help_last (f));
     }
-    return (e_error (sw ? "No Next Page" : "No Previous Page", 0, f->fb));
+    return (e_error (sw ? "No Next Page" : "No Previous Page", 0, f->colorset));
 }
 
 int
@@ -1189,7 +1189,7 @@ e_help_comp (we_window_t * f)
                     ;
                 if (str[k - i - 1] != HED)
                 {
-                    e_error ("Error in Switch!", 0, f->fb);
+                    e_error ("Error in Switch!", 0, f->colorset);
                     b->b.x = k;
                     b->b.y = j;
                     e_cursor (f, 1);
@@ -1216,7 +1216,7 @@ e_help_comp (we_window_t * f)
                     ;
                 if (str[k - i - 1] != HED)
                 {
-                    e_error ("Error in Header!", 0, f->fb);
+                    e_error ("Error in Header!", 0, f->colorset);
                     b->b.x = k;
                     b->b.y = j;
                     e_cursor (f, 1);
@@ -1238,7 +1238,7 @@ e_help_comp (we_window_t * f)
         if (i >= hn)
         {
             sprintf (str, "Switch \'%s\' has no Header!", swtch[j]);
-            e_error (str, 0, f->fb);
+            e_error (str, 0, f->colorset);
             goto ende;
         }
     }
@@ -1250,7 +1250,7 @@ e_help_comp (we_window_t * f)
         if (i >= sn)
         {
             sprintf (str, "No Jump to Header \'%s\'!", hdrs[j]);
-            e_error (str, 0, f->fb);
+            e_error (str, 0, f->colorset);
             goto ende;
         }
     }
@@ -1529,14 +1529,14 @@ e_read_info (char *str, we_window_t * f, char *file)
         return (1);
     e_close_buffer (f->b);
     if ((f->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     if ((f->b->bf = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     f->b->f = f;
     f->b->b = e_set_pnt (0, 0);
     f->b->mx = e_set_pnt (f->ed->maxcol, MAXLINES);
     f->b->mxlines = 0;
-    f->b->fb = f->fb;
+    f->b->colorset = f->colorset;
     f->b->cn = f->ed;
     f->b->ud = NULL;
     e_new_line (0, f->b);

@@ -59,7 +59,7 @@ main (int argc, char **argv)
     (*e_u_switch_screen) (1);
     fb = e_ini_farbe ();
     global_editor_control = cn;
-    cn->fb = fb;
+    cn->colorset = fb;
 
     info_file = malloc ((strlen (INFO_DIR) + 1) * sizeof (char));
     strcpy (info_file, INFO_DIR);
@@ -146,7 +146,7 @@ main (int argc, char **argv)
 #endif
     /* this error comes from reading the options file */
     if (err > 0)
-        e_error (e_msg[err], 0, cn->fb);
+        e_error (e_msg[err], 0, cn->colorset);
     if (WpeIsProg ())
         WpeSyntaxReadFile (cn);
 #ifdef UNIX

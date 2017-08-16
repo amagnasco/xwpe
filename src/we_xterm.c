@@ -366,7 +366,7 @@ e_ini_size ()
 int
 e_X_sw_color ()
 {
-    we_colorset_t *fb = global_editor_control->fb;
+    we_colorset_t *fb = global_editor_control->colorset;
     fb->er = e_n_clr (A_Normal);
     fb->et = e_n_clr (A_Normal);
     fb->ez = e_n_clr (A_Reverse);
@@ -1008,7 +1008,7 @@ e_x_repaint_desk (we_window_t * f)
     e_ini_size ();
     if (cn->mxedt < 1)
     {
-        e_cls (f->fb->df.fb, f->fb->dc);
+        e_cls (f->colorset->df.fb, f->colorset->dc);
         e_ini_desk (f->ed);
         if (nw_pic)
         {

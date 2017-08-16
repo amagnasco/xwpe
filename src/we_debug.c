@@ -1033,7 +1033,7 @@ e_d_p_stack (we_window_t * f, int sw)
     char str[256];
 
     if (e_d_swtch < 3)
-        return (e_error (e_d_msg[ERR_NOTRUNNING], 0, f->fb));
+        return (e_error (e_d_msg[ERR_NOTRUNNING], 0, f->colorset));
     for (i = 0; i < SVLINES; i++)
         e_d_out_str[i][0] = '\0';
     for (is = cn->mxedt; is > 0 && strcmp (cn->f[is]->datnam, "Stack"); is--)
@@ -1172,7 +1172,7 @@ e_make_stack (we_window_t * f)
                         (tmpstr =
                              realloc (tmpstr, strlen (tmpstr) + b->bf[i].len + 2)))
                 {
-                    e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                    e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (-1);
                 }
                 strcat (tmpstr, (char *) b->bf[i].s);
@@ -1199,7 +1199,7 @@ e_make_stack (we_window_t * f)
                         (tmpstr =
                              realloc (tmpstr, strlen (tmpstr) + b->bf[i].len + 2)))
                 {
-                    e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+                    e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (-1);
                 }
                 strcat (tmpstr, (char *) b->bf[i].s);
@@ -1213,9 +1213,9 @@ e_make_stack (we_window_t * f)
         }
 
         if (e_deb_type == 3 && (line = e_make_line_num2 (tmpstr, file)) < 0)
-            return (e_error (e_d_msg[ERR_NOSOURCE], 0, f->fb));
+            return (e_error (e_d_msg[ERR_NOSOURCE], 0, f->colorset));
         else if (e_deb_type != 3 && (line = e_make_line_num (tmpstr, file)) < 0)
-            return (e_error (e_d_msg[ERR_NOSOURCE], 0, f->fb));
+            return (e_error (e_d_msg[ERR_NOSOURCE], 0, f->colorset));
         if (dif > e_d_nstack)
             sprintf (str, "%s %d\n",
                      e_deb_type != 3 ? "up" : "down", dif - e_d_nstack);
@@ -1665,7 +1665,7 @@ e_make_breakpoint (we_window_t * f, int sw)
     if (!sw)
     {
         if (!e_check_c_file (f->datnam))
-            return (e_error (e_p_msg[ERR_NO_CFILE], 0, f->fb));
+            return (e_error (e_p_msg[ERR_NO_CFILE], 0, f->colorset));
         for (i = 0; i < s->brp[0] && s->brp[i + 1] != b->b.y; i++)
             ;
         if (i < s->brp[0])
@@ -1976,7 +1976,7 @@ e_exec_deb (we_window_t * f, char *prog)
                 mkfifo (npipe[3], S_IRUSR | S_IWUSR) < 0 ||
                 mkfifo (npipe[4], S_IRUSR | S_IWUSR) < 0)
         {
-            e_error (e_d_msg[ERR_CANTPIPE], 0, f->fb);
+            e_error (e_d_msg[ERR_CANTPIPE], 0, f->colorset);
             return (0);
         }
     }
@@ -1984,17 +1984,17 @@ e_exec_deb (we_window_t * f, char *prog)
     {
         if (pipe (rfildes))
         {
-            e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+            e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
             return (0);
         }
         if (pipe (wfildes))
         {
-            e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+            e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
             return (0);
         }
         if (pipe (efildes))
         {
-            e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+            e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
             return (0);
         }
     }
@@ -2005,7 +2005,7 @@ e_exec_deb (we_window_t * f, char *prog)
         {
             if ((wfildes[0] = open (npipe[1], O_RDONLY)) < 0)
             {
-                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
                 return (0);
             }
             for (i = 0;
@@ -2017,14 +2017,14 @@ e_exec_deb (we_window_t * f, char *prog)
             if ((rfildes[0] = open (e_d_tty, O_RDONLY)) < 0 ||
                     (wfildes[1] = open (e_d_tty, O_WRONLY)) < 0)
             {
-                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
                 return (0);
             }
             if ((rfildes[1] = open (npipe[0], O_WRONLY)) < 0 ||
                     (wfildes[0] = open (npipe[1], O_RDONLY)) < 0 ||
                     (efildes[0] = open (npipe[2], O_RDONLY)) < 0)
             {
-                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
                 return (0);
             }
             if (e_deb_mode)
@@ -2049,7 +2049,7 @@ e_exec_deb (we_window_t * f, char *prog)
 
             if (!(fpp = popen ("tty", "r")))
             {
-                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->fb);
+                e_error (e_p_msg[ERR_PIPEOPEN], 0, f->colorset);
                 return (0);
             }
             if (!fgets (e_d_tty, 80, fpp))
@@ -2062,7 +2062,7 @@ e_exec_deb (we_window_t * f, char *prog)
     }
     else if (e_d_pid < 0)
     {
-        e_error (e_p_msg[ERR_PROCESS], 0, f->fb);
+        e_error (e_p_msg[ERR_PROCESS], 0, f->colorset);
         return (0);
     }
 
@@ -2183,7 +2183,7 @@ e_start_debug (we_window_t * f)
     if (e_test_command (e_debugger))
     {
         sprintf (estr, "Debugger \'%s\' not in Path", e_debugger);
-        e_error (estr, 0, f->fb);
+        e_error (estr, 0, f->colorset);
         return (-1);
     }
     (*e_u_sys_ini) ();
@@ -2270,7 +2270,7 @@ e_deb_run (we_window_t * f)
             e_show_error (0, f);
             return (ret);
         }
-        return (e_error (e_d_msg[ERR_CANTDEBUG], 0, f->fb));
+        return (e_error (e_d_msg[ERR_CANTDEBUG], 0, f->colorset));
     }
     for (ret = 0; isspace (e_d_tty[ret]); ret++)
         ;
@@ -2343,7 +2343,7 @@ e_deb_run (we_window_t * f)
                 || (e_deb_type == 2 && strncmp ("Running:", eing, 8))))
     {
         e_d_quit (f);
-        return (e_error (e_d_msg[ERR_CANTPROG], 0, f->fb));
+        return (e_error (e_d_msg[ERR_CANTPROG], 0, f->colorset));
     }
     e_d_swtch = 3;
     return (e_read_output (f));
@@ -2374,7 +2374,7 @@ e_d_step_next (we_window_t * f, int sw)
             e_show_error (0, f);
             return (ret);
         }
-        return (e_error (e_d_msg[ERR_CANTDEBUG], 0, f->fb));
+        return (e_error (e_d_msg[ERR_CANTDEBUG], 0, f->colorset));
     }
     if (e_d_swtch < 3)
     {
@@ -2428,7 +2428,7 @@ e_d_goto_func (we_window_t * f, int flag)
             e_show_error (0, f);
             return (ret);
         }
-        return (e_error (e_d_msg[ERR_CANTDEBUG], 0, f->fb));
+        return (e_error (e_d_msg[ERR_CANTDEBUG], 0, f->colorset));
     }
     if (e_d_swtch < 3)
     {
@@ -2501,7 +2501,7 @@ e_d_fst_check (we_window_t * f)
         else if ((e_deb_type == 0 || e_deb_type == 1)
                  && !strncmp (e_d_sp[i], e_d_msg[ERR_PROGTERM], 18))
         {
-            e_error (e_d_msg[ERR_PROGTERM], 0, f->fb);
+            e_error (e_d_msg[ERR_PROGTERM], 0, f->colorset);
             e_d_quit (f);
             return (i);
         }
@@ -2825,7 +2825,7 @@ e_d_pr_sig (char *str, we_window_t * f)
         {
             if (!strncmp (str, e_d_msg[ERR_NOSTACK], 9))
             {
-                e_error (e_d_msg[ERR_PROGEXIT], 0, f->fb);
+                e_error (e_d_msg[ERR_PROGEXIT], 0, f->colorset);
                 while (ret == 0 || ret == 2)
                     if ((ret = e_d_line_read (wfildes[0], str2, 256, 0, 0)) == 2)
                         e_d_error (str2);
@@ -2850,7 +2850,7 @@ e_d_pr_sig (char *str, we_window_t * f)
         {
             if (!strncmp (str, e_d_msg[ERR_NOPROCESS], 10))
             {
-                e_error (e_d_msg[ERR_PROGEXIT], 0, f->fb);
+                e_error (e_d_msg[ERR_PROGEXIT], 0, f->colorset);
                 while (ret == 0 || ret == 2)
                     if ((ret = e_d_line_read (wfildes[0], str2, 256, 0, 0)) == 2)
                         e_d_error (str2);
@@ -2996,7 +2996,7 @@ e_d_goto_break (char *file, int line, we_window_t * f)
     /*   if(schirm != e_d_save_schirm) e_d_switch_out(0);  */
     e_d_switch_out (0);
     ftmp.ed = cn;
-    ftmp.fb = f->fb;
+    ftmp.colorset = f->colorset;
     WpeFilenameToPathFile (file, &ftmp.dirct, &ftmp.datnam);
     for (i = 0; i < SVLINES; i++)
         e_d_out_str[i][0] = '\0';
@@ -3020,7 +3020,7 @@ e_d_goto_break (char *file, int line, we_window_t * f)
         if (access (file, F_OK))
         {
             sprintf (str, e_d_msg[ERR_CANTFILE], file);
-            return (e_error (str, 0, f->fb));
+            return (e_error (str, 0, f->colorset));
         }
         if (e_edit (cn, file))
             return (WPE_ESC);
@@ -3060,7 +3060,7 @@ e_d_error (char *s)
     e_d_switch_out (0);
     if (s[(len = strlen (s) - 1)] == '\n')
         s[len] = '\0';
-    return (e_error (s, 0, global_editor_control->fb));
+    return (e_error (s, 0, global_editor_control->colorset));
 }
 
 int

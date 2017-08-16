@@ -197,7 +197,7 @@ typedef struct BFF
     Undo *ud, *rd;	/* pointers to undo and redo structs */
     struct CNT* cn;
     struct FNST* f;
-    we_colorset_t* fb;
+    we_colorset_t* colorset;
 } BUFFER;
 
 typedef struct SCHRM
@@ -216,7 +216,7 @@ typedef struct SCHRM
     /** ending point of something */
     we_point_t e;
     we_point_t c;
-    we_colorset_t* fb;
+    we_colorset_t* colorset;
 #ifdef DEBUGGER
     we_point_t da, de;
     int* brp;
@@ -255,28 +255,28 @@ typedef struct
 
 typedef struct FNST
 {
-    we_point_t a; /* start corner of the box */
-    we_point_t e; /* other corner of the box */
+    we_point_t a; /**< start corner of the box */
+    we_point_t e; /**< other corner of the box */
     we_point_t sa;
     we_point_t se;
     char zoom;
-    we_colorset_t* fb; /* color scheme */
-    we_view_t* pic;    /* picture save below the box ??? */
-    char* dirct;       /* working/actual directory */
-    char* datnam;      /* window header text */
+    we_colorset_t* colorset; /**< color scheme */
+    we_view_t* pic;    /**< picture save below the box ??? */
+    char* dirct;       /**< working/actual directory */
+    char* datnam;      /**< window header text */
     int winnum;
     char ins;
-    char dtmd;			/* (See DTMD_* defines) */
+    char dtmd;			/**< (See DTMD_* defines) */
     int save;
     char* hlp_str;
-    WOPT* blst;			/* status line text */
-    int nblst;			/* no of options in the status line */
+    WOPT* blst;			/**< status line text */
+    int nblst;			/**< no of options in the status line */
     int filemode, flg;
     int* c_sw;
     struct wpeSyntaxRule* c_st;
-    struct CNT* ed;		/* edit control structure */
-    struct BFF* b;		/* Buffer */
-    struct SCHRM* s;	/* screen */
+    struct CNT* ed;		/**< edit control structure */
+    struct BFF* b;		/**< Buffer */
+    struct SCHRM* s;	/**< screen */
     FIND fd;
 } we_window_t;
 
@@ -295,7 +295,7 @@ typedef struct CNT
     char *optfile, *tabs;
     struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
     FIND fd;
-    we_colorset_t* fb;
+    we_colorset_t* colorset;
     we_window_t* f[MAXEDT + 1];
     char dtmd, autosv;
 } we_control_t;

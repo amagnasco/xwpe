@@ -309,7 +309,7 @@ ECNT_Init (we_control_t * cn)
     cn->mxedt = -1;
     cn->curedt = 0;
     cn->edt[0] = 0;
-    cn->fb = NULL;
+    cn->colorset = NULL;
     cn->print_cmd = WpeStrdup (PRNTCMD);
 
     cn->dirct = WpeGetCurrentDir (cn);
@@ -447,19 +447,19 @@ e_ini_desk (we_control_t * cn)
         gblst = gblst_o;
         oblst = oblst_o;
     }
-    e_cls (cn->fb->df.fb, cn->fb->dc);
-    e_blk (MAXSCOL, 0, 0, cn->fb->mt.fb);
+    e_cls (cn->colorset->df.fb, cn->colorset->dc);
+    e_blk (MAXSCOL, 0, 0, cn->colorset->mt.fb);
 
     /* put out the main menu */
     for (i = 0; i < MENOPT; ++i)
     {
-        e_pr_str_wsd (opt[i].x, 0, opt[i].t, cn->fb->mt.fb, 0, 1, cn->fb->ms.fb,
+        e_pr_str_wsd (opt[i].x, 0, opt[i].t, cn->colorset->mt.fb, 0, 1, cn->colorset->ms.fb,
                       (i == 0 ? 0 : opt[i].x - e_mn_men),
                       (i ==
                        MENOPT - 1) ? MAXSCOL - 1 : opt[i + 1].x - e_mn_men - 1);
     }
 
-    e_pr_uul (cn->fb);
+    e_pr_uul (cn->colorset);
 }
 
 void

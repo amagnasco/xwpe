@@ -328,8 +328,8 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
         b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
         b->dw->nf = b->cd->nr_files - 1;
         b->dw->ia = b->dw->ja = 0;
-        e_pr_file_window (b->dw, 0, 1, f->fb->ft.fb, f->fb->fz.fb,
-                          f->fb->frft.fb);
+        e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
+                          f->colorset->frft.fb);
     }
     else
     {
@@ -350,8 +350,8 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
         b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
         b->fw->ia = b->fw->nf = 0;
         b->fw->ja = b->fw->srcha;
-        e_pr_file_window (b->fw, 0, 1, f->fb->ft.fb, f->fb->fz.fb,
-                          f->fb->frft.fb);
+        e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
+                          f->colorset->frft.fb);
     }
     return (cn->edt[i] < 10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i]);
 }
@@ -458,7 +458,7 @@ FLWND *fw;
                         for (i = 0; i < MLEN / 2; i++)
                         {
                             file[2 * i] = *(fw->df->name[fw->nf] + c + i);
-                            file[2 * i + 1] = fw->f->fb->fz.fb;
+                            file[2 * i + 1] = fw->f->colorset->fz.fb;
                         }
                         e_gt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, bgrd);
                         while (e_mshit () != 0)
@@ -741,7 +741,7 @@ e_eck_mouse (we_window_t * f, int sw)
             fk_mouse (g);
             f->pic = e_ed_kst (f, f->pic, 0);
             if (f->pic == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+                e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
             if (f->dtmd == DTMD_FILEDROPDOWN)
             {
                 FLWND *fw = (FLWND *) f->b;
@@ -1376,7 +1376,7 @@ W_OPTSTR *o;
             o->pic =
                 e_change_pic (o->xa, o->ya, o->xe, o->ye, o->pic, 1, o->frt);
             if (o->pic == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, o->f->fb);
+                e_error (e_msg[ERR_LOWMEM], 1, o->f->colorset);
             g[0] = 1;
             fk_mouse (g);
             pic->a.x = o->xa;
