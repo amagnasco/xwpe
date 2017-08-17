@@ -1,9 +1,16 @@
 #
 # General comments:
 #
-# 1. We test doxygen only on one platform as there is no platform depency change
-#    relevant to doxygen. We test it on the clang platform. Maybe we should not
-#    integration test the documentation at all. to be decided later.
+# 1. Currently no platform tests the documentation generation with doxygen.
+#    The reasons are that generation takes a long time and I am not confident
+#    which Ubuntu package are necessary (I use Fedora for development). 
+#    The long time it takes to run, makes CI for doxygen impractical.
+#    I left the necessary statements commented out in the "packages" section
+#    of the CLANG platform.
+# 2. We have no test for a platform without ncurses because it is unclear which
+#    library would replace ncurses. Would it be termlib or termcap or something else?
+#    See issue #85: Travis CI does not include platform without ncurses.
+#
 
 language: c
 
@@ -45,7 +52,7 @@ matrix:
             - check
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-        
+ 
     # CLANG - works on Ubuntu Precise and Trusty
     - os: linux
       addons:
@@ -56,14 +63,17 @@ matrix:
           packages:
             - clang-3.6
             - check
-            - doxygen
-            - doxygen-latex
-            - texlive
-            - texlive-latex-base
-            - texlive-latex-extra
-            - texlive-latex-recommended
-            - texlive-pictures
-            - graphviz
+#            Excluded due to excessive execution times and uncertainty
+#            which other packages are necessary. Installing doxygen triggers
+#            the documentation generation.
+#            - doxygen
+#            - doxygen-latex
+#            - texlive
+#            - texlive-latex-base
+#            - texlive-latex-extra
+#            - texlive-latex-recommended
+#            - texlive-pictures
+#            - graphviz
       env:
         - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
     
@@ -89,7 +99,6 @@ before_install:
   - sudo apt-get -qq update
 #  - sudo apt-get install -y gcc
 #  - sudo apt-get install libncurses5-dev
-#  - sudo apt-get install -y check
   
 script:
   - autoreconf -ivf
