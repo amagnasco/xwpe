@@ -59,7 +59,10 @@ matrix:
             - doxygen
             - doxygen-latex
             - texlive
+            - texlive-latex-base
             - texlive-latex-extra
+            - texlive-latex-recommended
+            - texlive-pictures
             - graphviz
       env:
         - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
