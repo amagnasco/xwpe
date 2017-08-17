@@ -15,6 +15,7 @@ AC_CONFIG_SRCDIR([src/keys.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
+AC_LANG([C])
 # AM_PROG_AR		# defines the correct AR program for the platform, not needed now
 LT_INIT				# working with libtool
 LT_PREREQ([2.4.0])		# At least version 2.4 for libtool
@@ -63,8 +64,7 @@ AC_CHECK_LIB([rt], [timer_create])
 AC_CHECK_LIB([pthread], [__pthread_register_cancel])
 AC_CHECK_LIB([subunit], [subunit_test_start])
 # Ubuntu does not install the dynamic library for check, but check and check_pic
-# The search statement below checks for check_pic first, because libcheck.a does
-# not contain symbols.
+# check_pic is the one containing symbols and should be used if present.
 AC_CHECK_LIB([check], [tcase_create])
 AC_CHECK_LIB([check_pic], [tcase_create])
 
@@ -92,10 +92,6 @@ if test -z "$PDFLATEX"; then
    AC_MSG_WARN([Doxygen needs pdflatex program, it is part of TeX http://www.tug.org/texlive/acquire-netinstall.html])
 fi
 
-AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
-AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Doxyfile])])
-AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Makefile])])
-
 # for we_fl_unix.c
 if man -s 1 ls > /dev/null 2> /dev/null; then
  AC_DEFINE([MAN_S_OPT], [], [Is using man -s option possible?])
@@ -119,6 +115,10 @@ AC_CHECK_FUNCS([symlink tparm mkdtemp tempnam])
 AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale])
 AC_CHECK_FUNCS([strchr strdup strrchr strstr])
 AC_CHECK_FUNCS([backtrace])
+
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Doxyfile])])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Makefile])])
 
 AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile test/Makefile])
 AC_OUTPUT

@@ -1,8 +1,9 @@
 if HAVE_DOXYGEN
 directory = $(top_srcdir)/docs
 
-dist_man_MANS = $(directory)/man/man3
-$(directory)/man3: doxyfile.stamp
+man_MANS = $(directory)/man/man3
+$(directory)/man/man3: doxyfile.stamp
+	%.3
 
 doxyfile.stamp: Doxyfile
 	$(DOXYGEN) $^
@@ -13,6 +14,6 @@ CLEANFILES = doxyfile.stamp
 
 all-local: doxyfile.stamp
 clean-local:
-	rm -rf $(directory)/man
+	rm -rf $(directory)/man/man3
 
 endif
