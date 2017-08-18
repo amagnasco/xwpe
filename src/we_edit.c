@@ -1661,7 +1661,7 @@ e_car_ret (BUFFER * b, we_screen_t * s)
     *(b->bf[b->b.y].s + b->b.x + 1) = '\0';
     b->bf[b->b.y].len = e_str_len (b->bf[b->b.y].s);
     b->bf[b->b.y].nrc = strlen ((const char *) b->bf[b->b.y].s);
-    sc_txt_3 (b->b.y, b, 1);
+    if(b->f->c_sw) e_sc_nw_txt(b->b.y, b, 1);
     /***************************/
     if (b->b.x > 0)
         e_brk_recalc (b->f, b->b.y + 1, 1);
@@ -1814,7 +1814,7 @@ e_del_line (int yd, BUFFER * b, we_screen_t * s)
             s->mark_end.x = b->bf[yd - 1].len;
         }
     }
-    sc_txt_3 (yd, b, -1);
+    if(b->f->c_sw) e_sc_nw_txt(yd, b, -1);
     if (b->f)
         (b->f->save) += 10;
     /*******************************/
