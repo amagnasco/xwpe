@@ -314,14 +314,14 @@ ECNT_Init (we_control_t * cn)
 
     cn->dirct = WpeGetCurrentDir (cn);
 
-    strcpy (cn->fd.search, "");
-    strcpy (cn->fd.replace, "");
-    strcpy (cn->fd.file, SUDIR);
-    cn->fd.dirct = WpeStrdup (cn->dirct);
+    strcpy (cn->find.search, "");
+    strcpy (cn->find.replace, "");
+    strcpy (cn->find.file, SUDIR);
+    cn->find.dirct = WpeStrdup (cn->dirct);
 
-    cn->fd.sw = 16;
-    cn->fd.sn = 0;
-    cn->fd.rn = 0;
+    cn->find.sw = 16;
+    cn->find.sn = 0;
+    cn->find.rn = 0;
 
     cn->sdf = cn->rdf = cn->fdf = cn->ddf = cn->wdf = cn->hdf = cn->shdf = NULL;
 
@@ -571,11 +571,11 @@ e_ini_farbe ()
 }
 
 void
-e_free_find (FIND * fd)
+e_free_find (FIND * find)
 {
-    if (fd->dirct)
+    if (find->dirct)
     {
-        free (fd->dirct);
-        fd->dirct = NULL;
+        free (find->dirct);
+        find->dirct = NULL;
     }
 }

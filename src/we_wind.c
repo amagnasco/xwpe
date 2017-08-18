@@ -852,7 +852,7 @@ e_close_window (we_window_t * f)
         e_close_view (f->pic, 1);
         if (f != f0 && f != NULL)
         {
-            e_free_find (&f->fd);
+            e_free_find (&f->find);
             free (f);
         }
         if (cn->mxedt > 0)
@@ -881,7 +881,7 @@ e_close_window (we_window_t * f)
         e_close_view (f->pic, 1);
         if (f != f0 && f != NULL)
         {
-            e_free_find (&f->fd);
+            e_free_find (&f->find);
             free (f);
         }
         if (cn->mxedt > 0 && (swt < 5 || swt == 7))
@@ -930,7 +930,7 @@ e_close_window (we_window_t * f)
     e_close_view (f->pic, 1);
     if (f != f0 && f != NULL)
     {
-        e_free_find (&f->fd);
+        e_free_find (&f->find);
         free (f);
     }
     if (cn->mxedt > 0)
@@ -1581,7 +1581,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
     f->ed = cn;
     f->c_sw = NULL;
     f->c_st = NULL;
-    f->fd.dirct = NULL;
+    f->find.dirct = NULL;
     f->winnum = -1;
     f->datnam = "";
     if (!(f->pic = e_ed_kst (f, NULL, 1)))

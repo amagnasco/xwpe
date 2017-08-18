@@ -989,7 +989,7 @@ e_repeat_search (we_window_t * window)
 {
     we_screen_t *screen;
     BUFFER *buffer;
-    FIND *find = &(window->ed->fd);
+    FIND *find = &(window->ed->find);
     int i, j, iend, jend;
     int start_offset;
     size_t end_offset;
@@ -1132,7 +1132,7 @@ e_find (we_window_t * window)
 {
     we_screen_t *wind_screen;
     BUFFER *buffer;
-    FIND *find = &(window->ed->fd);
+    FIND *find = &(window->ed->find);
     int i, ret;
     char strTemp[80];
     W_OPTSTR *find_dialog = e_init_opt_kst (window);
@@ -1222,7 +1222,7 @@ e_replace (we_window_t *window)
 {
     we_screen_t *screen;
     BUFFER *buffer;
-    FIND *find = &(window->ed->fd);
+    FIND *find = &(window->ed->find);
     int i, ret, c, rep = 0, found = 0;
     char strTemp[80];
     W_OPTSTR *replace_options = e_init_opt_kst (window);

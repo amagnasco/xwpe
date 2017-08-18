@@ -228,7 +228,7 @@ e_edit (we_control_t * cn, char *filename)
     f->b->cn = cn;
     f->b->ud = NULL;
     f->b->rd = NULL;
-    f->fd.dirct = NULL;
+    f->find.dirct = NULL;
     if (WpeIsProg ())
         e_add_synt_tl (filename, f);
     else
@@ -2400,7 +2400,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         str[n] = '\0';
         next->u.pt = str;
 
-        next->a.y = e_phase == UNDO_PHASE ? b->cn->fd.sn : b->cn->fd.rn;
+        next->a.y = e_phase == UNDO_PHASE ? b->cn->find.sn : b->cn->find.rn;
 
     }
     else if (undo_type == 'l')
@@ -2426,7 +2426,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         fn->c_sw = NULL;
         fn->c_st = NULL;
         fn->ed = NULL;		/* Quick fix so that breakpoints aren't recalculated */
-        fn->fd.dirct = NULL;
+        fn->find.dirct = NULL;
         bn->f = fn;
         bn->f->s = sn;
         bn->b = e_set_pnt (0, 0);

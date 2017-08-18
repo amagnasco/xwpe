@@ -214,20 +214,20 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
         strcpy (f->dirct, dirct);
     }
 
-    strcpy (f->fd.search, "");
-    strcpy (f->fd.replace, "");
-    strcpy (f->fd.file, SUDIR);
-    f->fd.dirct = WpeStrdup (f->dirct);
+    strcpy (f->find.search, "");
+    strcpy (f->find.replace, "");
+    strcpy (f->find.file, SUDIR);
+    f->find.dirct = WpeStrdup (f->dirct);
 
-    f->fd.sw = 16;
-    f->fd.sn = 0;
-    f->fd.rn = 0;
+    f->find.sw = 16;
+    f->find.sn = 0;
+    f->find.rn = 0;
 
     f->b = (BUFFER *) b;
     /* the find pattern can only be 79 see FIND structure */
     if ((b->rdfile = malloc (80)) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
-    strcpy (b->rdfile, f->fd.file);	/* find file pattern */
+    strcpy (b->rdfile, f->find.file);	/* find file pattern */
 
     b->sw = sw;
 
@@ -580,7 +580,7 @@ WpeHandleFileManager (we_control_t * cn)
             break;
         }
     }
-    strcpy (f->fd.file, b->rdfile);
+    strcpy (f->find.file, b->rdfile);
 
     /* go until quit */
     while (c != WPE_ESC)
@@ -607,7 +607,7 @@ WpeHandleFileManager (we_control_t * cn)
             /* determine the entered filename, going backward */
             for (i = strlen (b->rdfile); i >= 0 && b->rdfile[i] != DIRC; i--)
                 ;
-            strcpy (f->fd.file, b->rdfile + 1 + i);
+            strcpy (f->find.file, b->rdfile + 1 + i);
 
             /* there is some directory structure in the filename */
             if (i >= 0)
@@ -622,7 +622,7 @@ WpeHandleFileManager (we_control_t * cn)
                 strcpy (f->dirct, b->rdfile);
 
                 /* restore original filename */
-                strcpy (b->rdfile, f->fd.file);
+                strcpy (b->rdfile, f->find.file);
                 c = AltC;
             }
 #if  MOUSE
@@ -2551,7 +2551,7 @@ WpeRemove (char *file, we_window_t * f)
     }
     else
     {
-        ret = WpeRemoveDir (file, f->fd.file, f, 0);
+        ret = WpeRemoveDir (file, f->find.file, f, 0);
     }
 
     WpeMouseRestoreShape ();
@@ -2796,7 +2796,7 @@ WpeRenameCopy (char *file, char *newname, we_window_t * f, int sw)
     }
 
     if ((stat (file, &buf) == 0) && S_ISDIR (buf.st_mode) && ln < 0)
-        retl = WpeRenameCopyDir (file, f->fd.file, newname, f, 0, sw);
+        retl = WpeRenameCopyDir (file, f->find.file, newname, f, 0, sw);
     else
     {
         /* check whether file exist */
@@ -3407,7 +3407,7 @@ WpeSearchFiles (we_window_t * f, char *dirct, char *file, char *string,
 int
 WpeGrepWindow (we_window_t * f)
 {
-    FIND *fd = &(f->ed->fd);
+    FIND *find = &(f->ed->find);
     int ret;
     char strTemp[80];
     W_OPTSTR *o = e_init_opt_kst (f);
@@ -3416,8 +3416,8 @@ WpeGrepWindow (we_window_t * f)
         return (-1);
     if (e_blck_dup (strTemp, f))
     {
-        strcpy (fd->search, strTemp);
-        fd->sn = strlen (fd->search);
+        strcpy (find->search, strTemp);
+        find->sn = strlen (find->search);
     }
     o->xa = 7;
     o->ya = 3;
@@ -3427,35 +3427,35 @@ WpeGrepWindow (we_window_t * f)
     o->name = "Grep";
     o->crsw = AltO;
     e_add_txtstr (4, 4, "Options:", o);
-    e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", fd->search,
+    e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
                  &f->ed->sdf, o);
-    e_add_wrstr (4, 10, 17, 10, 36, 128, 0, AltF, "File:", fd->file,
+    e_add_wrstr (4, 10, 17, 10, 36, 128, 0, AltF, "File:", find->file,
                  &f->ed->fdf, o);
     e_add_wrstr (4, 12, 17, 12, 36, WPE_PATHMAX, 0, AltD, "Directory:",
-                 fd->dirct, &f->ed->ddf, o);
-    e_add_sswstr (5, 5, 0, AltC, fd->sw & 128 ? 1 : 0, "Case sensitive    ", o);
-    e_add_sswstr (5, 6, 0, AltW, fd->sw & 64 ? 1 : 0, "Whole words only  ", o);
-    e_add_sswstr (5, 7, 0, AltR, fd->sw & 32 ? 1 : 0, "Regular expression", o);
+                 find->dirct, &f->ed->ddf, o);
+    e_add_sswstr (5, 5, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", o);
+    e_add_sswstr (5, 6, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", o);
+    e_add_sswstr (5, 7, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", o);
     e_add_sswstr (5, 8, 0, AltS, 0, "Search Recursive  ", o);
     e_add_bttstr (16, 14, 1, AltO, " Ok ", NULL, o);
     e_add_bttstr (34, 14, -1, WPE_ESC, "Cancel", NULL, o);
     ret = e_opt_kst (o);
     if (ret != WPE_ESC)
     {
-        fd->sw = 1024 + (o->sstr[0]->num << 7) + (o->sstr[1]->num << 6) +
-                 (o->sstr[2]->num << 5) + (o->sstr[3]->num << 9);
-        strcpy (fd->search, o->wstr[0]->txt);
-        fd->sn = strlen (fd->search);
-        strcpy (fd->file, o->wstr[1]->txt);
-        if (fd->dirct)
+        find->sw = 1024 + (o->sstr[0]->num << 7) + (o->sstr[1]->num << 6) +
+                   (o->sstr[2]->num << 5) + (o->sstr[3]->num << 9);
+        strcpy (find->search, o->wstr[0]->txt);
+        find->sn = strlen (find->search);
+        strcpy (find->file, o->wstr[1]->txt);
+        if (find->dirct)
         {
-            free (fd->dirct);
+            free (find->dirct);
         }
-        fd->dirct = WpeStrdup (o->wstr[2]->txt);
+        find->dirct = WpeStrdup (o->wstr[2]->txt);
     }
     freeostr (o);
     if (ret != WPE_ESC)
-        ret = e_data_first (2, f->ed, fd->dirct);
+        ret = e_data_first (2, f->ed, find->dirct);
     return (ret);
 }
 
@@ -3463,7 +3463,7 @@ WpeGrepWindow (we_window_t * f)
 int
 WpeFindWindow (we_window_t * f)
 {
-    FIND *fd = &(f->ed->fd);
+    FIND *find = &(f->ed->find);
     int ret;
     W_OPTSTR *o = e_init_opt_kst (f);
 
@@ -3477,9 +3477,9 @@ WpeFindWindow (we_window_t * f)
     o->name = "Find File";
     o->crsw = AltO;
     e_add_txtstr (4, 6, "Options:", o);
-    e_add_wrstr (4, 2, 15, 2, 36, 128, 0, AltF, "File:", fd->file, &f->ed->fdf,
+    e_add_wrstr (4, 2, 15, 2, 36, 128, 0, AltF, "File:", find->file, &f->ed->fdf,
                  o);
-    e_add_wrstr (4, 4, 15, 4, 36, WPE_PATHMAX, 0, AltD, "Directory:", fd->dirct,
+    e_add_wrstr (4, 4, 15, 4, 36, WPE_PATHMAX, 0, AltD, "Directory:", find->dirct,
                  &f->ed->ddf, o);
     e_add_sswstr (5, 7, 0, AltS, 1, "Search Recursive  ", o);
     e_add_bttstr (13, 9, 1, AltO, " Ok ", NULL, o);
@@ -3487,17 +3487,17 @@ WpeFindWindow (we_window_t * f)
     ret = e_opt_kst (o);
     if (ret != WPE_ESC)
     {
-        fd->sw = (o->sstr[0]->num << 9);
-        strcpy (fd->file, o->wstr[0]->txt);
-        if (fd->dirct)
+        find->sw = (o->sstr[0]->num << 9);
+        strcpy (find->file, o->wstr[0]->txt);
+        if (find->dirct)
         {
-            free (fd->dirct);
+            free (find->dirct);
         }
-        fd->dirct = WpeStrdup (o->wstr[1]->txt);
+        find->dirct = WpeStrdup (o->wstr[1]->txt);
     }
     freeostr (o);
     if (ret != WPE_ESC)
-        ret = e_data_first (3, f->ed, fd->dirct);
+        ret = e_data_first (3, f->ed, find->dirct);
     return (ret);
 }
 
@@ -3823,7 +3823,7 @@ e_data_first (int sw, we_control_t * cn, char *nstr)
     f->c_sw = NULL;
     f->c_st = NULL;
     f->pic = NULL;
-    f->fd.dirct = NULL;
+    f->find.dirct = NULL;
 
     if (!nstr)
         f->dirct = NULL;		/* how about a free up ??? */
@@ -3841,14 +3841,14 @@ e_data_first (int sw, we_control_t * cn, char *nstr)
     else if (sw == 2)
     {
         f->datnam = "Grep";
-        df = WpeSearchFiles (f, nstr, cn->fd.file,
-                             cn->fd.search, NULL, cn->fd.sw);
+        df = WpeSearchFiles (f, nstr, cn->find.file,
+                             cn->find.search, NULL, cn->find.sw);
     }
     else if (sw == 3)
     {
         f->datnam = "Find";
-        df = WpeSearchFiles (f, nstr, cn->fd.file,
-                             cn->fd.search, NULL, cn->fd.sw);
+        df = WpeSearchFiles (f, nstr, cn->find.file,
+                             cn->find.search, NULL, cn->find.sw);
     }
     else if (sw == 7)
     {

@@ -277,7 +277,7 @@ typedef struct FNST
     struct CNT* ed;		/**< edit control structure */
     struct BFF* b;		/**< Buffer */
     struct SCHRM* s;	/**< screen */
-    FIND fd;
+    FIND find;
 } we_window_t;
 
 typedef struct CNT
@@ -294,7 +294,7 @@ typedef struct CNT
     char* dirct; /**< current directory */
     char *optfile, *tabs;
     struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
-    FIND fd;
+    FIND find;
     we_colorset_t* colorset;
     we_window_t* f[MAXEDT + 1];
     char dtmd, autosv;
