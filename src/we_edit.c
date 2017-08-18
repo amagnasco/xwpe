@@ -215,7 +215,7 @@ e_edit (we_control_t * cn, char *filename)
     f->save = 0;
     f->zoom = 0;
     f->ed = cn;
-    f->pic = NULL;
+    f->view = NULL;
     f->hlp_str = e_hlp_str[0];
     f->blst = eblst;
     f->nblst = 7;

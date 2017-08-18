@@ -739,8 +739,8 @@ e_eck_mouse (we_window_t * f, int sw)
             }
             g[0] = 2;
             fk_mouse (g);
-            f->pic = e_ed_kst (f, f->pic, 0);
-            if (f->pic == NULL)
+            f->view = e_ed_kst (f, f->view, 0);
+            if (f->view == NULL)
                 e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
             if (f->dtmd == DTMD_FILEDROPDOWN)
             {
@@ -1373,9 +1373,9 @@ W_OPTSTR *o;
             o->ya = y;
             g[0] = 2;
             fk_mouse (g);
-            o->pic =
-                e_change_pic (o->xa, o->ya, o->xe, o->ye, o->pic, 1, o->frt);
-            if (o->pic == NULL)
+            o->view =
+                e_change_pic (o->xa, o->ya, o->xe, o->ye, o->view, 1, o->frt);
+            if (o->view == NULL)
                 e_error (e_msg[ERR_LOWMEM], 1, o->f->colorset);
             g[0] = 1;
             fk_mouse (g);

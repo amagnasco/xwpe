@@ -303,7 +303,7 @@ typedef struct FNST
     we_point_t se;
     char zoom;
     we_colorset_t* colorset; /**< color scheme */
-    we_view_t* pic;    /**< picture save below the box ??? */
+    we_view_t* view;
     char* dirct;       /**< working/actual directory */
     char* datnam;      /**< window header text */
     int winnum;
@@ -433,7 +433,7 @@ typedef struct
     int wn;				/**< The number of W_O_WRSTR in wstr */
     int nn;				/**< The number of W_O_NUMSTR in nstr */
     char* name;			/**< name of the dialog: "Replace" or "Find" */
-    we_view_t* pic;
+    we_view_t* view;
     W_O_TXTSTR** tstr;
     W_O_SSWSTR** sstr;
     W_O_PSWSTR** pstr;
@@ -451,7 +451,7 @@ typedef struct wpeOptionSection
 
 #ifdef UNIX
 
-int e_put_pic_xrect(we_view_t* pic);
+int e_put_pic_xrect(we_view_t* view);
 int e_get_pic_xrect(int xa, int ya, int xe, int ye, we_view_t* view);
 
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)

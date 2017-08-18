@@ -198,9 +198,9 @@ e_message (int sw, char *str, we_window_t * f)
 void
 e_firstl (we_window_t * f, int sw)
 {
-    f->pic = NULL;
-    f->pic = e_ed_kst (f, f->pic, sw);
-    if (f->pic == NULL)
+    f->view = NULL;
+    f->view = e_ed_kst (f, f->view, sw);
+    if (f->view == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
 }
 
@@ -582,8 +582,8 @@ e_size_move (we_window_t * f)
             f->a.y = ya;
             f->e.x = xe;
             f->e.y = ye;
-            f->pic = e_ed_kst (f, f->pic, 0);
-            if (f->pic == NULL)
+            f->view = e_ed_kst (f, f->view, 0);
+            if (f->view == NULL)
                 e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
             if (f->dtmd == DTMD_FILEDROPDOWN)
             {
@@ -844,7 +844,7 @@ e_close_window (we_window_t * f)
         free (b);
         (cn->mxedt)--;
         cn->curedt = cn->edt[cn->mxedt];
-        e_close_view (f->pic, 1);
+        e_close_view (f->view, 1);
         if (f != f0 && f != NULL)
         {
             e_free_find (&f->find);
@@ -873,7 +873,7 @@ e_close_window (we_window_t * f)
         free (fw);
         (cn->mxedt)--;
         cn->curedt = cn->edt[cn->mxedt];
-        e_close_view (f->pic, 1);
+        e_close_view (f->view, 1);
         if (f != f0 && f != NULL)
         {
             e_free_find (&f->find);
@@ -922,7 +922,7 @@ e_close_window (we_window_t * f)
     }
     (cn->mxedt)--;
     cn->curedt = cn->edt[cn->mxedt];
-    e_close_view (f->pic, 1);
+    e_close_view (f->view, 1);
     if (f != f0 && f != NULL)
     {
         e_free_find (&f->find);
@@ -970,8 +970,8 @@ e_switch_window (int num, we_window_t * f)
         return;
     for (i = cn->mxedt; i >= 1; i--)
     {
-        free (cn->f[i]->pic->p);
-        free (cn->f[i]->pic);
+        free (cn->f[i]->view->p);
+        free (cn->f[i]->view);
     }
     ft = cn->f[n];
     te = cn->edt[n];
@@ -1006,8 +1006,8 @@ e_ed_zoom (we_window_t * f)
             f->e = e_set_pnt (f->se.x, f->se.y);
             f->zoom = 0;
         }
-        f->pic = e_ed_kst (f, f->pic, 1);
-        if (f->pic == NULL)
+        f->view = e_ed_kst (f, f->view, 1);
+        if (f->view == NULL)
             e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
         e_cursor (f, 1);
         e_schirm (f, 1);
@@ -1026,8 +1026,8 @@ e_ed_cascade (we_window_t * f)
         return 0;			/* no windows open */
     for (i = cn->mxedt; i >= 1; i--)
     {
-        free (cn->f[i]->pic->p);
-        free (cn->f[i]->pic);
+        free (cn->f[i]->view->p);
+        free (cn->f[i]->view);
         cn->f[i]->a = e_set_pnt (i - 1, i);
         cn->f[i]->e =
             e_set_pnt (MAXSCOL - 1 - cn->mxedt + i, MAXSLNS - 2 - cn->mxedt + i);
@@ -1081,8 +1081,8 @@ e_ed_tile (we_window_t * f)
     }
     for (i = cn->mxedt; i >= 1; i--)
     {
-        free (cn->f[i]->pic->p);
-        free (cn->f[i]->pic);
+        free (cn->f[i]->view->p);
+        free (cn->f[i]->view);
     }
     for (ni = editwin, nj = 1; ni > 1; ni--)
     {
@@ -1579,7 +1579,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
     f->find.dirct = NULL;
     f->winnum = -1;
     f->datnam = "";
-    if (!(f->pic = e_ed_kst (f, NULL, 1)))
+    if (!(f->view = e_ed_kst (f, NULL, 1)))
     {
         e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
         return (0);
@@ -1610,7 +1610,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
     }
     while (ret != WPE_CR && ret != WPE_ESC);
     *n = fw->nf;
-    e_close_view (f->pic, 1);
+    e_close_view (f->view, 1);
     free (fw);
     free (f);
     return (ret);

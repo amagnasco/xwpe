@@ -171,7 +171,7 @@ e_repaint_desk (we_window_t * f)
 
     if (WpeIsXwin ())
     {
-        if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->pic)
+        if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->view)
         {
             sv_pic = e_X_l_pic;
             nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y,
@@ -1585,7 +1585,7 @@ e_init_opt_kst (we_window_t * window)
     o->fbz = window->colorset->nm.fb;
     o->tn = o->sn = o->pn = o->bn = o->wn = o->nn = 0;
     o->f = window;
-    o->pic = NULL;
+    o->view = NULL;
     return (o);
 }
 
@@ -1647,9 +1647,9 @@ e_opt_move (W_OPTSTR * o)
             o->ya = ya;
             o->xe = xe;
             o->ye = ye;
-            o->pic =
-                e_change_pic (o->xa, o->ya, o->xe, o->ye, o->pic, 1, o->frt);
-            if (o->pic == NULL)
+            o->view =
+                e_change_pic (o->xa, o->ya, o->xe, o->ye, o->view, 1, o->frt);
+            if (o->view == NULL)
                 e_error (e_msg[ERR_LOWMEM], 1, o->f->colorset);
             view->a.x = o->xa;
             view->a.y = o->ya;
@@ -1756,10 +1756,10 @@ e_opt_kst (W_OPTSTR * o)
     int ret = 0, csv, sw = 1, i, j, num, cold, c = o->bgsw;
     char *tmp;
     fk_cursor (0);
-    o->pic =
+    o->view =
         e_std_kst (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->ftt,
                    o->frs);
-    if (o->pic == NULL)
+    if (o->view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, o->f->colorset);
         return (-1);
@@ -2174,7 +2174,7 @@ e_opt_kst (W_OPTSTR * o)
         c = cold;
         sw = 1;
     }
-    e_close_view (o->pic, 1);
+    e_close_view (o->view, 1);
     return (ret);
 }
 

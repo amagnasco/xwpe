@@ -999,7 +999,7 @@ e_x_repaint_desk (we_window_t * f)
     extern we_view_t *e_X_l_pic;
     we_view_t *sv_pic = NULL, *nw_pic = NULL;
 
-    if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->pic)
+    if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->view)
     {
         sv_pic = e_X_l_pic;
         nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y, e_X_l_pic->e.x,
@@ -1021,8 +1021,8 @@ e_x_repaint_desk (we_window_t * f)
     e_abs_refr ();
     for (i = cn->mxedt; i >= 1; i--)
     {
-        free (cn->f[i]->pic->p);
-        free (cn->f[i]->pic);
+        free (cn->f[i]->view->p);
+        free (cn->f[i]->view);
     }
     for (i = 0; i <= cn->mxedt; i++)
     {

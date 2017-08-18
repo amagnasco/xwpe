@@ -152,7 +152,7 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
     f->ed = cn;
     f->c_sw = NULL;
     f->c_st = NULL;
-    f->pic = NULL;
+    f->view = NULL;
     if (sw == 6)
     {
         sw = 0;
@@ -3822,7 +3822,7 @@ e_data_first (int sw, we_control_t * cn, char *nstr)
     f->ed = cn;
     f->c_sw = NULL;
     f->c_st = NULL;
-    f->pic = NULL;
+    f->view = NULL;
     f->find.dirct = NULL;
 
     if (!nstr)
