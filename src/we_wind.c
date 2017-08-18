@@ -1916,7 +1916,7 @@ e_make_xrect_abs (int xa, int ya, int xe, int ye, int sw)
 }
 
 /**
- * function e_make_xrect
+ * \fn e_make_xrect
  *
  * TODO: what does this function do?
  *

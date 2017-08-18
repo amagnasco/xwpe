@@ -31,7 +31,7 @@ int e_save_opt(we_window_t* f);
 int e_opt_read(we_control_t* cn);
 int e_add_arguments(char* str, char* head, we_window_t* f, int n, int sw,
                     struct dirfile** df);
-W_O_TXTSTR** e_add_txtstr(int x, int y, char* txt, W_OPTSTR* o);
+W_O_TXTSTR** e_add_txtstr(int x, int y, const char* txt, W_OPTSTR* o);
 W_O_WRSTR** e_add_wrstr(int xt, int yt, int xw, int yw, int nw, int wmx,
                         int nc, int sw, char* header, char* txt,
                         struct dirfile** df, W_OPTSTR* o);
@@ -39,7 +39,7 @@ W_O_NUMSTR** e_add_numstr(int xt, int yt, int xw, int yw, int nw, int wmx,
                           int nc, int sw, char* header, int num,
                           W_OPTSTR* o);
 W_O_SSWSTR** e_add_sswstr(int x, int y, int nc, int sw, int num,
-                          char* header, W_OPTSTR* o);
+                          const char* header, W_OPTSTR* o);
 W_O_SPSWSTR** e_add_spswstr(int n, int x, int y, int nc, int sw,
                             char* header, W_OPTSTR* o);
 W_O_PSWSTR** e_add_pswstr(int n, int x, int y, int nc, int sw, int num,

@@ -1339,7 +1339,7 @@ e_add_arguments (char *str, char *head, we_window_t * f, int n, int sw,
 }
 
 W_O_TXTSTR **
-e_add_txtstr (int x, int y, char *txt, W_OPTSTR * o)
+e_add_txtstr (int x, int y, const char *txt, W_OPTSTR * o)
 {
     if (o->tn == 0)
         o->tstr = malloc (1);
@@ -1348,8 +1348,7 @@ e_add_txtstr (int x, int y, char *txt, W_OPTSTR * o)
         return (NULL);
     if (!(o->tstr[o->tn - 1] = malloc (sizeof (W_O_TXTSTR))))
         return (NULL);
-    if (!
-            (o->tstr[o->tn - 1]->txt = malloc ((strlen (txt) + 1) * sizeof (char))))
+    if (!(o->tstr[o->tn - 1]->txt = malloc ((strlen (txt) + 1) * sizeof (char))))
         return (NULL);
     o->tstr[o->tn - 1]->x = x;
     o->tstr[o->tn - 1]->y = y;
@@ -1419,7 +1418,7 @@ e_add_numstr (int xt, int yt, int xw, int yw, int nw, int wmx,
 
 W_O_SSWSTR **
 e_add_sswstr (int x, int y, int nc, int sw, int num,
-              char *header, W_OPTSTR * o)
+              const char *header, W_OPTSTR * o)
 {
     if (o->sn == 0)
         o->sstr = malloc (1);
@@ -1428,9 +1427,8 @@ e_add_sswstr (int x, int y, int nc, int sw, int num,
         return (NULL);
     if (!(o->sstr[o->sn - 1] = malloc (sizeof (W_O_SSWSTR))))
         return (NULL);
-    if (!
-            (o->sstr[o->sn - 1]->header =
-                 malloc ((strlen (header) + 1) * sizeof (char))))
+    if (!(o->sstr[o->sn - 1]->header =
+                malloc ((strlen (header) + 1) * sizeof (char))))
         return (NULL);
     o->sstr[o->sn - 1]->x = x;
     o->sstr[o->sn - 1]->y = y;
@@ -1452,15 +1450,13 @@ e_add_spswstr (int n, int x, int y, int nc, int sw,
     if (o->pstr[n]->np == 0)
         o->pstr[n]->ps = malloc (1);
     (o->pstr[n]->np)++;
-    if (!
-            (o->pstr[n]->ps =
-                 realloc (o->pstr[n]->ps, o->pstr[n]->np * sizeof (W_O_SPSWSTR *))))
+    if (!(o->pstr[n]->ps =
+                realloc (o->pstr[n]->ps, o->pstr[n]->np * sizeof (W_O_SPSWSTR *))))
         return (NULL);
     if (!(o->pstr[n]->ps[o->pstr[n]->np - 1] = malloc (sizeof (W_O_SPSWSTR))))
         return (NULL);
-    if (!
-            (o->pstr[n]->ps[o->pstr[n]->np - 1]->header =
-                 malloc ((strlen (header) + 1) * sizeof (char))))
+    if (!(o->pstr[n]->ps[o->pstr[n]->np - 1]->header =
+                malloc ((strlen (header) + 1) * sizeof (char))))
         return (NULL);
     o->pstr[n]->ps[o->pstr[n]->np - 1]->x = x;
     o->pstr[n]->ps[o->pstr[n]->np - 1]->y = y;

@@ -282,16 +282,16 @@ typedef struct FNST
 
 typedef struct CNT
 {
-    int major, minor, patch; /* Version of option file. */
+    int major, minor, patch; /**< Version of option file. */
     int maxcol, tabn;
     int maxchg, numundo;
     int flopt, edopt;
-    int mxedt;		 /* max number of editing windows */
-    int curedt;		 /* currently active window */
-    int edt[MAXEDT + 1]; /* 1 <= window IDs <= MAXEDT, arbitrary order */
+    int mxedt;		 /**< max number of editing windows */
+    int curedt;		 /**< currently active window */
+    int edt[MAXEDT + 1]; /**< 1 <= window IDs <= MAXEDT, arbitrary order */
     int autoindent;
     char* print_cmd;
-    char* dirct; /* current directory */
+    char* dirct; /**< current directory */
     char *optfile, *tabs;
     struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
     FIND fd;
@@ -303,26 +303,26 @@ typedef struct CNT
 /* structure for the windows in the file manager ??? */
 typedef struct fl_wnd
 {
-    int xa, ya; /* its own box corner ??? */
+    int xa, ya; /**< its own box corner ??? */
     int xe, ye;
     int ia, ja;
-    int nf; /* selected field in dirfile df struct */
+    int nf; /**< selected field in dirfile df struct */
     int nxfo, nyfo;
-    int mxa, mya; /* parent box corners ??? */
+    int mxa, mya; /**< parent box corners ??? */
     int mxe, mye;
     int srcha;
-    struct dirfile* df; /* directory tree or file list */
-    we_window_t* f;     /* the window itself */
+    struct dirfile* df; /**< directory tree or file list */
+    we_window_t* f;     /**< the window itself */
 } FLWND;
 
 typedef struct FLBFF
 {
-    struct dirfile* cd; /* current directory */
-    struct dirfile* dd; /* list of directories in the current dir. */
-    struct dirfile* df; /* list of files in the current dir. */
-    struct fl_wnd* fw;  /* window for file list */
-    struct fl_wnd* dw;  /* window for dir tree */
-    char* rdfile;       /* file pattern entered for searching */
+    struct dirfile* cd; /**< current directory */
+    struct dirfile* dd; /**< list of directories in the current dir. */
+    struct dirfile* df; /**< list of files in the current dir. */
+    struct fl_wnd* fw;  /**< window for file list */
+    struct fl_wnd* dw;  /**< window for dir tree */
+    char* rdfile;       /**< file pattern entered for searching */
     char sw;
     int xfa, xfd, xda, xdd;
 } FLBFFR;
@@ -374,8 +374,8 @@ typedef struct
 
 typedef struct
 {
-    int xa, ya;			/* Upperleft corner */
-    int xe, ye;			/* Lowerright corner */
+    int xa, ya;			/**< Upperleft corner */
+    int xe, ye;			/**< Lowerright corner */
     int bgsw;
     int crsw;
     int frt, frs;
@@ -384,8 +384,13 @@ typedef struct
     int fsa, fbt;
     int fbs, fbz;
     int fwt, fws;
-    int tn, sn, pn, bn, wn, nn;
-    char* name;			/* name of the dialog: "Replace" or "Find" */
+    int tn;				/**< The number of W_O_TXTSTR in tstr */
+    int sn;			    /**< The number of W_O_SSWSTR in sstr */
+    int pn;				/**< The number of W_O_PSWSTR in pstr */
+    int bn;				/**< The number of W_O_BTTSTR in bstr */
+    int wn;				/**< The number of W_O_WRSTR in wstr */
+    int nn;				/**< The number of W_O_NUMSTR in nstr */
+    char* name;			/**< name of the dialog: "Replace" or "Find" */
     we_view_t* pic;
     W_O_TXTSTR** tstr;
     W_O_SSWSTR** sstr;
