@@ -15,6 +15,7 @@ typedef struct
 } E_AFILE;
 
 int* e_sc_txt(int* c_sw, BUFFER* b);
+void e_sc_txt_2 (we_window_t *f);
 int e_sc_nw_txt(int y, BUFFER* b, int sw);
 int e_add_synt_tl(char* filename, we_window_t* f);
 int e_mk_beauty(int sw, int ndif, we_window_t* f);

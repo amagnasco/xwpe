@@ -596,16 +596,25 @@ e_sc_txt (int *c_sw, BUFFER * b)
         {
             c_sw[i + 1] =
                 isspace (b->bf[i + 1].
-                         s[b->f->c_st->continue_column]) ? 0 : e_scfbol (b->bf[i].
-                                 len,
-                                 c_sw[i],
-                                 b->bf[i].
-                                 s,
-                                 b->f->
-                                 c_st);
+                         s[b->f->c_st->continue_column]) ? 0 : e_scfbol (b->bf[i].len,
+                                 c_sw[i], b->bf[i].s, b->f->c_st);
         }
     }
     return (c_sw);
+}
+
+void e_sc_txt_2 (we_window_t *f)
+{
+    if(f->c_sw)
+    {
+        if(f->s->mark_begin.y == f->s->mark_end.y)
+            e_sc_nw_txt(f->s->mark_end.y, f->b, 0);
+        else
+        {
+            f->c_sw = realloc(f->c_sw, f->b->mx.y * sizeof(int));
+            f->c_sw = e_sc_txt(f->c_sw, f->b);
+        }
+    }
 }
 
 /*       Writing of a line (content of a screen)      */

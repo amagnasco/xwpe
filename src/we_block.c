@@ -288,7 +288,7 @@ e_edt_einf (we_window_t * f)
 
     global_disable_add_undo = 0;
     e_add_undo ('c', b, b->b.x, b->b.y, 0);
-    sc_txt_2 (f);
+    e_sc_txt_2 (f);
     f->save = b->cn->maxchg + 1;
     return (0);
 }
@@ -527,7 +527,7 @@ e_blck_copy (we_window_t * f)
     e_copy_block (b->b.x, b->b.y, b, b, f);
     global_disable_add_undo = 0;
     e_add_undo ('c', b, b->b.x, b->b.y, 0);
-    sc_txt_2 (f);
+    e_sc_txt_2 (f);
     f->save = b->cn->maxchg + 1;
     return (0);
 }

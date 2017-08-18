@@ -97,14 +97,3 @@ extern char *ctree[5];
 #ifdef NEWSTYLE
 extern char *extbyte, *altextbyte;
 #endif
-
-#define sc_txt_2(f) 							\
-{   if(f->c_sw) 							\
-    {	if(f->s->mark_begin.y == f->s->mark_end.y)                      \
-        e_sc_nw_txt(f->s->mark_end.y, f->b, 0);                         \
-	else								\
-	{  f->c_sw = realloc(f->c_sw, f->b->mx.y * sizeof(int));	\
-	   f->c_sw = e_sc_txt(f->c_sw, f->b);				\
-	}								\
-    }									\
-}
