@@ -22,57 +22,99 @@
 #include "unixmakr.h"
 
 extern int MAXSLNS, MAXSCOL, MENOPT;
-#define MAXEDT 35 // Maximum number of editting windows
+/** Maximum number of editting windows */
+#define MAXEDT 35
 #endif		  // #ifdef UNIX
 
+/**
+ *  \brief The number of lines used to allocation of new buffer or window or
+ *  for adding lines to an already allocated buffer or window.
+ */
 #define MAXLINES 10
+/** The number of columns used for the initial control
+ *
+ *  This is only used in the function ECNT_Init in we_control.c
+ *  \todo: check how important this define is and whether it should be in we_control.h
+ *
+ * */
 #define MAXCOLUM 120
 
+/**
+ * \brief WPE_NOBACKUP is a number to determine not to make a backup.
+ *
+ * The meaning of the number is to make no backup.
+ * It is only used in the function e_autosave of we_edit.c.
+ */
 #define WPE_NOBACKUP 1
+/**
+ * \brief WPE_BACKUP is a number to determine to make a backup when writing to a file.
+ *
+ */
 #define WPE_BACKUP 0
 
 /** DTMD is possibly short for Die Terminal Meta Data (German) or meta data for the terminal window */
 /** Normal text file */
-#define DTMD_NORMAL 'n' /* Normal text file */
+#define DTMD_NORMAL 'n'
 /** MS-DOS text file */
-#define DTMD_MSDOS 'm' /* MS-DOS text file */
+#define DTMD_MSDOS 'm'
 /** Help window */
-#define DTMD_HELP 'h' /* Help window */
+#define DTMD_HELP 'h'
 /** Data/project window */
-#define DTMD_DATA 'D' /* Data/project windows */
+#define DTMD_DATA 'D'
 /** File manager */
-#define DTMD_FILEMANAGER 'F' /* File manager */
+#define DTMD_FILEMANAGER 'F'
 /** File/directory dropdown of previous files/directories on the file manager */
 #define DTMD_FILEDROPDOWN 'M'
 
 /** test to determine: is this a edittable text window or not? */
 #define DTMD_ISTEXT(x) (x > 'Z')
-/** test to determine: is this window marakable? */
+/** test to determine: is this window markable? */
 #define DTMD_ISMARKABLE(x) (x > DTMD_HELP) /* Means end marks can be shown */
 
 struct dirfile
 {
-    int nr_files; /* number elements in the list */
-    char** name;  /* the list elements */
+    /** The number of elements in the list */
+    int nr_files;
+    /** The file names in the directory */
+    char** name;
 };
 
+/**
+ * \brief The x and y coordinates in a window or on a screen.
+ *
+ * The x coordinate represents the offset of the column (starts at zero).
+ * The y coordinate represents the offset of the row (starts at zero).
+ *
+ */
 typedef struct we_point_struct
 {
     int x;
     int y;
 } we_point_t;
 
+
+/**
+ * \brief defines textcolor, foreground and background color
+ */
 typedef struct we_color_struct
 {
+    /** The foreground color */
     int f;
+    /** The background color */
     int b;
+    /** The text color */
     int fb;
 } we_color_t;
 
+/**
+ * Defines a view with start and endpoint
+ */
 typedef struct view_struct
 {
     char* p;
+    /** The starting point of the view */
     we_point_t a;
+    /** The end point of the view */
     we_point_t e;
 } we_view_t;
 
@@ -410,7 +452,7 @@ typedef struct wpeOptionSection
 #ifdef UNIX
 
 int e_put_pic_xrect(we_view_t* pic);
-int e_get_pic_xrect(int xa, int ya, int xe, int ye, we_view_t* pic);
+int e_get_pic_xrect(int xa, int ya, int xe, int ye, we_view_t* view);
 
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
 int e_make_xrect(int xa, int ya, int xe, int ye, int sw);

@@ -630,19 +630,19 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
     extern struct mouse e_mouse;
     extern int e_mn_men;
 #endif
-    we_view_t *pic;
+    we_view_t *view;
     int i, n = 0, nold = 1, c = 0;
     extern OPT opt[];
 
     /* save whatever will be behind the submenu */
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
-        pic = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fb, 1);
+        view = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fb, 1);
     else
 #endif
-        pic = e_open_view (xa, ya, xe, ye, f->colorset->mt.fb, 1);
+        view = e_open_view (xa, ya, xe, ye, f->colorset->mt.fb, 1);
 
-    if (pic == NULL)
+    if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
         return (WPE_ESC);
@@ -694,7 +694,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
             if (i != nm + 1)
             {
                 /* if yes, restore what was behind */
-                e_close_view (pic, 1);
+                e_close_view (view, 1);
                 return (i - 1);
             }
         }
@@ -736,7 +736,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
         for (i = 0; i < MENOPT; i++)
             if (c == opt[i].as)
             {
-                e_close_view (pic, 1);
+                e_close_view (view, 1);
                 return (i);
             }
 
@@ -744,7 +744,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
         for (i = 0; i < ye - ya - 1; i++)
             if (c == fopt[i].o)
             {
-                e_close_view (pic, 1);
+                e_close_view (view, 1);
                 fopt[i].fkt (f);
                 return (WPE_ESC);
             }
@@ -756,7 +756,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
             c = WPE_ESC;
         else if (c == WPE_CR)	/* submenu item accepted */
         {
-            e_close_view (pic, 1);
+            e_close_view (view, 1);
             fopt[n].fkt (f);
             return (WPE_ESC);
         }
@@ -782,13 +782,13 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
         {
             /* this is the anything else case, ESC, keys which are not listed in
                the submenu */
-            e_close_view (pic, 1);
+            e_close_view (view, 1);
             if (c != WPE_ESC && e_tst_dfkt (f, c) == 0)
                 return (WPE_ESC);
 #ifdef NEWSTYLE
-            pic = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fb, 1);
+            view = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fb, 1);
 #else
-            pic = e_open_view (xa, ya, xe, ye, f->colorset->mt.fb, 1);
+            view = e_open_view (xa, ya, xe, ye, f->colorset->mt.fb, 1);
 #endif
             /* draw the frame for the submenu */
             e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, f->colorset->mr.fb, 0);
@@ -802,7 +802,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
                            fopt[n].x, 1, f->colorset->mz.fb, xa + 2, xe - 2);
         }
     }
-    e_close_view (pic, 1);
+    e_close_view (view, 1);
     return (c == WPE_ESC ? 255 : c);
 }
 

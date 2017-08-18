@@ -333,8 +333,9 @@ e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window_t * f)
     we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
     we_screen_t *sv = bv->f->s;
     we_screen_t *sz = bz->f->s;
-    int sw = (y < s->mark_begin.y) ? 0 : 1, i, n =
-                 s->mark_end.y - s->mark_begin.y - 1;
+    int sw = (y < s->mark_begin.y) ? 0 : 1;
+    int i;
+    int n = s->mark_end.y - s->mark_begin.y - 1;
     int kax = s->mark_begin.x, kay = s->mark_begin.y, kex =
                                          s->mark_end.x, key = s->mark_end.y;
     STRING *str, *tmp;

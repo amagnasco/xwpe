@@ -97,7 +97,7 @@ e_edit (we_control_t * cn, char *filename)
 
     /* Check to see if the file is already opened BD */
     WpeFilenameToPathFile (filename, &path, &file);
-    /* Should check for error here */
+    /** \todo Should check for error here */
     for (i = cn->mxedt; i >= 0; i--)
     {
         if ((strcmp (cn->f[i]->datnam, file) == 0) &&
@@ -2283,8 +2283,7 @@ e_autosave (we_window_t * f)
         return (0);
     /* Check if file system could have an autosave or emergency save file
        >12 check is to eliminate dos file systems */
-    if (((maxname =
-                pathconf (f->dirct, _PC_NAME_MAX)) >= strlen (f->datnam) + 4)
+    if (((maxname = pathconf (f->dirct, _PC_NAME_MAX)) >= strlen (f->datnam) + 4)
             && (maxname > 12))
     {
         str = malloc (strlen (f->datnam) + 5);
@@ -2338,6 +2337,8 @@ e_remove_undo (we_undo_t * ud, int sw)
 }
 
 /**
+ * \brief Function to add undo or redo information to a queue.
+ *
  * Function to add undo information to the list of things to undo
  * or to the list of things to redo.
  * What the function does depends on the value of the integer undo_type.

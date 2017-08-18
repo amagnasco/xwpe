@@ -2308,7 +2308,7 @@ WpeQuitWastebasket (we_window_t * f)
 int
 WpeRemoveDir (char *dirct, char *file, we_window_t * f, int rec)
 {
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
     char *tmp;
     int i, ret, svmode = f->ed->flopt;
     struct dirfile *dd;
@@ -2390,16 +2390,16 @@ WpeRemoveDir (char *dirct, char *file, we_window_t * f, int rec)
             sprintf (tmp, "%s%c%s", dirct, DIRC, dd->name[i]);
 
             /* put message out */
-            if (e_mess_win ("Remove", tmp, &pic, f))
+            if (e_mess_win ("Remove", tmp, &view, f))
             {
                 free (tmp);
                 break;
             }
 
-            if (pic)
+            if (view)
             {
-                e_close_view (pic, 1);
-                pic = NULL;
+                e_close_view (view, 1);
+                view = NULL;
             }
 
             /* try to remove it */
@@ -2415,8 +2415,8 @@ WpeRemoveDir (char *dirct, char *file, we_window_t * f, int rec)
         free (tmp);
     }
 
-    if (pic)
-        e_close_view (pic, 1);
+    if (view)
+        e_close_view (view, 1);
     freedf (dd);
 
     /* if recursive action is specified clean up the
@@ -2569,7 +2569,7 @@ WpeRenameCopyDir (char *dirct, char *file, char *newname, we_window_t * f,
     int i, ret, mode;
     struct dirfile *dd;
     struct stat buf;
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
 
     if (rec > MAXREC)
         return (0);
@@ -2663,10 +2663,10 @@ WpeRenameCopyDir (char *dirct, char *file, char *newname, we_window_t * f,
                     e_error (e_msg[ERR_LOWMEM], 1, f->ed->colorset);
 
                 sprintf (tmp, "File %s exist !\nOverwrite File ?", ntmp);
-                if (pic)
+                if (view)
                 {
-                    e_close_view (pic, 1);
-                    pic = NULL;
+                    e_close_view (view, 1);
+                    view = NULL;
                 }
                 ret = e_message (1, tmp, f);
                 free (tmp);
@@ -2709,7 +2709,7 @@ WpeRenameCopyDir (char *dirct, char *file, char *newname, we_window_t * f,
                 e_error (e_msg[ERR_LOWMEM], 1, f->ed->colorset);
 
             sprintf (mtmp, "%s %s", tmp, ntmp);
-            if (e_mess_win (!sw ? "Rename" : "Copy", mtmp, &pic, f))
+            if (e_mess_win (!sw ? "Rename" : "Copy", mtmp, &view, f))
             {
                 free (tmp);
                 free (ntmp);
@@ -2755,8 +2755,8 @@ WpeRenameCopyDir (char *dirct, char *file, char *newname, we_window_t * f,
         free (ntmp);
     }
 
-    if (pic)
-        e_close_view (pic, 1);
+    if (view)
+        e_close_view (view, 1);
 
     f->ed->flopt = mode;
 

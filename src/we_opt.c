@@ -56,15 +56,15 @@ WpeOptionSection WpeSectionRead[] =
 int
 e_about_WE (we_window_t * f)
 {
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
     int xa = 10, ya = 4, xe = xa + 50, ye = ya + 13;
     char tmp[40];
 
     fk_cursor (0);
-    pic =
+    view =
         e_std_kst (xa, ya, xe, ye, NULL, 1, f->colorset->nr.fb, f->colorset->nt.fb,
                    f->colorset->ne.fb);
-    if (pic == NULL)
+    if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
         return (WPE_ESC);
@@ -121,7 +121,7 @@ e_about_WE (we_window_t * f)
 #else
     e_getch ();
 #endif
-    e_close_view (pic, 1);
+    e_close_view (view, 1);
     return (0);
 }
 
@@ -229,15 +229,15 @@ e_repaint_desk (we_window_t * f)
 int
 e_sys_info (we_window_t * f)
 {
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
     char tmp[80];
     int xa = 10, ya = 5, xe = xa + 60, ye = ya + 8;
 
     fk_cursor (0);
-    pic =
+    view =
         e_std_kst (xa, ya, xe, ye, " Information ", 1, f->colorset->nr.fb, f->colorset->nt.fb,
                    f->colorset->ne.fb);
-    if (pic == NULL)
+    if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
         return (WPE_ESC);
@@ -268,7 +268,7 @@ e_sys_info (we_window_t * f)
 #else
     e_getch ();
 #endif
-    e_close_view (pic, 1);
+    e_close_view (view, 1);
     return (0);
 }
 
@@ -305,17 +305,17 @@ int
 e_ad_colors_md (we_window_t * f, int md)
 {
     int sw = 0, xa = 0, ya = 1, xe = xa + 79, ye = ya + 22;
-    we_view_t *pic;
+    we_view_t *view;
 
-    pic = e_std_kst (xa, ya, xe, ye, "Adjust Colors", 1, f->colorset->er.fb,
-                     f->colorset->et.fb, f->colorset->es.fb);
-    if (pic == NULL)
+    view = e_std_kst (xa, ya, xe, ye, "Adjust Colors", 1, f->colorset->er.fb,
+                      f->colorset->et.fb, f->colorset->es.fb);
+    if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
         return (WPE_ESC);
     }
     sw = e_dif_colors (sw, xe - 13, ya + 1, f, md);
-    e_close_view (pic, 1);
+    e_close_view (view, 1);
     e_repaint_desk (f);
     return (sw);
 }
@@ -1594,19 +1594,19 @@ e_opt_move (W_OPTSTR * o)
 {
     int xa = o->xa, ya = o->ya, xe = o->xe, ye = o->ye;
     int c = 0;
-    we_view_t *pic;
+    we_view_t *view;
 
     e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
     if (!WpeIsXwin ())
-        pic = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
+        view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
     else
     {
-        pic = e_open_view (o->xa, o->ya, o->xe - 2, o->ye - 1, 0, 2);
-        e_close_view (pic, 2);
+        view = e_open_view (o->xa, o->ya, o->xe - 2, o->ye - 1, 0, 2);
+        e_close_view (view, 2);
     }
 #else
-    pic = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
+    view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
 #endif
     while ((c = e_getch ()) != WPE_ESC && c != WPE_CR)
     {
@@ -1651,18 +1651,18 @@ e_opt_move (W_OPTSTR * o)
                 e_change_pic (o->xa, o->ya, o->xe, o->ye, o->pic, 1, o->frt);
             if (o->pic == NULL)
                 e_error (e_msg[ERR_LOWMEM], 1, o->f->colorset);
-            pic->a.x = o->xa;
-            pic->a.y = o->ya;
-            pic->e.x = o->xe;
-            pic->e.y = o->ye;
-            e_close_view (pic, 2);
+            view->a.x = o->xa;
+            view->a.y = o->ya;
+            view->e.x = o->xe;
+            view->e.y = o->ye;
+            e_close_view (view, 2);
         }
     }
-    pic->a.x = o->xa;
-    pic->a.y = o->ya;
-    pic->e.x = o->xe;
-    pic->e.y = o->ye;
-    e_close_view (pic, 1);
+    view->a.x = o->xa;
+    view->a.y = o->ya;
+    view->e.x = o->xe;
+    view->e.y = o->ye;
+    e_close_view (view, 1);
     e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
     return (c);
 }

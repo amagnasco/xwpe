@@ -86,7 +86,7 @@ StringToStringArray (char *str, int *maxLen, int minWidth, int *nr_lines_return)
 int
 e_error (char *text, int sw, we_colorset_t * f)
 {
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
     int len, i, xa, xe, ya = 8, ye = 14;
     char *header = NULL;
 
@@ -106,10 +106,10 @@ e_error (char *text, int sw, we_colorset_t * f)
         header = "Fatal Error";
 
     if (sw < 2)
-        pic = e_std_kst (xa, ya, xe, ye, header, 1, f->nr.fb, f->nt.fb, f->ne.fb);
-    if (sw == 2 || pic == NULL)
+        view = e_std_kst (xa, ya, xe, ye, header, 1, f->nr.fb, f->nt.fb, f->ne.fb);
+    if (sw == 2 || view == NULL)
     {
-        pic = e_open_view (xa, ya, xe, ye, 0, 0);
+        view = e_open_view (xa, ya, xe, ye, 0, 0);
         e_std_rahmen (xa, ya, xe, ye, header, 1, 0, 0);
     }
     if (sw < 2)
@@ -136,8 +136,8 @@ e_error (char *text, int sw, we_colorset_t * f)
     }
     while (i != WPE_ESC && i != WPE_CR && i != 'O');
     WpeMouseRestoreShape ();
-    if (pic != NULL)
-        e_close_view (pic, 1);
+    if (view != NULL)
+        e_close_view (view, 1);
     else
         e_cls (0, ' ');
     fk_cursor (1);
@@ -228,52 +228,52 @@ e_pr_filetype (we_window_t * f)
 we_view_t *
 e_open_view (int xa, int ya, int xe, int ye, int col, int sw)
 {
-    we_view_t *pic = malloc (sizeof (we_view_t));
+    we_view_t *view = malloc (sizeof (we_view_t));
     int i, j;
 
-    if (pic == NULL)
+    if (view == NULL)
         return (NULL);
-    pic->a.x = xa;
-    pic->a.y = ya;
+    view->a.x = xa;
+    view->a.y = ya;
 #ifndef NEWSTYLE
     if (!WpeIsXwin ())
     {
-        pic->e.x = xe;
-        pic->e.y = ye;
+        view->e.x = xe;
+        view->e.y = ye;
     }
     else
     {
-        pic->e.x = xe < MAXSCOL - 2 ? xe + 2 : xe < MAXSCOL - 1 ? xe + 1 : xe;
-        pic->e.y = ye < MAXSLNS - 2 ? ye + 1 : ye;
+        view->e.x = xe < MAXSCOL - 2 ? xe + 2 : xe < MAXSCOL - 1 ? xe + 1 : xe;
+        view->e.y = ye < MAXSLNS - 2 ? ye + 1 : ye;
     }
 #else
-    pic->e.x = xe;
-    pic->e.y = ye;
+    view->e.x = xe;
+    view->e.y = ye;
 #endif
     if (sw != 0)
     {
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
-        pic->p =
-            malloc ((pic->e.x - pic->a.x + 1) * 3 * (pic->e.y - pic->a.y + 1));
+        view->p =
+            malloc ((view->e.x - view->a.x + 1) * 3 * (view->e.y - view->a.y + 1));
 #else
-        pic->p =
-            malloc ((pic->e.x - pic->a.x + 1) * 2 * (pic->e.y - pic->a.y + 1));
+        view->p =
+            malloc ((view->e.x - view->a.x + 1) * 2 * (view->e.y - view->a.y + 1));
 #endif
-        if (pic->p == NULL)
+        if (view->p == NULL)
         {
-            free (pic);
+            free (view);
             return (NULL);
         }
-        for (j = pic->a.y; j <= pic->e.y; ++j)
-            for (i = 2 * pic->a.x; i <= 2 * pic->e.x + 1; ++i)
-                *(pic->p + (j - pic->a.y) * 2 * (pic->e.x - pic->a.x + 1) +
-                  (i - 2 * pic->a.x)) = e_gt_byte (i, j);
+        for (j = view->a.y; j <= view->e.y; ++j)
+            for (i = 2 * view->a.x; i <= 2 * view->e.x + 1; ++i)
+                *(view->p + (j - view->a.y) * 2 * (view->e.x - view->a.x + 1) +
+                  (i - 2 * view->a.x)) = e_gt_byte (i, j);
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
-        e_get_pic_xrect (xa, ya, xe, ye, pic);
+        e_get_pic_xrect (xa, ya, xe, ye, view);
 #endif
     }
     else
-        pic->p = (char *) 0;
+        view->p = (char *) 0;
     if (sw < 2)
     {
         for (j = ya; j <= ye; ++j)
@@ -282,7 +282,7 @@ e_open_view (int xa, int ya, int xe, int ye, int col, int sw)
     }
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
-        (*e_u_setlastpic) (pic);
+        (*e_u_setlastpic) (view);
 #endif
 #ifndef NEWSTYLE
     if (WpeIsXwin ())
@@ -301,46 +301,41 @@ e_open_view (int xa, int ya, int xe, int ye, int col, int sw)
         }
     }
 #endif
-    return (pic);
+    return (view);
 }
 
 /*   close screen section - refresh background  */
 int
-e_close_view (we_view_t * pic, int sw)
+e_close_view (we_view_t * view, int sw)
 {
     int i, j;
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
         (*e_u_setlastpic) (NULL);
 #endif
-    if (pic == NULL)
+    if (view == NULL)
         return (-1);
-    if (sw != 0 && pic->p != NULL)
+    if (sw != 0 && view->p != NULL)
     {
-        for (j = pic->a.y; j <= pic->e.y; ++j)
-            for (i = 2 * pic->a.x; i <= 2 * pic->e.x + 1; ++i)
+        for (j = view->a.y; j <= view->e.y; ++j)
+            for (i = 2 * view->a.x; i <= 2 * view->e.x + 1; ++i)
                 e_pt_byte (i, j,
-                           *(pic->p +
-                             (j - pic->a.y) * 2 * (pic->e.x - pic->a.x + 1) + (i -
-                                     2 *
-                                     pic->
-                                     a.
-                                     x)));
+                           *(view->p + (j - view->a.y) * 2 * (view->e.x - view->a.x + 1) + (i - 2 * view-> a.  x)));
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
-        e_put_pic_xrect (pic);
+        e_put_pic_xrect (view);
 #endif
     }
     else if (sw != 0)
     {
-        for (j = pic->a.y; j <= pic->e.y; ++j)
-            for (i = pic->a.x; i <= pic->e.x; ++i)
+        for (j = view->a.y; j <= view->e.y; ++j)
+            for (i = view->a.x; i <= view->e.x; ++i)
                 e_pr_char (i, j, ' ', 0);
     }
     if (sw < 2)
     {
-        if (pic->p != NULL)
-            free (pic->p);
-        free (pic);
+        if (view->p != NULL)
+            free (view->p);
+        free (view);
     }
     e_refresh ();
     return (sw);
@@ -611,159 +606,159 @@ we_view_t *
 e_std_kst (int xa, int ya, int xe, int ye, char *name, int sw, int fr,
            int ft, int fes)
 {
-    we_view_t *pic = e_open_view (xa, ya, xe, ye, ft, 1);
-    if (pic == NULL)
+    we_view_t *view = e_open_view (xa, ya, xe, ye, ft, 1);
+    if (view == NULL)
         return (NULL);
     e_std_rahmen (xa, ya, xe, ye, name, sw, fr, fes);
-    return (pic);
+    return (view);
 }
 
 we_view_t *
-e_change_pic (int xa, int ya, int xe, int ye, we_view_t * pic, int sw, int frb)
+e_change_pic (int xa, int ya, int xe, int ye, we_view_t * view, int sw, int frb)
 {
     int i, j;
     int box = 2, ax, ay, ex, ey;
-    we_view_t *newpic;
+    we_view_t *new_view;
     if (sw < 0)
     {
         sw = -sw;
         box = 1;
     }
-    if (pic == NULL)
+    if (view == NULL)
     {
-        newpic = e_open_view (xa, ya, xe, ye, frb, box);
-        if (newpic == NULL)
+        new_view = e_open_view (xa, ya, xe, ye, frb, box);
+        if (new_view == NULL)
             return (NULL);
     }
-    else if (xa > pic->e.x || xe < pic->a.x || ya > pic->e.y || ye < pic->a.y)
+    else if (xa > view->e.x || xe < view->a.x || ya > view->e.y || ye < view->a.y)
     {
-        e_close_view (pic, box);
-        newpic = e_open_view (xa, ya, xe, ye, frb, box);
-        if (newpic == NULL)
+        e_close_view (view, box);
+        new_view = e_open_view (xa, ya, xe, ye, frb, box);
+        if (new_view == NULL)
             return (NULL);
     }
     else
     {
-        newpic = malloc (sizeof (we_view_t));
-        if (newpic == NULL)
+        new_view = malloc (sizeof (we_view_t));
+        if (new_view == NULL)
             return (NULL);
-        newpic->a.x = xa;
-        newpic->a.y = ya;
+        new_view->a.x = xa;
+        new_view->a.y = ya;
 #ifndef NEWSTYLE
         if (!WpeIsXwin ())
         {
-            newpic->e.x = xe;
-            newpic->e.y = ye;
+            new_view->e.x = xe;
+            new_view->e.y = ye;
         }
         else
         {
-            newpic->e.x =
+            new_view->e.x =
                 xe < MAXSCOL - 2 ? xe + 2 : xe < MAXSCOL - 1 ? xe + 1 : xe;
-            newpic->e.y = ye < MAXSLNS - 2 ? ye + 1 : ye;
+            new_view->e.y = ye < MAXSLNS - 2 ? ye + 1 : ye;
         }
 #else
-        newpic->e.x = xe;
-        newpic->e.y = ye;
+        new_view->e.x = xe;
+        new_view->e.y = ye;
 #endif
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
-        newpic->p = malloc ((newpic->e.x - newpic->a.x + 1) * 3
-                            * (newpic->e.y - newpic->a.y + 1));
+        new_view->p = malloc ((new_view->e.x - new_view->a.x + 1) * 3
+                              * (new_view->e.y - new_view->a.y + 1));
 #else
-        newpic->p = malloc ((newpic->e.x - newpic->a.x + 1) * 2
-                            * (newpic->e.y - newpic->a.y + 1));
+        new_view->p = malloc ((new_view->e.x - new_view->a.x + 1) * 2
+                              * (new_view->e.y - new_view->a.y + 1));
 #endif
-        if (newpic->p == NULL)
+        if (new_view->p == NULL)
         {
-            free (newpic);
+            free (new_view);
             return (NULL);
         }
-        ax = pic->a.x > newpic->a.x ? pic->a.x : newpic->a.x;
-        ay = pic->a.y > newpic->a.y ? pic->a.y : newpic->a.y;
-        ex = pic->e.x < newpic->e.x ? pic->e.x : newpic->e.x;
-        ey = pic->e.y < newpic->e.y ? pic->e.y : newpic->e.y;
+        ax = view->a.x > new_view->a.x ? view->a.x : new_view->a.x;
+        ay = view->a.y > new_view->a.y ? view->a.y : new_view->a.y;
+        ex = view->e.x < new_view->e.x ? view->e.x : new_view->e.x;
+        ey = view->e.y < new_view->e.y ? view->e.y : new_view->e.y;
         for (j = ay; j <= ey; ++j)
             for (i = 2 * ax; i <= 2 * ex + 1; ++i)
             {
-                *(newpic->p +
-                  2 * (newpic->e.x - newpic->a.x + 1) * (j - newpic->a.y) + (i -
+                *(new_view->p +
+                  2 * (new_view->e.x - new_view->a.x + 1) * (j - new_view->a.y) + (i -
                           2 *
-                          newpic->
+                          new_view->
                           a.
                           x)) =
-                              *(pic->p + 2 * (pic->e.x - pic->a.x + 1) * (j - pic->a.y) +
-                                (i - 2 * pic->a.x));
+                              *(view->p + 2 * (view->e.x - view->a.x + 1) * (j - view->a.y) +
+                                (i - 2 * view->a.x));
             }
 
-        for (j = newpic->a.y; j < ay; ++j)
-            for (i = 2 * newpic->a.x; i <= 2 * newpic->e.x + 1; ++i)
+        for (j = new_view->a.y; j < ay; ++j)
+            for (i = 2 * new_view->a.x; i <= 2 * new_view->e.x + 1; ++i)
             {
-                *(newpic->p +
-                  2 * (newpic->e.x - newpic->a.x + 1) * (j - newpic->a.y) + (i -
+                *(new_view->p +
+                  2 * (new_view->e.x - new_view->a.x + 1) * (j - new_view->a.y) + (i -
                           2 *
-                          newpic->
+                          new_view->
                           a.
                           x)) =
                               e_gt_byte (i, j);
             }
 
-        for (j = newpic->e.y; j > ey; --j)
-            for (i = 2 * newpic->a.x; i <= 2 * newpic->e.x + 1; ++i)
+        for (j = new_view->e.y; j > ey; --j)
+            for (i = 2 * new_view->a.x; i <= 2 * new_view->e.x + 1; ++i)
             {
-                *(newpic->p +
-                  2 * (newpic->e.x - newpic->a.x + 1) * (j - newpic->a.y) + (i -
+                *(new_view->p +
+                  2 * (new_view->e.x - new_view->a.x + 1) * (j - new_view->a.y) + (i -
                           2 *
-                          newpic->
+                          new_view->
                           a.
                           x)) =
                               e_gt_byte (i, j);
             }
 
-        for (j = newpic->a.y; j <= newpic->e.y; ++j)
-            for (i = 2 * newpic->a.x; i < 2 * ax; ++i)
+        for (j = new_view->a.y; j <= new_view->e.y; ++j)
+            for (i = 2 * new_view->a.x; i < 2 * ax; ++i)
             {
-                *(newpic->p +
-                  2 * (newpic->e.x - newpic->a.x + 1) * (j - newpic->a.y) + (i -
+                *(new_view->p +
+                  2 * (new_view->e.x - new_view->a.x + 1) * (j - new_view->a.y) + (i -
                           2 *
-                          newpic->
+                          new_view->
                           a.
                           x)) =
                               e_gt_byte (i, j);
             }
 
-        for (j = newpic->a.y; j <= newpic->e.y; ++j)
-            for (i = 2 * (ex + 1); i <= 2 * newpic->e.x + 1; ++i)
+        for (j = new_view->a.y; j <= new_view->e.y; ++j)
+            for (i = 2 * (ex + 1); i <= 2 * new_view->e.x + 1; ++i)
             {
-                *(newpic->p +
-                  2 * (newpic->e.x - newpic->a.x + 1) * (j - newpic->a.y) + (i -
+                *(new_view->p +
+                  2 * (new_view->e.x - new_view->a.x + 1) * (j - new_view->a.y) + (i -
                           2 *
-                          newpic->
+                          new_view->
                           a.
                           x)) =
                               e_gt_byte (i, j);
             }
-        for (j = pic->a.y; j < ya; ++j)
-            for (i = 2 * pic->a.x; i <= 2 * pic->e.x + 1; ++i)
-                e_pt_byte (i, j, *(pic->p + (j - pic->a.y) * 2
-                                   * (pic->e.x - pic->a.x + 1) + (i -
-                                           2 * pic->a.x)));
-        for (j = pic->a.y; j <= pic->e.y; ++j)
-            for (i = 2 * pic->a.x; i < 2 * xa; i = i + 1)
-                e_pt_byte (i, j, *(pic->p + (j - pic->a.y) * 2
-                                   * (pic->e.x - pic->a.x + 1) + (i -
-                                           2 * pic->a.x)));
-        for (j = pic->e.y; j > ye; --j)
-            for (i = 2 * pic->a.x; i <= 2 * pic->e.x + 1; ++i)
-                e_pt_byte (i, j, *(pic->p + (j - pic->a.y) * 2
-                                   * (pic->e.x - pic->a.x + 1) + (i -
-                                           2 * pic->a.x)));
-        for (j = pic->e.y; j >= pic->a.y; --j)
-            for (i = 2 * pic->e.x + 1; i > 2 * xe; --i)
-                e_pt_byte (i, j, *(pic->p + (j - pic->a.y) * 2
-                                   * (pic->e.x - pic->a.x + 1) + (i -
-                                           2 * pic->a.x)));
+        for (j = view->a.y; j < ya; ++j)
+            for (i = 2 * view->a.x; i <= 2 * view->e.x + 1; ++i)
+                e_pt_byte (i, j, *(view->p + (j - view->a.y) * 2
+                                   * (view->e.x - view->a.x + 1) + (i -
+                                           2 * view->a.x)));
+        for (j = view->a.y; j <= view->e.y; ++j)
+            for (i = 2 * view->a.x; i < 2 * xa; i = i + 1)
+                e_pt_byte (i, j, *(view->p + (j - view->a.y) * 2
+                                   * (view->e.x - view->a.x + 1) + (i -
+                                           2 * view->a.x)));
+        for (j = view->e.y; j > ye; --j)
+            for (i = 2 * view->a.x; i <= 2 * view->e.x + 1; ++i)
+                e_pt_byte (i, j, *(view->p + (j - view->a.y) * 2
+                                   * (view->e.x - view->a.x + 1) + (i -
+                                           2 * view->a.x)));
+        for (j = view->e.y; j >= view->a.y; --j)
+            for (i = 2 * view->e.x + 1; i > 2 * xe; --i)
+                e_pt_byte (i, j, *(view->p + (j - view->a.y) * 2
+                                   * (view->e.x - view->a.x + 1) + (i -
+                                           2 * view->a.x)));
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
-        e_put_pic_xrect (pic);
-        e_get_pic_xrect (xa, ya, xe, ye, newpic);
+        e_put_pic_xrect (view);
+        e_get_pic_xrect (xa, ya, xe, ye, new_view);
 #endif
 #ifndef NEWSTYLE
         if (WpeIsXwin ())
@@ -779,23 +774,23 @@ e_change_pic (int xa, int ya, int xe, int ye, we_view_t * pic, int sw, int frb)
                     e_pt_col (i, ye + 1, SHDCOL);
         }
 #endif
-        free (pic->p);
-        free (pic);
+        free (view->p);
+        free (view);
     }
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
-        (*e_u_setlastpic) (newpic);
+        (*e_u_setlastpic) (new_view);
 #endif
-    return (newpic);
+    return (new_view);
 }
 
 we_view_t *
-e_ed_kst (we_window_t * f, we_view_t * pic, int sw)
+e_ed_kst (we_window_t * f, we_view_t * view, int sw)
 {
-    we_view_t *newpic = e_change_pic (f->a.x, f->a.y, f->e.x,
-                                      f->e.y, pic, sw, f->colorset->er.fb);
+    we_view_t *new_view = e_change_pic (f->a.x, f->a.y, f->e.x,
+                                        f->e.y, view, sw, f->colorset->er.fb);
     e_ed_rahmen (f, sw);
-    return (newpic);
+    return (new_view);
 }
 
 /*    delete buffer     */
@@ -1679,7 +1674,7 @@ e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col, int csw)
 #endif
 
 int
-e_mess_win (char *header, char *str, we_view_t ** pic, we_window_t * f)
+e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * f)
 {
     we_control_t *cn = f->ed;
     extern int (*e_u_kbhit) (void);
@@ -1706,9 +1701,9 @@ e_mess_win (char *header, char *str, we_view_t ** pic, we_window_t * f)
         strcpy (s[num - 1], "...");
     }
 
-    if (!(*pic) || (*pic)->e.x != xe || (*pic)->a.x != xa || (*pic)->e.x < xe)
+    if (!(*view) || (*view)->e.x != xe || (*view)->a.x != xa || (*view)->e.x < xe)
     {
-        *pic = e_change_pic (xa, ya, xe, ye, *pic, 1, cn->colorset->nt.fb);
+        *view = e_change_pic (xa, ya, xe, ye, *view, 1, cn->colorset->nt.fb);
         for (i = xa + 1; i < xe; i++)
         {
             e_pr_char (i, ye - 2, ' ', f->colorset->nt.fb);
@@ -1756,16 +1751,16 @@ e_mess_win (char *header, char *str, we_view_t ** pic, we_window_t * f)
 int
 e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
 {
-    we_view_t *pic;
+    we_view_t *view;
     int n, nold, max = 0, i, c = 0, xe, ye = ya + num + 1;
     for (i = 0; i < num; i++)
         if ((n = strlen (opt[i].t)) > max)
             max = n;
     xe = xa + max + 3;
-    pic =
+    view =
         e_std_kst (xa, ya, xe, ye, NULL, sw, f->colorset->nr.fb, f->colorset->nt.fb,
                    f->colorset->ne.fb);
-    if (pic == NULL)
+    if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
         return (-2);
@@ -1813,7 +1808,7 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
             n = ye - ya - 2;
     }
     if (sw == 1)
-        e_close_view (pic, 1);
+        e_close_view (view, 1);
     return (c == WPE_ESC ? -1 : n);
 }
 
@@ -1877,29 +1872,29 @@ e_list_all_win (we_window_t * f)
 
 #ifdef NEWSTYLE
 int
-e_get_pic_xrect (int xa, int ya, int xe, int ye, we_view_t * pic)
+e_get_pic_xrect (int xa, int ya, int xe, int ye, we_view_t * view)
 {
     int i = xa, j, ebbg;
 
     ebbg = (xe - xa + 1) * 2 * (ye - ya + 1);
     for (j = ya; j <= ye; ++j)
         for (i = xa; i <= xe; ++i)
-            *(pic->p + ebbg + (j - ya) * (xe - xa + 1) + (i - xa)) =
+            *(view->p + ebbg + (j - ya) * (xe - xa + 1) + (i - xa)) =
                 extbyte[j * MAXSCOL + i];
     return (i);
 }
 
 int
-e_put_pic_xrect (we_view_t * pic)
+e_put_pic_xrect (we_view_t * view)
 {
     int i = 0, j;
-    int ebbg = (pic->e.x - pic->a.x + 1) * 2 * (pic->e.y - pic->a.y + 1);
+    int ebbg = (view->e.x - view->a.x + 1) * 2 * (view->e.y - view->a.y + 1);
 
-    for (j = pic->a.y; j <= pic->e.y; ++j)
-        for (i = pic->a.x; i <= pic->e.x; ++i)
+    for (j = view->a.y; j <= view->e.y; ++j)
+        for (i = view->a.x; i <= view->e.x; ++i)
             extbyte[j * MAXSCOL + i] =
-                *(pic->p + ebbg + (j - pic->a.y) * (pic->e.x - pic->a.x + 1) +
-                  (i - pic->a.x));
+                *(view->p + ebbg + (j - view->a.y) * (view->e.x - view->a.x + 1) +
+                  (i - view->a.x));
     return (i);
 }
 

@@ -33,7 +33,7 @@
 
 int e_run_sh (we_window_t * f);
 int e_make_library (char *library, char *ofile, we_window_t * f);
-int e_p_exec (int file, we_window_t * f, we_view_t * pic);
+int e_p_exec (int file, we_window_t * f, we_view_t * view);
 
 int wfildes[2], efildes[2];
 char *wfile = NULL, *efile = NULL;
@@ -167,7 +167,7 @@ e_p_make (we_window_t * f)
     char ostr[128], estr[128], mstr[80];
     int len, i, file = -1;
     struct stat cbuf[1], obuf[1];
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
     int linkRequest = 1;		/* assume linking has to be done */
 
     WpeMouseChangeShape (WpeWorkingShape);
@@ -224,7 +224,7 @@ e_p_make (we_window_t * f)
         if (e_d_swtch > 0)
             e_d_quit (f);
 #endif
-        if (!e_p_mess_win ("Linking", e_argc, e_arg, &pic, f))
+        if (!e_p_mess_win ("Linking", e_argc, e_arg, &view, f))
         {
             (*e_u_sys_ini) ();
             file = e_exec_inf (f, e_arg, e_argc);
@@ -238,12 +238,12 @@ e_p_make (we_window_t * f)
         e_free_arg (e_arg, e_argc);
     }
     if (file != 0)
-        i = e_p_exec (file, f, pic);
+        i = e_p_exec (file, f, view);
     else
     {
         i = WPE_ESC;
-        if (pic)
-            e_close_view (pic, 1);
+        if (view)
+            e_close_view (view, 1);
     }
     WpeMouseRestoreShape ();
     return (i);
@@ -320,7 +320,7 @@ int
 e_comp (we_window_t * f)
 {
     we_control_t *cn = f->ed;
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
     char **arg = NULL, fstr[128], ostr[128];
     int i, file = -1, len, argc;
 #ifdef CHECKHEADER
@@ -396,19 +396,19 @@ e_comp (we_window_t * f)
 #endif
     {
         remove (ostr);
-        if (!e_p_mess_win ("Compiling", argc, arg, &pic, f) &&
+        if (!e_p_mess_win ("Compiling", argc, arg, &view, f) &&
                 (file = e_exec_inf (f, arg, argc)) == 0)
         {
             (*e_u_sys_end) ();
             e_free_arg (arg, argc);
-            if (pic)
-                e_close_view (pic, 1);
+            if (view)
+                e_close_view (view, 1);
             return (WPE_ESC);
         }
     }
     (*e_u_sys_end) ();
     e_free_arg (arg, argc);
-    i = e_p_exec (file, f, pic);
+    i = e_p_exec (file, f, view);
     return (i);
 }
 
@@ -491,7 +491,7 @@ e_print_arg (FILE * fp, char *s, char **argv, int n)
 }
 
 int
-e_p_exec (int file, we_window_t * f, we_view_t * pic)
+e_p_exec (int file, we_window_t * f, we_view_t * view)
 {
     UNUSED (file);
     we_control_t *cn = f->ed;
@@ -544,8 +544,8 @@ e_p_exec (int file, we_window_t * f, we_view_t * pic)
     }
     efildes[0] = efildes[1] = -1;
     wfildes[0] = wfildes[1] = -1;
-    if (pic)
-        e_close_view (pic, 1);
+    if (view)
+        e_close_view (view, 1);
     if (ret || (b->mxlines - is > 2 && (i = e_make_error_list (f))))
     {
         if (i != -2 && !ret)
@@ -1569,7 +1569,7 @@ e_make_library (char *library, char *ofile, we_window_t * f)
 {
     char *ar_arg[5] = { NULL, NULL, NULL, NULL, NULL };
     int ret = 0, file = -1;
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
 
     ar_arg[0] = "ar";
     if (access (library, F_OK))
@@ -1578,24 +1578,24 @@ e_make_library (char *library, char *ofile, we_window_t * f)
         ar_arg[1] = "-r";
     ar_arg[2] = library;
     ar_arg[3] = ofile;
-    if ((ret = e_p_mess_win ("Insert into Archive", 4, ar_arg, &pic, f)) == 0)
+    if ((ret = e_p_mess_win ("Insert into Archive", 4, ar_arg, &view, f)) == 0)
     {
         (*e_u_sys_ini) ();
         file = e_exec_inf (f, ar_arg, 4);
         (*e_u_sys_end) ();
-        if ((file) && ((ret = e_p_exec (file, f, pic)) == 0))
+        if ((file) && ((ret = e_p_exec (file, f, view)) == 0))
         {
-            pic = NULL;
+            view = NULL;
             /*
             #ifdef RANLIB
                 ar_arg[0] = "ranlib";
                 ar_arg[1] = library;
                 ar_arg[2] = NULL;
-                if(ret = e_p_mess_win("Convert Archive", 2, ar_arg, &pic, f)) goto m_l_ende;
+                if(ret = e_p_mess_win("Convert Archive", 2, ar_arg, &view, f)) goto m_l_ende;
                 (*e_u_sys_ini)();
                 file = e_exec_inf(f, ar_arg, 2);
                 (*e_u_sys_end)();
-                if(file) ret = e_p_exec(file, f, pic);
+                if(file) ret = e_p_exec(file, f, view);
             #endif
             */
         }
@@ -2301,7 +2301,7 @@ e_c_project (we_window_t * f)
 #else
     struct stat lbuf[1], cbuf[1], obuf[1];
 #endif
-    we_view_t *pic = NULL;
+    we_view_t *view = NULL;
 
     last_time = (M_TIME) 0;
     e_p_l_comp = 0;
@@ -2480,7 +2480,7 @@ e_c_project (we_window_t * f)
         arg[argc] = NULL;
         remove (ofile);
         sccs = 1;
-        j = e_p_mess_win ("Compiling", argc, arg, &pic, f);
+        j = e_p_mess_win ("Compiling", argc, arg, &view, f);
         (*e_u_sys_ini) ();
         if (j != 0 || (file = e_exec_inf (f, arg, argc)) == 0)
         {
@@ -2488,20 +2488,20 @@ e_c_project (we_window_t * f)
             e_free_arg (arg, argc);
             freedf (df);
             e_free_arg (e_arg, e_argc);
-            if (pic)
-                e_close_view (pic, 1);
+            if (view)
+                e_close_view (view, 1);
             return (WPE_ESC);
         }
         (*e_u_sys_end) ();
         e_p_l_comp = 1;
-        if (e_p_exec (file, f, pic))
+        if (e_p_exec (file, f, view))
         {
             e_free_arg (arg, argc);
             e_free_arg (e_arg, e_argc);
             freedf (df);
             return (-1);
         }
-        pic = NULL;
+        view = NULL;
         for (j = strlen (ofile); j >= 0 && ofile[j] != '/'; j--)
             ;
         if (!exlib && library[0] != '\0' && strcmp (ofile + j + 1, "main.o") &&
@@ -2553,13 +2553,13 @@ gt_library:
         ar_arg[0] = "ranlib";
         ar_arg[1] = library;
         ar_arg[2] = NULL;
-        if (!(j = e_p_mess_win ("Convert Archive", 2, ar_arg, &pic, f)))
+        if (!(j = e_p_mess_win ("Convert Archive", 2, ar_arg, &view, f)))
         {
             (*e_u_sys_ini) ();
             file = e_exec_inf (f, ar_arg, 2);
             (*e_u_sys_end) ();
             if (file)
-                j = e_p_exec (file, f, pic);
+                j = e_p_exec (file, f, view);
         }
         if (j || !file)
         {
@@ -2591,7 +2591,7 @@ gt_library:
     e_arg[e_argc] = NULL;
     e_free_arg (arg, argc);
     if (!sccs)
-        e_p_exec (file, f, pic);
+        e_p_exec (file, f, view);
     return (0);
 }
 
@@ -3127,7 +3127,7 @@ e_p_del_df (FLWND * fw, int sw)
 }
 
 int
-e_p_mess_win (char *header, int argc, char **argv, we_view_t ** pic, we_window_t * f)
+e_p_mess_win (char *header, int argc, char **argv, we_view_t ** view, we_window_t * f)
 {
     char *tmp = malloc (sizeof (char));
     int i, ret;
@@ -3144,7 +3144,7 @@ e_p_mess_win (char *header, int argc, char **argv, we_view_t ** pic, we_window_t
         strcat (tmp, argv[i]);
         strcat (tmp, " ");
     }
-    ret = e_mess_win (header, tmp, pic, f);
+    ret = e_mess_win (header, tmp, view, f);
     free (tmp);
     fk_cursor (1);
     return (ret);

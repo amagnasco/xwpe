@@ -72,7 +72,7 @@ int e_install(we_window_t* f);
 int e_exec_make(we_window_t* f);
 int e_run_sh(we_window_t* f);
 int e_project(we_window_t* f);
-int e_p_mess_win(char* header, int argc, char** argv, we_view_t** pic,
+int e_p_mess_win(char* header, int argc, char** argv, we_view_t** view,
                  we_window_t* f);
 int e_p_add_df(FLWND* fw, int sw);
 int e_p_del_df(FLWND* fw, int sw);

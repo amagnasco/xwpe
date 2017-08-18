@@ -44,9 +44,9 @@ int e_x_system (const char *exe);
 int e_x_cp_X_to_buffer (we_window_t * f);
 int e_x_copy_X_buffer (we_window_t * f);
 int e_x_paste_X_buffer (we_window_t * f);
-int e_x_change (we_view_t * pic);
+int e_x_change (we_view_t * view);
 int e_x_repaint_desk (we_window_t * f);
-void e_setlastpic (we_view_t * pic);
+void e_setlastpic (we_view_t * view);
 int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
 int e_x_kbhit (void);
 
@@ -496,7 +496,7 @@ e_x_refresh ()
 }
 
 int
-e_x_change (we_view_t * pic)
+e_x_change (we_view_t * view)
 {
     XEvent report;
     XExposeEvent *expose_report;
@@ -544,7 +544,7 @@ e_x_change (we_view_t * pic)
                 return (CtrlC);
             break;
         case ButtonPress:
-            if (!pic)
+            if (!view)
                 break;
             key_b = report.xbutton.state;
             if (report.xbutton.button == 1)
@@ -554,8 +554,8 @@ e_x_change (we_view_t * pic)
                             (key_b & WpeXInfo.altmask) ? 8 : 0;
                 e_mouse.x = report.xbutton.x / WpeXInfo.font_width;
                 e_mouse.y = report.xbutton.y / WpeXInfo.font_height;
-                if (e_mouse.x > (pic->e.x + pic->a.x - 10) / 2 &&
-                        e_mouse.x < (pic->e.x + pic->a.x + 6) / 2)
+                if (e_mouse.x > (view->e.x + view->a.x - 10) / 2 &&
+                        e_mouse.x < (view->e.x + view->a.x + 6) / 2)
                     return (CtrlC);
             }
             break;
@@ -916,11 +916,11 @@ e_x_kbhit ()
 }
 
 void
-e_setlastpic (we_view_t * pic)
+e_setlastpic (we_view_t * view)
 {
     extern we_view_t *e_X_l_pic;
 
-    e_X_l_pic = pic;
+    e_X_l_pic = view;
 }
 
 int

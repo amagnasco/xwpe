@@ -1328,15 +1328,15 @@ W_OPTSTR *o;
 {
     int g[4];
     int xold, yold, x, y, xa;
-    we_view_t *pic;
+    we_view_t *view;
     e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
     if (!WpeIsXwin ())
-        pic = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
+        view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
     else
-        pic = e_open_view (o->xa, o->ya, o->xe - 2, o->ye - 1, 0, 2);
+        view = e_open_view (o->xa, o->ya, o->xe - 2, o->ye - 1, 0, 2);
 #else
-    pic = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
+    view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
 #endif
     g[0] = 3;
     g[1] = 1;
@@ -1379,20 +1379,20 @@ W_OPTSTR *o;
                 e_error (e_msg[ERR_LOWMEM], 1, o->f->colorset);
             g[0] = 1;
             fk_mouse (g);
-            pic->a.x = o->xa;
-            pic->a.y = o->ya;
-            pic->e.x = o->xe;
-            pic->e.y = o->ye;
-            e_close_view (pic, 2);
+            view->a.x = o->xa;
+            view->a.y = o->ya;
+            view->e.x = o->xe;
+            view->e.y = o->ye;
+            e_close_view (view, 2);
         }
         g[0] = 3;
         fk_mouse (g);
     }
-    pic->a.x = o->xa;
-    pic->a.y = o->ya;
-    pic->e.x = o->xe;
-    pic->e.y = o->ye;
-    e_close_view (pic, 1);
+    view->a.x = o->xa;
+    view->a.y = o->ya;
+    view->e.x = o->xe;
+    view->e.y = o->ye;
+    e_close_view (view, 1);
     e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
 }
 

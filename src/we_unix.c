@@ -80,13 +80,13 @@ int (*e_u_cp_X_to_buffer) (struct FNST * f);
 int (*e_u_copy_X_buffer) (struct FNST * f);
 int (*e_u_paste_X_buffer) (struct FNST * f);
 int (*e_u_kbhit) (void);
-int (*e_u_change) (we_view_t * pic);
+int (*e_u_change) (we_view_t * view);
 int (*e_u_ini_size) (void);
 int (*e_get_pic_urect) (int xa, int ya, int xe, int ye,
-                        struct view_struct * pic);
+                        struct view_struct * view);
 int (*e_u_s_sys_end) (void);
 int (*e_u_s_sys_ini) (void);
-void (*e_u_setlastpic) (we_view_t * pic);
+void (*e_u_setlastpic) (we_view_t * view);
 
 we_colorset_t *u_fb, *x_fb;
 
