@@ -1,19 +1,21 @@
 if HAVE_DOXYGEN
-directory = $(top_srcdir)/docs
+directory = $(top_builddir)/docs
 
 man_MANS = $(directory)/man/man3
 $(directory)/man/man3: doxyfile.stamp
-	%.3
 
 doxyfile.stamp: Doxyfile
 	$(DOXYGEN) $^
 	cd latex && $(MAKE)
 	echo Timestamp > $@
+	cp ./latex/refman.pdf $(directory)/xwpe-refman.pdf
 
-CLEANFILES = doxyfile.stamp
+CLEANFILES = doxyfile.stamp $(directory)/xwpe-refman.pdf
 
 all-local: doxyfile.stamp
 clean-local:
 	rm -rf $(directory)/man/man3
+	rm -rf $(directory)/latex
+	rm -rf $(directory)/html
 
 endif
