@@ -2302,8 +2302,8 @@ e_autosave (we_window_t * f)
     return (0);
 }
 
-Undo *
-e_remove_undo (Undo * ud, int sw)
+we_undo_t *
+e_remove_undo (we_undo_t * ud, int sw)
 {
     if (ud == NULL)
         return (ud);
@@ -2362,13 +2362,13 @@ e_remove_undo (Undo * ud, int sw)
 int
 e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
 {
-    Undo *next;
+    we_undo_t *next;
 
     if (global_disable_add_undo)
         return (0);
     if (e_phase == EDIT_PHASE && b->rd)
         b->rd = e_remove_undo (b->rd, global_editor_control->numundo + 1);
-    if ((next = malloc (sizeof (Undo))) == NULL)
+    if ((next = malloc (sizeof (we_undo_t))) == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, b->colorset);
         return (-1);
@@ -2475,7 +2475,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
 {
     BUFFER *b;
     we_screen_t *s;
-    Undo *undo;
+    we_undo_t *undo;
     int i;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->f[i]->dtmd); i--);

@@ -140,7 +140,7 @@ typedef struct we_colorset_struct
  *
  *
  */
-typedef struct undo
+typedef struct we_undo_struct
 {
     int type;
     we_point_t b; /* the starting (?) (x, y) cursor position */
@@ -176,8 +176,8 @@ typedef struct undo
     /**
      * Pointer to the next undo or redo struct
      */
-    struct undo* next;
-} Undo;
+    struct we_undo_struct* next;
+} we_undo_t;
 
 typedef struct STR
 {
@@ -194,7 +194,7 @@ typedef struct BFF
     we_point_t mx; /* maximum column and line */
     int mxlines;   /* number of lines */
     int cl, clsv;
-    Undo *ud, *rd;	/* pointers to undo and redo structs */
+    we_undo_t *ud, *rd;	/* pointers to undo and redo structs */
     struct CNT* cn;
     struct FNST* f;
     we_colorset_t* colorset;
