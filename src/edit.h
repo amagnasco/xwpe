@@ -52,8 +52,8 @@ extern int MAXSLNS, MAXSCOL, MENOPT;
  */
 #define WPE_BACKUP 0
 
-/** DTMD is possibly short for Die Terminal Meta Data (German) or meta data for the terminal window */
-/** Normal text file */
+/** DTMD is possibly short for Die Terminal Meta Data (German) or meta data for the terminal window
+    Normal text file */
 #define DTMD_NORMAL 'n'
 /** MS-DOS text file */
 #define DTMD_MSDOS 'm'

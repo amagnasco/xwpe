@@ -608,15 +608,11 @@ e_begscr ()
     kbdflgs = fcntl (0, F_GETFL, 0);
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-//#ifndef NCURSES
-//#if TRUE
-// setupterm((char *)0, 1, (int *)0);
-//#endif
     if ((lns = tigetnum ("lines")) > 0)
         MAXSLNS = lns;
     if ((cols = tigetnum ("cols")) > 0)
         MAXSCOL = cols;
-#else // #if defined HAVE_LIBNCURSES || define HAVE_LIBCURSES
+#else
     if ((tc_screen = getenv ("TERM")) == NULL)
         e_exitm ("Environment variable TERM not defined!", 1);
     if ((tgetent (tcbuf, tc_screen)) != 1)
