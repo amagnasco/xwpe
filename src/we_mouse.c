@@ -900,8 +900,8 @@ e_edt_mouse (int c, we_window_t * f)
         {
             while (e_mshit ())
             {
-                f->b->b.x = f->b->b.x < f->b->bf[f->b->b.y].len ?
-                            f->b->b.x + 1 : f->b->bf[f->b->b.y].len;
+                f->b->b.x = f->b->b.x < f->b->buflines[f->b->b.y].len ?
+                            f->b->b.x + 1 : f->b->buflines[f->b->b.y].len;
                 e_cursor (f, 1);
                 e_refresh ();
             }
@@ -990,17 +990,17 @@ we_window_t *f;
                     && s->mark_begin.x <= b->b.x && s->mark_end.x > b->b.x)
             {
                 s->mark_begin.x = 0;
-                s->mark_end.x = b->bf[b->b.y].len;
+                s->mark_end.x = b->buflines[b->b.y].len;
             }
             else
             {
                 s->mark_begin.y = s->mark_end.y = b->b.y;
                 for (s->mark_begin.x = b->b.x; s->mark_begin.x > 0
-                        && isalnum1 (b->bf[b->b.y].s[s->mark_begin.x - 1]);
+                        && isalnum1 (b->buflines[b->b.y].s[s->mark_begin.x - 1]);
                         s->mark_begin.x--);
                 for (s->mark_end.x = b->b.x;
-                        s->mark_end.x < b->bf[b->b.y].len
-                        && isalnum1 (b->bf[b->b.y].s[s->mark_end.x]);
+                        s->mark_end.x < b->buflines[b->b.y].len
+                        && isalnum1 (b->buflines[b->b.y].s[s->mark_end.x]);
                         s->mark_end.x++);
             }
             e_schirm (f, 1);
@@ -1050,8 +1050,8 @@ we_window_t *f;
         e_mouse_cursor (b, s, f);
         if (b->b.x < 0)
             b->b.x = 0;
-        else if (b->b.x > b->bf[b->b.y].len)
-            b->b.x = b->bf[b->b.y].len;
+        else if (b->b.x > b->buflines[b->b.y].len)
+            b->b.x = b->buflines[b->b.y].len;
         if (b->b.x != bs.x || b->b.y != bs.y)
         {
             if (s->ks.y < b->b.y || (s->ks.y == b->b.y && s->ks.x <= b->b.x))

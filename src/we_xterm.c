@@ -1103,11 +1103,11 @@ e_x_cp_X_to_buffer (we_window_t * f)
     unsigned long nitems, bytes_left;
 
     for (i = 1; i < b0->mxlines; i++)
-        free (b0->bf[i].s);
+        free (b0->buflines[i].s);
     b0->mxlines = 1;
-    *(b0->bf[0].s) = WPE_WR;
-    *(b0->bf[0].s + 1) = '\0';
-    b0->bf[0].len = 0;
+    *(b0->buflines[0].s) = WPE_WR;
+    *(b0->buflines[0].s + 1) = '\0';
+    b0->buflines[0].len = 0;
 #if defined SELECTION
     if (WpeXInfo.selection)
     {
@@ -1148,29 +1148,29 @@ e_x_cp_X_to_buffer (we_window_t * f)
     for (i = k = 0; i < n; i++, k++)
     {
         for (j = 0; i < n && str[i] != '\n' && j < b0->mx.x - 1; j++, i++)
-            b0->bf[k].s[j] = str[i];
+            b0->buflines[k].s[j] = str[i];
         if (i < n)
         {
             e_new_line (k + 1, b0);
             if (str[i] == '\n')
             {
-                b0->bf[k].s[j] = WPE_WR;
-                b0->bf[k].nrc = j + 1;
+                b0->buflines[k].s[j] = WPE_WR;
+                b0->buflines[k].nrc = j + 1;
             }
             else
-                b0->bf[k].nrc = j;
-            b0->bf[k].s[j + 1] = '\0';
-            b0->bf[k].len = j;
+                b0->buflines[k].nrc = j;
+            b0->buflines[k].s[j + 1] = '\0';
+            b0->buflines[k].len = j;
         }
         else
         {
-            b0->bf[k].s[j] = '\0';
-            b0->bf[k].nrc = b0->bf[k].len = j;
+            b0->buflines[k].s[j] = '\0';
+            b0->buflines[k].nrc = b0->buflines[k].len = j;
         }
     }
     s0->mark_begin.x = s0->mark_begin.y = 0;
     s0->mark_end.y = b0->mxlines - 1;
-    s0->mark_end.x = b0->bf[b0->mxlines - 1].len;
+    s0->mark_end.x = b0->buflines[b0->mxlines - 1].len;
 #if defined SELECTION
     if (WpeXInfo.selection)
         free (str);
@@ -1215,31 +1215,31 @@ e_x_paste_X_buffer (we_window_t * f)
 #if defined SELECTION
         WpeXInfo.selection = malloc (n + 1);
         strncpy ((char *) WpeXInfo.selection,
-                 (char *) b0->bf[s0->mark_begin.y].s + s0->mark_begin.x, n);
+                 (char *) b0->buflines[s0->mark_begin.y].s + s0->mark_begin.x, n);
         WpeXInfo.selection[n] = 0;
         XSetSelectionOwner (WpeXInfo.display, WpeXInfo.selection_atom,
                             WpeXInfo.window, CurrentTime);
 #else
         XStoreBytes (WpeXInfo.display,
-                     b0->bf[s0->mark_begin.y].s + s0->mark_begin.x, n);
+                     b0->buflines[s0->mark_begin.y].s + s0->mark_begin.x, n);
 #endif
         return (0);
     }
-    WpeXInfo.selection = malloc (b0->bf[s0->mark_begin.y].nrc * sizeof (char));
-    for (n = 0, j = s0->mark_begin.x; j < b0->bf[s0->mark_begin.y].nrc;
+    WpeXInfo.selection = malloc (b0->buflines[s0->mark_begin.y].nrc * sizeof (char));
+    for (n = 0, j = s0->mark_begin.x; j < b0->buflines[s0->mark_begin.y].nrc;
             j++, n++)
-        WpeXInfo.selection[n] = b0->bf[s0->mark_begin.y].s[j];
+        WpeXInfo.selection[n] = b0->buflines[s0->mark_begin.y].s[j];
     for (i = s0->mark_begin.y + 1; i < s0->mark_end.y; i++)
     {
         WpeXInfo.selection =
-            realloc (WpeXInfo.selection, (n + b0->bf[i].nrc) * sizeof (char));
-        for (j = 0; j < b0->bf[i].nrc; j++, n++)
-            WpeXInfo.selection[n] = b0->bf[i].s[j];
+            realloc (WpeXInfo.selection, (n + b0->buflines[i].nrc) * sizeof (char));
+        for (j = 0; j < b0->buflines[i].nrc; j++, n++)
+            WpeXInfo.selection[n] = b0->buflines[i].s[j];
     }
     WpeXInfo.selection =
         realloc (WpeXInfo.selection, (n + s0->mark_end.x + 1) * sizeof (char));
     for (j = 0; j < (unsigned) s0->mark_end.x; j++, n++)
-        WpeXInfo.selection[n] = b0->bf[i].s[j];
+        WpeXInfo.selection[n] = b0->buflines[i].s[j];
     WpeXInfo.selection[n] = 0;
 #if defined SELECTION
     XSetSelectionOwner (WpeXInfo.display, WpeXInfo.selection_atom,

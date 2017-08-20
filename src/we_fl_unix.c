@@ -1178,17 +1178,17 @@ WpeHandleFileManager (we_control_t * cn)
                     if (be->b.x != 0)
                     {
                         e_new_line (be->b.y + 1, be);
-                        if (*(be->bf[be->b.y].s + be->bf[be->b.y].len) != '\0')
-                            (be->bf[be->b.y].len)++;
-                        for (i = be->b.x; i <= be->bf[be->b.y].len; i++)
-                            *(be->bf[be->b.y + 1].s + i - be->b.x) =
-                                *(be->bf[be->b.y].s + i);
-                        *(be->bf[be->b.y].s + be->b.x) = '\0';
-                        be->bf[be->b.y].len = be->b.x;
-                        be->bf[be->b.y + 1].len =
-                            e_str_len (be->bf[be->b.y + 1].s);
-                        be->bf[be->b.y + 1].nrc =
-                            strlen ((const char *) be->bf[be->b.y + 1].s);
+                        if (*(be->buflines[be->b.y].s + be->buflines[be->b.y].len) != '\0')
+                            (be->buflines[be->b.y].len)++;
+                        for (i = be->b.x; i <= be->buflines[be->b.y].len; i++)
+                            *(be->buflines[be->b.y + 1].s + i - be->b.x) =
+                                *(be->buflines[be->b.y].s + i);
+                        *(be->buflines[be->b.y].s + be->b.x) = '\0';
+                        be->buflines[be->b.y].len = be->b.x;
+                        be->buflines[be->b.y + 1].len =
+                            e_str_len (be->buflines[be->b.y + 1].s);
+                        be->buflines[be->b.y + 1].nrc =
+                            strlen ((const char *) be->buflines[be->b.y + 1].s);
                     }
                     se->mark_begin.x = be->b.x;
                     start = se->mark_begin.y = be->b.y;
@@ -3585,7 +3585,7 @@ e_ed_man (unsigned char *str, we_window_t * f)
         remove (tstr);
         e_close_window (f);
     }
-    if (b->mxlines == 1 && b->bf[0].len == 0)
+    if (b->mxlines == 1 && b->buflines[0].len == 0)
     {
         e_ins_nchar (f->b, f->s, (unsigned char *) "No manual entry for ", 0, 0,
                      20);
@@ -3594,44 +3594,44 @@ e_ed_man (unsigned char *str, we_window_t * f)
         e_ins_nchar (f->b, f->s, (unsigned char *) ".", b->b.x, b->b.y, 1);
     }
     for (i = 0; i < b->mxlines; i++)
-        if (b->bf[i].len == 0 && (i == 0 || b->bf[i - 1].len == 0))
+        if (b->buflines[i].len == 0 && (i == 0 || b->buflines[i - 1].len == 0))
         {
             e_del_line (i, b, f->s);
             i--;
         }
-    for (bg = 0; bg < b->bf[0].len && isspace (b->bf[0].s[bg]); bg++);
-    if (bg == b->bf[0].len)
+    for (bg = 0; bg < b->buflines[0].len && isspace (b->buflines[0].s[bg]); bg++);
+    if (bg == b->buflines[0].len)
         bg = 0;
     for (i = 0;
             i < b->mxlines &&
-            WpeStrnccmp ((const char *) b->bf[i].s + bg,
+            WpeStrnccmp ((const char *) b->buflines[i].s + bg,
                          (const char *) "\017SEE\005 \017ALSO\005", 12)
-            && WpeStrnccmp ((const char *) b->bf[i].s + bg,
+            && WpeStrnccmp ((const char *) b->buflines[i].s + bg,
                             (const char *) "SEE ALSO", 8); i++);
     if (i < b->mxlines)
-        for (bg = 0, i++; i < b->mxlines && b->bf[i].len > 0 && bg >= 0; i++)
+        for (bg = 0, i++; i < b->mxlines && b->buflines[i].len > 0 && bg >= 0; i++)
         {
             bg = 0;
-            while (b->bf[i].s[bg])
+            while (b->buflines[i].s[bg])
             {
-                for (; isspace (b->bf[i].s[bg]); bg++);
-                if (!b->bf[i].s[bg])
+                for (; isspace (b->buflines[i].s[bg]); bg++);
+                if (!b->buflines[i].s[bg])
                     continue;
                 for (j = bg + 1;
-                        b->bf[i].s[j] && b->bf[i].s[j] != ',' && b->bf[i].s[j] != '.'
-                        && b->bf[i].s[j] != ' ' && b->bf[i].s[j] != '('; j++);
-                if (b->bf[i].s[j] != '(')
+                        b->buflines[i].s[j] && b->buflines[i].s[j] != ',' && b->buflines[i].s[j] != '.'
+                        && b->buflines[i].s[j] != ' ' && b->buflines[i].s[j] != '('; j++);
+                if (b->buflines[i].s[j] != '(')
                 {
                     bg = -1;
                     break;
                 }
-                if (b->bf[i].s[j - 1] == 5)
+                if (b->buflines[i].s[j - 1] == 5)
                     e_del_nchar (b, f->s, j - 1, i, 1);
                 for (j++;
-                        b->bf[i].s[j] && b->bf[i].s[j] != ','
-                        && b->bf[i].s[j] != '.'; j++);
-                if (b->bf[i].s[bg] == 15)
-                    b->bf[i].s[bg] = HFB;
+                        b->buflines[i].s[j] && b->buflines[i].s[j] != ','
+                        && b->buflines[i].s[j] != '.'; j++);
+                if (b->buflines[i].s[bg] == 15)
+                    b->buflines[i].s[bg] = HFB;
                 else
                 {
                     cc = HFB;
@@ -3641,7 +3641,7 @@ e_ed_man (unsigned char *str, we_window_t * f)
                 cc = HED;
                 e_ins_nchar (b, f->s, (unsigned char *) &cc, j, i, 1);
                 j++;
-                if (b->bf[i].s[j])
+                if (b->buflines[i].s[j])
                     j++;
                 bg = j;
             }

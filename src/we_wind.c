@@ -802,15 +802,15 @@ e_close_buffer (BUFFER * b)
     if (b != NULL)
     {
         e_remove_undo (b->ud, b->cn->numundo + 1);
-        if (b->bf != NULL)
+        if (b->buflines != NULL)
         {
             for (i = 0; i < b->mxlines; i++)
             {
-                if (b->bf[i].s != NULL)
-                    free (b->bf[i].s);
-                b->bf[i].s = NULL;
+                if (b->buflines[i].s != NULL)
+                    free (b->buflines[i].s);
+                b->buflines[i].s = NULL;
             }
-            free (b->bf);
+            free (b->buflines);
         }
         free (b);
     }
@@ -1206,15 +1206,15 @@ e_pr_line (int y, we_window_t * window)
 
     for (i = j = 0; j < num_cols_off_screen_left(window); j++, i++)
     {
-        if (*(b->bf[y].s + i) == WPE_TAB)
+        if (*(b->buflines[y].s + i) == WPE_TAB)
             j += (window->ed->tabn - j % window->ed->tabn - 1);
-        else if (((unsigned char) *(b->bf[y].s + i)) > 126)
+        else if (((unsigned char) *(b->buflines[y].s + i)) > 126)
         {
             j++;
-            if (((unsigned char) *(b->bf[y].s + i)) < 128 + ' ')
+            if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' ')
                 j++;
         }
-        else if (*(b->bf[y].s + i) < ' ')
+        else if (*(b->buflines[y].s + i) < ' ')
             j++;
     }
     if (j > num_cols_off_screen_left(window))
@@ -1227,7 +1227,7 @@ e_pr_line (int y, we_window_t * window)
             break;
         }
     for (j = num_cols_off_screen_left(window);
-            i < b->bf[y].len && j < col_num_on_screen_right(window); i++, j++)
+            i < b->buflines[y].len && j < col_num_on_screen_right(window); i++, j++)
     {
         if (y == s->da.y && i >= s->da.x && i < s->de.x)
             frb = s->colorset->dy.fb;
@@ -1238,7 +1238,7 @@ e_pr_line (int y, we_window_t * window)
             frb = s->colorset->ek.fb;
 #else
     for (j = num_cols_off_screen_left(window);
-            i < b->bf[y].len && j < col_num_on_screen_right(window); i++, j++)
+            i < b->buflines[y].len && j < col_num_on_screen_right(window); i++, j++)
     {
         if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
             frb = s->colorset->ek.fb;
@@ -1262,26 +1262,26 @@ e_pr_line (int y, we_window_t * window)
 
         if (window->dtmd == DTMD_HELP)
         {
-            if (*(b->bf[y].s + i) == HBG || *(b->bf[y].s + i) == HFB ||
-                    *(b->bf[y].s + i) == HHD || *(b->bf[y].s + i) == HBB)
+            if (*(b->buflines[y].s + i) == HBG || *(b->buflines[y].s + i) == HFB ||
+                    *(b->buflines[y].s + i) == HHD || *(b->buflines[y].s + i) == HBB)
             {
-                if (*(b->bf[y].s + i) == HHD)
+                if (*(b->buflines[y].s + i) == HHD)
                     frb = s->colorset->hh.fb;
-                else if (*(b->bf[y].s + i) == HBB)
+                else if (*(b->buflines[y].s + i) == HBB)
                     frb = s->colorset->hm.fb;
                 else
                     frb = s->colorset->hb.fb;
 #ifdef NEWSTYLE
-                if (*(b->bf[y].s + i) != HBB)
+                if (*(b->buflines[y].s + i) != HBB)
                     k = j;
                 else
                     k = -1;
 #endif
-                for (i++; b->bf[y].s[i] != HED && i < b->bf[y].len &&
+                for (i++; b->buflines[y].s[i] != HED && i < b->buflines[y].len &&
                         j < col_num_on_screen_right(window); i++, j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                                y - num_lines_off_screen_top(window) + window->a.y + 1,
-                               *(b->bf[y].s + i), frb);
+                               *(b->buflines[y].s + i), frb);
                 j--;
 #ifdef NEWSTYLE
                 if (WpeIsXwin () && k >= 0)
@@ -1292,7 +1292,7 @@ e_pr_line (int y, we_window_t * window)
 #endif
                 continue;
             }
-            else if (*(b->bf[y].s + i) == HFE)
+            else if (*(b->buflines[y].s + i) == HFE)
             {
                 for (; j < col_num_on_screen_right(window); j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
@@ -1300,13 +1300,13 @@ e_pr_line (int y, we_window_t * window)
                                s->colorset->hh.fb);
                 return;
             }
-            else if (*(b->bf[y].s + i) == HNF)
+            else if (*(b->buflines[y].s + i) == HNF)
             {
-                for (k = j, i++; b->bf[y].s[i] != ':' && i < b->bf[y].len &&
+                for (k = j, i++; b->buflines[y].s[i] != ':' && i < b->buflines[y].len &&
                         j < col_num_on_screen_right(window); i++, j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                                y - num_lines_off_screen_top(window) + window->a.y + 1,
-                               *(b->bf[y].s + i), s->colorset->hb.fb);
+                               *(b->buflines[y].s + i), s->colorset->hb.fb);
 #ifdef NEWSTYLE
                 if (WpeIsXwin ())
                     e_make_xrect (window->a.x - num_cols_off_screen_left(window) + k + 1,
@@ -1314,19 +1314,19 @@ e_pr_line (int y, we_window_t * window)
                                   window->a.x - num_cols_off_screen_left(window) + j,
                                   y - num_lines_off_screen_top(window) + window->a.y + 1, 0);
 #endif
-                for (; b->bf[y].s[i] != HED && i < b->bf[y].len &&
+                for (; b->buflines[y].s[i] != HED && i < b->buflines[y].len &&
                         j < col_num_on_screen_right(window); i++, j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                                y - num_lines_off_screen_top(window) + window->a.y + 1,
-                               *(b->bf[y].s + i), frb);
+                               *(b->buflines[y].s + i), frb);
                 for (i++;
-                        b->bf[y].s[i] != HED && i < b->bf[y].len
+                        b->buflines[y].s[i] != HED && i < b->buflines[y].len
                         && j < col_num_on_screen_right(window); i++, j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                                y - num_lines_off_screen_top(window) + window->a.y + 1, ' ',
                                frb);
                 for (;
-                        b->bf[y].s[i] != '.' && i < b->bf[y].len
+                        b->buflines[y].s[i] != '.' && i < b->buflines[y].len
                         && j < col_num_on_screen_right(window); i++, j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                                y - num_lines_off_screen_top(window) + window->a.y + 1, ' ',
@@ -1334,24 +1334,24 @@ e_pr_line (int y, we_window_t * window)
                 j--;
                 continue;
             }
-            else if (*(b->bf[y].s + i) == HED)
+            else if (*(b->buflines[y].s + i) == HED)
             {
                 j--;
                 continue;
             }
         }
-        if (*(b->bf[y].s + i) == WPE_TAB)
+        if (*(b->buflines[y].s + i) == WPE_TAB)
             for (k = window->ed->tabn - j % window->ed->tabn; k > 1 &&
                     j < num_cols_on_screen(window) + num_cols_off_screen_left(window) - 2; k--, j++)
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, ' ', frb);
-        else if (!WpeIsXwin () && ((unsigned char) *(b->bf[y].s + i)) > 126)
+        else if (!WpeIsXwin () && ((unsigned char) *(b->buflines[y].s + i)) > 126)
         {
             e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                        y - num_lines_off_screen_top(window) + window->a.y + 1, '@', frb);
             if (++j >= col_num_on_screen_right(window))
                 return;
-            if (((unsigned char) *(b->bf[y].s + i)) < 128 + ' ' &&
+            if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' ' &&
                     j < col_num_on_screen_right(window))
             {
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
@@ -1360,39 +1360,39 @@ e_pr_line (int y, we_window_t * window)
                     return;
             }
         }
-        else if (*(b->bf[y].s + i) < ' ')
+        else if (*(b->buflines[y].s + i) < ' ')
         {
             e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                        y - num_lines_off_screen_top(window) + window->a.y + 1, '^', frb);
             if (++j >= col_num_on_screen_right(window))
                 return;
         }
-        if (*(b->bf[y].s + i) == WPE_TAB)
+        if (*(b->buflines[y].s + i) == WPE_TAB)
             e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                        y - num_lines_off_screen_top(window) + window->a.y + 1, ' ', frb);
-        else if (!WpeIsXwin () && ((unsigned char) *(b->bf[y].s + i)) > 126
+        else if (!WpeIsXwin () && ((unsigned char) *(b->buflines[y].s + i)) > 126
                  && j < col_num_on_screen_right(window))
         {
-            if (((unsigned char) *(b->bf[y].s + i)) < 128 + ' ')
+            if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' ')
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1,
-                           ((unsigned char) *(b->bf[y].s + i)) + 'A' - 129, frb);
+                           ((unsigned char) *(b->buflines[y].s + i)) + 'A' - 129, frb);
             else
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1,
-                           ((unsigned char) *(b->bf[y].s + i)) - 128, frb);
+                           ((unsigned char) *(b->buflines[y].s + i)) - 128, frb);
         }
-        else if (*(b->bf[y].s + i) < ' ' && j < col_num_on_screen_right(window))
+        else if (*(b->buflines[y].s + i) < ' ' && j < col_num_on_screen_right(window))
             e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                        y - num_lines_off_screen_top(window) + window->a.y + 1,
-                       *(b->bf[y].s + i) + 'A' - 1, frb);
+                       *(b->buflines[y].s + i) + 'A' - 1, frb);
         else
             e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                        y - num_lines_off_screen_top(window) + window->a.y + 1,
-                       *(b->bf[y].s + i), frb);
+                       *(b->buflines[y].s + i), frb);
     }
 
-    if ((i == b->bf[y].len) && (window->ed->edopt & ED_SHOW_ENDMARKS) &&
+    if ((i == b->buflines[y].len) && (window->ed->edopt & ED_SHOW_ENDMARKS) &&
             (DTMD_ISMARKABLE (window->dtmd)) && (j < col_num_on_screen_right(window)))
     {
         if ((y < s->mark_end.y && (y > s->mark_begin.y ||
@@ -1402,7 +1402,7 @@ e_pr_line (int y, we_window_t * window)
                     && (y > s->mark_begin.y
                         || (y == s->mark_begin.y && i >= s->mark_begin.x))))
         {
-            if (*(b->bf[y].s + i) == WPE_WR)
+            if (*(b->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, PWR,
                            s->colorset->ez.fb);
@@ -1413,7 +1413,7 @@ e_pr_line (int y, we_window_t * window)
         }
         else
         {
-            if (*(b->bf[y].s + i) == WPE_WR)
+            if (*(b->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, PWR,
                            s->colorset->et.fb);

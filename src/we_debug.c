@@ -464,7 +464,7 @@ e_d_p_exec (we_window_t * f)
     }
     f = cn->f[i];
     b = cn->f[i]->b;
-    if (b->bf[b->mxlines - 1].len != 0)
+    if (b->buflines[b->mxlines - 1].len != 0)
         e_new_line (b->mxlines, b);
     for (j = 0, i = is = b->mxlines - 1;
             (ret = e_d_line_read (wfildes[0], str, 512, 0, 0)) == 0;)
@@ -478,10 +478,10 @@ e_d_p_exec (we_window_t * f)
         e_new_line (i, b);
         for (j = 0; j < num_cols_on_screen_safe(f) - 2 && str[j] != '\n' &&
                 str[j] != '\0'; j++)
-            *(b->bf[i].s + j) = str[j];
+            *(b->buflines[i].s + j) = str[j];
         b->b.y = i;
-        b->b.x = b->bf[i].len = j;
-        b->bf[i].nrc = j;
+        b->b.x = b->buflines[i].len = j;
+        b->buflines[i].nrc = j;
     }
     b->b.y = b->mxlines - 1;
     b->b.x = 0;
@@ -782,7 +782,7 @@ e_edit_watches (we_window_t * f)
         return (0);
     for (l = 0; l < e_d_nwtchs && e_d_nrwtchs[l] <= b->b.y; l++)
         ;
-    if (l == e_d_nwtchs && b->bf[b->b.y].len == 0)
+    if (l == e_d_nwtchs && b->buflines[b->b.y].len == 0)
         return (e_make_watches (f));
     strcpy (str, e_d_swtchs[l - 1]);
     if (e_d_add_watch (str, f))
@@ -835,7 +835,7 @@ e_d_p_watches (we_window_t * f, int sw)
 
     /* free all lines of BUFFER b */
     e_p_red_buffer (b);
-    free (b->bf[0].s);
+    free (b->buflines[0].s);
     b->mxlines = 0;
 
     for (l = 0; l < e_d_nwtchs; l++)
@@ -1087,45 +1087,45 @@ e_d_p_stack (we_window_t * f, int sw)
             if (i >= b->mxlines)
                 e_new_line (i, b);
             if ((i > 0 && j == 0
-                    && *(b->bf[i - 1].s + b->bf[i - 1].len - 1) == '\\')
+                    && *(b->buflines[i - 1].s + b->buflines[i - 1].len - 1) == '\\')
                     || (!e_deb_type && j == 0 && (k > 0 || str[k] != '#')))
             {
                 for (j = 0; j < 3; j++)
-                    b->bf[i].s[j] = ' ';
+                    b->buflines[i].s[j] = ' ';
             }
             for (; isspace (str[k]); k++)
                 ;
             for (;
                     j < num_cols_on_screen_safe(f) - 2 && str[k] != '\n'
                     && str[k] != '\0'; j++, k++)
-                *(b->bf[i].s + j) = str[k];
+                *(b->buflines[i].s + j) = str[k];
             if (str[k] != '\0')
             {
                 if (str[k] != '\n')
                 {
                     for (l = j - 1;
-                            l > 2 && !isspace (b->bf[i].s[l])
-                            && b->bf[i].s[l] != '='; l--)
+                            l > 2 && !isspace (b->buflines[i].s[l])
+                            && b->buflines[i].s[l] != '='; l--)
                         ;
                     if (l > 2)
                     {
                         k -= (j - l - 1);
                         for (l++; l < j; l++)
-                            b->bf[i].s[l] = ' ';
+                            b->buflines[i].s[l] = ' ';
                     }
-                    *(b->bf[i].s + j) = '\\';
-                    *(b->bf[i].s + j + 1) = '\n';
-                    *(b->bf[i].s + j + 2) = '\0';
+                    *(b->buflines[i].s + j) = '\\';
+                    *(b->buflines[i].s + j + 1) = '\n';
+                    *(b->buflines[i].s + j + 2) = '\0';
                     j++;
                 }
                 else
                 {
-                    *(b->bf[i].s + j) = '\n';
-                    *(b->bf[i].s + j + 1) = '\0';
+                    *(b->buflines[i].s + j) = '\n';
+                    *(b->buflines[i].s + j + 1) = '\0';
                 }
             }
-            b->bf[i].len = j;
-            b->bf[i].nrc = j + 1;
+            b->buflines[i].len = j;
+            b->buflines[i].nrc = j + 1;
             if (j != 0 && str[k] != '\0')
             {
                 i++;
@@ -1161,22 +1161,22 @@ e_make_stack (we_window_t * f)
         if (e_deb_type == 0)
         {
             for (i = dif = 0; i <= b->b.y; i++)
-                if (b->bf[i].s[0] == '#')
-                    dif = atoi ((char *) (b->bf[i].s + 1));
-            for (i = b->b.y; i >= 0 && b->bf[i].s[0] != '#'; i--);
+                if (b->buflines[i].s[0] == '#')
+                    dif = atoi ((char *) (b->buflines[i].s + 1));
+            for (i = b->b.y; i >= 0 && b->buflines[i].s[0] != '#'; i--);
             if (i < 0)
                 return (1);
             for (; i < b->mxlines; i++)
             {
                 if (!
                         (tmpstr =
-                             realloc (tmpstr, strlen (tmpstr) + b->bf[i].len + 2)))
+                             realloc (tmpstr, strlen (tmpstr) + b->buflines[i].len + 2)))
                 {
                     e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (-1);
                 }
-                strcat (tmpstr, (char *) b->bf[i].s);
-                if (i == b->mxlines - 1 || b->bf[i + 1].s[0] == '#')
+                strcat (tmpstr, (char *) b->buflines[i].s);
+                if (i == b->mxlines - 1 || b->buflines[i + 1].s[0] == '#')
                     break;
                 else if (tmpstr[strlen (tmpstr) - 2] == '\\')
                     tmpstr[strlen (tmpstr) - 2] = '\0';
@@ -1187,23 +1187,23 @@ e_make_stack (we_window_t * f)
         else
         {
             for (i = 1, dif = 0; i <= b->b.y; i++)
-                if (b->bf[i - 1].s[b->bf[i - 1].len - 1] != '\\')
+                if (b->buflines[i - 1].s[b->buflines[i - 1].len - 1] != '\\')
                     dif++;
             for (i = b->b.y;
-                    i > 0 && b->bf[i - 1].s[b->bf[i - 1].len - 1] == '\\'; i--);
-            if (i == 0 && b->bf[i].len == 0)
+                    i > 0 && b->buflines[i - 1].s[b->buflines[i - 1].len - 1] == '\\'; i--);
+            if (i == 0 && b->buflines[i].len == 0)
                 return (1);
             for (; i < b->mxlines; i++)
             {
                 if (!
                         (tmpstr =
-                             realloc (tmpstr, strlen (tmpstr) + b->bf[i].len + 2)))
+                             realloc (tmpstr, strlen (tmpstr) + b->buflines[i].len + 2)))
                 {
                     e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
                     return (-1);
                 }
-                strcat (tmpstr, (char *) b->bf[i].s);
-                if (i == b->mxlines - 1 || b->bf[i].s[b->bf[i].len - 1] != '\\')
+                strcat (tmpstr, (char *) b->buflines[i].s);
+                if (i == b->mxlines - 1 || b->buflines[i].s[b->buflines[i].len - 1] != '\\')
                     break;
                 else if (tmpstr[strlen (tmpstr) - 2] == '\\')
                     tmpstr[strlen (tmpstr) - 2] = '\0';
@@ -1241,7 +1241,7 @@ e_make_stack (we_window_t * f)
     else if (e_deb_type == 1)
     {
         for (i = b->b.y; i >= 0 && (line =
-                                        e_make_line_num2 ((char *) b->bf[i].s,
+                                        e_make_line_num2 ((char *) b->buflines[i].s,
                                                 file)) < 0; i--);
     }
     if (e_d_p_watches (f, 0) == -1)

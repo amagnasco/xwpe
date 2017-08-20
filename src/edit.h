@@ -233,7 +233,7 @@ typedef struct STR
 
 typedef struct BFF
 {
-    STRING* bf;    /* bf[i] is the i-th line of the buffer */
+    STRING* buflines;    /* buflines[i] is the i-th line of the buffer */
     we_point_t b;  /* cursor coordinates in window (at least in some contexts) */
     we_point_t mx; /* maximum column and line */
     int mxlines;   /* number of lines */

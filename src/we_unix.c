@@ -454,7 +454,7 @@ e_err_save ()
         {
             f = cn->f[i];
             b = cn->f[i]->b;
-            if (b->mxlines > 1 || b->bf[0].len > 0)
+            if (b->mxlines > 1 || b->buflines[0].len > 0)
             {
                 /* Check if file system could have an autosave or emergency save file
                    >12 check is to eliminate dos file systems */
@@ -835,7 +835,7 @@ e_recover (we_control_t * cn)
             s = cn->f[cn->mxedt]->s;
             b = cn->f[cn->mxedt]->b;
             s->mark_end.y = b->mxlines - 1;
-            s->mark_end.x = b->bf[b->mxlines - 1].len;
+            s->mark_end.x = b->buflines[b->mxlines - 1].len;
             e_edt_copy (f);
             e_close_window (f);
         }

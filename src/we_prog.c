@@ -619,18 +619,18 @@ e_show_error (int n, we_window_t * f)
     b->b.y = err_li[n].line > b->mxlines ? b->mxlines - 1 : err_li[n].line - 1;
     if (!err_li[n].srch)
     {
-        for (i = j = 0; i + j < err_li[n].x && i < b->bf[b->b.y].len; i++)
+        for (i = j = 0; i + j < err_li[n].x && i < b->buflines[b->b.y].len; i++)
         {
-            if (*(b->bf[b->b.y].s + i) == WPE_TAB)
+            if (*(b->buflines[b->b.y].s + i) == WPE_TAB)
                 j += (f->ed->tabn - ((j + i) % f->ed->tabn) - 1);
 #ifdef UNIX
-            else if (((unsigned char) *(b->bf[b->b.y].s + i)) > 126)
+            else if (((unsigned char) *(b->buflines[b->b.y].s + i)) > 126)
             {
                 j++;
-                if (((unsigned char) *(b->bf[b->b.y].s + i)) < 128 + ' ')
+                if (((unsigned char) *(b->buflines[b->b.y].s + i)) < 128 + ' ')
                     j++;
             }
-            else if (*(b->bf[b->b.y].s + i) < ' ')
+            else if (*(b->buflines[b->b.y].s + i) < ' ')
                 j++;
 #endif
         }
@@ -639,16 +639,16 @@ e_show_error (int n, we_window_t * f)
     else
     {
         cp =
-            (unsigned char *) strstr ((const char *) b->bf[b->b.y].s,
+            (unsigned char *) strstr ((const char *) b->buflines[b->b.y].s,
                                       err_li[n].srch + 1);
-        for (i = 0; b->bf[b->b.y].s + i < cp; i++);
+        for (i = 0; b->buflines[b->b.y].s + i < cp; i++);
         if (err_li[n].srch[0] == 'B')
         {
-            for (i--; i >= 0 && isspace (b->bf[b->b.y].s[i]); i--);
+            for (i--; i >= 0 && isspace (b->buflines[b->b.y].s[i]); i--);
             if (i < 0 && b->b.y > 0)
             {
                 (b->b.y)--;
-                i = b->bf[b->b.y].len + 1;
+                i = b->buflines[b->b.y].len + 1;
             }
             else
                 i++;
@@ -710,34 +710,34 @@ e_make_error_list (we_window_t * f)
     err_num = 0;
     for (i = 0; i < b->mxlines; i++)
     {
-        if (!strncmp ((char *) b->bf[i].s, "Error at Command:", 17))
+        if (!strncmp ((char *) b->buflines[i].s, "Error at Command:", 17))
             return (!ret ? -2 : ret);
-        if ((!strncmp ((char *) b->bf[i].s, "ld", 2) &&
-                (b->bf[i].s[2] == ' ' || b->bf[i].s[2] == ':')) ||
-                !strncmp ((char *) b->bf[i].s, "collect:", 8))
+        if ((!strncmp ((char *) b->buflines[i].s, "ld", 2) &&
+                (b->buflines[i].s[2] == ' ' || b->buflines[i].s[2] == ':')) ||
+                !strncmp ((char *) b->buflines[i].s, "collect:", 8))
             ret = -2;
-        else if (!strncmp ((char *) b->bf[i].s, "makefile:", 9) ||
-                 !strncmp ((char *) b->bf[i].s, "Makefile:", 9))
+        else if (!strncmp ((char *) b->buflines[i].s, "makefile:", 9) ||
+                 !strncmp ((char *) b->buflines[i].s, "Makefile:", 9))
         {
             err_li[k].file = malloc (9);
             for (j = 0; j < 8; j++)
-                err_li[k].file[j] = b->bf[i].s[j];
+                err_li[k].file[j] = b->buflines[i].s[j];
             err_li[k].file[8] = '\0';
-            err_li[k].line = atoi ((char *) b->bf[i].s + 9);
+            err_li[k].line = atoi ((char *) b->buflines[i].s + 9);
             err_li[k].y = i;
             err_li[k].x = 0;
             err_li[k].srch = NULL;
-            err_li[k].text = malloc (strlen ((char *) b->bf[i].s) + 1);
-            strcpy (err_li[k].text, (char *) b->bf[i].s);
-            err_li[k].text[b->bf[i].len] = '\0';
+            err_li[k].text = malloc (strlen ((char *) b->buflines[i].s) + 1);
+            strcpy (err_li[k].text, (char *) b->buflines[i].s);
+            err_li[k].text[b->buflines[i].len] = '\0';
             k++;
             err_num++;
             ret = -1;
             continue;
         }
-        else if (!strncmp ((char *) b->bf[i].s, "make:", 5) &&
-                 ((spt = strstr ((char *) b->bf[i].s, "makefile")) ||
-                  (spt = strstr ((char *) b->bf[i].s, "Makefile"))) &&
+        else if (!strncmp ((char *) b->buflines[i].s, "make:", 5) &&
+                 ((spt = strstr ((char *) b->buflines[i].s, "makefile")) ||
+                  (spt = strstr ((char *) b->buflines[i].s, "Makefile"))) &&
                  (err_li[k].line = atoi (spt + 14)) > 0)
         {
             err_li[k].file = malloc (9);
@@ -747,9 +747,9 @@ e_make_error_list (we_window_t * f)
             err_li[k].y = i;
             err_li[k].x = 0;
             err_li[k].srch = NULL;
-            err_li[k].text = malloc (strlen ((char *) b->bf[i].s) + 1);
-            strcpy (err_li[k].text, (char *) b->bf[i].s);
-            err_li[k].text[b->bf[i].len] = '\0';
+            err_li[k].text = malloc (strlen ((char *) b->buflines[i].s) + 1);
+            strcpy (err_li[k].text, (char *) b->buflines[i].s);
+            err_li[k].text[b->buflines[i].len] = '\0';
             k++;
             err_num++;
             continue;
@@ -761,14 +761,14 @@ e_make_error_list (we_window_t * f)
             {
                 int ip, in;
                 ip = e_pure_bin ((char *) e_s_prog.compiler, ' ');
-                in = e_pure_bin ((char *) b->bf[i].s, ':');
+                in = e_pure_bin ((char *) b->buflines[i].s, ':');
                 sprintf (file, "%s:", e_s_prog.compiler + ip);
                 if (!strncmp
-                        (file, (const char *) b->bf[i].s + in, strlen (file)))
+                        (file, (const char *) b->buflines[i].s + in, strlen (file)))
                     ret = -2;
-                else if (!strncmp ("ld:", (const char *) b->bf[i].s + in, 3))
+                else if (!strncmp ("ld:", (const char *) b->buflines[i].s + in, 3))
                     ret = -2;
-                else if (!strncmp ("as:", (const char *) b->bf[i].s + in, 3))
+                else if (!strncmp ("as:", (const char *) b->buflines[i].s + in, 3))
                     ret = -2;
             }
         }
@@ -1667,26 +1667,26 @@ print_to_end_of_buffer (BUFFER * b, char *str, int wrap_limit)
         /* copy char from string (str) to buffer */
 
         if (str[j + k] != '\0')
-            b->bf[i].s = realloc (b->bf[i].s, j + 2);
+            b->buflines[i].s = realloc (b->buflines[i].s, j + 2);
         else
-            b->bf[i].s = realloc (b->bf[i].s, j + 1);
-        strncpy ((char *) b->bf[i].s, str + k, j);
+            b->buflines[i].s = realloc (b->buflines[i].s, j + 1);
+        strncpy ((char *) b->buflines[i].s, str + k, j);
 
         /* if this is not end of string, then we created substring
-         if *(b->bf[i].s+j) is not '\0' then it is soft break is not written to file */
+         if *(b->buflines[i].s+j) is not '\0' then it is soft break is not written to file */
 
         if (str[j + k] != '\0')
         {
-            *(b->bf[i].s + j) = '\n';
-            *(b->bf[i].s + j + 1) = '\0';
+            *(b->buflines[i].s + j) = '\n';
+            *(b->buflines[i].s + j + 1) = '\0';
         }
         else
         {
-            *(b->bf[i].s + j) = '\0';
+            *(b->buflines[i].s + j) = '\0';
         }
         /* update len of line in buffer */
-        b->bf[i].len = j;
-        b->bf[i].nrc = j + 1;
+        b->buflines[i].len = j;
+        b->buflines[i].nrc = j + 1;
 
         if (str[j + k] == '\n')
         {
@@ -3158,14 +3158,14 @@ e_p_red_buffer (BUFFER * b)
     int i;
 
     for (i = 1; i < b->mxlines; i++)
-        if (b->bf[i].s != NULL)
-            free (b->bf[i].s);
+        if (b->buflines[i].s != NULL)
+            free (b->buflines[i].s);
     if (b->mxlines == 0)
         e_new_line (0, b);
-    b->bf[0].s[0] = WPE_WR;
-    b->bf[0].s[1] = '\0';
-    b->bf[0].len = 0;
-    b->bf[0].nrc = 1;
+    b->buflines[0].s[0] = WPE_WR;
+    b->buflines[0].s[1] = '\0';
+    b->buflines[0].len = 0;
+    b->buflines[0].nrc = 1;
     b->mxlines = 1;
     return (0);
 }
@@ -3486,7 +3486,7 @@ e_p_cmp_mess (char *srch, BUFFER * b, int *ii, int *kk, int ret)
             }
         }
     }
-    e_p_comp_mess (tmp[0], (char *) b->bf[i].s, (char *) b->bf[i].s, search,
+    e_p_comp_mess (tmp[0], (char *) b->buflines[i].s, (char *) b->buflines[i].s, search,
                    file, cmp, &y, &x);
     iy = i;
     iorig = i;
@@ -3495,10 +3495,10 @@ e_p_cmp_mess (char *srch, BUFFER * b, int *ii, int *kk, int ret)
         if (n > 1 && file[0] && i < b->mxlines - 1)
         {
             y = -1;
-            while (b->bf[i].s[b->bf[i].len - 1] == '\\')
+            while (b->buflines[i].s[b->buflines[i].len - 1] == '\\')
                 i++;
             i++;
-            e_p_comp_mess (tmp[1], (char *) b->bf[i].s, (char *) b->bf[i].s,
+            e_p_comp_mess (tmp[1], (char *) b->buflines[i].s, (char *) b->buflines[i].s,
                            search, file, cmp, &y, &x);
             iy = i;
         }
@@ -3506,17 +3506,17 @@ e_p_cmp_mess (char *srch, BUFFER * b, int *ii, int *kk, int ret)
         {
             if (n > 2 && file[0] && y >= 0 && i < b->mxlines - 1)
             {
-                while (b->bf[i].s[b->bf[i].len - 1] == '\\')
+                while (b->buflines[i].s[b->buflines[i].len - 1] == '\\')
                     i++;
                 i++;
                 l =
-                    e_p_comp_mess (tmp[2], (char *) b->bf[i].s,
-                                   (char *) b->bf[i].s, search, file, cmp, &y,
+                    e_p_comp_mess (tmp[2], (char *) b->buflines[i].s,
+                                   (char *) b->buflines[i].s, search, file, cmp, &y,
                                    &x);
                 if (!l && n > 3)
                     l =
-                        e_p_comp_mess (tmp[3], (char *) b->bf[i].s,
-                                       (char *) b->bf[i].s, search, file, cmp, &y,
+                        e_p_comp_mess (tmp[3], (char *) b->buflines[i].s,
+                                       (char *) b->buflines[i].s, search, file, cmp, &y,
                                        &x);
             }
             else
@@ -3528,12 +3528,12 @@ e_p_cmp_mess (char *srch, BUFFER * b, int *ii, int *kk, int ret)
                 err_li[k].line = y;
                 if (search[0] == 'P')
                 {
-                    cp = strstr ((const char *) b->bf[iy].s, cmp);
+                    cp = strstr ((const char *) b->buflines[iy].s, cmp);
                     if (!cp)
                         x = 0;
                     else
                     {
-                        for (m = 0; b->bf[iy].s + m < (unsigned char *) cp;
+                        for (m = 0; b->buflines[iy].s + m < (unsigned char *) cp;
                                 m++);
                         x -= m;
                     }
@@ -3552,9 +3552,9 @@ e_p_cmp_mess (char *srch, BUFFER * b, int *ii, int *kk, int ret)
                     err_li[k].srch = NULL;
                 err_li[k].x = x;
                 err_li[k].y = iorig;
-                err_li[k].text = malloc (strlen ((char *) b->bf[i].s) + 1);
-                strcpy (err_li[k].text, (char *) b->bf[i].s);
-                err_li[k].text[b->bf[i].len] = '\0';
+                err_li[k].text = malloc (strlen ((char *) b->buflines[i].s) + 1);
+                strcpy (err_li[k].text, (char *) b->buflines[i].s);
+                err_li[k].text[b->buflines[i].len] = '\0';
                 k++;
                 err_num++;
                 if (!ret)
@@ -3562,18 +3562,18 @@ e_p_cmp_mess (char *srch, BUFFER * b, int *ii, int *kk, int ret)
                     for (ret = -1, m = 0; ret && m < wnum; m++)
                     {
                         if (wn[m] == -1 && !(b->cn->edopt & ED_MESSAGES_STOP_AT)
-                                && strstr ((const char *) b->bf[i].s, wtxt[m]))
+                                && strstr ((const char *) b->buflines[i].s, wtxt[m]))
                             ret = 0;
                         else if (wn[m] > -1
                                  && !(b->cn->edopt & ED_MESSAGES_STOP_AT)
-                                 && !strncmp ((const char *) b->bf[i].s + wn[m],
+                                 && !strncmp ((const char *) b->buflines[i].s + wn[m],
                                               wtxt[m], strlen (wtxt[m])))
                             ret = 0;
                     }
                 }
                 if (!ret && wnum <= 0)
                     ret = -1;
-                while (b->bf[i].s[b->bf[i].len - 1] == '\\')
+                while (b->buflines[i].s[b->buflines[i].len - 1] == '\\')
                     i++;
             }
         }
