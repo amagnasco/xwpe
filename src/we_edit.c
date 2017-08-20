@@ -1777,9 +1777,9 @@ e_cursor (we_window_t * window, int sw)
     if (sw != 0)
     {
         iold = e_lst_zeichen (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
-                              window->colorset->em.fb, b->mxlines, iold, b->cursor.y);
+                              window->colorset->em.fg_bg_color, b->mxlines, iold, b->cursor.y);
         jold = e_lst_zeichen (window->a.x + 19, window->e.y, window->e.x - window->a.x - 20, 1,
-                              window->colorset->em.fb, b->mx.x, jold, b->cursor.x);
+                              window->colorset->em.fg_bg_color, b->mx.x, jold, b->cursor.x);
     }
     b->cl = b->cursor.x + j;
     fk_locate (window->a.x + b->cursor.x - s->c.x + j + 1, window->a.y + b->cursor.y - s->c.y + 1);
@@ -2115,11 +2115,11 @@ e_zlsplt (we_window_t * f)
     if (!DTMD_ISTEXT (f->dtmd))
         return;
     sprintf (str, "%5d:%-4d", f->b->cursor.y + 1, f->b->cl + 1);
-    e_puts (str, f->a.x + 5, f->e.y, f->colorset->er.fb);
+    e_puts (str, f->a.x + 5, f->e.y, f->colorset->er.fg_bg_color);
     if (f->save)
-        e_pr_char (f->a.x + 3, f->e.y, '*', f->colorset->er.fb);
+        e_pr_char (f->a.x + 3, f->e.y, '*', f->colorset->er.fg_bg_color);
     else
-        e_pr_char (f->a.x + 3, f->e.y, ' ', f->colorset->er.fb);
+        e_pr_char (f->a.x + 3, f->e.y, ' ', f->colorset->er.fg_bg_color);
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
     {

@@ -611,10 +611,10 @@ e_show_error (int n, we_window_t * f)
     }
     else if (filename != f->datnam)
         free (filename);
-    e_pr_str_wsd (1, MAXSLNS - 1, err_li[n].text, f->colorset->mt.fb, -1, 0,
-                  f->colorset->mt.fb, 1, MAXSCOL - 2);
+    e_pr_str_wsd (1, MAXSLNS - 1, err_li[n].text, f->colorset->mt.fg_bg_color, -1, 0,
+                  f->colorset->mt.fg_bg_color, 1, MAXSCOL - 2);
     /*   e_pr_nstr(2, MAXSLNS - 1, MAXSCOL-2, err_li[n].text,
-                                                    f->colorset->mt.fb, f->colorset->mt.fb); */
+                                                    f->colorset->mt.fg_bg_color, f->colorset->mt.fg_bg_color); */
     b = control->f[control->mxedt]->b;
     b->cursor.y = err_li[n].line > b->mxlines ? b->mxlines - 1 : err_li[n].line - 1;
     if (!err_li[n].srch)

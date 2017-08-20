@@ -106,7 +106,7 @@ e_error (char *text, int sw, we_colorset_t * f)
         header = "Fatal Error";
 
     if (sw < 2)
-        view = e_std_kst (xa, ya, xe, ye, header, 1, f->nr.fb, f->nt.fb, f->ne.fb);
+        view = e_std_kst (xa, ya, xe, ye, header, 1, f->nr.fg_bg_color, f->nt.fg_bg_color, f->ne.fg_bg_color);
     if (sw == 2 || view == NULL)
     {
         view = e_open_view (xa, ya, xe, ye, 0, 0);
@@ -115,9 +115,9 @@ e_error (char *text, int sw, we_colorset_t * f)
     if (sw < 2)
     {
         e_pr_str ((xe + xa - e_str_len ((unsigned char *) text)) / 2,
-                  ya + 2, text, f->nt.fb, 0, 0, 0, 0);
-        e_pr_str ((xe + xa - 4) / 2, ya + 4, " OK ", f->nz.fb, 1, -1,
-                  f->ns.fb, f->nt.fb);
+                  ya + 2, text, f->nt.fg_bg_color, 0, 0, 0, 0);
+        e_pr_str ((xe + xa - 4) / 2, ya + 4, " OK ", f->nz.fg_bg_color, 1, -1,
+                  f->ns.fg_bg_color, f->nt.fg_bg_color);
     }
     else
     {
@@ -208,7 +208,7 @@ e_firstl (we_window_t * f, int sw)
 int
 e_pr_filetype (we_window_t * f)
 {
-    int frb = f->colorset->es.fb;
+    int frb = f->colorset->es.fg_bg_color;
 
     e_pr_char (f->a.x + 2, f->e.y, 'A', frb);
     if (f->ins == 0 || f->ins == 2)
@@ -356,26 +356,26 @@ e_ed_rahmen (we_window_t * f, int sw)
             header = f->datnam;
         if (f->dtmd == DTMD_FILEDROPDOWN)
             e_std_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, header, sw,
-                          f->colorset->er.fb, f->colorset->es.fb);
+                          f->colorset->er.fg_bg_color, f->colorset->es.fg_bg_color);
         else
             e_std_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, header, sw,
-                          f->colorset->nr.fb, f->colorset->ne.fb);
+                          f->colorset->nr.fg_bg_color, f->colorset->ne.fg_bg_color);
         if (f->winnum < 10 && f->winnum >= 0)
-            e_pr_char (f->e.x - 6, f->a.y, '0' + f->winnum, f->colorset->nr.fb);
+            e_pr_char (f->e.x - 6, f->a.y, '0' + f->winnum, f->colorset->nr.fg_bg_color);
         else if (f->winnum >= 0)
-            e_pr_char (f->e.x - 6, f->a.y, 'A' - 10 + f->winnum, f->colorset->nr.fb);
+            e_pr_char (f->e.x - 6, f->a.y, 'A' - 10 + f->winnum, f->colorset->nr.fg_bg_color);
         if (sw > 0 && (f->dtmd == DTMD_FILEMANAGER || f->dtmd == DTMD_DATA))
         {
             if (f->zoom == 0)
-                e_pr_char (f->e.x - 3, f->a.y, WZN, f->colorset->ne.fb);
+                e_pr_char (f->e.x - 3, f->a.y, WZN, f->colorset->ne.fg_bg_color);
             else
-                e_pr_char (f->e.x - 3, f->a.y, WZY, f->colorset->ne.fb);
+                e_pr_char (f->e.x - 3, f->a.y, WZY, f->colorset->ne.fg_bg_color);
 #ifdef NEWSTYLE
             if (!WpeIsXwin ())
             {
 #endif
-                e_pr_char (f->e.x - 4, f->a.y, '[', f->colorset->nr.fb);
-                e_pr_char (f->e.x - 2, f->a.y, ']', f->colorset->nr.fb);
+                e_pr_char (f->e.x - 4, f->a.y, '[', f->colorset->nr.fg_bg_color);
+                e_pr_char (f->e.x - 2, f->a.y, ']', f->colorset->nr.fg_bg_color);
 #ifdef NEWSTYLE
             }
             else
@@ -409,26 +409,26 @@ e_ed_rahmen (we_window_t * f, int sw)
             strcat (header, f->datnam);
         }
     }
-    e_std_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, header, sw, f->colorset->er.fb,
-                  f->colorset->es.fb);
+    e_std_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, header, sw, f->colorset->er.fg_bg_color,
+                  f->colorset->es.fg_bg_color);
     if (header)
         free (header);
     if (sw > 0)
     {
         e_mouse_bar (f->e.x, f->a.y + 1, num_lines_on_screen(f) - 1, 0,
-                     f->colorset->em.fb);
+                     f->colorset->em.fg_bg_color);
         e_mouse_bar (f->a.x + 19, f->e.y, num_cols_on_screen(f) - 20, 1,
-                     f->colorset->em.fb);
+                     f->colorset->em.fg_bg_color);
         if (f->zoom == 0)
-            e_pr_char (f->e.x - 3, f->a.y, WZN, f->colorset->es.fb);
+            e_pr_char (f->e.x - 3, f->a.y, WZN, f->colorset->es.fg_bg_color);
         else
-            e_pr_char (f->e.x - 3, f->a.y, WZY, f->colorset->es.fb);
+            e_pr_char (f->e.x - 3, f->a.y, WZY, f->colorset->es.fg_bg_color);
 #ifdef NEWSTYLE
         if (!WpeIsXwin ())
         {
 #endif
-            e_pr_char (f->e.x - 4, f->a.y, '[', f->colorset->er.fb);
-            e_pr_char (f->e.x - 2, f->a.y, ']', f->colorset->er.fb);
+            e_pr_char (f->e.x - 4, f->a.y, '[', f->colorset->er.fg_bg_color);
+            e_pr_char (f->e.x - 2, f->a.y, ']', f->colorset->er.fg_bg_color);
 #ifdef NEWSTYLE
         }
         else
@@ -438,27 +438,27 @@ e_ed_rahmen (we_window_t * f, int sw)
         if (WpeIsXwin () && num_lines_on_screen(f) > 8)
         {
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
-            e_pr_char (f->a.x, f->a.y + 2, 'F', f->colorset->em.fb);
+            e_pr_char (f->a.x, f->a.y + 2, 'F', f->colorset->em.fg_bg_color);
             e_make_xrect (f->a.x, f->a.y + 2, f->a.x, f->a.y + 2, 0);
-            e_pr_char (f->a.x, f->a.y + 4, 'R', f->colorset->em.fb);
+            e_pr_char (f->a.x, f->a.y + 4, 'R', f->colorset->em.fg_bg_color);
             e_make_xrect (f->a.x, f->a.y + 4, f->a.x, f->a.y + 4, 0);
-            e_pr_char (f->a.x, f->a.y + 6, 'A', f->colorset->em.fb);
+            e_pr_char (f->a.x, f->a.y + 6, 'A', f->colorset->em.fg_bg_color);
             e_make_xrect (f->a.x, f->a.y + 6, f->a.x, f->a.y + 6, 0);
             if (f->ins != 8)
             {
-                e_pr_char (f->a.x, f->a.y + 8, 'S', f->colorset->em.fb);
+                e_pr_char (f->a.x, f->a.y + 8, 'S', f->colorset->em.fg_bg_color);
                 e_make_xrect (f->a.x, f->a.y + 8, f->a.x, f->a.y + 8, 0);
             }
 #else
-            e_pr_char (f->a.x, f->a.y + 2, 'F', f->colorset->em.fb);
-            e_pr_char (f->a.x, f->a.y + 3, MCI, f->colorset->em.fb);
-            e_pr_char (f->a.x, f->a.y + 4, 'R', f->colorset->em.fb);
-            e_pr_char (f->a.x, f->a.y + 5, MCI, f->colorset->em.fb);
-            e_pr_char (f->a.x, f->a.y + 6, 'A', f->colorset->em.fb);
+            e_pr_char (f->a.x, f->a.y + 2, 'F', f->colorset->em.fg_bg_color);
+            e_pr_char (f->a.x, f->a.y + 3, MCI, f->colorset->em.fg_bg_color);
+            e_pr_char (f->a.x, f->a.y + 4, 'R', f->colorset->em.fg_bg_color);
+            e_pr_char (f->a.x, f->a.y + 5, MCI, f->colorset->em.fg_bg_color);
+            e_pr_char (f->a.x, f->a.y + 6, 'A', f->colorset->em.fg_bg_color);
             if (f->ins != 8)
             {
-                e_pr_char (f->a.x, f->a.y + 7, MCI, f->colorset->em.fb);
-                e_pr_char (f->a.x, f->a.y + 8, 'S', f->colorset->em.fb);
+                e_pr_char (f->a.x, f->a.y + 7, MCI, f->colorset->em.fg_bg_color);
+                e_pr_char (f->a.x, f->a.y + 8, 'S', f->colorset->em.fg_bg_color);
             }
 #endif
         }
@@ -469,9 +469,9 @@ e_ed_rahmen (we_window_t * f, int sw)
         e_pr_uul (f->colorset);
     }
     if (f->winnum < 10 && f->winnum >= 0)
-        e_pr_char (f->e.x - 6, f->a.y, '0' + f->winnum, f->colorset->er.fb);
+        e_pr_char (f->e.x - 6, f->a.y, '0' + f->winnum, f->colorset->er.fg_bg_color);
     else if (f->winnum >= 0)
-        e_pr_char (f->e.x - 6, f->a.y, 'A' - 10 + f->winnum, f->colorset->er.fb);
+        e_pr_char (f->e.x - 6, f->a.y, 'A' - 10 + f->winnum, f->colorset->er.fg_bg_color);
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
         e_make_xr_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, sw);
@@ -490,8 +490,8 @@ e_schirm (we_window_t * window, int sw)
         return (e_data_schirm (window));
     else if (window->dtmd == DTMD_FILEDROPDOWN)
         return (e_pr_file_window
-                ((FLWND *) window->b, 1, sw, window->colorset->er.fb, window->colorset->ez.fb,
-                 window->colorset->frft.fb));
+                ((FLWND *) window->b, 1, sw, window->colorset->er.fg_bg_color, window->colorset->ez.fg_bg_color,
+                 window->colorset->frft.fg_bg_color));
     if (num_lines_off_screen_top(window) < 0)
         window->s->c.y = 0;
 
@@ -507,7 +507,7 @@ e_schirm (we_window_t * window, int sw)
             e_pr_line (j, window);
     for (; j < line_num_on_screen_bottom(window); j++)
         e_blk ((num_cols_on_screen(window) - 1), window->a.x + 1,
-               j - num_lines_off_screen_top(window) + window->a.y + 1, window->colorset->et.fb);
+               j - num_lines_off_screen_top(window) + window->a.y + 1, window->colorset->et.fg_bg_color);
     return (j);
 }
 
@@ -788,7 +788,7 @@ we_view_t *
 e_ed_kst (we_window_t * f, we_view_t * view, int sw)
 {
     we_view_t *new_view = e_change_pic (f->a.x, f->a.y, f->e.x,
-                                        f->e.y, view, sw, f->colorset->er.fb);
+                                        f->e.y, view, sw, f->colorset->er.fg_bg_color);
     e_ed_rahmen (f, sw);
     return (new_view);
 }
@@ -1230,25 +1230,25 @@ e_pr_line (int y, we_window_t * window)
             i < b->buflines[y].len && j < col_num_on_screen_right(window); i++, j++)
     {
         if (y == s->da.y && i >= s->da.x && i < s->de.x)
-            frb = s->colorset->dy.fb;
+            frb = s->colorset->dy.fg_bg_color;
         else if (fsw)
-            frb = s->colorset->db.fb;
+            frb = s->colorset->db.fg_bg_color;
         /*	else if( (i == s->pt[0].x && y == s->pt[0].y) || (i == s->pt[1].x && y == s->pt[1].y)  */
         else if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
-            frb = s->colorset->ek.fb;
+            frb = s->colorset->ek.fg_bg_color;
 #else
     for (j = num_cols_off_screen_left(window);
             i < b->buflines[y].len && j < col_num_on_screen_right(window); i++, j++)
     {
         if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
-            frb = s->colorset->ek.fb;
+            frb = s->colorset->ek.fg_bg_color;
 #endif
         /*	if( (i == s->pt[0].x && y == s->pt[0].y) || (i == s->pt[1].x && y == s->pt[1].y)
                  || (i == s->pt[2].x && y == s->pt[2].y) || (i == s->pt[3].x && y == s->pt[3].y)
                  || (i == s->pt[4].x && y == s->pt[4].y) || (i == s->pt[5].x && y == s->pt[5].y)
                  || (i == s->pt[6].x && y == s->pt[6].y) || (i == s->pt[7].x && y == s->pt[7].y)
                  || (i == s->pt[8].x && y == s->pt[8].y) || (i == s->pt[9].x && y == s->pt[9].y))
-                    frb = s->colorset->ek.fb;
+                    frb = s->colorset->ek.fg_bg_color;
         */
         else if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                         (y == s->mark_begin.y
@@ -1256,9 +1256,9 @@ e_pr_line (int y, we_window_t * window)
                  || (y == s->mark_end.y && i < s->mark_end.x
                      && (y > s->mark_begin.y
                          || (y == s->mark_begin.y && i >= s->mark_begin.x))))
-            frb = s->colorset->ez.fb;
+            frb = s->colorset->ez.fg_bg_color;
         else
-            frb = s->colorset->et.fb;
+            frb = s->colorset->et.fg_bg_color;
 
         if (window->dtmd == DTMD_HELP)
         {
@@ -1266,11 +1266,11 @@ e_pr_line (int y, we_window_t * window)
                     *(b->buflines[y].s + i) == HHD || *(b->buflines[y].s + i) == HBB)
             {
                 if (*(b->buflines[y].s + i) == HHD)
-                    frb = s->colorset->hh.fb;
+                    frb = s->colorset->hh.fg_bg_color;
                 else if (*(b->buflines[y].s + i) == HBB)
-                    frb = s->colorset->hm.fb;
+                    frb = s->colorset->hm.fg_bg_color;
                 else
-                    frb = s->colorset->hb.fb;
+                    frb = s->colorset->hb.fg_bg_color;
 #ifdef NEWSTYLE
                 if (*(b->buflines[y].s + i) != HBB)
                     k = j;
@@ -1297,7 +1297,7 @@ e_pr_line (int y, we_window_t * window)
                 for (; j < col_num_on_screen_right(window); j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                                y - num_lines_off_screen_top(window) + window->a.y + 1, ' ',
-                               s->colorset->hh.fb);
+                               s->colorset->hh.fg_bg_color);
                 return;
             }
             else if (*(b->buflines[y].s + i) == HNF)
@@ -1306,7 +1306,7 @@ e_pr_line (int y, we_window_t * window)
                         j < col_num_on_screen_right(window); i++, j++)
                     e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                                y - num_lines_off_screen_top(window) + window->a.y + 1,
-                               *(b->buflines[y].s + i), s->colorset->hb.fb);
+                               *(b->buflines[y].s + i), s->colorset->hb.fg_bg_color);
 #ifdef NEWSTYLE
                 if (WpeIsXwin ())
                     e_make_xrect (window->a.x - num_cols_off_screen_left(window) + k + 1,
@@ -1405,29 +1405,29 @@ e_pr_line (int y, we_window_t * window)
             if (*(b->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, PWR,
-                           s->colorset->ez.fb);
+                           s->colorset->ez.fg_bg_color);
             else
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, PNL,
-                           s->colorset->ez.fb);
+                           s->colorset->ez.fg_bg_color);
         }
         else
         {
             if (*(b->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, PWR,
-                           s->colorset->et.fb);
+                           s->colorset->et.fg_bg_color);
             else
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, PNL,
-                           s->colorset->et.fb);
+                           s->colorset->et.fg_bg_color);
         }
         j++;
     }
 
     for (; j < col_num_on_screen_right(window); j++)
         e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
-                   y - num_lines_off_screen_top(window) + window->a.y + 1, ' ', s->colorset->et.fb);
+                   y - num_lines_off_screen_top(window) + window->a.y + 1, ' ', s->colorset->et.fg_bg_color);
 }
 
 /*   draw standard-box frame  */
@@ -1599,7 +1599,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
     fw->nf = fw->ia = fw->ja = 0;
     do
     {
-        ret = e_file_window (0, fw, f->colorset->er.fb, f->colorset->ez.fb);
+        ret = e_file_window (0, fw, f->colorset->er.fg_bg_color, f->colorset->ez.fg_bg_color);
 #if MOUSE
         if (ret < 0)
             ret = e_rahmen_mouse (f);
@@ -1703,29 +1703,29 @@ e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * f)
 
     if (!(*view) || (*view)->e.x != xe || (*view)->a.x != xa || (*view)->e.x < xe)
     {
-        *view = e_change_pic (xa, ya, xe, ye, *view, 1, control->colorset->nt.fb);
+        *view = e_change_pic (xa, ya, xe, ye, *view, 1, control->colorset->nt.fg_bg_color);
         for (i = xa + 1; i < xe; i++)
         {
-            e_pr_char (i, ye - 2, ' ', f->colorset->nt.fb);
-            e_pr_char (i, ye - 1, ' ', f->colorset->nt.fb);
+            e_pr_char (i, ye - 2, ' ', f->colorset->nt.fg_bg_color);
+            e_pr_char (i, ye - 1, ' ', f->colorset->nt.fg_bg_color);
         }
-        e_pr_str ((xe + xa - 6) / 2, ye - 2, "Ctrl C", control->colorset->nz.fb, -1, -1,
-                  control->colorset->ns.fb, control->colorset->nt.fb);
+        e_pr_str ((xe + xa - 6) / 2, ye - 2, "Ctrl C", control->colorset->nz.fg_bg_color, -1, -1,
+                  control->colorset->ns.fg_bg_color, control->colorset->nt.fg_bg_color);
     }
-    e_std_rahmen (xa, ya, xe, ye, header, 1, control->colorset->nr.fb, control->colorset->ne.fb);
+    e_std_rahmen (xa, ya, xe, ye, header, 1, control->colorset->nr.fg_bg_color, control->colorset->ne.fg_bg_color);
     for (i = xa + 1; i < xe; i++)
-        e_pr_char (i, ya + 1, ' ', control->colorset->nr.fb);
+        e_pr_char (i, ya + 1, ' ', control->colorset->nr.fg_bg_color);
     for (j = 0; j < num; j++)
     {
-        e_pr_char (xa + 1, ya + 2 + j, ' ', control->colorset->nt.fb);
-        e_pr_char (xa + 2, ya + 2 + j, ' ', control->colorset->nt.fb);
-        e_pr_str (xa + 3, ya + 2 + j, s[j], control->colorset->nt.fb, 0, 0, 0, 0);
+        e_pr_char (xa + 1, ya + 2 + j, ' ', control->colorset->nt.fg_bg_color);
+        e_pr_char (xa + 2, ya + 2 + j, ' ', control->colorset->nt.fg_bg_color);
+        e_pr_str (xa + 3, ya + 2 + j, s[j], control->colorset->nt.fg_bg_color, 0, 0, 0, 0);
         for (i = xa + strlen (s[j]) + 3; i < xe; i++)
-            e_pr_char (i, ya + 2 + j, ' ', control->colorset->nt.fb);
+            e_pr_char (i, ya + 2 + j, ' ', control->colorset->nt.fg_bg_color);
     }
     for (j += ya + 2; j < ye - 2; j++)
         for (i = xa + 1; i < xe; i++)
-            e_pr_char (i, j, ' ', control->colorset->nt.fb);
+            e_pr_char (i, j, ' ', control->colorset->nt.fg_bg_color);
     for (i = 0; i < anz; i++)
         free (s[i]);
     free (s);
@@ -1758,16 +1758,16 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
             max = n;
     xe = xa + max + 3;
     view =
-        e_std_kst (xa, ya, xe, ye, NULL, sw, f->colorset->nr.fb, f->colorset->nt.fb,
-                   f->colorset->ne.fb);
+        e_std_kst (xa, ya, xe, ye, NULL, sw, f->colorset->nr.fg_bg_color, f->colorset->nt.fg_bg_color,
+                   f->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
         return (-2);
     }
     for (i = 0; i < num; i++)
-        e_pr_str_wsd (xa + 2, ya + i + 1, opt[i].t, f->colorset->mt.fb, opt[i].x,
-                      1, f->colorset->ms.fb, xa + 1, xe - 1);
+        e_pr_str_wsd (xa + 2, ya + i + 1, opt[i].t, f->colorset->mt.fg_bg_color, opt[i].x,
+                      1, f->colorset->ms.fg_bg_color, xa + 1, xe - 1);
 #if  MOUSE
     while (e_mshit () != 0);
 #endif
@@ -1777,10 +1777,10 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
     {
         if (nold != n)
         {
-            e_pr_str_wsd (xa + 2, nold + ya + 1, opt[nold].t, f->colorset->mt.fb,
-                          opt[nold].x, 1, f->colorset->ms.fb, xa + 1, xe - 1);
-            e_pr_str_wsd (xa + 2, n + ya + 1, opt[n].t, f->colorset->mz.fb,
-                          opt[n].x, 1, f->colorset->mz.fb, xa + 1, xe - 1);
+            e_pr_str_wsd (xa + 2, nold + ya + 1, opt[nold].t, f->colorset->mt.fg_bg_color,
+                          opt[nold].x, 1, f->colorset->ms.fg_bg_color, xa + 1, xe - 1);
+            e_pr_str_wsd (xa + 2, n + ya + 1, opt[n].t, f->colorset->mz.fg_bg_color,
+                          opt[n].x, 1, f->colorset->mz.fg_bg_color, xa + 1, xe - 1);
             nold = n;
         }
 #if  MOUSE

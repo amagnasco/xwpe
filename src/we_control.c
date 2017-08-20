@@ -447,13 +447,13 @@ e_ini_desk (we_control_t * control)
         gblst = gblst_o;
         oblst = oblst_o;
     }
-    e_cls (control->colorset->df.fb, control->colorset->dc);
-    e_blk (MAXSCOL, 0, 0, control->colorset->mt.fb);
+    e_cls (control->colorset->df.fg_bg_color, control->colorset->dc);
+    e_blk (MAXSCOL, 0, 0, control->colorset->mt.fg_bg_color);
 
     /* put out the main menu */
     for (i = 0; i < MENOPT; ++i)
     {
-        e_pr_str_wsd (opt[i].x, 0, opt[i].t, control->colorset->mt.fb, 0, 1, control->colorset->ms.fb,
+        e_pr_str_wsd (opt[i].x, 0, opt[i].t, control->colorset->mt.fg_bg_color, 0, 1, control->colorset->ms.fg_bg_color,
                       (i == 0 ? 0 : opt[i].x - e_mn_men),
                       (i ==
                        MENOPT - 1) ? MAXSCOL - 1 : opt[i + 1].x - e_mn_men - 1);

@@ -328,8 +328,8 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
         b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
         b->dw->nf = b->cd->nr_files - 1;
         b->dw->ia = b->dw->ja = 0;
-        e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
-                          f->colorset->frft.fb);
+        e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color,
+                          f->colorset->frft.fg_bg_color);
     }
     else
     {
@@ -350,8 +350,8 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
         b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
         b->fw->ia = b->fw->nf = 0;
         b->fw->ja = b->fw->srcha;
-        e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
-                          f->colorset->frft.fb);
+        e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color,
+                          f->colorset->frft.fg_bg_color);
     }
     return (control->edt[i] < 10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
 }
@@ -458,7 +458,7 @@ FLWND *fw;
                         for (i = 0; i < MLEN / 2; i++)
                         {
                             file[2 * i] = *(fw->df->name[fw->nf] + c + i);
-                            file[2 * i + 1] = fw->f->colorset->fz.fb;
+                            file[2 * i + 1] = fw->f->colorset->fz.fg_bg_color;
                         }
                         e_gt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, bgrd);
                         while (e_mshit () != 0)

@@ -31,11 +31,11 @@
 extern struct dirfile *e_p_get_var (char *string);
 extern char *e_p_msg[];
 
-#define FRB1 s->colorset->cr.fb	/*  key words etc  */
-#define FRB2 s->colorset->ck.fb	/*  constants           */
-#define FRB3 s->colorset->cp.fb	/*  pre-processor A.     */
-#define FRB4 s->colorset->cc.fb	/*  comments           */
-#define FRB5 s->colorset->ct.fb	/*  text                 */
+#define FRB1 s->colorset->cr.fg_bg_color	/*  key words etc  */
+#define FRB2 s->colorset->ck.fg_bg_color	/*  constants           */
+#define FRB3 s->colorset->cp.fg_bg_color	/*  pre-processor A.     */
+#define FRB4 s->colorset->cc.fg_bg_color	/*  comments           */
+#define FRB5 s->colorset->ct.fg_bg_color	/*  text                 */
 
 #define iscase(s) ( (!strncmp(s, "case", 4) && !isalnum1(*(s+4)))	      \
 		 || (!strncmp(s, "default", 7) && !isalnum1(*(s+7))) )
@@ -663,11 +663,11 @@ e_pr_c_line (int y, we_window_t * f)
         e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->da.y && i >= s->da.x && i < s->de.x)
-            frb = s->colorset->dy.fb;
+            frb = s->colorset->dy.fg_bg_color;
         else if (fsw)
-            frb = s->colorset->db.fb;
+            frb = s->colorset->db.fg_bg_color;
         else if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
-            frb = s->colorset->ek.fb;
+            frb = s->colorset->ek.fg_bg_color;
 #else
     for (j = s->c.x;
             i < b->buflines[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
@@ -675,7 +675,7 @@ e_pr_c_line (int y, we_window_t * f)
         e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, f->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
-            frb = s->colorset->ek.fb;
+            frb = s->colorset->ek.fg_bg_color;
 #endif
         else if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                         (y == s->mark_begin.y
@@ -683,7 +683,7 @@ e_pr_c_line (int y, we_window_t * f)
                  || (y == s->mark_end.y && i < s->mark_end.x
                      && (y > s->mark_begin.y
                          || (y == s->mark_begin.y && i >= s->mark_begin.x))))
-            frb = s->colorset->ez.fb;
+            frb = s->colorset->ez.fg_bg_color;
         if (*(b->buflines[y].s + i) == WPE_TAB)
             for (k = f->ed->tabn - j % f->ed->tabn;
                     k > 1 && j < num_cols_on_screen(f) + s->c.x - 2; k--, j++)
@@ -752,10 +752,10 @@ e_pr_c_line (int y, we_window_t * f)
         {
             if (*(b->buflines[y].s + i) == WPE_WR)
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
-                           PWR, s->colorset->ez.fb);
+                           PWR, s->colorset->ez.fg_bg_color);
             else
                 e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
-                           PNL, s->colorset->ez.fb);
+                           PNL, s->colorset->ez.fg_bg_color);
         }
         else
         {

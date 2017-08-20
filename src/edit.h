@@ -103,7 +103,7 @@ typedef struct we_color_struct
     /** The background color */
     int b;
     /** The text color */
-    int fb;
+    int fg_bg_color;
 } we_color_t;
 
 /**

@@ -1008,7 +1008,7 @@ e_x_repaint_desk (we_window_t * f)
     e_ini_size ();
     if (control->mxedt < 1)
     {
-        e_cls (f->colorset->df.fb, f->colorset->dc);
+        e_cls (f->colorset->df.fg_bg_color, f->colorset->dc);
         e_ini_desk (f->ed);
         if (nw_pic)
         {

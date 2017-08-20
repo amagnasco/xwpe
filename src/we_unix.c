@@ -805,7 +805,7 @@ e_file_info (char *filen, char *str, int *num, int sw)
 void
 ini_repaint (we_control_t * control)
 {
-    e_cls (control->colorset->df.fb, control->colorset->dc);
+    e_cls (control->colorset->df.fg_bg_color, control->colorset->dc);
     e_ini_desk (control);
 }
 
@@ -865,7 +865,7 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
         sw += 16;
     else if (md == 3)
         sw += 32;
-    fsv = fb = frb[sw].fb;
+    fsv = fb = frb[sw].fg_bg_color;
     if (fb == 0)
         y = 0;
     else
@@ -895,7 +895,7 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
     while (c != WPE_ESC && c != WPE_CR && c > -2);
     if (c == WPE_ESC || c < -1)
         frb[sw] = e_n_clr (fsv);
-    return (frb[sw].fb);
+    return (frb[sw].fg_bg_color);
 }
 
 /*   draw colors box  */
@@ -909,7 +909,7 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
     else
         for (rfrb = x, y = 1; rfrb > 1; y++)
             rfrb /= 2;
-    rfrb = sw == 0 ? f->colorset->nt.fb : f->colorset->fs.fb;
+    rfrb = sw == 0 ? f->colorset->nt.fg_bg_color : f->colorset->fs.fg_bg_color;
     e_std_rahmen (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya, "Colors", rfrb, 0, 1,
                                             f->colorset->ms.f+16*(rfrb/16), 0);

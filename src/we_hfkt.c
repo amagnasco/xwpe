@@ -63,7 +63,7 @@ e_s_x_clr (int fg_color, int bg_color)
 
     color.f = fg_color;
     color.b = bg_color;
-    color.fb = 16 * bg_color + fg_color;
+    color.fg_bg_color = 16 * bg_color + fg_color;
     return (color);
 }
 
@@ -72,7 +72,7 @@ e_n_x_clr (int fg_bg_color)
 {
     we_color_t color;
 
-    color.fb = fg_bg_color;
+    color.fg_bg_color = fg_bg_color;
     color.b = fg_bg_color / 16;
     color.f = fg_bg_color % 16;
     return (color);
@@ -85,7 +85,7 @@ e_s_t_clr (int fg_color, int bg_color)
 
     color.f = fg_color;
     color.b = bg_color;
-    color.fb = fg_color;
+    color.fg_bg_color = fg_color;
     return (color);
 }
 
@@ -94,7 +94,7 @@ e_n_t_clr (int fg_bg_color)
 {
     we_color_t color;
 
-    color.fb = fg_bg_color;
+    color.fg_bg_color = fg_bg_color;
     color.b = fg_bg_color;
     color.f = fg_bg_color;
     return (color);
@@ -118,10 +118,10 @@ e_pr_uul (we_colorset_t * fb)
     extern int nblst;
     int i;
 
-    e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fb);
+    e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fg_bg_color);
     for (i = 0; i < nblst && blst[i].x < MAXSCOL; ++i)
-        e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fb,
-                       blst[i].s, blst[i].n, fb->ms.fb, blst[i].x,
+        e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fg_bg_color,
+                       blst[i].s, blst[i].n, fb->ms.fg_bg_color, blst[i].x,
                        i == nblst - 1 ? MAXSCOL - 1 : blst[i + 1].x - 1);
     return (i);
 }

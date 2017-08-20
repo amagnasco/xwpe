@@ -453,8 +453,8 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
             fw->nf = fw->df->nr_files - 1;
         len = strlen (*(fw->df->name + fw->nf));
     }
-    e_mouse_bar (fw->xe, fw->ya, fw->ye - fw->ya, 0, fw->f->colorset->em.fb);
-    e_mouse_bar (fw->xa, fw->ye, fw->xe - fw->xa, 1, fw->f->colorset->em.fb);
+    e_mouse_bar (fw->xe, fw->ya, fw->ye - fw->ya, 0, fw->f->colorset->em.fg_bg_color);
+    e_mouse_bar (fw->xa, fw->ye, fw->xe - fw->xa, 1, fw->f->colorset->em.fg_bg_color);
     while (1)
     {
         e_pr_file_window (fw, 1, 1, ft, fz, 0);
@@ -608,11 +608,11 @@ e_pr_file_window (FLWND * fw, int c, int sw, int ft, int fz, int fs)
             if (sw)
             {
                 fw->nyfo = e_lst_zeichen (fw->xe, fw->ya, fw->ye - fw->ya, 0,
-                                          fw->f->colorset->em.fb, fw->df->nr_files,
+                                          fw->f->colorset->em.fg_bg_color, fw->df->nr_files,
                                           fw->nyfo, fw->nf);
                 fw->nxfo =
                     e_lst_zeichen (fw->xa, fw->ye, fw->xe - fw->xa, 1,
-                                   fw->f->colorset->em.fb, len, fw->nxfo, fw->ja);
+                                   fw->f->colorset->em.fg_bg_color, len, fw->nxfo, fw->ja);
             }
         }
     }

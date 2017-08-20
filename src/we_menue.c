@@ -520,16 +520,16 @@ WpeHandleMainmenu (int n, we_window_t * f)
         if (nold != n)
         {
             /* paint unselected the option */
-            e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, f->colorset->mt.fb, 0, 1,
-                          f->colorset->ms.fb,
+            e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, f->colorset->mt.fg_bg_color, 0, 1,
+                          f->colorset->ms.fg_bg_color,
                           (nold == 0 ? 0 : opt[nold].x - e_mn_men),
                           (nold ==
                            MENOPT - 1) ? MAXSCOL - 1 : opt[nold + 1].x -
                           e_mn_men - 1);
 
             /* paint selected the option */
-            e_pr_str_wsd (opt[n].x, 0, opt[n].t, f->colorset->mz.fb, 0, 1,
-                          f->colorset->mz.fb, (n == 0 ? 0 : opt[n].x - e_mn_men),
+            e_pr_str_wsd (opt[n].x, 0, opt[n].t, f->colorset->mz.fg_bg_color, 0, 1,
+                          f->colorset->mz.fg_bg_color, (n == 0 ? 0 : opt[n].x - e_mn_men),
                           (n ==
                            MENOPT - 1) ? MAXSCOL - 1 : opt[n + 1].x - e_mn_men -
                           1);
@@ -606,8 +606,8 @@ WpeHandleMainmenu (int n, we_window_t * f)
 
     /* paint unselected the last selected main menu option */
     f = control->f[control->mxedt];
-    e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, f->colorset->mt.fb, 0, 1,
-                  f->colorset->ms.fb, (nold == 0 ? 0 : opt[nold].x - e_mn_men),
+    e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, f->colorset->mt.fg_bg_color, 0, 1,
+                  f->colorset->ms.fg_bg_color, (nold == 0 ? 0 : opt[nold].x - e_mn_men),
                   (nold ==
                    MENOPT - 1) ? MAXSCOL - 1 : opt[nold + 1].x - e_mn_men - 1);
 
@@ -637,10 +637,10 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
     /* save whatever will be behind the submenu */
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
-        view = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fb, 1);
+        view = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fg_bg_color, 1);
     else
 #endif
-        view = e_open_view (xa, ya, xe, ye, f->colorset->mt.fb, 1);
+        view = e_open_view (xa, ya, xe, ye, f->colorset->mt.fg_bg_color, 1);
 
     if (view == NULL)
     {
@@ -649,12 +649,12 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
     }
 
     /* draw the frame and the background of the submenu */
-    e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, f->colorset->mr.fb, 0);
+    e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, f->colorset->mr.fg_bg_color, 0);
 
     /* draw the submenu items (colors are default, none selected) */
     for (i = ya + 1; i < ye; i++)
-        e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, f->colorset->mt.fb,
-                       fopt[i - ya - 1].x, 1, f->colorset->ms.fb, xa + 2, xe - 2);
+        e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, f->colorset->mt.fg_bg_color,
+                       fopt[i - ya - 1].x, 1, f->colorset->ms.fg_bg_color, xa + 2, xe - 2);
 
 #if MOUSE
     /* show the actual changes */
@@ -673,11 +673,11 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
                 /* check whether nold is in the range of the available items and unselect it */
                 if (nold < ye - ya - 1 && nold >= 0)
                     e_pr_str_scan (xa + 3, nold + ya + 1, fopt[nold].t,
-                                   f->colorset->mt.fb, fopt[nold].x, 1, f->colorset->ms.fb,
+                                   f->colorset->mt.fg_bg_color, fopt[nold].x, 1, f->colorset->ms.fg_bg_color,
                                    xa + 2, xe - 2);
                 /* draw the newly selected item */
-                e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->colorset->mz.fb,
-                               fopt[n].x, 1, f->colorset->mz.fb, xa + 2, xe - 2);
+                e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->colorset->mz.fg_bg_color,
+                               fopt[n].x, 1, f->colorset->mz.fg_bg_color, xa + 2, xe - 2);
                 /* save the selection */
                 nold = n;
                 e_refresh ();
@@ -712,11 +712,11 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
         {
             /* check whether nold is in the range of the available items and unselect it */
             if (nold < ye - ya - 1 && nold >= 0)
-                e_pr_str_scan (xa + 3, nold + ya + 1, fopt[nold].t, f->colorset->mt.fb,
-                               fopt[nold].x, 1, f->colorset->ms.fb, xa + 2, xe - 2);
+                e_pr_str_scan (xa + 3, nold + ya + 1, fopt[nold].t, f->colorset->mt.fg_bg_color,
+                               fopt[nold].x, 1, f->colorset->ms.fg_bg_color, xa + 2, xe - 2);
             /* draw the newly selected item */
-            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->colorset->mz.fb,
-                           fopt[n].x, 1, f->colorset->mz.fb, xa + 2, xe - 2);
+            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->colorset->mz.fg_bg_color,
+                           fopt[n].x, 1, f->colorset->mz.fg_bg_color, xa + 2, xe - 2);
             /* save the selection */
             nold = n;
         }
@@ -786,20 +786,20 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
             if (c != WPE_ESC && e_tst_dfkt (f, c) == 0)
                 return (WPE_ESC);
 #ifdef NEWSTYLE
-            view = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fb, 1);
+            view = e_open_view (xa + 1, ya, xe - 1, ye, f->colorset->mt.fg_bg_color, 1);
 #else
-            view = e_open_view (xa, ya, xe, ye, f->colorset->mt.fb, 1);
+            view = e_open_view (xa, ya, xe, ye, f->colorset->mt.fg_bg_color, 1);
 #endif
             /* draw the frame for the submenu */
-            e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, f->colorset->mr.fb, 0);
+            e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, f->colorset->mr.fg_bg_color, 0);
             /* draw every item in the submenu, unselected */
             for (i = ya + 1; i < ye; i++)
-                e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, f->colorset->mt.fb,
-                               fopt[i - ya - 1].x, 1, f->colorset->ms.fb, xa + 2,
+                e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, f->colorset->mt.fg_bg_color,
+                               fopt[i - ya - 1].x, 1, f->colorset->ms.fg_bg_color, xa + 2,
                                xe - 2);
             /* draw the selected item */
-            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->colorset->mz.fb,
-                           fopt[n].x, 1, f->colorset->mz.fb, xa + 2, xe - 2);
+            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->colorset->mz.fg_bg_color,
+                           fopt[n].x, 1, f->colorset->mz.fg_bg_color, xa + 2, xe - 2);
         }
     }
     e_close_view (view, 1);

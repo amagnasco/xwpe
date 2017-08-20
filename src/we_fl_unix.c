@@ -317,7 +317,7 @@ WpeDrawFileManager (we_window_t * f)
 
     for (j = f->a.y + 1; j < f->e.y; j++)
         for (i = f->a.x + 1; i < f->e.x; i++)
-            e_pr_char (i, j, ' ', f->colorset->nt.fb);
+            e_pr_char (i, j, ' ', f->colorset->nt.fg_bg_color);
 
     if (num_lines_on_screen(f) <= 17)
         by = -1;
@@ -326,58 +326,58 @@ WpeDrawFileManager (we_window_t * f)
 
     if (num_lines_on_screen(f) > 17)
     {
-        e_pr_str ((f->a.x + 4), f->e.y - by, "Cancel", f->colorset->nz.fb, -1, -1,
-                  f->colorset->ns.fb, f->colorset->nt.fb);
-        e_pr_str ((f->a.x + 14), f->e.y - by, "Change Dir", f->colorset->nz.fb, 0, -1,
-                  f->colorset->ns.fb, f->colorset->nt.fb);
+        e_pr_str ((f->a.x + 4), f->e.y - by, "Cancel", f->colorset->nz.fg_bg_color, -1, -1,
+                  f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
+        e_pr_str ((f->a.x + 14), f->e.y - by, "Change Dir", f->colorset->nz.fg_bg_color, 0, -1,
+                  f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         if (b->sw == 1 && num_cols_on_screen(f) >= 34)
-            e_pr_str ((f->a.x + 28), f->e.y - by, "Read", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 28), f->e.y - by, "Read", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         else if (b->sw == 2 && num_cols_on_screen(f) >= 35)
-            e_pr_str ((f->a.x + 28), f->e.y - by, "Write", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 28), f->e.y - by, "Write", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         else if (b->sw == 4)
         {
             if (num_cols_on_screen(f) >= 34)
-                e_pr_str ((f->a.x + 28), f->e.y - by, "Save", f->colorset->nz.fb, 0, -1,
-                          f->colorset->ns.fb, f->colorset->nt.fb);
+                e_pr_str ((f->a.x + 28), f->e.y - by, "Save", f->colorset->nz.fg_bg_color, 0, -1,
+                          f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         }
         else if (b->sw == 3 && num_cols_on_screen(f) >= 37)
-            e_pr_str ((f->a.x + 28), f->e.y - by, "Execute", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 28), f->e.y - by, "Execute", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         else if (b->sw == 5 && num_cols_on_screen(f) >= 33)
-            e_pr_str ((f->a.x + 28), f->e.y - by, "Add", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 28), f->e.y - by, "Add", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         else if (b->sw == 0)
         {
             if (num_cols_on_screen(f) >= 35)
-                e_pr_str ((f->a.x + 28), f->e.y - by, "MKdir", f->colorset->nz.fb, 1,
-                          -1, f->colorset->ns.fb, f->colorset->nt.fb);
+                e_pr_str ((f->a.x + 28), f->e.y - by, "MKdir", f->colorset->nz.fg_bg_color, 1,
+                          -1, f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
             if (num_cols_on_screen(f) >= 49)
-                e_pr_str ((f->a.x + 37), f->e.y - by, "Attributes", f->colorset->nz.fb,
-                          0, -1, f->colorset->ns.fb, f->colorset->nt.fb);
+                e_pr_str ((f->a.x + 37), f->e.y - by, "Attributes", f->colorset->nz.fg_bg_color,
+                          0, -1, f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         }
     }
     if (b->sw == 0 && num_lines_on_screen(f) > 19)
     {
-        e_pr_str ((f->a.x + 4), f->e.y - 2, "Move", f->colorset->nz.fb, 0, -1,
-                  f->colorset->ns.fb, f->colorset->nt.fb);
+        e_pr_str ((f->a.x + 4), f->e.y - 2, "Move", f->colorset->nz.fg_bg_color, 0, -1,
+                  f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
 
         if (num_cols_on_screen(f) >= 21)
-            e_pr_str ((f->a.x + 13), f->e.y - 2, "Remove", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 13), f->e.y - 2, "Remove", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
 
         if (num_cols_on_screen(f) >= 30)
-            e_pr_str ((f->a.x + 24), f->e.y - 2, "Link", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 24), f->e.y - 2, "Link", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
 
         if (num_cols_on_screen(f) >= 39)
-            e_pr_str ((f->a.x + 33), f->e.y - 2, "COpy", f->colorset->nz.fb, 1, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 33), f->e.y - 2, "COpy", f->colorset->nz.fg_bg_color, 1, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
 
         if (num_cols_on_screen(f) >= 48)
-            e_pr_str ((f->a.x + 42), f->e.y - 2, "Edit", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->a.x + 42), f->e.y - 2, "Edit", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
 
     }
     if (num_cols_on_screen(f) < 45)
@@ -391,21 +391,21 @@ WpeDrawFileManager (we_window_t * f)
     b->xda = 2 + bx1;
     b->xfa = 4 + bx1 + bx2 + b->xdd;
 
-    e_pr_str ((f->a.x + b->xfa), f->a.y + 2, "Name:", f->colorset->nt.fb, 0, 1,
-              f->colorset->nsnt.fb, f->colorset->nt.fb);
-    /*    e_schr_nchar(b->rdfile, f->a.x+b->xfa, f->a.y+3, 0, b->xfd+1, f->colorset->fr.fb);   */
+    e_pr_str ((f->a.x + b->xfa), f->a.y + 2, "Name:", f->colorset->nt.fg_bg_color, 0, 1,
+              f->colorset->nsnt.fg_bg_color, f->colorset->nt.fg_bg_color);
+    /*    e_schr_nchar(b->rdfile, f->a.x+b->xfa, f->a.y+3, 0, b->xfd+1, f->colorset->fr.fg_bg_color);   */
     e_schr_nchar_wsv (b->rdfile, f->a.x + b->xfa, f->a.y + 3, 0, b->xfd + 1,
-                      f->colorset->fr.fb, f->colorset->fz.fb);
-    e_pr_str ((f->a.x + b->xfa), f->a.y + 5, "Files:", f->colorset->nt.fb, 0, 1,
-              f->colorset->nsnt.fb, f->colorset->nt.fb);
+                      f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color);
+    e_pr_str ((f->a.x + b->xfa), f->a.y + 5, "Files:", f->colorset->nt.fg_bg_color, 0, 1,
+              f->colorset->nsnt.fg_bg_color, f->colorset->nt.fg_bg_color);
 
-    e_pr_str ((f->a.x + b->xda), f->a.y + 2, "Directory:", f->colorset->nt.fb, 0, 1,
-              f->colorset->nsnt.fb, f->colorset->nt.fb);
-    /*    e_schr_nchar(f->dirct, f->a.x+b->xda, f->a.y+3, 0, b->xdd+1, f->colorset->fr.fb);   */
+    e_pr_str ((f->a.x + b->xda), f->a.y + 2, "Directory:", f->colorset->nt.fg_bg_color, 0, 1,
+              f->colorset->nsnt.fg_bg_color, f->colorset->nt.fg_bg_color);
+    /*    e_schr_nchar(f->dirct, f->a.x+b->xda, f->a.y+3, 0, b->xdd+1, f->colorset->fr.fg_bg_color);   */
     e_schr_nchar_wsv (f->dirct, f->a.x + b->xda, f->a.y + 3, 0, b->xdd + 1,
-                      f->colorset->fr.fb, f->colorset->fz.fb);
-    e_pr_str ((f->a.x + b->xda), f->a.y + 5, "DirTree:", f->colorset->nt.fb, 3, 1,
-              f->colorset->nsnt.fb, f->colorset->nt.fb);
+                      f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color);
+    e_pr_str ((f->a.x + b->xda), f->a.y + 5, "DirTree:", f->colorset->nt.fg_bg_color, 3, 1,
+              f->colorset->nsnt.fg_bg_color, f->colorset->nt.fg_bg_color);
 
     b->fw->mxa = f->a.x;
     b->fw->mxe = f->e.x;
@@ -426,19 +426,19 @@ WpeDrawFileManager (we_window_t * f)
 
     /* slider bars for file list */
     e_mouse_bar (b->fw->xe, b->fw->ya, b->fw->ye - b->fw->ya, 0,
-                 b->fw->f->colorset->em.fb);
+                 b->fw->f->colorset->em.fg_bg_color);
     e_mouse_bar (b->fw->xa, b->fw->ye, b->fw->xe - b->fw->xa, 1,
-                 b->fw->f->colorset->em.fb);
+                 b->fw->f->colorset->em.fg_bg_color);
     /* file list window */
-    e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb, f->colorset->frft.fb);
+    e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color, f->colorset->frft.fg_bg_color);
 
     /* slide bars for directory window */
     e_mouse_bar (b->dw->xe, b->dw->ya, b->dw->ye - b->dw->ya, 0,
-                 b->dw->f->colorset->em.fb);
+                 b->dw->f->colorset->em.fg_bg_color);
     e_mouse_bar (b->dw->xa, b->dw->ye, b->dw->xe - b->dw->xa, 1,
-                 b->dw->f->colorset->em.fb);
+                 b->dw->f->colorset->em.fg_bg_color);
     /* directory window */
-    e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb, f->colorset->frft.fb);
+    e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color, f->colorset->frft.fg_bg_color);
     return (0);
 }
 
@@ -586,10 +586,10 @@ WpeHandleFileManager (we_control_t * control)
     while (c != WPE_ESC)
     {
         /* draw out dir tree and file list windows */
-        e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
-                          f->colorset->frft.fb);
-        e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
-                          f->colorset->frft.fb);
+        e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color,
+                          f->colorset->frft.fg_bg_color);
+        e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color,
+                          f->colorset->frft.fg_bg_color);
 
         switch (c)
         {
@@ -601,7 +601,7 @@ WpeHandleFileManager (we_control_t * control)
                result file copied into b->rdfile, max 79 char + '\0' */
             c =
                 e_schr_lst_wsv (b->rdfile, f->a.x + b->xfa, f->a.y + 3,
-                                b->xfd + 1, 79, f->colorset->fr.fb, f->colorset->fz.fb,
+                                b->xfd + 1, 79, f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color,
                                 &f->ed->fdf, f);
 
             /* determine the entered filename, going backward */
@@ -634,7 +634,7 @@ WpeHandleFileManager (we_control_t * control)
             {
                 /* window changing, make the entry unhighlighted */
                 e_schr_nchar_wsv (b->rdfile, f->a.x + b->xfa, f->a.y + 3, 0,
-                                  b->xfd + 1, f->colorset->fr.fb, f->colorset->fz.fb);
+                                  b->xfd + 1, f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color);
                 break;
             }
             if (c == CLE || c == CCLE)	/* goto dir name window */
@@ -687,7 +687,7 @@ WpeHandleFileManager (we_control_t * control)
             /* entry window is left, make the entry unhighlighted */
             if (c != AltN)
                 e_schr_nchar_wsv (b->rdfile, f->a.x + b->xfa, f->a.y + 3, 0,
-                                  b->xfd + 1, f->colorset->fr.fb, f->colorset->fz.fb);
+                                  b->xfd + 1, f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color);
             fk_cursor (0);
             break;
 
@@ -710,7 +710,7 @@ WpeHandleFileManager (we_control_t * control)
 
             c =
                 e_schr_lst_wsv (dirtmp, f->a.x + b->xda, f->a.y + 3, b->xdd + 1,
-                                WPE_PATHMAX, f->colorset->fr.fb, f->colorset->fz.fb,
+                                WPE_PATHMAX, f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color,
                                 &f->ed->ddf, f);
             free (f->dirct);
             f->dirct = WpeStrdup (dirtmp);
@@ -731,14 +731,14 @@ WpeHandleFileManager (we_control_t * control)
             /* window left, make the entry unhighlighted */
             if (c != AltD)
                 e_schr_nchar_wsv (f->dirct, f->a.x + b->xda, f->a.y + 3, 0,
-                                  b->xdd + 1, f->colorset->fr.fb, f->colorset->fz.fb);
+                                  b->xdd + 1, f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color);
             fk_cursor (0);
             break;
 
         /* directory tree list window activation */
         case AltT:
             cold = c;
-            c = e_file_window (1, b->dw, f->colorset->ft.fb, f->colorset->fz.fb);
+            c = e_file_window (1, b->dw, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color);
 #if  MOUSE
             if (c == MBKEY)	/* handle mouse actions in the window */
                 c = WpeMngMouseInFileManager (f);
@@ -761,7 +761,7 @@ WpeHandleFileManager (we_control_t * control)
                     free (f->dirct);
                     f->dirct = dirtmp;
                     e_schr_nchar_wsv (f->dirct, f->a.x + b->xda, f->a.y + 3, 0,
-                                      b->xdd + 1, f->colorset->fr.fb, f->colorset->fz.fb);
+                                      b->xdd + 1, f->colorset->fr.fg_bg_color, f->colorset->fz.fg_bg_color);
                     f->ed->ddf = e_add_df (f->dirct, f->ed->ddf);
                     c = AltC;
                 }
@@ -782,7 +782,7 @@ WpeHandleFileManager (we_control_t * control)
                 break;
             }
             cold = c;
-            c = e_file_window (1, b->fw, f->colorset->ft.fb, f->colorset->fz.fb);
+            c = e_file_window (1, b->fw, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color);
 #if  MOUSE
             if (c == MBKEY)
                 c = WpeMngMouseInFileManager (f);
@@ -937,8 +937,8 @@ WpeHandleFileManager (we_control_t * control)
                 c =
                     e_schreib_leiste (ftmp, b->fw->xa,
                                       b->fw->ya + b->fw->nf - b->fw->ia,
-                                      b->fw->xe - b->fw->xa, 128, f->colorset->fr.fb,
-                                      f->colorset->fz.fb);
+                                      b->fw->xe - b->fw->xa, 128, f->colorset->fr.fg_bg_color,
+                                      f->colorset->fz.fg_bg_color);
                 if (c == WPE_CR)
                 {
                     if (j == AltM)
@@ -990,14 +990,14 @@ WpeHandleFileManager (we_control_t * control)
                 if (!WpeIsXwin ())
                     i += 3;
                 b->dw->ja = i;
-                e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
-                                  f->colorset->frft.fb);
+                e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color,
+                                  f->colorset->frft.fg_bg_color);
                 /* make the name editable */
                 c =
                     e_schreib_leiste (ftmp, b->dw->xa,
                                       b->dw->ya + b->dw->nf - b->dw->ia,
-                                      b->dw->xe - b->dw->xa, 128, f->colorset->fr.fb,
-                                      f->colorset->fz.fb);
+                                      b->dw->xe - b->dw->xa, 128, f->colorset->fr.fg_bg_color,
+                                      f->colorset->fz.fg_bg_color);
                 if (c == WPE_CR)
                 {
                     if (j == AltM)
@@ -3914,29 +3914,29 @@ e_data_schirm (we_window_t * f)
 
     for (j = f->a.y + 1; j < f->e.y; j++)
         for (i = f->a.x + 1; i < f->e.x; i++)
-            e_pr_char (i, j, ' ', f->colorset->nt.fb);
+            e_pr_char (i, j, ' ', f->colorset->nt.fg_bg_color);
 
     if (num_cols_on_screen(f) > 25)
     {
         if (f->ins < 4 || f->ins == 7)
-            e_pr_str ((f->e.x - 9), f->e.y - 4, "Show", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->e.x - 9), f->e.y - 4, "Show", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
         else if (f->ins > 3)
         {
-            e_pr_str ((f->e.x - 9), f->e.y - 8, "Add", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
-            e_pr_str ((f->e.x - 9), f->e.y - 6, "Edit", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
-            e_pr_str ((f->e.x - 9), f->e.y - 4, "Delete", f->colorset->nz.fb, 0, -1,
-                      f->colorset->ns.fb, f->colorset->nt.fb);
+            e_pr_str ((f->e.x - 9), f->e.y - 8, "Add", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
+            e_pr_str ((f->e.x - 9), f->e.y - 6, "Edit", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
+            e_pr_str ((f->e.x - 9), f->e.y - 4, "Delete", f->colorset->nz.fg_bg_color, 0, -1,
+                      f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
             if (f->ins == 4 && f->a.y < f->e.y - 10)
             {
-                e_pr_str ((f->e.x - 9), f->e.y - 10, "Options", f->colorset->nz.fb,
-                          0, -1, f->colorset->ns.fb, f->colorset->nt.fb);
+                e_pr_str ((f->e.x - 9), f->e.y - 10, "Options", f->colorset->nz.fg_bg_color,
+                          0, -1, f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
             }
         }
-        e_pr_str ((f->e.x - 9), f->e.y - 2, "Cancel", f->colorset->nz.fb, -1, -1,
-                  f->colorset->ns.fb, f->colorset->nt.fb);
+        e_pr_str ((f->e.x - 9), f->e.y - 2, "Cancel", f->colorset->nz.fg_bg_color, -1, -1,
+                  f->colorset->ns.fg_bg_color, f->colorset->nt.fg_bg_color);
     }
 
     if (num_cols_on_screen(f) > 25)
@@ -3961,14 +3961,14 @@ e_data_schirm (we_window_t * f)
         fw->df = e_p_df[0];
 #endif
     if (f->ins == 1)
-        e_pr_str (fw->xa, f->a.y + 2, "Functions:", f->colorset->nt.fb, 0, 1,
-                  f->colorset->nsnt.fb, f->colorset->nt.fb);
+        e_pr_str (fw->xa, f->a.y + 2, "Functions:", f->colorset->nt.fg_bg_color, 0, 1,
+                  f->colorset->nsnt.fg_bg_color, f->colorset->nt.fg_bg_color);
     else if (f->ins == 3)
-        e_pr_str (fw->xa, f->a.y + 2, "Directories:", f->colorset->nt.fb, 0, 1,
-                  f->colorset->nsnt.fb, f->colorset->nt.fb);
-    e_mouse_bar (fw->xe, fw->ya, fw->ye - fw->ya, 0, fw->f->colorset->em.fb);
-    e_mouse_bar (fw->xa, fw->ye, fw->xe - fw->xa, 1, fw->f->colorset->em.fb);
-    e_pr_file_window (fw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb, f->colorset->frft.fb);
+        e_pr_str (fw->xa, f->a.y + 2, "Directories:", f->colorset->nt.fg_bg_color, 0, 1,
+                  f->colorset->nsnt.fg_bg_color, f->colorset->nt.fg_bg_color);
+    e_mouse_bar (fw->xe, fw->ya, fw->ye - fw->ya, 0, fw->f->colorset->em.fg_bg_color);
+    e_mouse_bar (fw->xa, fw->ye, fw->xe - fw->xa, 1, fw->f->colorset->em.fg_bg_color);
+    e_pr_file_window (fw, 0, 1, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color, f->colorset->frft.fg_bg_color);
     return (0);
 }
 
@@ -3994,7 +3994,7 @@ e_data_eingabe (we_control_t * control)
             fw->df = e_p_df[0];
 #endif
         if (c == AltF)
-            c = e_file_window (0, fw, f->colorset->ft.fb, f->colorset->fz.fb);
+            c = e_file_window (0, fw, f->colorset->ft.fg_bg_color, f->colorset->fz.fg_bg_color);
 #if  MOUSE
         if (c == MBKEY)
             c = e_data_ein_mouse (f);
