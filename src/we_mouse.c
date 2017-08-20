@@ -827,9 +827,9 @@ e_edt_mouse (int c, we_window_t * f)
             if (c < -1)
                 ret = e_ccp_mouse (c, f);
             else if (f->dtmd == DTMD_HELP && f->ins == 8 &&
-                     f->b->b.y ==
+                     f->b->cursor.y ==
                      e_mouse.y - f->a.y + num_lines_off_screen_top(f) - 1
-                     && ((i = f->b->b.x) == e_mouse_cursor (f->b, f->s, f)))
+                     && ((i = f->b->cursor.x) == e_mouse_cursor (f->b, f->s, f)))
                 ret = WPE_CR;
             else
 #ifdef PROG
@@ -859,8 +859,8 @@ e_edt_mouse (int c, we_window_t * f)
             /*changed the while()... to a do...while();  :Mark L */
             do
             {
-                f->b->b.y = f->b->b.y > 0 ? f->b->b.y - 1 : 0;
-                f->b->b.x = e_chr_sp (f->b->clsv, f->b, f);
+                f->b->cursor.y = f->b->cursor.y > 0 ? f->b->cursor.y - 1 : 0;
+                f->b->cursor.x = e_chr_sp (f->b->clsv, f->b, f);
                 e_cursor (f, 1);
                 e_refresh ();
             }
@@ -871,9 +871,9 @@ e_edt_mouse (int c, we_window_t * f)
             /*changed the while()... to a do...while();  :Mark L */
             do
             {
-                f->b->b.y = f->b->b.y < f->b->mxlines - 1 ?
-                            f->b->b.y + 1 : f->b->mxlines - 1;
-                f->b->b.x = e_chr_sp (f->b->clsv, f->b, f);
+                f->b->cursor.y = f->b->cursor.y < f->b->mxlines - 1 ?
+                            f->b->cursor.y + 1 : f->b->mxlines - 1;
+                f->b->cursor.x = e_chr_sp (f->b->clsv, f->b, f);
                 e_cursor (f, 1);
                 e_refresh ();
             }
@@ -882,8 +882,8 @@ e_edt_mouse (int c, we_window_t * f)
         else if (e_mouse.x == f->e.x &&
                  e_mouse.y > f->a.y + 1 && e_mouse.y < f->e.y - 1)
         {
-            f->b->b.y = e_lst_mouse (f->e.x, f->a.y + 1, f->e.y - f->a.y - 1, 0,
-                                     f->b->mxlines, f->b->b.y);
+            f->b->cursor.y = e_lst_mouse (f->e.x, f->a.y + 1, f->e.y - f->a.y - 1, 0,
+                                     f->b->mxlines, f->b->cursor.y);
             e_cursor (f, 1);
             e_refresh ();
         }
@@ -891,7 +891,7 @@ e_edt_mouse (int c, we_window_t * f)
         {
             while (e_mshit ())
             {
-                f->b->b.x = f->b->b.x > 0 ? f->b->b.x - 1 : 0;
+                f->b->cursor.x = f->b->cursor.x > 0 ? f->b->cursor.x - 1 : 0;
                 e_cursor (f, 1);
                 e_refresh ();
             }
@@ -900,8 +900,8 @@ e_edt_mouse (int c, we_window_t * f)
         {
             while (e_mshit ())
             {
-                f->b->b.x = f->b->b.x < f->b->buflines[f->b->b.y].len ?
-                            f->b->b.x + 1 : f->b->buflines[f->b->b.y].len;
+                f->b->cursor.x = f->b->cursor.x < f->b->buflines[f->b->cursor.y].len ?
+                            f->b->cursor.x + 1 : f->b->buflines[f->b->cursor.y].len;
                 e_cursor (f, 1);
                 e_refresh ();
             }
@@ -909,7 +909,7 @@ e_edt_mouse (int c, we_window_t * f)
         else if (e_mouse.y == f->e.y &&
                  e_mouse.x > f->a.x + 19 && e_mouse.x < f->e.x - 2)
         {
-            f->b->b.x =
+            f->b->cursor.x =
                 e_lst_mouse (f->a.x + 19, f->e.y, f->e.x - f->a.x - 20, 1,
                              f->b->mx.x, num_cols_off_screen_left(f));
             e_cursor (f, 1);
@@ -939,13 +939,13 @@ e_mouse_cursor (BUFFER * b, we_screen_t * s, we_window_t * f)
 {
     extern struct mouse e_mouse;
 
-    b->b.x = e_mouse.x - f->a.x + s->c.x - 1;
-    b->b.y = e_mouse.y - f->a.y + s->c.y - 1;
-    if (b->b.y < 0)
-        b->b.y = 0;
-    else if (b->b.y >= b->mxlines)
-        b->b.y = b->mxlines - 1;
-    return (b->b.x = e_chr_sp (b->b.x, b, f));
+    b->cursor.x = e_mouse.x - f->a.x + s->c.x - 1;
+    b->cursor.y = e_mouse.y - f->a.y + s->c.y - 1;
+    if (b->cursor.y < 0)
+        b->cursor.y = 0;
+    else if (b->cursor.y >= b->mxlines)
+        b->cursor.y = b->mxlines - 1;
+    return (b->cursor.x = e_chr_sp (b->cursor.x, b, f));
 }
 
 /*  Copy, Cut and Paste functions    */
@@ -979,65 +979,65 @@ we_window_t *f;
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
     we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
     we_point_t bs;
-    bs.x = b->b.x;
-    bs.y = b->b.y;
+    bs.x = b->cursor.x;
+    bs.y = b->cursor.y;
     e_mouse_cursor (b, s, f);
     if ((bioskey () & 3) == 0)
     {
-        if (b->b.x == bs.x && b->b.y == bs.y && f->dtmd != DTMD_HELP)
+        if (b->cursor.x == bs.x && b->cursor.y == bs.y && f->dtmd != DTMD_HELP)
         {
-            if (s->mark_begin.y == b->b.y && s->mark_end.y == b->b.y
-                    && s->mark_begin.x <= b->b.x && s->mark_end.x > b->b.x)
+            if (s->mark_begin.y == b->cursor.y && s->mark_end.y == b->cursor.y
+                    && s->mark_begin.x <= b->cursor.x && s->mark_end.x > b->cursor.x)
             {
                 s->mark_begin.x = 0;
-                s->mark_end.x = b->buflines[b->b.y].len;
+                s->mark_end.x = b->buflines[b->cursor.y].len;
             }
             else
             {
-                s->mark_begin.y = s->mark_end.y = b->b.y;
-                for (s->mark_begin.x = b->b.x; s->mark_begin.x > 0
-                        && isalnum1 (b->buflines[b->b.y].s[s->mark_begin.x - 1]);
+                s->mark_begin.y = s->mark_end.y = b->cursor.y;
+                for (s->mark_begin.x = b->cursor.x; s->mark_begin.x > 0
+                        && isalnum1 (b->buflines[b->cursor.y].s[s->mark_begin.x - 1]);
                         s->mark_begin.x--);
-                for (s->mark_end.x = b->b.x;
-                        s->mark_end.x < b->buflines[b->b.y].len
-                        && isalnum1 (b->buflines[b->b.y].s[s->mark_end.x]);
+                for (s->mark_end.x = b->cursor.x;
+                        s->mark_end.x < b->buflines[b->cursor.y].len
+                        && isalnum1 (b->buflines[b->cursor.y].s[s->mark_end.x]);
                         s->mark_end.x++);
             }
             e_schirm (f, 1);
         }
-        s->ks.x = b->b.x;
-        s->ks.y = b->b.y;
+        s->ks.x = b->cursor.x;
+        s->ks.y = b->cursor.y;
     }
     else
     {
-        if (s->mark_end.y < b->b.y
-                || (s->mark_end.y == b->b.y && s->mark_end.x <= b->b.x))
+        if (s->mark_end.y < b->cursor.y
+                || (s->mark_end.y == b->cursor.y && s->mark_end.x <= b->cursor.x))
         {
-            s->mark_end.x = b->b.x;
-            s->mark_end.y = b->b.y;
+            s->mark_end.x = b->cursor.x;
+            s->mark_end.y = b->cursor.y;
             s->ks.x = s->mark_begin.x;
             s->ks.y = s->mark_begin.y;
         }
-        else if (s->mark_begin.y > b->b.y
-                 || (s->mark_begin.y == b->b.y && s->mark_begin.x >= b->b.x))
+        else if (s->mark_begin.y > b->cursor.y
+                 || (s->mark_begin.y == b->cursor.y && s->mark_begin.x >= b->cursor.x))
         {
-            s->mark_begin.x = b->b.x;
-            s->mark_begin.y = b->b.y;
+            s->mark_begin.x = b->cursor.x;
+            s->mark_begin.y = b->cursor.y;
             s->ks.x = s->mark_end.x;
             s->ks.y = s->mark_end.y;
         }
         else if (s->mark_end.y < bs.y
                  || (s->mark_end.y == bs.y && s->mark_end.x <= bs.x))
         {
-            s->mark_begin.x = b->b.x;
-            s->mark_begin.y = b->b.y;
+            s->mark_begin.x = b->cursor.x;
+            s->mark_begin.y = b->cursor.y;
             s->ks.x = s->mark_end.x;
             s->ks.y = s->mark_end.y;
         }
         else
         {
-            s->mark_end.x = b->b.x;
-            s->mark_end.y = b->b.y;
+            s->mark_end.x = b->cursor.x;
+            s->mark_end.y = b->cursor.y;
             s->ks.x = s->mark_begin.x;
             s->ks.y = s->mark_begin.y;
         }
@@ -1045,26 +1045,26 @@ we_window_t *f;
     WpeMouseChangeShape (WpeSelectionShape);
     while (e_mshit () != 0)
     {
-        bs.x = b->b.x;
-        bs.y = b->b.y;
+        bs.x = b->cursor.x;
+        bs.y = b->cursor.y;
         e_mouse_cursor (b, s, f);
-        if (b->b.x < 0)
-            b->b.x = 0;
-        else if (b->b.x > b->buflines[b->b.y].len)
-            b->b.x = b->buflines[b->b.y].len;
-        if (b->b.x != bs.x || b->b.y != bs.y)
+        if (b->cursor.x < 0)
+            b->cursor.x = 0;
+        else if (b->cursor.x > b->buflines[b->cursor.y].len)
+            b->cursor.x = b->buflines[b->cursor.y].len;
+        if (b->cursor.x != bs.x || b->cursor.y != bs.y)
         {
-            if (s->ks.y < b->b.y || (s->ks.y == b->b.y && s->ks.x <= b->b.x))
+            if (s->ks.y < b->cursor.y || (s->ks.y == b->cursor.y && s->ks.x <= b->cursor.x))
             {
-                s->mark_end.x = b->b.x;
-                s->mark_end.y = b->b.y;
+                s->mark_end.x = b->cursor.x;
+                s->mark_end.y = b->cursor.y;
                 s->mark_begin.x = s->ks.x;
                 s->mark_begin.y = s->ks.y;
             }
             else
             {
-                s->mark_begin.x = b->b.x;
-                s->mark_begin.y = b->b.y;
+                s->mark_begin.x = b->cursor.x;
+                s->mark_begin.y = b->cursor.y;
                 s->mark_end.x = s->ks.x;
                 s->mark_end.y = s->ks.y;
             }
@@ -1073,8 +1073,8 @@ we_window_t *f;
         e_schirm (f, 1);
         e_refresh ();
     }
-    s->ks.x = b->b.x;
-    s->ks.y = b->b.y;
+    s->ks.x = b->cursor.x;
+    s->ks.y = b->cursor.y;
     WpeMouseRestoreShape ();
     e_cursor (f, 1);
 }

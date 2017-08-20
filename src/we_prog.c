@@ -308,7 +308,7 @@ e_run (we_window_t * f)
     sprintf (estr, e_p_msg[ERR_RETCODE], ret);
     print_to_end_of_buffer (b, estr, b->mx.x);
 
-    b->b.y = b->mxlines - 1;
+    b->cursor.y = b->mxlines - 1;
     e_cursor (f, 1);
     e_schirm (f, 1);
     e_refresh ();
@@ -521,7 +521,7 @@ e_p_exec (int file, we_window_t * f, we_view_t * view)
         if (fd == wfildes[0])
             break;
     }
-    b->b.y = b->mxlines - 1;
+    b->cursor.y = b->mxlines - 1;
     if (efildes[0] >= 0)
         close (efildes[0]);
     if (wfildes[0] >= 0)
@@ -616,45 +616,45 @@ e_show_error (int n, we_window_t * f)
     /*   e_pr_nstr(2, MAXSLNS - 1, MAXSCOL-2, err_li[n].text,
                                                     f->colorset->mt.fb, f->colorset->mt.fb); */
     b = cn->f[cn->mxedt]->b;
-    b->b.y = err_li[n].line > b->mxlines ? b->mxlines - 1 : err_li[n].line - 1;
+    b->cursor.y = err_li[n].line > b->mxlines ? b->mxlines - 1 : err_li[n].line - 1;
     if (!err_li[n].srch)
     {
-        for (i = j = 0; i + j < err_li[n].x && i < b->buflines[b->b.y].len; i++)
+        for (i = j = 0; i + j < err_li[n].x && i < b->buflines[b->cursor.y].len; i++)
         {
-            if (*(b->buflines[b->b.y].s + i) == WPE_TAB)
+            if (*(b->buflines[b->cursor.y].s + i) == WPE_TAB)
                 j += (f->ed->tabn - ((j + i) % f->ed->tabn) - 1);
 #ifdef UNIX
-            else if (((unsigned char) *(b->buflines[b->b.y].s + i)) > 126)
+            else if (((unsigned char) *(b->buflines[b->cursor.y].s + i)) > 126)
             {
                 j++;
-                if (((unsigned char) *(b->buflines[b->b.y].s + i)) < 128 + ' ')
+                if (((unsigned char) *(b->buflines[b->cursor.y].s + i)) < 128 + ' ')
                     j++;
             }
-            else if (*(b->buflines[b->b.y].s + i) < ' ')
+            else if (*(b->buflines[b->cursor.y].s + i) < ' ')
                 j++;
 #endif
         }
-        b->b.x = i;
+        b->cursor.x = i;
     }
     else
     {
         cp =
-            (unsigned char *) strstr ((const char *) b->buflines[b->b.y].s,
+            (unsigned char *) strstr ((const char *) b->buflines[b->cursor.y].s,
                                       err_li[n].srch + 1);
-        for (i = 0; b->buflines[b->b.y].s + i < cp; i++);
+        for (i = 0; b->buflines[b->cursor.y].s + i < cp; i++);
         if (err_li[n].srch[0] == 'B')
         {
-            for (i--; i >= 0 && isspace (b->buflines[b->b.y].s[i]); i--);
-            if (i < 0 && b->b.y > 0)
+            for (i--; i >= 0 && isspace (b->buflines[b->cursor.y].s[i]); i--);
+            if (i < 0 && b->cursor.y > 0)
             {
-                (b->b.y)--;
-                i = b->buflines[b->b.y].len + 1;
+                (b->cursor.y)--;
+                i = b->buflines[b->cursor.y].len + 1;
             }
             else
                 i++;
         }
         /*      else if(err_li[n].x < -1) i++;    */
-        b->b.x = i + err_li[n].x;
+        b->cursor.x = i + err_li[n].x;
     }
     e_cursor (cn->f[cn->mxedt], 1);
     return (0);
@@ -815,7 +815,7 @@ int
 e_d_car_ret (we_window_t * f)
 {
     if (!strcmp (f->datnam, "Messages"))
-        return (e_cur_error (f->ed->f[f->ed->mxedt]->b->b.y, f));
+        return (e_cur_error (f->ed->f[f->ed->mxedt]->b->cursor.y, f));
 #ifdef DEBUGGER
     if (!strcmp (f->datnam, "Watches"))
         return (e_edit_watches (f));
@@ -1734,7 +1734,7 @@ e_d_p_message (char *str, we_window_t * f, int sw)
     print_to_end_of_buffer (b, str, b->mx.x);
 
     /* place cursor on the last line */
-    b->b.y = b->mxlines - 1;
+    b->cursor.y = b->mxlines - 1;
 
     if (sw)
         e_rep_win_tree (cn);
@@ -1755,12 +1755,12 @@ e_d_car_mouse (we_window_t * f)
     BUFFER *b = f->ed->f[f->ed->mxedt]->b;
     we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
 
-    if (e_mouse.y - f->a.y + s->c.y - 1 == b->b.y)
+    if (e_mouse.y - f->a.y + s->c.y - 1 == b->cursor.y)
         return (WPE_CR);
     else
     {
-        b->b.y = e_mouse.y - f->a.y + s->c.y - 1;
-        b->b.x = e_mouse.x - f->a.x + s->c.x - 1;
+        b->cursor.y = e_mouse.y - f->a.y + s->c.y - 1;
+        b->cursor.x = e_mouse.x - f->a.x + s->c.x - 1;
     }
     return (0);
 }

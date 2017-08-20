@@ -479,12 +479,12 @@ e_d_p_exec (we_window_t * f)
         for (j = 0; j < num_cols_on_screen_safe(f) - 2 && str[j] != '\n' &&
                 str[j] != '\0'; j++)
             *(b->buflines[i].s + j) = str[j];
-        b->b.y = i;
-        b->b.x = b->buflines[i].len = j;
+        b->cursor.y = i;
+        b->cursor.x = b->buflines[i].len = j;
         b->buflines[i].nrc = j;
     }
-    b->b.y = b->mxlines - 1;
-    b->b.x = 0;
+    b->cursor.y = b->mxlines - 1;
+    b->cursor.x = 0;
 
     e_rep_win_tree (cn);
     return (ret);
@@ -706,7 +706,7 @@ e_delete_watches (we_window_t * f)
     f = cn->f[cn->mxedt];
     if (e_d_nwtchs < 1 || strcmp (f->datnam, "Watches"))
         return (0);
-    for (n = 0; n < e_d_nwtchs && e_d_nrwtchs[n] <= b->b.y; n++)
+    for (n = 0; n < e_d_nwtchs && e_d_nrwtchs[n] <= b->cursor.y; n++)
         ;
     free (e_d_swtchs[n - 1]);
     for (; n < e_d_nwtchs; n++)
@@ -727,7 +727,7 @@ e_make_watches (we_window_t * f)
     if ((f->ed->mxedt > 0) && (strcmp (f->datnam, "Watches") == 0))
     {
         /* sets y=number of watch we're inserting */
-        for (y = 0; y < e_d_nwtchs && e_d_nrwtchs[y] < f->b->b.y; y++)
+        for (y = 0; y < e_d_nwtchs && e_d_nrwtchs[y] < f->b->cursor.y; y++)
             ;
     }
     else
@@ -780,9 +780,9 @@ e_edit_watches (we_window_t * f)
 
     if (strcmp (f->datnam, "Watches"))
         return (0);
-    for (l = 0; l < e_d_nwtchs && e_d_nrwtchs[l] <= b->b.y; l++)
+    for (l = 0; l < e_d_nwtchs && e_d_nrwtchs[l] <= b->cursor.y; l++)
         ;
-    if (l == e_d_nwtchs && b->buflines[b->b.y].len == 0)
+    if (l == e_d_nwtchs && b->buflines[b->cursor.y].len == 0)
         return (e_make_watches (f));
     strcpy (str, e_d_swtchs[l - 1]);
     if (e_d_add_watch (str, f))
@@ -1160,10 +1160,10 @@ e_make_stack (we_window_t * f)
         tmpstr[0] = '\0';
         if (e_deb_type == 0)
         {
-            for (i = dif = 0; i <= b->b.y; i++)
+            for (i = dif = 0; i <= b->cursor.y; i++)
                 if (b->buflines[i].s[0] == '#')
                     dif = atoi ((char *) (b->buflines[i].s + 1));
-            for (i = b->b.y; i >= 0 && b->buflines[i].s[0] != '#'; i--);
+            for (i = b->cursor.y; i >= 0 && b->buflines[i].s[0] != '#'; i--);
             if (i < 0)
                 return (1);
             for (; i < b->mxlines; i++)
@@ -1186,10 +1186,10 @@ e_make_stack (we_window_t * f)
         }
         else
         {
-            for (i = 1, dif = 0; i <= b->b.y; i++)
+            for (i = 1, dif = 0; i <= b->cursor.y; i++)
                 if (b->buflines[i - 1].s[b->buflines[i - 1].len - 1] != '\\')
                     dif++;
-            for (i = b->b.y;
+            for (i = b->cursor.y;
                     i > 0 && b->buflines[i - 1].s[b->buflines[i - 1].len - 1] == '\\'; i--);
             if (i == 0 && b->buflines[i].len == 0)
                 return (1);
@@ -1240,7 +1240,7 @@ e_make_stack (we_window_t * f)
     }
     else if (e_deb_type == 1)
     {
-        for (i = b->b.y; i >= 0 && (line =
+        for (i = b->cursor.y; i >= 0 && (line =
                                         e_make_line_num2 ((char *) b->buflines[i].s,
                                                 file)) < 0; i--);
     }
@@ -1368,7 +1368,7 @@ e_brk_recalc (we_window_t * f, int start, int len)
     b = cn->f[cn->mxedt]->b;
 
     rend = start - 1 + abs (len);
-    yline = b->b.y;
+    yline = b->cursor.y;
 
     /**** deleting removed breakpoints ****/
     if (len < 0)
@@ -1377,7 +1377,7 @@ e_brk_recalc (we_window_t * f, int start, int len)
             if ((!strcmp (f->datnam, e_d_sbrpts[n])) &&
                     (e_d_ybrpts[n] <= (rend + 1)) && (e_d_ybrpts[n] >= (start + 1)))
             {
-                b->b.y = e_d_ybrpts[n] - 1;
+                b->cursor.y = e_d_ybrpts[n] - 1;
                 e_make_breakpoint (f, 0);
             }
     }
@@ -1400,15 +1400,15 @@ e_brk_recalc (we_window_t * f, int start, int len)
     /**** moving breakpoints ****/
     for (n = 0; n < count; n++)
     {
-        b->b.y = br_lines[n] - 1;
+        b->cursor.y = br_lines[n] - 1;
         e_make_breakpoint (f, 0);
     }
     for (n = 0; n < count; n++)
     {
-        b->b.y = br_lines[n] + len - 1;
+        b->cursor.y = br_lines[n] + len - 1;
         e_make_breakpoint (f, 0);
     }
-    b->b.y = yline;
+    b->cursor.y = yline;
     free (br_lines);
     return 0;
 }
@@ -1666,7 +1666,7 @@ e_make_breakpoint (we_window_t * f, int sw)
     {
         if (!e_check_c_file (f->datnam))
             return (e_error (e_p_msg[ERR_NO_CFILE], 0, f->colorset));
-        for (i = 0; i < s->brp[0] && s->brp[i + 1] != b->b.y; i++)
+        for (i = 0; i < s->brp[0] && s->brp[i + 1] != b->cursor.y; i++)
             ;
         if (i < s->brp[0])
         {
@@ -1674,7 +1674,7 @@ e_make_breakpoint (we_window_t * f, int sw)
                 s->brp[i] = s->brp[i + 1];
             (s->brp[0])--;
             for (i = 0; i < e_d_nbrpts && (strcmp (e_d_sbrpts[i], f->datnam) ||
-                                           e_d_ybrpts[i] != b->b.y + 1); i++)
+                                           e_d_ybrpts[i] != b->cursor.y + 1); i++)
                 ;
             if (e_d_swtch)
             {
@@ -1743,12 +1743,12 @@ e_make_breakpoint (we_window_t * f, int sw)
             }
             e_d_sbrpts[e_d_nbrpts - 1] = malloc (strlen (f->datnam) + 1);
             strcpy (e_d_sbrpts[e_d_nbrpts - 1], f->datnam);
-            e_d_ybrpts[e_d_nbrpts - 1] = b->b.y + 1;
+            e_d_ybrpts[e_d_nbrpts - 1] = b->cursor.y + 1;
             if (e_d_swtch)
             {
                 if (e_deb_type == 0)
                 {
-                    sprintf (eing, "b %s:%d\n", f->datnam, b->b.y + 1);
+                    sprintf (eing, "b %s:%d\n", f->datnam, b->cursor.y + 1);
                     int n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1771,7 +1771,7 @@ e_make_breakpoint (we_window_t * f, int sw)
                 else if (e_deb_type == 2)
                 {
                     sprintf (eing, "stop at \"%s\":%d\n", f->datnam,
-                             b->b.y + 1);
+                             b->cursor.y + 1);
                     int n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1793,7 +1793,7 @@ e_make_breakpoint (we_window_t * f, int sw)
                 }
                 else if (e_deb_type == 3)
                 {
-                    sprintf (eing, "b %s:%d\n", f->datnam, b->b.y + 1);
+                    sprintf (eing, "b %s:%d\n", f->datnam, b->cursor.y + 1);
                     int n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1826,7 +1826,7 @@ e_make_breakpoint (we_window_t * f, int sw)
                     }
                     if (e_d_dum_read () == -1)
                         return (-1);
-                    sprintf (eing, "%d b\n", b->b.y + 1);
+                    sprintf (eing, "%d b\n", b->cursor.y + 1);
                     n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1840,7 +1840,7 @@ e_make_breakpoint (we_window_t * f, int sw)
             }
             (s->brp[0])++;
             s->brp = realloc (s->brp, (s->brp[0] + 1) * sizeof (int));
-            s->brp[s->brp[0]] = b->b.y;
+            s->brp[s->brp[0]] = b->cursor.y;
         }
     }
     else
@@ -1898,7 +1898,7 @@ e_make_breakpoint (we_window_t * f, int sw)
         {
             for (i = 0; i < e_d_nbrpts; i++)
             {
-                sprintf (eing, "b %s:%d\n", f->datnam, b->b.y + 1);
+                sprintf (eing, "b %s:%d\n", f->datnam, b->cursor.y + 1);
                 int n = strlen (eing);
                 if (n != write (rfildes[1], eing, n))
                 {
@@ -2443,7 +2443,7 @@ e_d_goto_func (we_window_t * f, int flag)
     switch (flag)
     {
     case 'U':
-        sprintf (str, "until %d\n", b->b.y + 1);
+        sprintf (str, "until %d\n", b->cursor.y + 1);
         break;
     case 'F':
         sprintf (str, "finish\n");
@@ -3030,8 +3030,8 @@ e_d_goto_break (char *file, int line, we_window_t * f)
     f = cn->f[cn->mxedt];
     b = cn->f[cn->mxedt]->b;
     s = cn->f[cn->mxedt]->s;
-    s->da.y = b->b.y = line - 1;
-    s->da.x = b->b.x = 0;
+    s->da.y = b->cursor.y = line - 1;
+    s->da.x = b->cursor.x = 0;
     s->de.x = MAXSCOL;
     e_schirm (f, 1);
     e_cursor (f, 1);

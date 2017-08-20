@@ -884,7 +884,7 @@ e_read_help (char *str, we_window_t * f, int sw)
     if ((f->b->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     f->b->f = f;
-    f->b->b = e_set_pnt (0, 0);
+    f->b->cursor = e_set_pnt (0, 0);
     f->b->mx = e_set_pnt (f->ed->maxcol, MAXLINES);
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
@@ -964,13 +964,13 @@ e_help_ret (we_window_t * f)
     unsigned char str[126];
     struct help_ud *next;
 
-    for (i = b->b.x; i >= 0 && b->buflines[b->b.y].s[i] != HED; i--)
+    for (i = b->cursor.x; i >= 0 && b->buflines[b->cursor.y].s[i] != HED; i--)
     {
-        if (b->buflines[b->b.y].s[i] == HBG)
+        if (b->buflines[b->cursor.y].s[i] == HBG)
         {
             str[0] = HHD;
-            for (j = i + 1; j < b->buflines[b->b.y].len
-                    && (str[j - i] = b->buflines[b->b.y].s[j]) != HED; j++);
+            for (j = i + 1; j < b->buflines[b->cursor.y].len
+                    && (str[j - i] = b->buflines[b->cursor.y].s[j]) != HED; j++);
             str[j - i + 1] = '\0';
             if ((next = malloc (sizeof (struct help_ud))) != NULL)
             {
@@ -988,8 +988,8 @@ e_help_ret (we_window_t * f)
                 else
                     next->file = NULL;
                 next->nstr = next->pstr = NULL;
-                next->x = b->b.x;
-                next->y = b->b.y;
+                next->x = b->cursor.x;
+                next->y = b->cursor.y;
                 next->sw = ud_help ? ud_help->sw : 0;
                 next->next = ud_help;
                 ud_help = next;
@@ -999,19 +999,19 @@ e_help_ret (we_window_t * f)
             else
                 e_read_help ((char *) str, f, 0);
             b = f->b;
-            b->b.x = b->b.y = 0;
+            b->cursor.x = b->cursor.y = 0;
             e_cursor (f, 1);
             e_schirm (f, 1);
             return (0);
         }
-        else if (b->buflines[b->b.y].s[i] == HNF)
+        else if (b->buflines[b->cursor.y].s[i] == HNF)
         {
-            for (i++; i < b->buflines[b->b.y].len && b->buflines[b->b.y].s[i] != HED; i++)
+            for (i++; i < b->buflines[b->cursor.y].len && b->buflines[b->cursor.y].s[i] != HED; i++)
             {
                 ;
             }
-            for (i++, j = 0; j + i < b->buflines[b->b.y].len
-                    && (str[j] = b->buflines[b->b.y].s[j + i]) != HED; j++);
+            for (i++, j = 0; j + i < b->buflines[b->cursor.y].len
+                    && (str[j] = b->buflines[b->cursor.y].s[j + i]) != HED; j++);
             str[j] = '\0';
             if ((next = malloc (sizeof (struct help_ud))) != NULL)
             {
@@ -1024,29 +1024,29 @@ e_help_ret (we_window_t * f)
                     strcpy (next->file, (const char *) str);
                 next->sw = 1;
                 next->next = ud_help;
-                next->x = b->b.x;
-                next->y = b->b.y;
+                next->x = b->cursor.x;
+                next->y = b->cursor.y;
                 next->nstr = next->pstr = NULL;
                 ud_help = next;
             }
             e_read_info ("Top", f, ud_help->file);
             b = f->b;
-            b->b.x = b->b.y = 0;
+            b->cursor.x = b->cursor.y = 0;
             e_cursor (f, 1);
             e_schirm (f, 1);
             return (0);
         }
-        else if (b->buflines[b->b.y].s[i] == HFB)
+        else if (b->buflines[b->cursor.y].s[i] == HFB)
         {
-            for (j = i + 1; j < b->buflines[b->b.y].len
-                    && (str[j - i - 1] = b->buflines[b->b.y].s[j]) != HED; j++)
+            for (j = i + 1; j < b->buflines[b->cursor.y].len
+                    && (str[j - i - 1] = b->buflines[b->cursor.y].s[j]) != HED; j++)
             {
                 ;
             }
             str[j - i - 1] = '\0';
             return (e_ed_man (str, f));
         }
-        else if (b->buflines[b->b.y].s[i] == HHD)
+        else if (b->buflines[b->cursor.y].s[i] == HHD)
             return (e_help_last (f));
     }
     return (1);
@@ -1073,8 +1073,8 @@ e_help_last (we_window_t * f)
         else
             e_read_help (last->next->str, f, 0);
     }
-    f->b->b.x = last->x;
-    f->b->b.y = last->y;
+    f->b->cursor.x = last->x;
+    f->b->cursor.y = last->y;
     e_cursor (f, 1);
     e_schirm (f, 1);
     ud_help = last->next;
@@ -1110,7 +1110,7 @@ e_help_next (we_window_t * f, int sw)
         else
             return (e_error (sw ? "No Next Page" : "No Previous Page", 0, f->colorset));
         e_read_info (last->str, f, last->file);
-        f->b->b.x = f->b->b.y = 0;
+        f->b->cursor.x = f->b->cursor.y = 0;
         e_cursor (f, 1);
         e_schirm (f, 1);
         return (0);
@@ -1129,7 +1129,7 @@ e_help_next (we_window_t * f, int sw)
                 last->next = ud_help;
                 ud_help = last;
                 e_read_help (ud_help->next ? ud_help->next->str : NULL, f, 1);
-                f->b->b.x = f->b->b.y = 0;
+                f->b->cursor.x = f->b->cursor.y = 0;
                 e_cursor (f, 1);
                 e_schirm (f, 1);
                 return (0);
@@ -1190,8 +1190,8 @@ e_help_comp (we_window_t * f)
                 if (str[k - i - 1] != HED)
                 {
                     e_error ("Error in Switch!", 0, f->colorset);
-                    b->b.x = k;
-                    b->b.y = j;
+                    b->cursor.x = k;
+                    b->cursor.y = j;
                     e_cursor (f, 1);
                     return (2);
                 }
@@ -1217,8 +1217,8 @@ e_help_comp (we_window_t * f)
                 if (str[k - i - 1] != HED)
                 {
                     e_error ("Error in Header!", 0, f->colorset);
-                    b->b.x = k;
-                    b->b.y = j;
+                    b->cursor.x = k;
+                    b->cursor.y = j;
                     e_cursor (f, 1);
                     return (2);
                 }
@@ -1533,7 +1533,7 @@ e_read_info (char *str, we_window_t * f, char *file)
     if ((f->b->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
     f->b->f = f;
-    f->b->b = e_set_pnt (0, 0);
+    f->b->cursor = e_set_pnt (0, 0);
     f->b->mx = e_set_pnt (f->ed->maxcol, MAXLINES);
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
@@ -1775,8 +1775,8 @@ e_topic_search (we_window_t * f)
     if (!DTMD_ISTEXT (f->ed->f[f->ed->mxedt]->dtmd))
         return (0);
     b = f->ed->f[f->ed->mxedt]->b;
-    y = b->b.y;
-    x = b->b.x;
+    y = b->cursor.y;
+    x = b->cursor.x;
     s = b->buflines[y].s;
     if (!isalnum (s[x]) && s[x] != '_')
         return (0);

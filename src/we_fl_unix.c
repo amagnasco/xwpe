@@ -1175,25 +1175,25 @@ WpeHandleFileManager (we_control_t * cn)
                     be = fe->b;
                     se = fe->s;
                     f = cn->f[cn->mxedt];
-                    if (be->b.x != 0)
+                    if (be->cursor.x != 0)
                     {
-                        e_new_line (be->b.y + 1, be);
-                        if (*(be->buflines[be->b.y].s + be->buflines[be->b.y].len) != '\0')
-                            (be->buflines[be->b.y].len)++;
-                        for (i = be->b.x; i <= be->buflines[be->b.y].len; i++)
-                            *(be->buflines[be->b.y + 1].s + i - be->b.x) =
-                                *(be->buflines[be->b.y].s + i);
-                        *(be->buflines[be->b.y].s + be->b.x) = '\0';
-                        be->buflines[be->b.y].len = be->b.x;
-                        be->buflines[be->b.y + 1].len =
-                            e_str_len (be->buflines[be->b.y + 1].s);
-                        be->buflines[be->b.y + 1].nrc =
-                            strlen ((const char *) be->buflines[be->b.y + 1].s);
+                        e_new_line (be->cursor.y + 1, be);
+                        if (*(be->buflines[be->cursor.y].s + be->buflines[be->cursor.y].len) != '\0')
+                            (be->buflines[be->cursor.y].len)++;
+                        for (i = be->cursor.x; i <= be->buflines[be->cursor.y].len; i++)
+                            *(be->buflines[be->cursor.y + 1].s + i - be->cursor.x) =
+                                *(be->buflines[be->cursor.y].s + i);
+                        *(be->buflines[be->cursor.y].s + be->cursor.x) = '\0';
+                        be->buflines[be->cursor.y].len = be->cursor.x;
+                        be->buflines[be->cursor.y + 1].len =
+                            e_str_len (be->buflines[be->cursor.y + 1].s);
+                        be->buflines[be->cursor.y + 1].nrc =
+                            strlen ((const char *) be->buflines[be->cursor.y + 1].s);
                     }
-                    se->mark_begin.x = be->b.x;
-                    start = se->mark_begin.y = be->b.y;
+                    se->mark_begin.x = be->cursor.x;
+                    start = se->mark_begin.y = be->cursor.y;
                     dtmd = fe->dtmd;
-                    se->mark_end = e_readin (be->b.x, be->b.y, fp, be, &dtmd);
+                    se->mark_end = e_readin (be->cursor.x, be->cursor.y, fp, be, &dtmd);
                     fclose (fp);
 
                     if (se->mark_begin.x > 0)
@@ -3589,9 +3589,9 @@ e_ed_man (unsigned char *str, we_window_t * f)
     {
         e_ins_nchar (f->b, f->s, (unsigned char *) "No manual entry for ", 0, 0,
                      20);
-        e_ins_nchar (f->b, f->s, (unsigned char *) hstr, b->b.x, b->b.y,
+        e_ins_nchar (f->b, f->s, (unsigned char *) hstr, b->cursor.x, b->cursor.y,
                      strlen (hstr));
-        e_ins_nchar (f->b, f->s, (unsigned char *) ".", b->b.x, b->b.y, 1);
+        e_ins_nchar (f->b, f->s, (unsigned char *) ".", b->cursor.x, b->cursor.y, 1);
     }
     for (i = 0; i < b->mxlines; i++)
         if (b->buflines[i].len == 0 && (i == 0 || b->buflines[i - 1].len == 0))
@@ -3646,7 +3646,7 @@ e_ed_man (unsigned char *str, we_window_t * f)
                 bg = j;
             }
         }
-    b->b.x = b->b.y = 0;
+    b->cursor.x = b->cursor.y = 0;
     chmod (tstr, 0600);
     remove (tstr);
     WpeMouseRestoreShape ();

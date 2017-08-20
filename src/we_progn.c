@@ -1767,8 +1767,8 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
     }
     else
         len = 0;
-    f->s->fa.y = f->s->fe.y = f->b->b.y = num;
-    f->s->fe.x = f->b->b.x = x + len;
+    f->s->fa.y = f->s->fe.y = f->b->cursor.y = num;
+    f->s->fe.x = f->b->cursor.x = x + len;
     f->s->fa.x = x;
     e_cursor (f, 1);
     f->s->fa.y = num;
@@ -1825,7 +1825,7 @@ e_sh_nxt_def (we_window_t * f)
 int
 e_nxt_brk (we_window_t * f)
 {
-    int c = f->b->buflines[f->b->b.y].s[f->b->b.x];
+    int c = f->b->buflines[f->b->cursor.y].s[f->b->cursor.x];
     int i, j, ob, cb, bsp, brk, nif;
 
     if (c == '{' || c == '(' || c == '[')
@@ -1845,8 +1845,8 @@ e_nxt_brk (we_window_t * f)
             ob = '[';
             cb = ']';
         }
-        for (brk = 1, i = f->b->b.y; i < f->b->mxlines; i++)
-            for (j = i == f->b->b.y ? f->b->b.x + 1 : 0; j < f->b->buflines[i].len; j++)
+        for (brk = 1, i = f->b->cursor.y; i < f->b->mxlines; i++)
+            for (j = i == f->b->cursor.y ? f->b->cursor.x + 1 : 0; j < f->b->buflines[i].len; j++)
             {
                 if (f->b->buflines[i].s[j] == '\"')
                 {
@@ -1933,8 +1933,8 @@ e_nxt_brk (we_window_t * f)
                     brk--;
                     if (!brk)
                     {
-                        f->b->b.y = i;
-                        f->b->b.x = j;
+                        f->b->cursor.y = i;
+                        f->b->cursor.x = j;
                         return (0);
                     }
                 }
@@ -1962,11 +1962,11 @@ e_nxt_brk (we_window_t * f)
             ob = 0;
             cb = 0;
         }
-        for (brk = -1, i = f->b->b.y; i >= 0; i--)
+        for (brk = -1, i = f->b->cursor.y; i >= 0; i--)
         {
-            if (i == f->b->b.y)
+            if (i == f->b->cursor.y)
                 for (j = 0;
-                        j < f->b->b.x && (f->b->buflines[i].s[j] != '/'
+                        j < f->b->cursor.x && (f->b->buflines[i].s[j] != '/'
                                           || f->b->buflines[i].s[j + 1] != '/'); j++)
                     ;
             else
@@ -2064,8 +2064,8 @@ e_nxt_brk (we_window_t * f)
                         brk++;
                         if (!brk)
                         {
-                            f->b->b.y = i;
-                            f->b->b.x = j;
+                            f->b->cursor.y = i;
+                            f->b->cursor.x = j;
                             return (0);
                         }
                     }
@@ -2074,8 +2074,8 @@ e_nxt_brk (we_window_t * f)
                         brk--;
                     else if (i == 0 && j == 0)
                     {
-                        f->b->b.y = i;
-                        f->b->b.x = j;
+                        f->b->cursor.y = i;
+                        f->b->cursor.x = j;
                         return (0);
                     }
                 }
@@ -2086,8 +2086,8 @@ e_nxt_brk (we_window_t * f)
                         brk++;
                         if (!brk)
                         {
-                            f->b->b.y = i;
-                            f->b->b.x = j;
+                            f->b->cursor.y = i;
+                            f->b->cursor.x = j;
                             return (0);
                         }
                     }
@@ -2239,11 +2239,11 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
     s = f->s;
     sa = s->mark_begin;
     se = s->mark_end;
-    sb = b->b;
+    sb = b->cursor;
     if (sw & 1)
     {
         if (sw & 2)
-            bg = i = b->b.x == 0 ? b->b.y : b->b.y + 1;
+            bg = i = b->cursor.x == 0 ? b->cursor.y : b->cursor.y + 1;
         else
             bg = i = s->mark_begin.x == 0 ? s->mark_begin.y : s->mark_begin.y + 1;
         nd = s->mark_end.x == 0 ? s->mark_end.y : s->mark_end.y + 1;
@@ -2253,7 +2253,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
     else
     {
         if (sw & 2)
-            bg = i = b->b.x == 0 ? b->b.y : b->b.y + 1;
+            bg = i = b->cursor.x == 0 ? b->cursor.y : b->cursor.y + 1;
         else
             bg = i = 0;
         nd = b->mxlines;
@@ -2462,7 +2462,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                     free (ifvekr);
                     free (vkcs);
                     free (vkcb);
-                    b->b = sb;
+                    b->cursor = sb;
                     s->mark_begin = sa;
                     s->mark_end = se;
                     e_schirm (f, 1);
@@ -2580,7 +2580,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
     free (vkcb);
     s->mark_begin = sa;
     s->mark_end = se;
-    b->b = sb;
+    b->cursor = sb;
     e_schirm (f, 1);
     WpeMouseRestoreShape ();
     return (0);
