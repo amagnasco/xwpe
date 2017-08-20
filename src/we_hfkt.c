@@ -62,7 +62,7 @@ e_s_x_clr (int fg_color, int bg_color)
     we_color_t color;
 
     color.fg_color = fg_color;
-    color.b = bg_color;
+    color.bg_color = bg_color;
     color.fg_bg_color = 16 * bg_color + fg_color;
     return (color);
 }
@@ -73,7 +73,7 @@ e_n_x_clr (int fg_bg_color)
     we_color_t color;
 
     color.fg_bg_color = fg_bg_color;
-    color.b = fg_bg_color / 16;
+    color.bg_color = fg_bg_color / 16;
     color.fg_color = fg_bg_color % 16;
     return (color);
 }
@@ -84,7 +84,7 @@ e_s_t_clr (int fg_color, int bg_color)
     we_color_t color;
 
     color.fg_color = fg_color;
-    color.b = bg_color;
+    color.bg_color = bg_color;
     color.fg_bg_color = fg_color;
     return (color);
 }
@@ -95,7 +95,7 @@ e_n_t_clr (int fg_bg_color)
     we_color_t color;
 
     color.fg_bg_color = fg_bg_color;
-    color.b = fg_bg_color;
+    color.bg_color = fg_bg_color;
     color.fg_color = fg_bg_color;
     return (color);
 }

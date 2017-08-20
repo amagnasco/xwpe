@@ -101,7 +101,7 @@ typedef struct we_color_struct
     /** The foreground color */
     int fg_color;
     /** The background color */
-    int b;
+    int bg_color;
     /** The text color */
     int fg_bg_color;
 } we_color_t;
