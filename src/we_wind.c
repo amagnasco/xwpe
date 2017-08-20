@@ -801,7 +801,7 @@ e_close_buffer (BUFFER * b)
 
     if (b != NULL)
     {
-        e_remove_undo (b->ud, b->cn->numundo + 1);
+        e_remove_undo (b->undo, b->cn->numundo + 1);
         if (b->buflines != NULL)
         {
             for (i = 0; i < b->mxlines; i++)

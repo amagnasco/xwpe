@@ -39,7 +39,7 @@ int e_lst_zeichen(int x, int y, int n, int sw, int frb, int max, int iold,
                   int new);
 void e_mouse_bar(int x, int y, int n, int sw, int frb);
 int e_chr_sp(int x, BUFFER* b, we_window_t* f);
-we_undo_t* e_remove_undo(we_undo_t* ud, int sw);
+we_undo_t* e_remove_undo(we_undo_t* undo, int sw);
 int e_add_undo(int undo_type, BUFFER* b, int x, int y, int n);
 int e_make_undo(we_window_t* f);
 int e_make_redo(we_window_t* f);

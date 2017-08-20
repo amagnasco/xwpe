@@ -238,7 +238,7 @@ typedef struct BFF
     we_point_t mx; /**< maximum column and line */
     int mxlines;   /**< number of lines */
     int cl, clsv;
-    we_undo_t *ud;  /**< pointer to (a list of) undo structs for undo */
+    we_undo_t *undo;  /**< pointer to (a list of) undo structs for undo */
     we_undo_t *rd;	/**< pointer to (a list of) undo structs for redo */
     struct CNT* cn;
     struct FNST* f;

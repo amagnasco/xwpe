@@ -889,7 +889,7 @@ e_read_help (char *str, we_window_t * f, int sw)
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
     f->b->cn = f->ed;
-    f->b->ud = NULL;
+    f->b->undo = NULL;
     e_new_line (0, f->b);
     if (str && str[0])
     {
@@ -1538,7 +1538,7 @@ e_read_info (char *str, we_window_t * f, char *file)
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
     f->b->cn = f->ed;
-    f->b->ud = NULL;
+    f->b->undo = NULL;
     e_new_line (0, f->b);
     while ((ptmp = e_i_fgets (tstr, 256, fp)) != NULL)
     {

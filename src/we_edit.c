@@ -226,7 +226,7 @@ e_edit (we_control_t * cn, char *filename)
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
     f->b->cn = cn;
-    f->b->ud = NULL;
+    f->b->undo = NULL;
     f->b->rd = NULL;
     f->find.dirct = NULL;
     if (WpeIsProg ())
@@ -2302,18 +2302,18 @@ e_autosave (we_window_t * f)
 }
 
 we_undo_t *
-e_remove_undo (we_undo_t * ud, int sw)
+e_remove_undo (we_undo_t * undo, int sw)
 {
-    if (ud == NULL)
-        return (ud);
-    ud->next = e_remove_undo (ud->next, sw + 1);
+    if (undo == NULL)
+        return (undo);
+    undo->next = e_remove_undo (undo->next, sw + 1);
     if (sw > global_editor_control->numundo)
     {
-        if (ud->type == 'l')
-            free (ud->u.pt);
-        else if (ud->type == 'd')
+        if (undo->type == 'l')
+            free (undo->u.pt);
+        else if (undo->type == 'd')
         {
-            BUFFER *b = (BUFFER *) ud->u.pt;
+            BUFFER *b = (BUFFER *) undo->u.pt;
             int i;
 
             free (b->f->s);
@@ -2330,10 +2330,10 @@ e_remove_undo (we_undo_t * ud, int sw)
             }
             free (b);
         }
-        free (ud);
-        ud = NULL;
+        free (undo);
+        undo = NULL;
     }
-    return (ud);
+    return (undo);
 }
 
 /**
@@ -2381,7 +2381,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
     if (e_phase == UNDO_PHASE)
         next->next = b->rd;
     else
-        next->next = b->ud;
+        next->next = b->undo;
     if (undo_type == 'a');
     else if (undo_type == 'p')
         next->u.c = b->buflines[y].s[x];
@@ -2435,7 +2435,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         bn->mxlines = 0;
         sn->colorset = bn->colorset = b->colorset;
         bn->cn = b->cn;
-        bn->ud = NULL;
+        bn->undo = NULL;
         bn->rd = NULL;
         sn->c = sn->ks = sn->mark_begin = sn->mark_end = sn->fa = sn->fe =
                                               e_set_pnt (0, 0);
@@ -2453,8 +2453,8 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         b->rd = next;
     else
     {
-        next->next = e_remove_undo (b->ud, 1);
-        b->ud = next;
+        next->next = e_remove_undo (b->undo, 1);
+        b->undo = next;
     }
     return (0);
 }
@@ -2486,7 +2486,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     window = window->ed->f[window->ed->mxedt];
     b = window->b;
     s = window->s;
-    undo = doing_redo ? b->rd : b->ud;
+    undo = doing_redo ? b->rd : b->undo;
     if (undo == NULL)
     {
         e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), 0, b->colorset);
@@ -2571,7 +2571,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     if (doing_redo)
         b->rd = undo->next;
     else
-        b->ud = undo->next;
+        b->undo = undo->next;
     e_phase = EDIT_PHASE;
     free (undo);
     e_schirm (window, 1);
