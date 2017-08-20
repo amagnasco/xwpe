@@ -48,8 +48,8 @@ extern int (*e_u_initscr)(int argc, char* argv[]);
 extern int (*fk_u_putchar)(int c);
 extern int (*u_bioskey)(void);
 extern int (*e_frb_u_menue)(int sw, int xa, int ya, we_window_t* f, int md);
-extern we_color_t (*e_s_u_clr)(int f, int b);
-extern we_color_t (*e_n_u_clr)(int fb);
+extern we_color_t (*e_s_u_clr)(int fg_color, int bg_color);
+extern we_color_t (*e_n_u_clr)(int fg_bg_color);
 extern void (*e_pr_u_col_kasten)(int xa, int ya, int x,
                                  int y, we_window_t* f, int sw);
 extern int (*fk_mouse)(int g[]);

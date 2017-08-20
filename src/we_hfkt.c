@@ -57,47 +57,47 @@ e_str_len (unsigned char *s)
 
 /*           we_color_t - fill struct with constants           */
 we_color_t
-e_s_x_clr (int f, int b)
+e_s_x_clr (int fg_color, int bg_color)
 {
-    we_color_t c;
+    we_color_t color;
 
-    c.f = f;
-    c.b = b;
-    c.fb = 16 * b + f;
-    return (c);
+    color.f = fg_color;
+    color.b = bg_color;
+    color.fb = 16 * bg_color + fg_color;
+    return (color);
 }
 
 we_color_t
-e_n_x_clr (int fb)
+e_n_x_clr (int fg_bg_color)
 {
-    we_color_t f;
+    we_color_t color;
 
-    f.fb = fb;
-    f.b = fb / 16;
-    f.f = fb % 16;
-    return (f);
+    color.fb = fg_bg_color;
+    color.b = fg_bg_color / 16;
+    color.f = fg_bg_color % 16;
+    return (color);
 }
 
 we_color_t
-e_s_t_clr (int f, int b)
+e_s_t_clr (int fg_color, int bg_color)
 {
-    we_color_t c;
+    we_color_t color;
 
-    c.f = f;
-    c.b = b;
-    c.fb = f;
-    return (c);
+    color.f = fg_color;
+    color.b = bg_color;
+    color.fb = fg_color;
+    return (color);
 }
 
 we_color_t
-e_n_t_clr (int fb)
+e_n_t_clr (int fg_bg_color)
 {
-    we_color_t f;
+    we_color_t color;
 
-    f.fb = fb;
-    f.b = fb;
-    f.f = fb;
-    return (f);
+    color.fb = fg_bg_color;
+    color.b = fg_bg_color;
+    color.f = fg_bg_color;
+    return (color);
 }
 
 /*            we_point_t - fill struct with constants            */
