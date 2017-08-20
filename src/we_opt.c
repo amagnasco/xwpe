@@ -1971,10 +1971,9 @@ e_opt_kst (W_OPTSTR * o)
                 cold = c;
                 num = o->nstr[i]->num;
 #if MOUSE
-                if ((c =
-                            e_schreib_zif (&num, o->xa + o->nstr[i]->xw,
-                                           o->ya + o->nstr[i]->yw, o->nstr[i]->nw,
-                                           o->fwt, o->fws)) < 0)
+                if ((c = e_schreib_zif (&num, o->xa + o->nstr[i]->xw,
+                                        o->ya + o->nstr[i]->yw, o->nstr[i]->nw,
+                                        o->fwt, o->fws)) < 0)
                     c = e_opt_mouse (o);
 #else
                 c =
