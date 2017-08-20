@@ -241,7 +241,7 @@ typedef struct BFF
     we_undo_t *undo;          /**< pointer to (a list of) undo structs for undo */
     we_undo_t *redo;	      /**< pointer to (a list of) undo structs for redo */
     struct CNT* control;      /**< pointer to a control struct */
-    struct FNST* f;			  /**< pointer to a window struct */
+    struct we_window_struct* f;			  /**< pointer to a window struct */
     we_colorset_t* colorset;  /**< pointer to a colorset struct */
 } BUFFER;
 
@@ -287,7 +287,7 @@ typedef struct OPTKAST
     char* t;
     int x;
     char o;
-    int (*fkt)(struct FNST*);
+    int (*fkt)(struct we_window_struct*);
 } OPTK;
 
 typedef struct
@@ -298,7 +298,7 @@ typedef struct
     OPTK* menuitems;
 } MENU;
 
-typedef struct FNST
+typedef struct we_window_struct
 {
     we_point_t a; /**< start corner of the box */
     we_point_t e; /**< other corner of the box */
