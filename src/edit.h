@@ -233,12 +233,13 @@ typedef struct STR
 
 typedef struct BFF
 {
-    STRING* buflines;    /* buflines[i] is the i-th line of the buffer */
-    we_point_t b;  /* cursor coordinates in window (at least in some contexts) */
-    we_point_t mx; /* maximum column and line */
-    int mxlines;   /* number of lines */
+    STRING* buflines;    /**< buflines[i] is the i-th line of the buffer */
+    we_point_t b;  /**< cursor coordinates in window (at least in some contexts) */
+    we_point_t mx; /**< maximum column and line */
+    int mxlines;   /**< number of lines */
     int cl, clsv;
-    we_undo_t *ud, *rd;	/* pointers to undo and redo structs */
+    we_undo_t *ud;  /**< pointer to (a list of) undo structs for undo */
+    we_undo_t *rd;	/**< pointer to (a list of) undo structs for redo */
     struct CNT* cn;
     struct FNST* f;
     we_colorset_t* colorset;
