@@ -2377,7 +2377,7 @@ e_add_undo (int undo_type, we_buffer_t * b, int x, int y, int n)
     next->type = undo_type;
     next->cursor_start.x = x;
     next->cursor_start.y = y;
-    next->a.x = n;
+    next->begin_block.x = n;
     if (e_phase == UNDO_PHASE)
         next->next = b->redo;
     else
@@ -2401,7 +2401,7 @@ e_add_undo (int undo_type, we_buffer_t * b, int x, int y, int n)
         str[n] = '\0';
         next->u.pt = str;
 
-        next->a.y = e_phase == UNDO_PHASE ? b->control->find.sn : b->control->find.rn;
+        next->begin_block.y = e_phase == UNDO_PHASE ? b->control->find.sn : b->control->find.rn;
 
     }
     else if (undo_type == 'l')
@@ -2410,8 +2410,8 @@ e_add_undo (int undo_type, we_buffer_t * b, int x, int y, int n)
     {
         we_screen_t *s = b->control->window[b->control->mxedt]->s;
 
-        next->a = s->mark_begin;
-        next->e = s->mark_end;
+        next->begin_block = s->mark_begin;
+        next->end_block = s->mark_end;
     }
     else if (undo_type == 'd')
     {
@@ -2499,25 +2499,25 @@ e_make_rudo (we_window_t * window, int doing_redo)
     {
         if (undo->type == 's')
         {
-            e_add_undo ('s', b, undo->cursor_start.x, undo->cursor_start.y, undo->a.y);
+            e_add_undo ('s', b, undo->cursor_start.x, undo->cursor_start.y, undo->begin_block.y);
             global_disable_add_undo = 1;
-            e_del_nchar (b, s, undo->cursor_start.x, undo->cursor_start.y, undo->a.y);
+            e_del_nchar (b, s, undo->cursor_start.x, undo->cursor_start.y, undo->begin_block.y);
         }
-        if (*((char *) undo->u.pt) == '\n' && undo->a.x == 1)
+        if (*((char *) undo->u.pt) == '\n' && undo->begin_block.x == 1)
             e_car_ret (b, s);
-        else if (*((char *) undo->u.pt + undo->a.x - 1) == '\n')
+        else if (*((char *) undo->u.pt + undo->begin_block.x - 1) == '\n')
         {
             e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->cursor_start.x, undo->cursor_start.y,
-                         undo->a.x - 1);
+                         undo->begin_block.x - 1);
             e_car_ret (b, s);
         }
         else
             e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->cursor_start.x, undo->cursor_start.y,
-                         undo->a.x);
+                         undo->begin_block.x);
         global_disable_add_undo = 0;
         s->mark_begin = undo->cursor_start;
         s->mark_end.y = undo->cursor_start.y;
-        s->mark_end.x = undo->cursor_start.x + undo->a.x;
+        s->mark_end.x = undo->cursor_start.x + undo->begin_block.x;
         free (undo->u.pt);
     }
     else if (undo->type == 'l')
@@ -2536,21 +2536,21 @@ e_make_rudo (we_window_t * window, int doing_redo)
     else if (undo->type == 'y')
         e_del_line (b->cursor.y, b, s);
     else if (undo->type == 'a')
-        e_del_nchar (b, s, undo->cursor_start.x, undo->cursor_start.y, undo->a.x);
+        e_del_nchar (b, s, undo->cursor_start.x, undo->cursor_start.y, undo->begin_block.x);
     else if (undo->type == 'p')
         b->buflines[undo->cursor_start.y].s[undo->cursor_start.x] = undo->u.c;
     else if (undo->type == 'c')
     {
-        b->cursor = s->mark_begin = undo->a;
-        s->mark_end = undo->e;
+        b->cursor = s->mark_begin = undo->begin_block;
+        s->mark_end = undo->end_block;
         /*	e_blck_clear(b, s);   */
         e_blck_del (window);
     }
     else if (undo->type == 'v')
     {
         b->cursor = undo->cursor_start;
-        s->mark_begin = undo->a;
-        s->mark_end = undo->e;
+        s->mark_begin = undo->begin_block;
+        s->mark_end = undo->end_block;
         e_blck_move (window);
     }
     else if (undo->type == 'd')

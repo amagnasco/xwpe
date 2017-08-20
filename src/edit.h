@@ -197,7 +197,7 @@ typedef struct we_undo_struct
      *	's' a.x=len(search_string) a.y=len(result_string)
      *  'v' mark block begin
      */
-    we_point_t a;
+    we_point_t begin_block;
     /**
      * Marks
      *  'a' (x,y)=end of characters to be copied
@@ -206,7 +206,7 @@ typedef struct we_undo_struct
      *  's' no value
      *  'v' mark block end
      */
-    we_point_t e;
+    we_point_t end_block;
     union
     {
         /**
