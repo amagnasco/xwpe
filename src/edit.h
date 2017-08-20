@@ -187,7 +187,7 @@ typedef struct we_colorset_struct
 typedef struct we_undo_struct
 {
     int type;
-    we_point_t b; /* the starting (?) (x, y) cursor position */
+    we_point_t cursor_start; /**< the start (x, y) cursor position */
     /**
      * Marks
      *  'a' (x,y)=begin of characters to be copied

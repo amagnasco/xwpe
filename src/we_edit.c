@@ -2375,8 +2375,8 @@ e_add_undo (int undo_type, we_buffer_t * b, int x, int y, int n)
         return (-1);
     }
     next->type = undo_type;
-    next->b.x = x;
-    next->b.y = y;
+    next->cursor_start.x = x;
+    next->cursor_start.y = y;
     next->a.x = n;
     if (e_phase == UNDO_PHASE)
         next->next = b->redo;
@@ -2494,51 +2494,51 @@ e_make_rudo (we_window_t * window, int doing_redo)
     }
     window = window->ed->window[window->ed->mxedt];
     e_phase = doing_redo ? REDO_PHASE : UNDO_PHASE;
-    b->cursor = undo->b;
+    b->cursor = undo->cursor_start;
     if (undo->type == 'r' || undo->type == 's')
     {
         if (undo->type == 's')
         {
-            e_add_undo ('s', b, undo->b.x, undo->b.y, undo->a.y);
+            e_add_undo ('s', b, undo->cursor_start.x, undo->cursor_start.y, undo->a.y);
             global_disable_add_undo = 1;
-            e_del_nchar (b, s, undo->b.x, undo->b.y, undo->a.y);
+            e_del_nchar (b, s, undo->cursor_start.x, undo->cursor_start.y, undo->a.y);
         }
         if (*((char *) undo->u.pt) == '\n' && undo->a.x == 1)
             e_car_ret (b, s);
         else if (*((char *) undo->u.pt + undo->a.x - 1) == '\n')
         {
-            e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->b.x, undo->b.y,
+            e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->cursor_start.x, undo->cursor_start.y,
                          undo->a.x - 1);
             e_car_ret (b, s);
         }
         else
-            e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->b.x, undo->b.y,
+            e_ins_nchar (b, s, ((unsigned char *) undo->u.pt), undo->cursor_start.x, undo->cursor_start.y,
                          undo->a.x);
         global_disable_add_undo = 0;
-        s->mark_begin = undo->b;
-        s->mark_end.y = undo->b.y;
-        s->mark_end.x = undo->b.x + undo->a.x;
+        s->mark_begin = undo->cursor_start;
+        s->mark_end.y = undo->cursor_start.y;
+        s->mark_end.x = undo->cursor_start.x + undo->a.x;
         free (undo->u.pt);
     }
     else if (undo->type == 'l')
     {
-        for (i = b->mxlines; i > undo->b.y; i--)
+        for (i = b->mxlines; i > undo->cursor_start.y; i--)
             b->buflines[i] = b->buflines[i - 1];
         (b->mxlines)++;
         b->buflines[b->cursor.y].s = undo->u.pt;
         b->buflines[b->cursor.y].len = e_str_len (b->buflines[b->cursor.y].s);
         b->buflines[b->cursor.y].nrc = strlen ((const char *) b->buflines[b->cursor.y].s);
-        s->mark_begin = undo->b;
-        s->mark_end.y = undo->b.y + 1;
+        s->mark_begin = undo->cursor_start;
+        s->mark_end.y = undo->cursor_start.y + 1;
         s->mark_end.x = 0;
         e_add_undo ('y', b, 0, b->cursor.y, 0);
     }
     else if (undo->type == 'y')
         e_del_line (b->cursor.y, b, s);
     else if (undo->type == 'a')
-        e_del_nchar (b, s, undo->b.x, undo->b.y, undo->a.x);
+        e_del_nchar (b, s, undo->cursor_start.x, undo->cursor_start.y, undo->a.x);
     else if (undo->type == 'p')
-        b->buflines[undo->b.y].s[undo->b.x] = undo->u.c;
+        b->buflines[undo->cursor_start.y].s[undo->cursor_start.x] = undo->u.c;
     else if (undo->type == 'c')
     {
         b->cursor = s->mark_begin = undo->a;
@@ -2548,7 +2548,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     }
     else if (undo->type == 'v')
     {
-        b->cursor = undo->b;
+        b->cursor = undo->cursor_start;
         s->mark_begin = undo->a;
         s->mark_end = undo->e;
         e_blck_move (window);
@@ -2559,14 +2559,14 @@ e_make_rudo (we_window_t * window, int doing_redo)
         global_disable_add_undo = 1;
         s->mark_begin = bn->window->s->mark_begin;
         s->mark_end = bn->window->s->mark_end;
-        e_move_block (undo->b.x, undo->b.y, bn, b, window);
+        e_move_block (undo->cursor_start.x, undo->cursor_start.y, bn, b, window);
         global_disable_add_undo = 0;
         free (bn->window->s);
         free (bn->window);
         free (bn->buflines[0].s);
         free (bn->buflines);
         free (undo->u.pt);
-        e_add_undo ('c', b, undo->b.x, undo->b.y, 0);
+        e_add_undo ('c', b, undo->cursor_start.x, undo->cursor_start.y, 0);
     }
     if (doing_redo)
         b->redo = undo->next;
