@@ -872,7 +872,7 @@ e_edt_mouse (int c, we_window_t * window)
             do
             {
                 window->b->cursor.y = window->b->cursor.y < window->b->mxlines - 1 ?
-                            window->b->cursor.y + 1 : window->b->mxlines - 1;
+                                      window->b->cursor.y + 1 : window->b->mxlines - 1;
                 window->b->cursor.x = e_chr_sp (window->b->clsv, window->b, window);
                 e_cursor (window, 1);
                 e_refresh ();
@@ -883,7 +883,7 @@ e_edt_mouse (int c, we_window_t * window)
                  e_mouse.y > window->a.y + 1 && e_mouse.y < window->e.y - 1)
         {
             window->b->cursor.y = e_lst_mouse (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
-                                     window->b->mxlines, window->b->cursor.y);
+                                               window->b->mxlines, window->b->cursor.y);
             e_cursor (window, 1);
             e_refresh ();
         }
@@ -901,7 +901,7 @@ e_edt_mouse (int c, we_window_t * window)
             while (e_mshit ())
             {
                 window->b->cursor.x = window->b->cursor.x < window->b->buflines[window->b->cursor.y].len ?
-                            window->b->cursor.x + 1 : window->b->buflines[window->b->cursor.y].len;
+                                      window->b->cursor.x + 1 : window->b->buflines[window->b->cursor.y].len;
                 e_cursor (window, 1);
                 e_refresh ();
             }

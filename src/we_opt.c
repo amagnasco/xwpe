@@ -2236,10 +2236,10 @@ e_edt_options (we_window_t * window)
         window->ed->numundo = o->nstr[3]->num;
         window->ed->autoindent = o->nstr[4]->num;
         window->ed->edopt = ((window->ed->edopt & ~ED_EDITOR_OPTIONS) + o->pstr[0]->num) +
-                       (o->pstr[1]->num == 0 ? ED_SOURCE_AUTO_INDENT : 0) +
-                       (o->pstr[1]->num == 1 ? ED_ALWAYS_AUTO_INDENT : 0) +
-                       (o->sstr[3]->num ? ED_OLD_TILE_METHOD : 0) +
-                       (o->sstr[0]->num ? ED_SHOW_ENDMARKS : 0);
+                            (o->pstr[1]->num == 0 ? ED_SOURCE_AUTO_INDENT : 0) +
+                            (o->pstr[1]->num == 1 ? ED_ALWAYS_AUTO_INDENT : 0) +
+                            (o->sstr[3]->num ? ED_OLD_TILE_METHOD : 0) +
+                            (o->sstr[0]->num ? ED_SHOW_ENDMARKS : 0);
         if (window->ed->print_cmd)
             free (window->ed->print_cmd);
         window->ed->print_cmd = WpeStrdup (o->wstr[0]->txt);

@@ -336,7 +336,7 @@ ECNT_Init (we_control_t * control)
     control->tabs = malloc ((control->tabn + 1) * sizeof (char));
     WpeStringBlank (control->tabs, control->tabn);
     control->flopt = FM_REKURSIVE_ACTIONS | FM_REMOVE_INTO_WB | FM_MOVE_PROMPT |
-                FM_MOVE_PROMPT | FM_PROMPT_DELETE;
+                     FM_MOVE_PROMPT | FM_PROMPT_DELETE;
     control->edopt = ED_SOURCE_AUTO_INDENT | ED_ERRORS_STOP_AT | ED_SYNTAX_HIGHLIGHT;
 }
 

@@ -505,9 +505,9 @@ e_program_opt (we_window_t * window)
             free (e_prog.sys_include);
         e_prog.sys_include = WpeStrdup (o->wstr[1]->txt);
         window->ed->edopt = (window->ed->edopt & ~ED_PROGRAMMING_OPTIONS) +
-                       (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
-                       (o->sstr[1]->num ? ED_MESSAGES_STOP_AT : 0) +
-                       (o->sstr[2]->num ? ED_SYNTAX_HIGHLIGHT : 0);
+                            (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
+                            (o->sstr[1]->num ? ED_MESSAGES_STOP_AT : 0) +
+                            (o->sstr[2]->num ? ED_SYNTAX_HIGHLIGHT : 0);
         if (sw != o->sstr[2]->num)
             e_sc_all (window, o->sstr[2]->num);
     }
@@ -1967,12 +1967,12 @@ e_nxt_brk (we_window_t * window)
             if (i == window->b->cursor.y)
                 for (j = 0;
                         j < window->b->cursor.x && (window->b->buflines[i].s[j] != '/'
-                                          || window->b->buflines[i].s[j + 1] != '/'); j++)
+                                                    || window->b->buflines[i].s[j + 1] != '/'); j++)
                     ;
             else
                 for (j = 0;
                         j < window->b->buflines[i].len && (window->b->buflines[i].s[j] != '/'
-                                                      || window->b->buflines[i].s[j + 1] != '/'); j++)
+                                || window->b->buflines[i].s[j + 1] != '/'); j++)
                     ;
             for (j--; j >= 0; j--)
             {
