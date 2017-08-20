@@ -61,10 +61,10 @@ int (*fk_u_cursor) (int x);
 int (*e_u_initscr) (int argc, char *argv[]);
 int (*fk_u_putchar) (int c);
 int (*u_bioskey) (void);
-int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * f, int md);
+int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * window, int md);
 we_color_t (*e_s_u_clr) (int fg_color, int bg_color);
 we_color_t (*e_n_u_clr) (int fg_bg_color);
-void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * f, int sw);
+void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * window, int sw);
 int (*fk_mouse) (int g[]);
 int (*e_u_refresh) (void);
 int (*e_u_getch) (void);
@@ -75,10 +75,10 @@ int (*e_make_urect) (int xa, int ya, int xe, int ye, int sw);
 int (*e_make_urect_abs) (int xa, int ya, int xe, int ye, int sw);
 int (*e_u_d_switch_out) (int sw);
 int (*e_u_switch_screen) (int sw);
-int (*e_u_deb_out) (we_window_t * f);
-int (*e_u_cp_X_to_buffer) (we_window_t * f);
-int (*e_u_copy_X_buffer) (we_window_t * f);
-int (*e_u_paste_X_buffer) (we_window_t * f);
+int (*e_u_deb_out) (we_window_t * window);
+int (*e_u_cp_X_to_buffer) (we_window_t * window);
+int (*e_u_copy_X_buffer) (we_window_t * window);
+int (*e_u_paste_X_buffer) (we_window_t * window);
 int (*e_u_kbhit) (void);
 int (*e_u_change) (we_view_t * view);
 int (*e_u_ini_size) (void);
@@ -441,7 +441,7 @@ e_err_save ()
     we_control_t *control = global_editor_control;
     int i;
     unsigned long maxname;
-    we_window_t *f;
+    we_window_t *window;
     BUFFER *b;
 
     /* Quick fix to multiple emergency save problems */
@@ -450,23 +450,23 @@ e_err_save ()
     e_bool_exit = 1;
     for (i = 0; i <= control->mxedt; i++)
     {
-        if (DTMD_ISTEXT (control->f[i]->dtmd))
+        if (DTMD_ISTEXT (control->window[i]->dtmd))
         {
-            f = control->f[i];
-            b = control->f[i]->b;
+            window = control->window[i];
+            b = control->window[i]->b;
             if (b->mxlines > 1 || b->buflines[0].len > 0)
             {
                 /* Check if file system could have an autosave or emergency save file
                    >12 check is to eliminate dos file systems */
                 if (((maxname =
-                            pathconf (f->dirct,
-                                      _PC_NAME_MAX)) >= strlen (f->datnam) + 4)
+                            pathconf (window->dirct,
+                                      _PC_NAME_MAX)) >= strlen (window->datnam) + 4)
                         && (maxname > 12))
                 {
-                    strcat (f->datnam, ".ESV");
-                    printf ("Try to save %s!\n", f->datnam);
-                    if (!e_save (f))
-                        printf ("File %s saved!\n", f->datnam);
+                    strcat (window->datnam, ".ESV");
+                    printf ("Try to save %s!\n", window->datnam);
+                    if (!e_save (window))
+                        printf ("File %s saved!\n", window->datnam);
                 }
             }
         }
@@ -819,7 +819,7 @@ int
 e_recover (we_control_t * control)
 {
     struct dirfile *files;
-    we_window_t *f = NULL;
+    we_window_t *window = NULL;
     BUFFER *b;
     we_screen_t *s;
     int i;
@@ -828,35 +828,35 @@ e_recover (we_control_t * control)
     for (i = 0; i < files->nr_files; i++)
     {
         e_edit (control, files->name[i]);
-        f = control->f[control->mxedt];
-        f->datnam[strlen (f->datnam) - 4] = '\0';
-        if (!strcmp (f->datnam, BUFFER_NAME))
+        window = control->window[control->mxedt];
+        window->datnam[strlen (window->datnam) - 4] = '\0';
+        if (!strcmp (window->datnam, BUFFER_NAME))
         {
-            s = control->f[control->mxedt]->s;
-            b = control->f[control->mxedt]->b;
+            s = control->window[control->mxedt]->s;
+            b = control->window[control->mxedt]->b;
             s->mark_end.y = b->mxlines - 1;
             s->mark_end.x = b->buflines[b->mxlines - 1].len;
-            e_edt_copy (f);
-            e_close_window (f);
+            e_edt_copy (window);
+            e_close_window (window);
         }
         else
-            f->save = 1;
+            window->save = 1;
 #ifdef PROG
         if (WpeIsProg ())
-            e_add_synt_tl (f->datnam, f);
+            e_add_synt_tl (window->datnam, window);
 #endif
-        if ((f->ed->edopt & ED_ALWAYS_AUTO_INDENT) ||
-                ((f->ed->edopt & ED_SOURCE_AUTO_INDENT) && f->c_st))
-            f->flg = 1;
+        if ((window->ed->edopt & ED_ALWAYS_AUTO_INDENT) ||
+                ((window->ed->edopt & ED_SOURCE_AUTO_INDENT) && window->c_st))
+            window->flg = 1;
     }
     freedf (files);
     return (0);
 }
 
 int
-e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
+e_frb_t_menue (int sw, int xa, int ya, we_window_t * window, int md)
 {
-    we_color_t *frb = &(f->colorset->er);
+    we_color_t *frb = &(window->colorset->er);
     int i, j, y, c = 1, fb, fsv;
 
     if (md == 1)
@@ -883,8 +883,8 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
             for (i = 1, fb = 1; i < y; i++)
                 fb *= 2;
         frb[sw] = e_n_clr (fb);
-        e_pr_t_col_kasten (xa, ya, fb, fb, f, 1);
-        e_pr_ed_beispiel (1, 2, f, sw, md);
+        e_pr_t_col_kasten (xa, ya, fb, fb, window, 1);
+        e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
         if ((c = e_getch ()) == -1)
             c = e_opt_ck_mouse (xa, ya, md);
@@ -900,7 +900,7 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
 
 /*   draw colors box  */
 void
-e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
+e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * window, int sw)
 {
     int rfrb, xe = xa + 14, ye = ya + 8;
 
@@ -909,10 +909,10 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
     else
         for (rfrb = x, y = 1; rfrb > 1; y++)
             rfrb /= 2;
-    rfrb = sw == 0 ? f->colorset->nt.fg_bg_color : f->colorset->fs.fg_bg_color;
+    rfrb = sw == 0 ? window->colorset->nt.fg_bg_color : window->colorset->fs.fg_bg_color;
     e_std_rahmen (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya, "Colors", rfrb, 0, 1,
-                                            f->colorset->ms.fg_color+16*(rfrb/16), 0);
+                                            window->colorset->ms.fg_color+16*(rfrb/16), 0);
     */
     e_pr_nstr (xa + 2, ya + 1, xe - xa - 1, "A_NORMAL   ", 0, 0);
     e_pr_nstr (xa + 2, ya + 2, xe - xa - 1, "A_STANDOUT ", A_STANDOUT,

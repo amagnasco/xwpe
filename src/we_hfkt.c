@@ -17,11 +17,11 @@
 
 /*   numbers box (numbers input/edit)     */
 int
-e_num_kst (char *s, int num, int max, we_window_t * f, int n, int sw)
+e_num_kst (char *s, int num, int max, we_window_t * window, int n, int sw)
 {
     int ret, nz = WpeNumberOfPlaces (max);
     char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
-    W_OPTSTR *o = e_init_opt_kst (f);
+    W_OPTSTR *o = e_init_opt_kst (window);
 
     if (!o || !tmp)
         return (-1);

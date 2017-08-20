@@ -147,7 +147,7 @@ e_error (char *text, int sw, we_colorset_t * colorset)
         e_cls (0, ' ');
     fk_cursor (1);
     if (sw == 1)
-        e_quit (global_editor_control->f[global_editor_control->mxedt]);
+        e_quit (global_editor_control->window[global_editor_control->mxedt]);
     if (sw > 0)
         WpeExit (sw);
     return (sw);
@@ -155,11 +155,11 @@ e_error (char *text, int sw, we_colorset_t * colorset)
 
 /*   message with selection        */
 int
-e_message (int sw, char *str, we_window_t * f)
+e_message (int sw, char *str, we_window_t * window)
 {
     int i, ret, mxlen = 0, nr_lines = 0;
     char **s;
-    W_OPTSTR *o = e_init_opt_kst (f);
+    W_OPTSTR *o = e_init_opt_kst (window);
 
     if (!o)
         return (-1);
@@ -201,31 +201,31 @@ e_message (int sw, char *str, we_window_t * f)
 
 /*         First opening of a window                 */
 void
-e_firstl (we_window_t * f, int sw)
+e_firstl (we_window_t * window, int sw)
 {
-    f->view = NULL;
-    f->view = e_ed_kst (f, f->view, sw);
-    if (f->view == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
+    window->view = NULL;
+    window->view = e_ed_kst (window, window->view, sw);
+    if (window->view == NULL)
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
 }
 
 /*         Writing of the file type    */
 int
-e_pr_filetype (we_window_t * f)
+e_pr_filetype (we_window_t * window)
 {
-    int frb = f->colorset->es.fg_bg_color;
+    int frb = window->colorset->es.fg_bg_color;
 
-    e_pr_char (f->a.x + 2, f->e.y, 'A', frb);
-    if (f->ins == 0 || f->ins == 2)
-        e_pr_char (f->a.x + 16, f->e.y, 'O', frb);
-    else if (f->ins == 8)
-        e_pr_char (f->a.x + 16, f->e.y, 'R', frb);
+    e_pr_char (window->a.x + 2, window->e.y, 'A', frb);
+    if (window->ins == 0 || window->ins == 2)
+        e_pr_char (window->a.x + 16, window->e.y, 'O', frb);
+    else if (window->ins == 8)
+        e_pr_char (window->a.x + 16, window->e.y, 'R', frb);
     else
-        e_pr_char (f->a.x + 16, f->e.y, 'I', frb);
-    if (f->ins > 1)
-        e_pr_char (f->a.x + 17, f->e.y, 'S', frb);
+        e_pr_char (window->a.x + 16, window->e.y, 'I', frb);
+    if (window->ins > 1)
+        e_pr_char (window->a.x + 17, window->e.y, 'S', frb);
     else
-        e_pr_char (f->a.x + 17, f->e.y, 'L', frb);
+        e_pr_char (window->a.x + 17, window->e.y, 'L', frb);
     return (0);
 }
 
@@ -348,138 +348,138 @@ e_close_view (we_view_t * view, int sw)
 
 /*    Frame for edit window   */
 void
-e_ed_rahmen (we_window_t * f, int sw)
+e_ed_rahmen (we_window_t * window, int sw)
 {
     extern char *e_hlp;
     extern int nblst;
     extern WOPT *blst;
     char *header = NULL;
 
-    if (!DTMD_ISTEXT (f->dtmd))
+    if (!DTMD_ISTEXT (window->dtmd))
     {
-        if (f->datnam[0])
-            header = f->datnam;
-        if (f->dtmd == DTMD_FILEDROPDOWN)
-            e_std_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, header, sw,
-                          f->colorset->er.fg_bg_color, f->colorset->es.fg_bg_color);
+        if (window->datnam[0])
+            header = window->datnam;
+        if (window->dtmd == DTMD_FILEDROPDOWN)
+            e_std_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, header, sw,
+                          window->colorset->er.fg_bg_color, window->colorset->es.fg_bg_color);
         else
-            e_std_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, header, sw,
-                          f->colorset->nr.fg_bg_color, f->colorset->ne.fg_bg_color);
-        if (f->winnum < 10 && f->winnum >= 0)
-            e_pr_char (f->e.x - 6, f->a.y, '0' + f->winnum, f->colorset->nr.fg_bg_color);
-        else if (f->winnum >= 0)
-            e_pr_char (f->e.x - 6, f->a.y, 'A' - 10 + f->winnum, f->colorset->nr.fg_bg_color);
-        if (sw > 0 && (f->dtmd == DTMD_FILEMANAGER || f->dtmd == DTMD_DATA))
+            e_std_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, header, sw,
+                          window->colorset->nr.fg_bg_color, window->colorset->ne.fg_bg_color);
+        if (window->winnum < 10 && window->winnum >= 0)
+            e_pr_char (window->e.x - 6, window->a.y, '0' + window->winnum, window->colorset->nr.fg_bg_color);
+        else if (window->winnum >= 0)
+            e_pr_char (window->e.x - 6, window->a.y, 'A' - 10 + window->winnum, window->colorset->nr.fg_bg_color);
+        if (sw > 0 && (window->dtmd == DTMD_FILEMANAGER || window->dtmd == DTMD_DATA))
         {
-            if (f->zoom == 0)
-                e_pr_char (f->e.x - 3, f->a.y, WZN, f->colorset->ne.fg_bg_color);
+            if (window->zoom == 0)
+                e_pr_char (window->e.x - 3, window->a.y, WZN, window->colorset->ne.fg_bg_color);
             else
-                e_pr_char (f->e.x - 3, f->a.y, WZY, f->colorset->ne.fg_bg_color);
+                e_pr_char (window->e.x - 3, window->a.y, WZY, window->colorset->ne.fg_bg_color);
 #ifdef NEWSTYLE
             if (!WpeIsXwin ())
             {
 #endif
-                e_pr_char (f->e.x - 4, f->a.y, '[', f->colorset->nr.fg_bg_color);
-                e_pr_char (f->e.x - 2, f->a.y, ']', f->colorset->nr.fg_bg_color);
+                e_pr_char (window->e.x - 4, window->a.y, '[', window->colorset->nr.fg_bg_color);
+                e_pr_char (window->e.x - 2, window->a.y, ']', window->colorset->nr.fg_bg_color);
 #ifdef NEWSTYLE
             }
             else
-                e_make_xrect (f->e.x - 4, f->a.y, f->e.x - 2, f->a.y, 0);
+                e_make_xrect (window->e.x - 4, window->a.y, window->e.x - 2, window->a.y, 0);
 #endif
-            blst = f->blst;
-            nblst = f->nblst;
-            e_hlp = f->hlp_str;
-            e_pr_uul (f->colorset);
+            blst = window->blst;
+            nblst = window->nblst;
+            e_hlp = window->hlp_str;
+            e_pr_uul (window->colorset);
         }
 #ifdef NEWSTYLE
         if (WpeIsXwin ())
-            e_make_xr_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, sw);
+            e_make_xr_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, sw);
 #endif
         return;
     }
-    if (f->datnam[0])
+    if (window->datnam[0])
     {
-        if (strcmp (f->dirct, f->ed->dirct) == 0 ||
-                f->dtmd == DTMD_HELP || strcmp (f->datnam, BUFFER_NAME) == 0 ||
-                num_cols_on_screen(f) < 40)
+        if (strcmp (window->dirct, window->ed->dirct) == 0 ||
+                window->dtmd == DTMD_HELP || strcmp (window->datnam, BUFFER_NAME) == 0 ||
+                num_cols_on_screen(window) < 40)
         {
-            header = (char *) malloc (strlen (f->datnam) + 1);
-            strcpy (header, f->datnam);
+            header = (char *) malloc (strlen (window->datnam) + 1);
+            strcpy (header, window->datnam);
         }
         else
         {
             header =
-                (char *) malloc (strlen (f->dirct) + strlen (f->datnam) + 1);
-            strcpy (header, f->dirct);
-            strcat (header, f->datnam);
+                (char *) malloc (strlen (window->dirct) + strlen (window->datnam) + 1);
+            strcpy (header, window->dirct);
+            strcat (header, window->datnam);
         }
     }
-    e_std_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, header, sw, f->colorset->er.fg_bg_color,
-                  f->colorset->es.fg_bg_color);
+    e_std_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, header, sw, window->colorset->er.fg_bg_color,
+                  window->colorset->es.fg_bg_color);
     if (header)
         free (header);
     if (sw > 0)
     {
-        e_mouse_bar (f->e.x, f->a.y + 1, num_lines_on_screen(f) - 1, 0,
-                     f->colorset->em.fg_bg_color);
-        e_mouse_bar (f->a.x + 19, f->e.y, num_cols_on_screen(f) - 20, 1,
-                     f->colorset->em.fg_bg_color);
-        if (f->zoom == 0)
-            e_pr_char (f->e.x - 3, f->a.y, WZN, f->colorset->es.fg_bg_color);
+        e_mouse_bar (window->e.x, window->a.y + 1, num_lines_on_screen(window) - 1, 0,
+                     window->colorset->em.fg_bg_color);
+        e_mouse_bar (window->a.x + 19, window->e.y, num_cols_on_screen(window) - 20, 1,
+                     window->colorset->em.fg_bg_color);
+        if (window->zoom == 0)
+            e_pr_char (window->e.x - 3, window->a.y, WZN, window->colorset->es.fg_bg_color);
         else
-            e_pr_char (f->e.x - 3, f->a.y, WZY, f->colorset->es.fg_bg_color);
+            e_pr_char (window->e.x - 3, window->a.y, WZY, window->colorset->es.fg_bg_color);
 #ifdef NEWSTYLE
         if (!WpeIsXwin ())
         {
 #endif
-            e_pr_char (f->e.x - 4, f->a.y, '[', f->colorset->er.fg_bg_color);
-            e_pr_char (f->e.x - 2, f->a.y, ']', f->colorset->er.fg_bg_color);
+            e_pr_char (window->e.x - 4, window->a.y, '[', window->colorset->er.fg_bg_color);
+            e_pr_char (window->e.x - 2, window->a.y, ']', window->colorset->er.fg_bg_color);
 #ifdef NEWSTYLE
         }
         else
-            e_make_xrect (f->e.x - 4, f->a.y, f->e.x - 2, f->a.y, 0);
+            e_make_xrect (window->e.x - 4, window->a.y, window->e.x - 2, window->a.y, 0);
 #endif
-        e_pr_filetype (f);
-        if (WpeIsXwin () && num_lines_on_screen(f) > 8)
+        e_pr_filetype (window);
+        if (WpeIsXwin () && num_lines_on_screen(window) > 8)
         {
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
-            e_pr_char (f->a.x, f->a.y + 2, 'F', f->colorset->em.fg_bg_color);
-            e_make_xrect (f->a.x, f->a.y + 2, f->a.x, f->a.y + 2, 0);
-            e_pr_char (f->a.x, f->a.y + 4, 'R', f->colorset->em.fg_bg_color);
-            e_make_xrect (f->a.x, f->a.y + 4, f->a.x, f->a.y + 4, 0);
-            e_pr_char (f->a.x, f->a.y + 6, 'A', f->colorset->em.fg_bg_color);
-            e_make_xrect (f->a.x, f->a.y + 6, f->a.x, f->a.y + 6, 0);
-            if (f->ins != 8)
+            e_pr_char (window->a.x, window->a.y + 2, 'F', window->colorset->em.fg_bg_color);
+            e_make_xrect (window->a.x, window->a.y + 2, window->a.x, window->a.y + 2, 0);
+            e_pr_char (window->a.x, window->a.y + 4, 'R', window->colorset->em.fg_bg_color);
+            e_make_xrect (window->a.x, window->a.y + 4, window->a.x, window->a.y + 4, 0);
+            e_pr_char (window->a.x, window->a.y + 6, 'A', window->colorset->em.fg_bg_color);
+            e_make_xrect (window->a.x, window->a.y + 6, window->a.x, window->a.y + 6, 0);
+            if (window->ins != 8)
             {
-                e_pr_char (f->a.x, f->a.y + 8, 'S', f->colorset->em.fg_bg_color);
-                e_make_xrect (f->a.x, f->a.y + 8, f->a.x, f->a.y + 8, 0);
+                e_pr_char (window->a.x, window->a.y + 8, 'S', window->colorset->em.fg_bg_color);
+                e_make_xrect (window->a.x, window->a.y + 8, window->a.x, window->a.y + 8, 0);
             }
 #else
-            e_pr_char (f->a.x, f->a.y + 2, 'F', f->colorset->em.fg_bg_color);
-            e_pr_char (f->a.x, f->a.y + 3, MCI, f->colorset->em.fg_bg_color);
-            e_pr_char (f->a.x, f->a.y + 4, 'R', f->colorset->em.fg_bg_color);
-            e_pr_char (f->a.x, f->a.y + 5, MCI, f->colorset->em.fg_bg_color);
-            e_pr_char (f->a.x, f->a.y + 6, 'A', f->colorset->em.fg_bg_color);
-            if (f->ins != 8)
+            e_pr_char (window->a.x, window->a.y + 2, 'F', window->colorset->em.fg_bg_color);
+            e_pr_char (window->a.x, window->a.y + 3, MCI, window->colorset->em.fg_bg_color);
+            e_pr_char (window->a.x, window->a.y + 4, 'R', window->colorset->em.fg_bg_color);
+            e_pr_char (window->a.x, window->a.y + 5, MCI, window->colorset->em.fg_bg_color);
+            e_pr_char (window->a.x, window->a.y + 6, 'A', window->colorset->em.fg_bg_color);
+            if (window->ins != 8)
             {
-                e_pr_char (f->a.x, f->a.y + 7, MCI, f->colorset->em.fg_bg_color);
-                e_pr_char (f->a.x, f->a.y + 8, 'S', f->colorset->em.fg_bg_color);
+                e_pr_char (window->a.x, window->a.y + 7, MCI, window->colorset->em.fg_bg_color);
+                e_pr_char (window->a.x, window->a.y + 8, 'S', window->colorset->em.fg_bg_color);
             }
 #endif
         }
-        e_zlsplt (f);
-        blst = f->blst;
-        nblst = f->nblst;
-        e_hlp = f->hlp_str;
-        e_pr_uul (f->colorset);
+        e_zlsplt (window);
+        blst = window->blst;
+        nblst = window->nblst;
+        e_hlp = window->hlp_str;
+        e_pr_uul (window->colorset);
     }
-    if (f->winnum < 10 && f->winnum >= 0)
-        e_pr_char (f->e.x - 6, f->a.y, '0' + f->winnum, f->colorset->er.fg_bg_color);
-    else if (f->winnum >= 0)
-        e_pr_char (f->e.x - 6, f->a.y, 'A' - 10 + f->winnum, f->colorset->er.fg_bg_color);
+    if (window->winnum < 10 && window->winnum >= 0)
+        e_pr_char (window->e.x - 6, window->a.y, '0' + window->winnum, window->colorset->er.fg_bg_color);
+    else if (window->winnum >= 0)
+        e_pr_char (window->e.x - 6, window->a.y, 'A' - 10 + window->winnum, window->colorset->er.fg_bg_color);
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
-        e_make_xr_rahmen (f->a.x, f->a.y, f->e.x, f->e.y, sw);
+        e_make_xr_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, sw);
 #endif
 }
 
@@ -518,15 +518,15 @@ e_schirm (we_window_t * window, int sw)
 
 /*   Move and modify window */
 int
-e_size_move (we_window_t * f)
+e_size_move (we_window_t * window)
 {
-    int xa = f->a.x, ya = f->a.y, xe = f->e.x, ye = f->e.y;
+    int xa = window->a.x, ya = window->a.y, xe = window->e.x, ye = window->e.y;
     int c = 0, xmin = 26, ymin = 3;
 
-    e_ed_rahmen (f, 0);
-    if (f->dtmd == DTMD_FILEDROPDOWN)
+    e_ed_rahmen (window, 0);
+    if (window->dtmd == DTMD_FILEDROPDOWN)
         xmin = 15;
-    else if (!DTMD_ISTEXT (f->dtmd))
+    else if (!DTMD_ISTEXT (window->dtmd))
         ymin = 9;
     while ((c = e_getch ()) != WPE_ESC && c != WPE_CR)
     {
@@ -581,28 +581,28 @@ e_size_move (we_window_t * f)
                 ye++;
             break;
         }
-        if (xa != f->a.x || ya != f->a.y || xe != f->e.x || ye != f->e.y)
+        if (xa != window->a.x || ya != window->a.y || xe != window->e.x || ye != window->e.y)
         {
-            f->a.x = xa;
-            f->a.y = ya;
-            f->e.x = xe;
-            f->e.y = ye;
-            f->view = e_ed_kst (f, f->view, 0);
-            if (f->view == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
-            if (f->dtmd == DTMD_FILEDROPDOWN)
+            window->a.x = xa;
+            window->a.y = ya;
+            window->e.x = xe;
+            window->e.y = ye;
+            window->view = e_ed_kst (window, window->view, 0);
+            if (window->view == NULL)
+                e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+            if (window->dtmd == DTMD_FILEDROPDOWN)
             {
-                FLWND *fw = (FLWND *) f->b;
-                fw->xa = f->a.x + 1;
-                fw->xe = f->e.x;
-                fw->ya = f->a.y + 1;
-                fw->ye = f->e.y;
+                FLWND *fw = (FLWND *) window->b;
+                fw->xa = window->a.x + 1;
+                fw->xe = window->e.x;
+                fw->ya = window->a.y + 1;
+                fw->ye = window->e.y;
             }
-            e_cursor (f, 0);
-            e_schirm (f, 0);
+            e_cursor (window, 0);
+            e_schirm (window, 0);
         }
     }
-    e_ed_rahmen (f, 1);
+    e_ed_rahmen (window, 1);
     return (c);
 }
 
@@ -790,11 +790,11 @@ e_change_pic (int xa, int ya, int xe, int ye, we_view_t * view, int sw, int frb)
 }
 
 we_view_t *
-e_ed_kst (we_window_t * f, we_view_t * view, int sw)
+e_ed_kst (we_window_t * window, we_view_t * view, int sw)
 {
-    we_view_t *new_view = e_change_pic (f->a.x, f->a.y, f->e.x,
-                                        f->e.y, view, sw, f->colorset->er.fg_bg_color);
-    e_ed_rahmen (f, sw);
+    we_view_t *new_view = e_change_pic (window->a.x, window->a.y, window->e.x,
+                                        window->e.y, view, sw, window->colorset->er.fg_bg_color);
+    e_ed_rahmen (window, sw);
     return (new_view);
 }
 
@@ -824,20 +824,20 @@ e_close_buffer (BUFFER * b)
 
 /*    close window */
 int
-e_close_window (we_window_t * f)
+e_close_window (we_window_t * window)
 {
-    we_control_t *control = f->ed;
-    we_window_t *f0 = f->ed->f[0];
+    we_control_t *control = window->ed;
+    we_window_t *f0 = window->ed->window[0];
     int c = 0;
     unsigned long maxname;
     char text[256];
 
-    f = control->f[control->mxedt];
-    if (f->dtmd == DTMD_FILEMANAGER)
+    window = control->window[control->mxedt];
+    if (window->dtmd == DTMD_FILEMANAGER)
     {
-        FLBFFR *b = (FLBFFR *) f->b;
+        FLBFFR *b = (FLBFFR *) window->b;
 
-        free (f->dirct);
+        free (window->dirct);
         free (b->rdfile);
         freedf (b->df);
         freedf (b->fw->df);
@@ -849,94 +849,94 @@ e_close_window (we_window_t * f)
         free (b);
         (control->mxedt)--;
         control->curedt = control->edt[control->mxedt];
-        e_close_view (f->view, 1);
-        if (f != f0 && f != NULL)
+        e_close_view (window->view, 1);
+        if (window != f0 && window != NULL)
         {
-            e_free_find (&f->find);
-            free (f);
+            e_free_find (&window->find);
+            free (window);
         }
         if (control->mxedt > 0)
         {
-            f = control->f[control->mxedt];
-            e_ed_rahmen (f, 1);
+            window = control->window[control->mxedt];
+            e_ed_rahmen (window, 1);
         }
         return (0);
     }
-    if (f->dtmd == DTMD_DATA)
+    if (window->dtmd == DTMD_DATA)
     {
-        FLWND *fw = (FLWND *) f->b;
-        int swt = f->ins;
+        FLWND *fw = (FLWND *) window->b;
+        int swt = window->ins;
 
 #ifdef PROG
-        if (swt == 4 && f->save)
-            e_p_update_prj_fl (f);
+        if (swt == 4 && window->save)
+            e_p_update_prj_fl (window);
 #endif
-        if (f->dirct)
-            free (f->dirct);
+        if (window->dirct)
+            free (window->dirct);
         if (swt == 7)
             freedf (fw->df);
         free (fw);
         (control->mxedt)--;
         control->curedt = control->edt[control->mxedt];
-        e_close_view (f->view, 1);
-        if (f != f0 && f != NULL)
+        e_close_view (window->view, 1);
+        if (window != f0 && window != NULL)
         {
-            e_free_find (&f->find);
-            free (f);
+            e_free_find (&window->find);
+            free (window);
         }
         if (control->mxedt > 0 && (swt < 5 || swt == 7))
         {
-            f = control->f[control->mxedt];
-            e_ed_rahmen (f, 1);
+            window = control->window[control->mxedt];
+            e_ed_rahmen (window, 1);
         }
         return (0);
     }
-    if (f == NULL || f->ed->mxedt <= 0)
+    if (window == NULL || window->ed->mxedt <= 0)
         return (0);
-    if (f != f0)
+    if (window != f0)
     {
-        if (f->save != 0 && f->ins != 8)
+        if (window->save != 0 && window->ins != 8)
         {
             sprintf (text, "File %s NOT saved!\nDo you want to save File ?",
-                     f->datnam);
-            c = e_message (1, text, f);
+                     window->datnam);
+            c = e_message (1, text, window);
             if (c == WPE_ESC)
                 return (c);
             else if (c == 'Y')
-                e_save (f);
+                e_save (window);
         }
         /* Check if file system could have an autosave or emergency save file
            >12 check is to eliminate dos file systems */
         if (((maxname =
-                    pathconf (f->dirct, _PC_NAME_MAX)) >= strlen (f->datnam) + 4)
+                    pathconf (window->dirct, _PC_NAME_MAX)) >= strlen (window->datnam) + 4)
                 && (maxname > 12))
         {
-            remove (e_make_postf (text, f->datnam, ".ASV"));
-            remove (e_make_postf (text, f->datnam, ".ESV"));
+            remove (e_make_postf (text, window->datnam, ".ASV"));
+            remove (e_make_postf (text, window->datnam, ".ESV"));
         }
-        if (strcmp (f->datnam, "Messages") && strcmp (f->datnam, "Watches"))
-            e_close_buffer (f->b);
-        if (f->dtmd == DTMD_HELP && f->ins == 8)
-            e_help_free (f);
-        if (f->datnam != NULL)
-            free (f->datnam);
-        if (f->dirct != NULL)
-            free (f->dirct);
-        if (f && f->s != NULL)
-            free (f->s);
+        if (strcmp (window->datnam, "Messages") && strcmp (window->datnam, "Watches"))
+            e_close_buffer (window->b);
+        if (window->dtmd == DTMD_HELP && window->ins == 8)
+            e_help_free (window);
+        if (window->datnam != NULL)
+            free (window->datnam);
+        if (window->dirct != NULL)
+            free (window->dirct);
+        if (window && window->s != NULL)
+            free (window->s);
     }
     (control->mxedt)--;
     control->curedt = control->edt[control->mxedt];
-    e_close_view (f->view, 1);
-    if (f != f0 && f != NULL)
+    e_close_view (window->view, 1);
+    if (window != f0 && window != NULL)
     {
-        e_free_find (&f->find);
-        free (f);
+        e_free_find (&window->find);
+        free (window);
     }
     if (control->mxedt > 0)
     {
-        f = control->f[control->mxedt];
-        e_ed_rahmen (f, 1);
+        window = control->window[control->mxedt];
+        e_ed_rahmen (window, 1);
     }
     return (c);
 }
@@ -952,20 +952,20 @@ e_rep_win_tree (we_control_t * control)
     ini_repaint (control);
     for (i = 1; i < control->mxedt; i++)
     {
-        e_firstl (control->f[i], 0);
-        e_schirm (control->f[i], 0);
+        e_firstl (control->window[i], 0);
+        e_schirm (control->window[i], 0);
     }
-    e_firstl (control->f[i], 1);
-    e_schirm (control->f[i], 1);
-    e_cursor (control->f[i], 1);
+    e_firstl (control->window[i], 1);
+    e_schirm (control->window[i], 1);
+    e_cursor (control->window[i], 1);
     end_repaint ();
     return (0);
 }
 
 void
-e_switch_window (int num, we_window_t * f)
+e_switch_window (int num, we_window_t * window)
 {
-    we_control_t *control = f->ed;
+    we_control_t *control = window->ed;
     we_window_t *ft;
     int n, i, te;
 
@@ -975,17 +975,17 @@ e_switch_window (int num, we_window_t * f)
         return;
     for (i = control->mxedt; i >= 1; i--)
     {
-        free (control->f[i]->view->p);
-        free (control->f[i]->view);
+        free (control->window[i]->view->p);
+        free (control->window[i]->view);
     }
-    ft = control->f[n];
+    ft = control->window[n];
     te = control->edt[n];
     for (i = n; i < control->mxedt; i++)
     {
         control->edt[i] = control->edt[i + 1];
-        control->f[i] = control->f[i + 1];
+        control->window[i] = control->window[i + 1];
     }
-    control->f[i] = ft;
+    control->window[i] = ft;
     control->edt[i] = te;
     control->curedt = num;
     e_rep_win_tree (control);
@@ -993,68 +993,68 @@ e_switch_window (int num, we_window_t * f)
 
 /*    zoom windows   */
 int
-e_ed_zoom (we_window_t * f)
+e_ed_zoom (we_window_t * window)
 {
-    if (f->ed->mxedt > 0)
+    if (window->ed->mxedt > 0)
     {
-        if (f->zoom == 0)
+        if (window->zoom == 0)
         {
-            f->sa = e_set_pnt (f->a.x, f->a.y);
-            f->se = e_set_pnt (f->e.x, f->e.y);
-            f->a = e_set_pnt (0, 1);
-            f->e = e_set_pnt (MAXSCOL - 1, MAXSLNS - 2);
-            f->zoom = 1;
+            window->sa = e_set_pnt (window->a.x, window->a.y);
+            window->se = e_set_pnt (window->e.x, window->e.y);
+            window->a = e_set_pnt (0, 1);
+            window->e = e_set_pnt (MAXSCOL - 1, MAXSLNS - 2);
+            window->zoom = 1;
         }
         else
         {
-            f->a = e_set_pnt (f->sa.x, f->sa.y);
-            f->e = e_set_pnt (f->se.x, f->se.y);
-            f->zoom = 0;
+            window->a = e_set_pnt (window->sa.x, window->sa.y);
+            window->e = e_set_pnt (window->se.x, window->se.y);
+            window->zoom = 0;
         }
-        f->view = e_ed_kst (f, f->view, 1);
-        if (f->view == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
-        e_cursor (f, 1);
-        e_schirm (f, 1);
+        window->view = e_ed_kst (window, window->view, 1);
+        if (window->view == NULL)
+            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_cursor (window, 1);
+        e_schirm (window, 1);
     }
     return (WPE_ESC);
 }
 
 /*   cascade windows   */
 int
-e_ed_cascade (we_window_t * f)
+e_ed_cascade (we_window_t * window)
 {
-    we_control_t *control = f->ed;
+    we_control_t *control = window->ed;
     int i;
 
     if (control->mxedt < 1)
         return 0;			/* no windows open */
     for (i = control->mxedt; i >= 1; i--)
     {
-        free (control->f[i]->view->p);
-        free (control->f[i]->view);
-        control->f[i]->a = e_set_pnt (i - 1, i);
-        control->f[i]->e =
+        free (control->window[i]->view->p);
+        free (control->window[i]->view);
+        control->window[i]->a = e_set_pnt (i - 1, i);
+        control->window[i]->e =
             e_set_pnt (MAXSCOL - 1 - control->mxedt + i, MAXSLNS - 2 - control->mxedt + i);
     }
     ini_repaint (control);
     for (i = 1; i < control->mxedt; i++)
     {
-        e_firstl (control->f[i], 0);
-        e_schirm (control->f[i], 0);
+        e_firstl (control->window[i], 0);
+        e_schirm (control->window[i], 0);
     }
-    e_firstl (control->f[i], 1);
-    e_schirm (control->f[i], 1);
-    e_cursor (control->f[i], 1);
+    e_firstl (control->window[i], 1);
+    e_schirm (control->window[i], 1);
+    e_cursor (control->window[i], 1);
     end_repaint ();
     return (0);
 }
 
 /*   Tile windows   */
 int
-e_ed_tile (we_window_t * f)
+e_ed_tile (we_window_t * window)
 {
-    we_control_t *control = f->ed;
+    we_control_t *control = window->ed;
     we_point_t atmp[MAXEDT + 1];
     we_point_t etmp[MAXEDT + 1];
     int i, j, ni, nj;
@@ -1065,10 +1065,10 @@ e_ed_tile (we_window_t * f)
     for (i = control->mxedt; i >= 1; i--)
     {
         if ((!(control->edopt & ED_OLD_TILE_METHOD))
-                && (!DTMD_ISTEXT (control->f[i]->dtmd)
+                && (!DTMD_ISTEXT (control->window[i]->dtmd)
                     || ((WpeIsProg ())
-                        && ((strcmp (control->f[i]->datnam, "Messages") == 0)
-                            || (strcmp (control->f[i]->datnam, "Watches") == 0)))))
+                        && ((strcmp (control->window[i]->datnam, "Messages") == 0)
+                            || (strcmp (control->window[i]->datnam, "Watches") == 0)))))
         {
             editorwin[i] = 0;
         }
@@ -1086,8 +1086,8 @@ e_ed_tile (we_window_t * f)
     }
     for (i = control->mxedt; i >= 1; i--)
     {
-        free (control->f[i]->view->p);
-        free (control->f[i]->view);
+        free (control->window[i]->view->p);
+        free (control->window[i]->view);
     }
     for (ni = editwin, nj = 1; ni > 1; ni--)
     {
@@ -1172,29 +1172,29 @@ e_ed_tile (we_window_t * f)
     {
         while (!editorwin[j])
             j++;
-        control->f[j]->a = e_set_pnt (atmp[i].x, atmp[i].y);
-        control->f[j]->e = e_set_pnt (etmp[i].x, etmp[i].y);
-        control->f[j]->zoom = 0;	/* Make sure zoom is off */
+        control->window[j]->a = e_set_pnt (atmp[i].x, atmp[i].y);
+        control->window[j]->e = e_set_pnt (etmp[i].x, etmp[i].y);
+        control->window[j]->zoom = 0;	/* Make sure zoom is off */
     }
     ini_repaint (control);
     for (i = 1; i < control->mxedt; i++)
     {
-        e_firstl (control->f[i], 0);
-        e_schirm (control->f[i], 0);
+        e_firstl (control->window[i], 0);
+        e_schirm (control->window[i], 0);
     }
-    e_firstl (control->f[i], 1);
-    e_schirm (control->f[i], 1);
-    e_cursor (control->f[i], 1);
+    e_firstl (control->window[i], 1);
+    e_schirm (control->window[i], 1);
+    e_cursor (control->window[i], 1);
     end_repaint ();
     return (0);
 }
 
 /*   call next window   */
 int
-e_ed_next (we_window_t * f)
+e_ed_next (we_window_t * window)
 {
-    if (f->ed->mxedt > 0)
-        e_switch_window (f->ed->edt[1], f);
+    if (window->ed->mxedt > 0)
+        e_switch_window (window->ed->edt[1], window);
     return (0);
 }
 
@@ -1554,14 +1554,14 @@ e_add_df (char *str, struct dirfile *df)
 }
 
 int
-e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
+e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
 {
-    we_control_t *control = f->ed;
+    we_control_t *control = window->ed;
     int ret, ye = ya + 6;
     int xe = xa + 21;
     FLWND *fw = malloc (sizeof (FLWND));
 
-    if ((f = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
+    if ((window = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
     if (xe > MAXSCOL - 3)
     {
@@ -1573,23 +1573,23 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
         ye = MAXSLNS - 3;
         ya = ye - 6;
     }
-    f->colorset = control->colorset;
-    f->a = e_set_pnt (xa, ya);
-    f->e = e_set_pnt (xe, ye);
-    f->dtmd = DTMD_FILEDROPDOWN;
-    f->zoom = 0;
-    f->ed = control;
-    f->c_sw = NULL;
-    f->c_st = NULL;
-    f->find.dirct = NULL;
-    f->winnum = -1;
-    f->datnam = "";
-    if (!(f->view = e_ed_kst (f, NULL, 1)))
+    window->colorset = control->colorset;
+    window->a = e_set_pnt (xa, ya);
+    window->e = e_set_pnt (xe, ye);
+    window->dtmd = DTMD_FILEDROPDOWN;
+    window->zoom = 0;
+    window->ed = control;
+    window->c_sw = NULL;
+    window->c_st = NULL;
+    window->find.dirct = NULL;
+    window->winnum = -1;
+    window->datnam = "";
+    if (!(window->view = e_ed_kst (window, NULL, 1)))
     {
-        e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
+        e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
         return (0);
     }
-    f->b = (BUFFER *) fw;
+    window->b = (BUFFER *) fw;
     fw->mxa = xa;
     fw->mxe = xe;
     fw->mya = ya;
@@ -1600,30 +1600,30 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * f)
     fw->ye = ye;
     fw->df = df;
     fw->srcha = 0;
-    fw->f = f;
+    fw->window = window;
     fw->nf = fw->ia = fw->ja = 0;
     do
     {
-        ret = e_file_window (0, fw, f->colorset->er.fg_bg_color, f->colorset->ez.fg_bg_color);
+        ret = e_file_window (0, fw, window->colorset->er.fg_bg_color, window->colorset->ez.fg_bg_color);
 #if MOUSE
         if (ret < 0)
-            ret = e_rahmen_mouse (f);
+            ret = e_rahmen_mouse (window);
 #endif
-        if ((ret == AF2 && !(f->ed->edopt & ED_CUA_STYLE)) ||
-                (f->ed->edopt & ED_CUA_STYLE && ret == CtrlL))
-            e_size_move (f);
+        if ((ret == AF2 && !(window->ed->edopt & ED_CUA_STYLE)) ||
+                (window->ed->edopt & ED_CUA_STYLE && ret == CtrlL))
+            e_size_move (window);
     }
     while (ret != WPE_CR && ret != WPE_ESC);
     *n = fw->nf;
-    e_close_view (f->view, 1);
+    e_close_view (window->view, 1);
     free (fw);
-    free (f);
+    free (window);
     return (ret);
 }
 
 int
 e_schr_lst_wsv (char *str, int xa, int ya, int n, int len, int ft,
-                int fz, struct dirfile **df, we_window_t * f)
+                int fz, struct dirfile **df, we_window_t * window)
 {
 #if MOUSE
     extern struct mouse e_mouse;
@@ -1642,7 +1642,7 @@ e_schr_lst_wsv (char *str, int xa, int ya, int n, int len, int ft,
                 && e_mouse.x <= xa + n - 1)
             ret = CDO;
 #endif
-        if (ret == CDO && e_sv_window (xa + n, ya, &num, *df, f) == WPE_CR)
+        if (ret == CDO && e_sv_window (xa + n, ya, &num, *df, window) == WPE_CR)
             strcpy (str, (*df)->name[num]);
     }
     while (ret == CDO);
@@ -1679,9 +1679,9 @@ e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col, int csw)
 #endif
 
 int
-e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * f)
+e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * window)
 {
-    we_control_t *control = f->ed;
+    we_control_t *control = window->ed;
     extern int (*e_u_kbhit) (void);
 #if MOUSE
     extern struct mouse e_mouse;
@@ -1711,8 +1711,8 @@ e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * f)
         *view = e_change_pic (xa, ya, xe, ye, *view, 1, control->colorset->nt.fg_bg_color);
         for (i = xa + 1; i < xe; i++)
         {
-            e_pr_char (i, ye - 2, ' ', f->colorset->nt.fg_bg_color);
-            e_pr_char (i, ye - 1, ' ', f->colorset->nt.fg_bg_color);
+            e_pr_char (i, ye - 2, ' ', window->colorset->nt.fg_bg_color);
+            e_pr_char (i, ye - 1, ' ', window->colorset->nt.fg_bg_color);
         }
         e_pr_str ((xe + xa - 6) / 2, ye - 2, "Ctrl C", control->colorset->nz.fg_bg_color, -1, -1,
                   control->colorset->ns.fg_bg_color, control->colorset->nt.fg_bg_color);
@@ -1754,7 +1754,7 @@ e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * f)
 }
 
 int
-e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
+e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * window, int sw)
 {
     we_view_t *view;
     int n, nold, max = 0, i, c = 0, xe, ye = ya + num + 1;
@@ -1763,16 +1763,16 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
             max = n;
     xe = xa + max + 3;
     view =
-        e_std_kst (xa, ya, xe, ye, NULL, sw, f->colorset->nr.fg_bg_color, f->colorset->nt.fg_bg_color,
-                   f->colorset->ne.fg_bg_color);
+        e_std_kst (xa, ya, xe, ye, NULL, sw, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
+                   window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, f->colorset);
+        e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
         return (-2);
     }
     for (i = 0; i < num; i++)
-        e_pr_str_wsd (xa + 2, ya + i + 1, opt[i].t, f->colorset->mt.fg_bg_color, opt[i].x,
-                      1, f->colorset->ms.fg_bg_color, xa + 1, xe - 1);
+        e_pr_str_wsd (xa + 2, ya + i + 1, opt[i].t, window->colorset->mt.fg_bg_color, opt[i].x,
+                      1, window->colorset->ms.fg_bg_color, xa + 1, xe - 1);
 #if  MOUSE
     while (e_mshit () != 0);
 #endif
@@ -1782,10 +1782,10 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
     {
         if (nold != n)
         {
-            e_pr_str_wsd (xa + 2, nold + ya + 1, opt[nold].t, f->colorset->mt.fg_bg_color,
-                          opt[nold].x, 1, f->colorset->ms.fg_bg_color, xa + 1, xe - 1);
-            e_pr_str_wsd (xa + 2, n + ya + 1, opt[n].t, f->colorset->mz.fg_bg_color,
-                          opt[n].x, 1, f->colorset->mz.fg_bg_color, xa + 1, xe - 1);
+            e_pr_str_wsd (xa + 2, nold + ya + 1, opt[nold].t, window->colorset->mt.fg_bg_color,
+                          opt[nold].x, 1, window->colorset->ms.fg_bg_color, xa + 1, xe - 1);
+            e_pr_str_wsd (xa + 2, n + ya + 1, opt[n].t, window->colorset->mz.fg_bg_color,
+                          opt[n].x, 1, window->colorset->mz.fg_bg_color, xa + 1, xe - 1);
             nold = n;
         }
 #if  MOUSE
@@ -1818,14 +1818,14 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * f, int sw)
 }
 
 struct dirfile *
-e_make_win_list (we_window_t * f)
+e_make_win_list (we_window_t * window)
 {
     int i;
     struct dirfile *df;
 
     if (!(df = malloc (sizeof (struct dirfile))))
         return (NULL);
-    df->nr_files = f->ed->mxedt;
+    df->nr_files = window->ed->mxedt;
     if (!(df->name = malloc (df->nr_files * sizeof (char *))))
     {
         free (df);
@@ -1833,10 +1833,10 @@ e_make_win_list (we_window_t * f)
     }
     for (i = 0; i < df->nr_files; i++)
     {
-        if (f->ed->f[df->nr_files - i]->datnam)
+        if (window->ed->window[df->nr_files - i]->datnam)
         {
             if (!(df->name[i] =
-                        malloc ((strlen (f->ed->f[df->nr_files - i]->datnam) +
+                        malloc ((strlen (window->ed->window[df->nr_files - i]->datnam) +
                                  1) * sizeof (char))))
             {
                 df->nr_files = i;
@@ -1844,7 +1844,7 @@ e_make_win_list (we_window_t * f)
                 return (NULL);
             }
             else
-                strcpy (df->name[i], f->ed->f[df->nr_files - i]->datnam);
+                strcpy (df->name[i], window->ed->window[df->nr_files - i]->datnam);
         }
         else
         {
@@ -1862,17 +1862,17 @@ e_make_win_list (we_window_t * f)
 }
 
 int
-e_list_all_win (we_window_t * f)
+e_list_all_win (we_window_t * window)
 {
     int i;
 
-    for (i = f->ed->mxedt; i > 0; i--)
-        if (f->ed->f[i]->dtmd == DTMD_DATA && f->ed->f[i]->ins == 7)
+    for (i = window->ed->mxedt; i > 0; i--)
+        if (window->ed->window[i]->dtmd == DTMD_DATA && window->ed->window[i]->ins == 7)
         {
-            e_switch_window (f->ed->edt[i], f);
+            e_switch_window (window->ed->edt[i], window);
             return (0);
         }
-    return (e_data_first (7, f->ed, NULL));
+    return (e_data_first (7, window->ed, NULL));
 }
 
 #ifdef NEWSTYLE

@@ -41,11 +41,11 @@ int e_x_sys_end (void);
 int fk_x_putchar (int c);
 int x_bioskey (void);
 int e_x_system (const char *exe);
-int e_x_cp_X_to_buffer (we_window_t * f);
-int e_x_copy_X_buffer (we_window_t * f);
-int e_x_paste_X_buffer (we_window_t * f);
+int e_x_cp_X_to_buffer (we_window_t * window);
+int e_x_copy_X_buffer (we_window_t * window);
+int e_x_paste_X_buffer (we_window_t * window);
 int e_x_change (we_view_t * view);
-int e_x_repaint_desk (we_window_t * f);
+int e_x_repaint_desk (we_window_t * window);
 void e_setlastpic (we_view_t * view);
 int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
 int e_x_kbhit (void);
@@ -534,7 +534,7 @@ e_x_change (we_view_t * view)
             {
                 MAXSCOL = size_hints.width / WpeXInfo.font_width;
                 MAXSLNS = size_hints.height / WpeXInfo.font_height;
-                e_x_repaint_desk (global_editor_control->f[global_editor_control->mxedt]);
+                e_x_repaint_desk (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
         case KeyPress:
@@ -627,7 +627,7 @@ e_x_getch ()
             {
                 MAXSCOL = size_hints.width / WpeXInfo.font_width;
                 MAXSLNS = size_hints.height / WpeXInfo.font_height;
-                e_x_repaint_desk (global_editor_control->f[global_editor_control->mxedt]);
+                e_x_repaint_desk (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
         case ClientMessage:
@@ -642,7 +642,7 @@ e_x_getch ()
                                                    data.l[0] ==
                                                    WpeXInfo.delete_atom)))
             {
-                e_quit (global_editor_control->f[global_editor_control->mxedt]);
+                e_quit (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
         case KeyPress:
@@ -992,14 +992,14 @@ e_x_system (const char *exe)
 }
 
 int
-e_x_repaint_desk (we_window_t * f)
+e_x_repaint_desk (we_window_t * window)
 {
-    we_control_t *control = f->ed;
+    we_control_t *control = window->ed;
     int i, g[4];
     extern we_view_t *e_X_l_pic;
     we_view_t *sv_pic = NULL, *nw_pic = NULL;
 
-    if (e_X_l_pic && e_X_l_pic != control->f[control->mxedt]->view)
+    if (e_X_l_pic && e_X_l_pic != control->window[control->mxedt]->view)
     {
         sv_pic = e_X_l_pic;
         nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y, e_X_l_pic->e.x,
@@ -1008,8 +1008,8 @@ e_x_repaint_desk (we_window_t * f)
     e_ini_size ();
     if (control->mxedt < 1)
     {
-        e_cls (f->colorset->df.fg_bg_color, f->colorset->dc);
-        e_ini_desk (f->ed);
+        e_cls (window->colorset->df.fg_bg_color, window->colorset->dc);
+        e_ini_desk (window->ed);
         if (nw_pic)
         {
             e_close_view (nw_pic, 1);
@@ -1021,30 +1021,30 @@ e_x_repaint_desk (we_window_t * f)
     e_abs_refr ();
     for (i = control->mxedt; i >= 1; i--)
     {
-        free (control->f[i]->view->p);
-        free (control->f[i]->view);
+        free (control->window[i]->view->p);
+        free (control->window[i]->view);
     }
     for (i = 0; i <= control->mxedt; i++)
     {
-        if (control->f[i]->e.x >= MAXSCOL)
-            control->f[i]->e.x = MAXSCOL - 1;
-        if (control->f[i]->e.y >= MAXSLNS - 1)
-            control->f[i]->e.y = MAXSLNS - 2;
-        if (control->f[i]->e.x - control->f[i]->a.x < 26)
-            control->f[i]->a.x = control->f[i]->e.x - 26;
-        if (!DTMD_ISTEXT (control->f[i]->dtmd) && control->f[i]->e.y - control->f[i]->a.y < 9)
-            control->f[i]->a.y = control->f[i]->e.y - 9;
-        else if (DTMD_ISTEXT (control->f[i]->dtmd)
-                 && control->f[i]->e.y - control->f[i]->a.y < 3)
-            control->f[i]->a.y = control->f[i]->e.y - 3;
+        if (control->window[i]->e.x >= MAXSCOL)
+            control->window[i]->e.x = MAXSCOL - 1;
+        if (control->window[i]->e.y >= MAXSLNS - 1)
+            control->window[i]->e.y = MAXSLNS - 2;
+        if (control->window[i]->e.x - control->window[i]->a.x < 26)
+            control->window[i]->a.x = control->window[i]->e.x - 26;
+        if (!DTMD_ISTEXT (control->window[i]->dtmd) && control->window[i]->e.y - control->window[i]->a.y < 9)
+            control->window[i]->a.y = control->window[i]->e.y - 9;
+        else if (DTMD_ISTEXT (control->window[i]->dtmd)
+                 && control->window[i]->e.y - control->window[i]->a.y < 3)
+            control->window[i]->a.y = control->window[i]->e.y - 3;
     }
     for (i = 1; i < control->mxedt; i++)
     {
-        e_firstl (control->f[i], 0);
-        e_schirm (control->f[i], 0);
+        e_firstl (control->window[i], 0);
+        e_schirm (control->window[i], 0);
     }
-    e_firstl (control->f[i], 1);
-    e_schirm (control->f[i], 1);
+    e_firstl (control->window[i], 1);
+    e_schirm (control->window[i], 1);
     if (nw_pic)
     {
         e_close_view (nw_pic, 1);
@@ -1053,7 +1053,7 @@ e_x_repaint_desk (we_window_t * f)
     g[0] = 2;
     fk_mouse (g);
     end_repaint ();
-    e_cursor (control->f[i], 1);
+    e_cursor (control->window[i], 1);
     g[0] = 0;
     fk_mouse (g);
     g[0] = 1;
@@ -1091,10 +1091,10 @@ fk_x_mouse (int *g)
 }
 
 int
-e_x_cp_X_to_buffer (we_window_t * f)
+e_x_cp_X_to_buffer (we_window_t * window)
 {
-    BUFFER *b0 = f->ed->f[0]->b;
-    we_screen_t *s0 = f->ed->f[0]->s;
+    BUFFER *b0 = window->ed->window[0]->b;
+    we_screen_t *s0 = window->ed->window[0]->s;
     int i, j, k, n;
     unsigned char *str;
     XEvent report;
@@ -1181,22 +1181,22 @@ e_x_cp_X_to_buffer (we_window_t * f)
 }
 
 int
-e_x_copy_X_buffer (we_window_t * f)
+e_x_copy_X_buffer (we_window_t * window)
 {
-    e_cp_X_to_buffer (f);
-    e_edt_einf (f);
+    e_cp_X_to_buffer (window);
+    e_edt_einf (window);
     return (0);
 }
 
 int
-e_x_paste_X_buffer (we_window_t * f)
+e_x_paste_X_buffer (we_window_t * window)
 {
-    BUFFER *b0 = f->ed->f[0]->b;
-    we_screen_t *s0 = f->ed->f[0]->s;
+    BUFFER *b0 = window->ed->window[0]->b;
+    we_screen_t *s0 = window->ed->window[0]->s;
     int i, n;
     unsigned int j;
 
-    e_edt_copy (f);
+    e_edt_copy (window);
 #if defined SELECTION
     if (WpeXInfo.selection)
     {

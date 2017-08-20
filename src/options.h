@@ -5,12 +5,12 @@
   <options.h> -- Header file for option variables defines, etc.
 
   Date      Programmer  Description
-  3/27/98   Kenn F.     Created to handle f->ed-> stuff.
+  3/27/98   Kenn F.     Created to handle window->ed-> stuff.
 \*-------------------------------------------------------------------------*/
 
 #include "config.h"
 
-/* we_window f -> CNT ed -> flopt */
+/* we_window window -> CNT ed -> flopt */
 
 #define FM_SHOW_HIDDEN_FILES  0x0001
 #define FM_SHOW_HIDDEN_DIRS   0x0002
@@ -36,7 +36,7 @@
 #define FM_CLOSE_WINDOW       0x2000
 
 
-/* we_window f -> CNT ed -> edopt */
+/* we_window window -> CNT ed -> edopt */
 
 #define ED_CUA_STYLE          0x0001
 /* ED_OLD_STYLE */

@@ -335,10 +335,10 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
                 jc = e_mouse.x - x - 1 < l ? e_mouse.x - x - 1 : l;
                 if (c == -2)
                 {
-                    int len = global_editor_control->f[0]->b->buflines[0].len;
+                    int len = global_editor_control->window[0]->b->buflines[0].len;
 #ifndef NO_XWINDOWS
                     if (bioskey () & 8)
-                        e_cp_X_to_buffer (global_editor_control->f[global_editor_control->mxedt]);
+                        e_cp_X_to_buffer (global_editor_control->window[global_editor_control->mxedt]);
 #endif
                     while (e_mshit ())
                         ;
@@ -353,7 +353,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
                     for (i = l; i >= jc; i--)
                         tmp[i + len] = tmp[i];
                     for (i = jc; i < jc + len; i++)
-                        tmp[i] = global_editor_control->f[0]->b->buflines[0].s[i - jc];
+                        tmp[i] = global_editor_control->window[0]->b->buflines[0].s[i - jc];
                     jc += len;
                     l += len;
                 }
@@ -390,10 +390,10 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
             sond = !sond;
         else if (c == PASTE || c == ShiftEin || c == CtrlV || c == AltEin)
         {
-            int len = global_editor_control->f[0]->b->buflines[0].len;
+            int len = global_editor_control->window[0]->b->buflines[0].len;
 #ifndef NO_XWINDOWS
             if (WpeIsXwin () && c == AltEin)
-                e_cp_X_to_buffer (global_editor_control->f[global_editor_control->mxedt]);
+                e_cp_X_to_buffer (global_editor_control->window[global_editor_control->mxedt]);
 #endif
             if (first == 1)
             {
@@ -406,7 +406,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
             for (i = l; i >= jc; i--)
                 tmp[i + len] = tmp[i];
             for (i = jc; i < jc + len; i++)
-                tmp[i] = global_editor_control->f[0]->b->buflines[0].s[i - jc];
+                tmp[i] = global_editor_control->window[0]->b->buflines[0].s[i - jc];
             jc += len;
             l += len;
         }

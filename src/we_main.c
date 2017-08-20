@@ -135,7 +135,7 @@ main (int argc, char **argv)
     else
         blst = eblst_o;
     e_ini_desk (control);
-    control->f[0]->blst = eblst;
+    control->window[0]->blst = eblst;
 #if MOUSE
     g[0] = 4;
     g[2] = 0;
@@ -170,17 +170,17 @@ main (int argc, char **argv)
             e_edit (control, argv[i]);
     }
     if (control->mxedt == 0)
-        WpeManager (control->f[control->mxedt]);
+        WpeManager (control->window[control->mxedt]);
     do
     {
-        if (control->f[control->mxedt]->dtmd == DTMD_FILEMANAGER)
+        if (control->window[control->mxedt]->dtmd == DTMD_FILEMANAGER)
             i = WpeHandleFileManager (control);
-        else if (control->f[control->mxedt]->dtmd == DTMD_DATA)
+        else if (control->window[control->mxedt]->dtmd == DTMD_DATA)
             i = e_data_eingabe (control);
         else
             i = e_eingabe (control);
         if (i == AltX)
-            i = e_quit (control->f[control->mxedt]);
+            i = e_quit (control->window[control->mxedt]);
     }
     while (i != AltX);
     WpeExit (0);

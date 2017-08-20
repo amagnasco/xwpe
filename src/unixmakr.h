@@ -72,10 +72,10 @@ extern char *ctree[5];
 #define e_getch() (*e_u_getch)()
 #define fk_putchar(c) (*fk_u_putchar)(c)
 #define e_d_switch_out(c) (*e_u_d_switch_out)(c)
-#define e_deb_out(f) (*e_u_deb_out)(f)
-#define e_cp_X_to_buffer(f) (*e_u_cp_X_to_buffer)(f)
-#define e_copy_X_buffer(f) (*e_u_copy_X_buffer)(f)
-#define e_paste_X_buffer(f) (*e_u_paste_X_buffer)(f)
+#define e_deb_out(window) (*e_u_deb_out)(window)
+#define e_cp_X_to_buffer(window) (*e_u_cp_X_to_buffer)(window)
+#define e_copy_X_buffer(window) (*e_u_copy_X_buffer)(window)
+#define e_paste_X_buffer(window) (*e_u_paste_X_buffer)(window)
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   bioskey - Get the status of shift, alt, and control keys.
@@ -88,10 +88,10 @@ extern char *ctree[5];
        0   Right shift
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 #define bioskey() (*u_bioskey)()
-#define e_frb_menue(sw, xa, ya, f, md) (*e_frb_u_menue)(sw, xa, ya, f, md)
-#define e_pr_col_kasten(xa, ya, x, y, f, sw) \
-		(*e_pr_u_col_kasten)(xa, ya, x, y, f, sw)
-#define e_s_clr(f, b) (*e_s_u_clr)(f, b)
+#define e_frb_menue(sw, xa, ya, window, md) (*e_frb_u_menue)(sw, xa, ya, window, md)
+#define e_pr_col_kasten(xa, ya, x, y, window, sw) \
+		(*e_pr_u_col_kasten)(xa, ya, x, y, window, sw)
+#define e_s_clr(window, b) (*e_s_u_clr)(window, b)
 #define e_n_clr(fb) (*e_n_u_clr)(fb)
 
 #ifdef NEWSTYLE

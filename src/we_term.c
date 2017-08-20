@@ -56,7 +56,7 @@ int e_t_initscr (void);
 int e_t_kbhit (void);
 int e_t_d_switch_out (int sw);
 int e_t_switch_screen (int sw);
-int e_t_deb_out (we_window_t * f);
+int e_t_deb_out (we_window_t * window);
 int e_s_sys_end ();
 int e_s_sys_ini ();
 
@@ -1408,13 +1408,13 @@ e_t_switch_screen (int sw)
 }
 
 int
-e_t_deb_out (we_window_t * f)
+e_t_deb_out (we_window_t * window)
 {
 //#ifndef NCURSES
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
     if (!swt_scr || !beg_scr)
 #endif
-        return (e_error ("Your terminal don\'t use begin/end cup", 0, f->colorset));
+        return (e_error ("Your terminal don\'t use begin/end cup", 0, window->colorset));
     e_d_switch_out (1);
     getchar ();
     e_d_switch_out (0);

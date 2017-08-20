@@ -344,68 +344,68 @@ int
 e_switch_blst (we_control_t * control)
 {
     int i;
-    we_window_t *f;
+    we_window_t *window;
 
     if (control->edopt & ED_CUA_STYLE)
     {
         for (i = 0; i <= control->mxedt; i++)
         {
-            f = control->f[i];
-            if (f->blst == eblst_o)
-                f->blst = eblst_u;
-            else if (f->blst == fblst_o)
-                f->blst = fblst_u;
-            else if (f->blst == mblst_o)
-                f->blst = mblst_u;
-            else if (f->blst == dblst_o)
-                f->blst = dblst_u;
-            else if (f->blst == xblst_o)
-                f->blst = xblst_u;
-            else if (f->blst == wblst_o)
-                f->blst = wblst_u;
-            else if (f->blst == rblst_o)
-                f->blst = rblst_u;
-            else if (f->blst == ablst_o)
-                f->blst = ablst_u;
-            else if (f->blst == sblst_o)
-                f->blst = sblst_u;
-            else if (f->blst == hblst_o)
-                f->blst = hblst_u;
-            else if (f->blst == gblst_o)
-                f->blst = gblst_u;
-            else if (f->blst == oblst_o)
-                f->blst = oblst_u;
+            window = control->window[i];
+            if (window->blst == eblst_o)
+                window->blst = eblst_u;
+            else if (window->blst == fblst_o)
+                window->blst = fblst_u;
+            else if (window->blst == mblst_o)
+                window->blst = mblst_u;
+            else if (window->blst == dblst_o)
+                window->blst = dblst_u;
+            else if (window->blst == xblst_o)
+                window->blst = xblst_u;
+            else if (window->blst == wblst_o)
+                window->blst = wblst_u;
+            else if (window->blst == rblst_o)
+                window->blst = rblst_u;
+            else if (window->blst == ablst_o)
+                window->blst = ablst_u;
+            else if (window->blst == sblst_o)
+                window->blst = sblst_u;
+            else if (window->blst == hblst_o)
+                window->blst = hblst_u;
+            else if (window->blst == gblst_o)
+                window->blst = gblst_u;
+            else if (window->blst == oblst_o)
+                window->blst = oblst_u;
         }
     }
     else
     {
         for (i = 0; i <= control->mxedt; i++)
         {
-            f = control->f[i];
-            if (f->blst == eblst_u)
-                f->blst = eblst_o;
-            else if (f->blst == fblst_u)
-                f->blst = fblst_o;
-            else if (f->blst == mblst_u)
-                f->blst = mblst_o;
-            else if (f->blst == dblst_u)
-                f->blst = dblst_o;
-            else if (f->blst == xblst_u)
-                f->blst = xblst_o;
-            else if (f->blst == wblst_u)
-                f->blst = wblst_o;
-            else if (f->blst == rblst_u)
-                f->blst = rblst_o;
-            else if (f->blst == ablst_u)
-                f->blst = ablst_o;
-            else if (f->blst == sblst_u)
-                f->blst = sblst_o;
-            else if (f->blst == hblst_u)
-                f->blst = hblst_o;
-            else if (f->blst == gblst_u)
-                f->blst = gblst_o;
-            else if (f->blst == oblst_u)
-                f->blst = oblst_o;
+            window = control->window[i];
+            if (window->blst == eblst_u)
+                window->blst = eblst_o;
+            else if (window->blst == fblst_u)
+                window->blst = fblst_o;
+            else if (window->blst == mblst_u)
+                window->blst = mblst_o;
+            else if (window->blst == dblst_u)
+                window->blst = dblst_o;
+            else if (window->blst == xblst_u)
+                window->blst = xblst_o;
+            else if (window->blst == wblst_u)
+                window->blst = wblst_o;
+            else if (window->blst == rblst_u)
+                window->blst = rblst_o;
+            else if (window->blst == ablst_u)
+                window->blst = ablst_o;
+            else if (window->blst == sblst_u)
+                window->blst = sblst_o;
+            else if (window->blst == hblst_u)
+                window->blst = hblst_o;
+            else if (window->blst == gblst_u)
+                window->blst = gblst_o;
+            else if (window->blst == oblst_u)
+                window->blst = oblst_o;
         }
     }
     return (0);

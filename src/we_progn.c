@@ -69,7 +69,7 @@ extern char *e_p_msg[];
  *
  * The variable s hidden in a macro FRB1 .. FRB5 refers to an element of a screen.
  *
- * we_screen_t *s:	reference to an element of f->s
+ * we_screen_t *s:	reference to an element of window->s
  *
  * This function is in desparate need of refactoring. But testing first.
  *
@@ -432,7 +432,7 @@ e_scfbol (int n, int mcsw, unsigned char *str, WpeSyntaxRule * cs)
 }
 
 int
-e_sc_all (we_window_t * f, int sw)
+e_sc_all (we_window_t * window, int sw)
 {
     int i;
 
@@ -440,37 +440,37 @@ e_sc_all (we_window_t * f, int sw)
         return (0);
     if (!sw)
     {
-        for (i = 0; i <= f->ed->mxedt; i++)
-            if (f->ed->f[i]->c_sw)
+        for (i = 0; i <= window->ed->mxedt; i++)
+            if (window->ed->window[i]->c_sw)
             {
-                free (f->ed->f[i]->c_sw);
-                f->ed->f[i]->c_sw = NULL;
+                free (window->ed->window[i]->c_sw);
+                window->ed->window[i]->c_sw = NULL;
             }
     }
     else
     {
-        for (i = 0; i <= f->ed->mxedt; i++)
+        for (i = 0; i <= window->ed->mxedt; i++)
         {
-            if (f->ed->f[i]->c_sw)
-                free (f->ed->f[i]->c_sw);
-            e_add_synt_tl (f->ed->f[i]->datnam, f->ed->f[i]);
-            if (f->ed->f[i]->c_st)
+            if (window->ed->window[i]->c_sw)
+                free (window->ed->window[i]->c_sw);
+            e_add_synt_tl (window->ed->window[i]->datnam, window->ed->window[i]);
+            if (window->ed->window[i]->c_st)
             {
-                if (f->ed->f[i]->c_sw)
-                    free (f->ed->f[i]->c_sw);
-                f->ed->f[i]->c_sw = e_sc_txt (NULL, f->ed->f[i]->b);
+                if (window->ed->window[i]->c_sw)
+                    free (window->ed->window[i]->c_sw);
+                window->ed->window[i]->c_sw = e_sc_txt (NULL, window->ed->window[i]->b);
             }
         }
     }
-    e_rep_win_tree (f->ed);
+    e_rep_win_tree (window->ed);
     return (0);
 }
 
 int
-e_program_opt (we_window_t * f)
+e_program_opt (we_window_t * window)
 {
-    int ret, sw = f->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0;
-    W_OPTSTR *o = e_init_opt_kst (f);
+    int ret, sw = window->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0;
+    W_OPTSTR *o = e_init_opt_kst (window);
 
     if (!o)
         return (-1);
@@ -483,11 +483,11 @@ e_program_opt (we_window_t * f)
     o->crsw = AltO;
     e_add_txtstr (21, 2, "Screen:", o);
     e_add_txtstr (4, 2, "Stop at", o);
-    e_add_sswstr (5, 3, 0, AltE, f->ed->edopt & ED_ERRORS_STOP_AT ? 1 : 0,
+    e_add_sswstr (5, 3, 0, AltE, window->ed->edopt & ED_ERRORS_STOP_AT ? 1 : 0,
                   "Errors  ", o);
-    e_add_sswstr (5, 4, 0, AltM, f->ed->edopt & ED_MESSAGES_STOP_AT ? 1 : 0,
+    e_add_sswstr (5, 4, 0, AltM, window->ed->edopt & ED_MESSAGES_STOP_AT ? 1 : 0,
                   "Messages", o);
-    e_add_sswstr (22, 3, 0, AltD, f->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0,
+    e_add_sswstr (22, 3, 0, AltD, window->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0,
                   "Diff. Colors", o);
     e_add_wrstr (4, 6, 4, 7, 35, 128, 1, AltX, "EXecution-Directory:",
                  e_prog.exedir, NULL, o);
@@ -504,12 +504,12 @@ e_program_opt (we_window_t * f)
         if (e_prog.sys_include)
             free (e_prog.sys_include);
         e_prog.sys_include = WpeStrdup (o->wstr[1]->txt);
-        f->ed->edopt = (f->ed->edopt & ~ED_PROGRAMMING_OPTIONS) +
+        window->ed->edopt = (window->ed->edopt & ~ED_PROGRAMMING_OPTIONS) +
                        (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
                        (o->sstr[1]->num ? ED_MESSAGES_STOP_AT : 0) +
                        (o->sstr[2]->num ? ED_SYNTAX_HIGHLIGHT : 0);
         if (sw != o->sstr[2]->num)
-            e_sc_all (f, o->sstr[2]->num);
+            e_sc_all (window, o->sstr[2]->num);
     }
     freeostr (o);
     return (0);
@@ -522,54 +522,54 @@ e_sc_nw_txt (int y, BUFFER * b, int sw)
 
     if (sw < 0)
     {
-        out = b->f->c_sw[y + 1];
+        out = b->window->c_sw[y + 1];
         for (i = y + 1; i < b->mxlines; i++)
-            b->f->c_sw[i] = b->f->c_sw[i + 1];
-        if (out == b->f->c_sw[y])
+            b->window->c_sw[i] = b->window->c_sw[i + 1];
+        if (out == b->window->c_sw[y])
             return (0);
     }
     else if (sw > 0)
         for (i = b->mxlines - 1; i > y; i--)
-            b->f->c_sw[i] = b->f->c_sw[i - 1];
+            b->window->c_sw[i] = b->window->c_sw[i - 1];
 
-    if (b->f->c_st->continue_column < 0)
+    if (b->window->c_st->continue_column < 0)
     {
         for (i = y; i < b->mxlines - 1; i++)
         {
             if ((out =
-                        e_scfbol (b->buflines[i].len, b->f->c_sw[i], b->buflines[i].s,
-                                  b->f->c_st)) == b->f->c_sw[i + 1])
+                        e_scfbol (b->buflines[i].len, b->window->c_sw[i], b->buflines[i].s,
+                                  b->window->c_st)) == b->window->c_sw[i + 1])
                 break;
             else
-                b->f->c_sw[i + 1] = out;
+                b->window->c_sw[i + 1] = out;
         }
     }
     else
     {
         if (y != 0)		/* Quick fix to continue line check - Dennis */
         {
-            b->f->c_sw[y] =
+            b->window->c_sw[y] =
                 isspace (b->buflines[y].
-                         s[b->f->c_st->continue_column]) ? 0 : e_scfbol (b->buflines[y -
+                         s[b->window->c_st->continue_column]) ? 0 : e_scfbol (b->buflines[y -
                                  1].
                                  len,
-                                 b->f->
+                                 b->window->
                                  c_sw[y -
                                         1],
                                  b->buflines[y -
                                                1].
                                  s,
-                                 b->f->
+                                 b->window->
                                  c_st);
             for (i = y; i < b->mxlines - 1; i++)
             {
                 out =
-                    isspace (b->buflines[i + 1].s[b->f->c_st->continue_column]) ?  0
-                    : e_scfbol (b->buflines[i].len, b-> f-> c_sw [i], b->buflines[i].s, b->f->c_st);
-                if (out == b->f->c_sw[i + 1])
+                    isspace (b->buflines[i + 1].s[b->window->c_st->continue_column]) ?  0
+                    : e_scfbol (b->buflines[i].len, b-> window-> c_sw [i], b->buflines[i].s, b->window->c_st);
+                if (out == b->window->c_sw[i + 1])
                     break;
                 else
-                    b->f->c_sw[i + 1] = out;
+                    b->window->c_sw[i + 1] = out;
             }
         }
     }
@@ -584,11 +584,11 @@ e_sc_txt (int *c_sw, BUFFER * b)
     if (!c_sw)
         c_sw = malloc (b->mx.y * sizeof (int));
     c_sw[0] = 0;
-    if (b->f->c_st->continue_column < 0)
+    if (b->window->c_st->continue_column < 0)
     {
         for (i = 0; i < b->mxlines - 1; i++)
             c_sw[i + 1] =
-                e_scfbol (b->buflines[i].len, c_sw[i], b->buflines[i].s, b->f->c_st);
+                e_scfbol (b->buflines[i].len, c_sw[i], b->buflines[i].s, b->window->c_st);
     }
     else
     {
@@ -596,36 +596,36 @@ e_sc_txt (int *c_sw, BUFFER * b)
         {
             c_sw[i + 1] =
                 isspace (b->buflines[i + 1].
-                         s[b->f->c_st->continue_column]) ? 0 : e_scfbol (b->buflines[i].len,
-                                 c_sw[i], b->buflines[i].s, b->f->c_st);
+                         s[b->window->c_st->continue_column]) ? 0 : e_scfbol (b->buflines[i].len,
+                                 c_sw[i], b->buflines[i].s, b->window->c_st);
         }
     }
     return (c_sw);
 }
 
-void e_sc_txt_2 (we_window_t *f)
+void e_sc_txt_2 (we_window_t *window)
 {
-    if(f->c_sw)
+    if(window->c_sw)
     {
-        if(f->s->mark_begin.y == f->s->mark_end.y)
-            e_sc_nw_txt(f->s->mark_end.y, f->b, 0);
+        if(window->s->mark_begin.y == window->s->mark_end.y)
+            e_sc_nw_txt(window->s->mark_end.y, window->b, 0);
         else
         {
-            f->c_sw = realloc(f->c_sw, f->b->mx.y * sizeof(int));
-            f->c_sw = e_sc_txt(f->c_sw, f->b);
+            window->c_sw = realloc(window->c_sw, window->b->mx.y * sizeof(int));
+            window->c_sw = e_sc_txt(window->c_sw, window->b);
         }
     }
 }
 
 /*       Writing of a line (content of a screen)      */
 void
-e_pr_c_line (int y, we_window_t * f)
+e_pr_c_line (int y, we_window_t * window)
 {
-    BUFFER *b = f->b;
-    we_screen_t *s = f->s;
+    BUFFER *b = window->b;
+    we_screen_t *s = window->s;
     int i, j, k, frb = 0;
-    int mcsw = f->c_sw[y], svmsw = f->c_sw[y] == 5 ? 5 : 0, bssw = 0;
-    int n_bg = -1, n_nd = strlen ((const char *) f->c_st->end_comment) - 1;
+    int mcsw = window->c_sw[y], svmsw = window->c_sw[y] == 5 ? 5 : 0, bssw = 0;
+    int n_bg = -1, n_nd = strlen ((const char *) window->c_st->end_comment) - 1;
 #ifdef DEBUGGER
     int fsw = 0;
 #endif
@@ -633,7 +633,7 @@ e_pr_c_line (int y, we_window_t * f)
     for (i = j = 0; j < s->c.x; j++, i++)
     {
         if (*(b->buflines[y].s + i) == WPE_TAB)
-            j += (f->ed->tabn - j % f->ed->tabn - 1);
+            j += (window->ed->tabn - j % window->ed->tabn - 1);
 #ifdef UNIX
         else if (((unsigned char) *(b->buflines[y].s + i)) > 126)
         {
@@ -648,7 +648,7 @@ e_pr_c_line (int y, we_window_t * f)
     if (j > s->c.x)
         i--;
     for (k = 0; k < i; k++)
-        e_mk_col (b->buflines[y].s, b->buflines[y].len, k, &frb, f->c_st, n_nd, &n_bg, &mcsw,
+        e_mk_col (b->buflines[y].s, b->buflines[y].len, k, &frb, window->c_st, n_nd, &n_bg, &mcsw,
                   &bssw, &svmsw, s);
 #ifdef DEBUGGER
     for (j = 1; j <= s->brp[0]; j++)
@@ -658,9 +658,9 @@ e_pr_c_line (int y, we_window_t * f)
             break;
         }
     for (j = s->c.x;
-            i < b->buflines[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
+            i < b->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
     {
-        e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, f->c_st, n_nd, &n_bg,
+        e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->da.y && i >= s->da.x && i < s->de.x)
             frb = s->colorset->dy.fg_bg_color;
@@ -670,9 +670,9 @@ e_pr_c_line (int y, we_window_t * f)
             frb = s->colorset->ek.fg_bg_color;
 #else
     for (j = s->c.x;
-            i < b->buflines[y].len && j < num_cols_on_screen_safe(f) + s->c.x - 1; i++, j++)
+            i < b->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
     {
-        e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, f->c_st, n_nd, &n_bg,
+        e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
             frb = s->colorset->ek.fg_bg_color;
@@ -685,63 +685,63 @@ e_pr_c_line (int y, we_window_t * f)
                          || (y == s->mark_begin.y && i >= s->mark_begin.x))))
             frb = s->colorset->ez.fg_bg_color;
         if (*(b->buflines[y].s + i) == WPE_TAB)
-            for (k = f->ed->tabn - j % f->ed->tabn;
-                    k > 1 && j < num_cols_on_screen(f) + s->c.x - 2; k--, j++)
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, ' ',
+            for (k = window->ed->tabn - j % window->ed->tabn;
+                    k > 1 && j < num_cols_on_screen(window) + s->c.x - 2; k--, j++)
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ',
                            frb);
 #ifdef UNIX
         else if (!WpeIsXwin () && ((unsigned char) *(b->buflines[y].s + i)) > 126)
         {
-            e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, '@',
+            e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, '@',
                        frb);
-            if (++j >= num_cols_on_screen(f) + s->c.x - 1)
+            if (++j >= num_cols_on_screen(window) + s->c.x - 1)
                 return;
             if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' '
-                    && j < num_cols_on_screen(f) + s->c.x - 1)
+                    && j < num_cols_on_screen(window) + s->c.x - 1)
             {
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            '^', frb);
-                if (++j >= num_cols_on_screen(f) + s->c.x - 1)
+                if (++j >= num_cols_on_screen(window) + s->c.x - 1)
                     return;
             }
         }
         else if (*(b->buflines[y].s + i) < ' ')
         {
-            e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, '^',
+            e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, '^',
                        frb);
-            if (++j >= num_cols_on_screen(f) + s->c.x - 1)
+            if (++j >= num_cols_on_screen(window) + s->c.x - 1)
                 return;
         }
 #endif
         if (*(b->buflines[y].s + i) == WPE_TAB)
-            e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, ' ',
+            e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ',
                        frb);
 #ifdef UNIX
         else if (!WpeIsXwin () && ((unsigned char) *(b->buflines[y].s + i)) > 126 &&
-                 j < num_cols_on_screen(f) + s->c.x - 1)
+                 j < num_cols_on_screen(window) + s->c.x - 1)
         {
             if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' ')
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            ((unsigned char) *(b->buflines[y].s + i)) + 'A' - 129, frb);
             else
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            ((unsigned char) *(b->buflines[y].s + i)) - 128, frb);
         }
-        else if (*(b->buflines[y].s + i) < ' ' && j < num_cols_on_screen(f) + s->c.x - 1)
-            e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+        else if (*(b->buflines[y].s + i) < ' ' && j < num_cols_on_screen(window) + s->c.x - 1)
+            e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                        *(b->buflines[y].s + i) + 'A' - 1, frb);
 #endif
         else
-            e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+            e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                        *(b->buflines[y].s + i), frb);
     }
 
-    e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, f->c_st, n_nd, &n_bg, &mcsw,
+    e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg, &mcsw,
               &bssw, &svmsw, s);
 
-    if ((i == b->buflines[y].len) && (f->ed->edopt & ED_SHOW_ENDMARKS) &&
-            (DTMD_ISMARKABLE (f->dtmd))
-            && (j < num_cols_on_screen_safe(f) + s->c.x - 1))
+    if ((i == b->buflines[y].len) && (window->ed->edopt & ED_SHOW_ENDMARKS) &&
+            (DTMD_ISMARKABLE (window->dtmd))
+            && (j < num_cols_on_screen_safe(window) + s->c.x - 1))
     {
         if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                    (y == s->mark_begin.y
@@ -751,34 +751,34 @@ e_pr_c_line (int y, we_window_t * f)
                         || (y == s->mark_begin.y && i >= s->mark_begin.x))))
         {
             if (*(b->buflines[y].s + i) == WPE_WR)
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PWR, s->colorset->ez.fg_bg_color);
             else
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PNL, s->colorset->ez.fg_bg_color);
         }
         else
         {
             if (*(b->buflines[y].s + i) == WPE_WR)
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PWR, frb);
             else
-                e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1,
+                e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PNL, frb);
         }
         j++;
     }
-    for (; j < num_cols_on_screen(f) + s->c.x - 1; j++)
-        e_pr_char (f->a.x - s->c.x + j + 1, y - s->c.y + f->a.y + 1, ' ', frb);
+    for (; j < num_cols_on_screen(window) + s->c.x - 1; j++)
+        e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ', frb);
 }
 
 int
-e_add_synt_tl (char *filename, we_window_t * f)
+e_add_synt_tl (char *filename, we_window_t * window)
 {
     int i, k;
 
-    f->c_st = NULL;
-    f->c_sw = NULL;
+    window->c_st = NULL;
+    window->c_sw = NULL;
     if (!WpeSyntaxDef || !filename)
         return 0;
     filename = strrchr (filename, '.');
@@ -790,9 +790,9 @@ e_add_synt_tl (char *filename, we_window_t * f)
         {
             if (!strcmp (filename, WpeSyntaxDef[i]->extension[k]))
             {
-                f->c_st = WpeSyntaxDef[i]->syntax_rule;
-                if (f->ed->edopt & ED_SYNTAX_HIGHLIGHT)
-                    f->c_sw = malloc (f->b->mx.y * sizeof (int));
+                window->c_st = WpeSyntaxDef[i]->syntax_rule;
+                if (window->ed->edopt & ED_SYNTAX_HIGHLIGHT)
+                    window->c_sw = malloc (window->b->mx.y * sizeof (int));
             }
         }
     }
@@ -812,11 +812,11 @@ e_aopen (char *name, char *path, int mode)
     ep->fp = NULL;
     if (mode & 1)
     {
-        for (i = 1; i <= control->mxedt && strcmp (control->f[i]->datnam, name); i++)
+        for (i = 1; i <= control->mxedt && strcmp (control->window[i]->datnam, name); i++)
             ;
         if (i <= control->mxedt)
         {
-            ep->b = control->f[i]->b;
+            ep->b = control->window[i]->b;
             ep->p.x = ep->p.y = 0;
         }
     }
@@ -1678,7 +1678,7 @@ b_end:
 }
 
 int
-e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
+e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
 {
     int i, j, len, ret, num, x, first = oldn < 0 ? 1 : 0;
     char str[128], file[128], *filename;
@@ -1688,14 +1688,14 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
     if (!access (e_prog.project, F_OK))
     {
         WpeMouseChangeShape (WpeWorkingShape);
-        if (e_read_var (f))
+        if (e_read_var (window))
             ret = -1;
         else
         {
             df = e_p_get_var ("FILES");
             if (!df)
             {
-                e_error (e_p_msg[ERR_NOTHING], 0, f->colorset);
+                e_error (e_p_msg[ERR_NOTHING], 0, window->colorset);
                 WpeMouseRestoreShape ();
                 return (-1);
             }
@@ -1711,10 +1711,10 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
     else
 #endif
     {
-        if (!DTMD_ISTEXT (f->dtmd))
+        if (!DTMD_ISTEXT (window->dtmd))
             return (-1);
         WpeMouseChangeShape (WpeWorkingShape);
-        strcpy (str, f->datnam);
+        strcpy (str, window->datnam);
         ret = e_find_def (name, str, 7, file, &num, &x, oldn,
                           *oldname, &fdf, &first);
     }
@@ -1722,7 +1722,7 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
     if (ret)
     {
         sprintf (str, "%s not found!", name);
-        e_error (str, 0, f->colorset);
+        e_error (str, 0, window->colorset);
         WpeMouseRestoreShape ();
         return (-1);
     }
@@ -1732,30 +1732,30 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
     strcpy (*oldname, file);
     for (i = strlen (file) - 1; i >= 0 && file[i] != '/'; i--)
         ;
-    for (j = f->ed->mxedt; j > 0; j--)
+    for (j = window->ed->mxedt; j > 0; j--)
     {
         if (i < 0)
-            filename = f->ed->f[j]->datnam;
+            filename = window->ed->window[j]->datnam;
         else
-            filename = e_mkfilename (f->ed->f[j]->dirct, f->ed->f[j]->datnam);
+            filename = e_mkfilename (window->ed->window[j]->dirct, window->ed->window[j]->datnam);
         if (!strcmp (filename, file))
             break;
     }
     if (j > 0)
-        e_switch_window (f->ed->edt[j], f->ed->f[f->ed->mxedt]);
+        e_switch_window (window->ed->edt[j], window->ed->window[window->ed->mxedt]);
     else
-        e_edit (f->ed, file);
-    f = f->ed->f[f->ed->mxedt];
+        e_edit (window->ed, file);
+    window = window->ed->window[window->ed->mxedt];
     for (i = num, j = x + 1 - (len = strlen (name)); i >= 0;)
     {
         for (len = strlen (name);
-                j >= 0 && strncmp (name, (const char *) f->b->buflines[i].s + j, len);
+                j >= 0 && strncmp (name, (const char *) window->b->buflines[i].s + j, len);
                 j--)
             ;
         if (j < 0 && i >= 0)
         {
             i--;
-            j = f->b->buflines[i].len - len + 1;
+            j = window->b->buflines[i].len - len + 1;
         }
         else
             break;
@@ -1767,12 +1767,12 @@ e_show_nm_f (char *name, we_window_t * f, int oldn, char **oldname)
     }
     else
         len = 0;
-    f->s->fa.y = f->s->fe.y = f->b->cursor.y = num;
-    f->s->fe.x = f->b->cursor.x = x + len;
-    f->s->fa.x = x;
-    e_cursor (f, 1);
-    f->s->fa.y = num;
-    e_schirm (f, 1);
+    window->s->fa.y = window->s->fe.y = window->b->cursor.y = num;
+    window->s->fe.x = window->b->cursor.x = x + len;
+    window->s->fa.x = x;
+    e_cursor (window, 1);
+    window->s->fa.y = num;
+    e_schirm (window, 1);
     WpeMouseRestoreShape ();
     return (num);
 }
@@ -1787,15 +1787,15 @@ struct
 };
 
 int
-e_sh_def (we_window_t * f)
+e_sh_def (we_window_t * window)
 {
     char str[80];
 
-    if (f->ed->shdf && f->ed->shdf->nr_files > 0)
-        strcpy (str, f->ed->shdf->name[0]);
+    if (window->ed->shdf && window->ed->shdf->nr_files > 0)
+        strcpy (str, window->ed->shdf->name[0]);
     else
         str[0] = '\0';
-    if (e_add_arguments (str, "Show Definition", f, 0, AltB, &f->ed->shdf))
+    if (e_add_arguments (str, "Show Definition", window, 0, AltB, &window->ed->shdf))
     {
         if (sh_df.str)
             free (sh_df.str);
@@ -1806,26 +1806,26 @@ e_sh_def (we_window_t * f)
             free (sh_df.file);
             sh_df.file = NULL;
         }
-        f->ed->shdf = e_add_df (str, f->ed->shdf);
-        sh_df.num = e_show_nm_f (str, f, -1, &sh_df.file);
+        window->ed->shdf = e_add_df (str, window->ed->shdf);
+        sh_df.num = e_show_nm_f (str, window, -1, &sh_df.file);
     }
     return (0);
 }
 
 int
-e_sh_nxt_def (we_window_t * f)
+e_sh_nxt_def (we_window_t * window)
 {
     if (sh_df.num >= 0 && sh_df.str && sh_df.file)
     {
-        sh_df.num = e_show_nm_f (sh_df.str, f, sh_df.num, &sh_df.file);
+        sh_df.num = e_show_nm_f (sh_df.str, window, sh_df.num, &sh_df.file);
     }
     return (0);
 }
 
 int
-e_nxt_brk (we_window_t * f)
+e_nxt_brk (we_window_t * window)
 {
-    int c = f->b->buflines[f->b->cursor.y].s[f->b->cursor.x];
+    int c = window->b->buflines[window->b->cursor.y].s[window->b->cursor.x];
     int i, j, ob, cb, bsp, brk, nif;
 
     if (c == '{' || c == '(' || c == '[')
@@ -1845,21 +1845,21 @@ e_nxt_brk (we_window_t * f)
             ob = '[';
             cb = ']';
         }
-        for (brk = 1, i = f->b->cursor.y; i < f->b->mxlines; i++)
-            for (j = i == f->b->cursor.y ? f->b->cursor.x + 1 : 0; j < f->b->buflines[i].len; j++)
+        for (brk = 1, i = window->b->cursor.y; i < window->b->mxlines; i++)
+            for (j = i == window->b->cursor.y ? window->b->cursor.x + 1 : 0; j < window->b->buflines[i].len; j++)
             {
-                if (f->b->buflines[i].s[j] == '\"')
+                if (window->b->buflines[i].s[j] == '\"')
                 {
                     for (bsp = 0, j++;
-                            j < f->b->buflines[i].len && (f->b->buflines[i].s[j] != '\"' || bsp);
+                            j < window->b->buflines[i].len && (window->b->buflines[i].s[j] != '\"' || bsp);
                             j++)
                     {
-                        if (f->b->buflines[i].s[j] == '\\')
+                        if (window->b->buflines[i].s[j] == '\\')
                             bsp = !bsp;
                         else
                             bsp = 0;
-                        if (j == f->b->buflines[i].len - 1 && bsp
-                                && i < f->b->mxlines - 1)
+                        if (j == window->b->buflines[i].len - 1 && bsp
+                                && i < window->b->mxlines - 1)
                         {
                             i++;
                             j = -1;
@@ -1867,18 +1867,18 @@ e_nxt_brk (we_window_t * f)
                         }
                     }
                 }
-                else if (f->b->buflines[i].s[j] == '\'')
+                else if (window->b->buflines[i].s[j] == '\'')
                 {
                     for (bsp = 0, j++;
-                            j < f->b->buflines[i].len && (f->b->buflines[i].s[j] != '\'' || bsp);
+                            j < window->b->buflines[i].len && (window->b->buflines[i].s[j] != '\'' || bsp);
                             j++)
                     {
-                        if (f->b->buflines[i].s[j] == '\\')
+                        if (window->b->buflines[i].s[j] == '\\')
                             bsp = !bsp;
                         else
                             bsp = 0;
-                        if (j == f->b->buflines[i].len - 1 && bsp
-                                && i < f->b->mxlines - 1)
+                        if (j == window->b->buflines[i].len - 1 && bsp
+                                && i < window->b->mxlines - 1)
                         {
                             i++;
                             j = -1;
@@ -1886,15 +1886,15 @@ e_nxt_brk (we_window_t * f)
                         }
                     }
                 }
-                else if (f->b->buflines[i].s[j] == '/' && f->b->buflines[i].s[j + 1] == '*')
+                else if (window->b->buflines[i].s[j] == '/' && window->b->buflines[i].s[j + 1] == '*')
                 {
                     for (j += 2;
-                            f->b->buflines[i].s[j] != '*' || f->b->buflines[i].s[j + 1] != '/';
+                            window->b->buflines[i].s[j] != '*' || window->b->buflines[i].s[j + 1] != '/';
                             j++)
                     {
-                        if (j >= f->b->buflines[i].len - 1)
+                        if (j >= window->b->buflines[i].len - 1)
                         {
-                            if (i < f->b->mxlines - 1)
+                            if (i < window->b->mxlines - 1)
                             {
                                 i++;
                                 j = -1;
@@ -1904,37 +1904,37 @@ e_nxt_brk (we_window_t * f)
                         }
                     }
                 }
-                else if (f->b->buflines[i].s[j] == '/' && f->b->buflines[i].s[j + 1] == '/')
+                else if (window->b->buflines[i].s[j] == '/' && window->b->buflines[i].s[j + 1] == '/')
                     break;
-                else if (f->b->buflines[i].s[j] == '#'
-                         && (!strncmp ((const char *) f->b->buflines[i].s, "#else", 5)
-                             || !strncmp ((const char *) f->b->buflines[i].s, "#elif",
+                else if (window->b->buflines[i].s[j] == '#'
+                         && (!strncmp ((const char *) window->b->buflines[i].s, "#else", 5)
+                             || !strncmp ((const char *) window->b->buflines[i].s, "#elif",
                                           5)))
                 {
-                    for (nif = 1, i++; i < f->b->mxlines - 1; i++)
+                    for (nif = 1, i++; i < window->b->mxlines - 1; i++)
                     {
-                        for (j = 0; isspace (f->b->buflines[i].s[j]); j++)
+                        for (j = 0; isspace (window->b->buflines[i].s[j]); j++)
                             ;
                         if (!strncmp
-                                ((const char *) f->b->buflines[i].s + j, "#endif", 6))
+                                ((const char *) window->b->buflines[i].s + j, "#endif", 6))
                             nif--;
                         else if (!strncmp
-                                 ((const char *) f->b->buflines[i].s + j, "#if", 3))
+                                 ((const char *) window->b->buflines[i].s + j, "#if", 3))
                             nif++;
                         if (!nif)
                             break;
                     }
                     continue;
                 }
-                else if (f->b->buflines[i].s[j] == ob)
+                else if (window->b->buflines[i].s[j] == ob)
                     brk++;
-                else if (f->b->buflines[i].s[j] == cb)
+                else if (window->b->buflines[i].s[j] == cb)
                 {
                     brk--;
                     if (!brk)
                     {
-                        f->b->cursor.y = i;
-                        f->b->cursor.x = j;
+                        window->b->cursor.y = i;
+                        window->b->cursor.x = j;
                         return (0);
                     }
                 }
@@ -1962,66 +1962,66 @@ e_nxt_brk (we_window_t * f)
             ob = 0;
             cb = 0;
         }
-        for (brk = -1, i = f->b->cursor.y; i >= 0; i--)
+        for (brk = -1, i = window->b->cursor.y; i >= 0; i--)
         {
-            if (i == f->b->cursor.y)
+            if (i == window->b->cursor.y)
                 for (j = 0;
-                        j < f->b->cursor.x && (f->b->buflines[i].s[j] != '/'
-                                          || f->b->buflines[i].s[j + 1] != '/'); j++)
+                        j < window->b->cursor.x && (window->b->buflines[i].s[j] != '/'
+                                          || window->b->buflines[i].s[j + 1] != '/'); j++)
                     ;
             else
                 for (j = 0;
-                        j < f->b->buflines[i].len && (f->b->buflines[i].s[j] != '/'
-                                                      || f->b->buflines[i].s[j + 1] != '/'); j++)
+                        j < window->b->buflines[i].len && (window->b->buflines[i].s[j] != '/'
+                                                      || window->b->buflines[i].s[j + 1] != '/'); j++)
                     ;
             for (j--; j >= 0; j--)
             {
-                if (f->b->buflines[i].s[j] == '\"')
+                if (window->b->buflines[i].s[j] == '\"')
                 {
                     for (j--; j >= 0; j--)
                     {
-                        if (f->b->buflines[i].s[j] == '\"')
+                        if (window->b->buflines[i].s[j] == '\"')
                         {
                             for (bsp = 0, j--;
-                                    j >= 0 && f->b->buflines[i].s[j] == '\\'; j--)
+                                    j >= 0 && window->b->buflines[i].s[j] == '\\'; j--)
                                 bsp = !bsp;
                             j++;
                             if (!bsp)
                                 break;
                         }
                         if (j == 0 && i > 0
-                                && f->b->buflines[i - 1].s[f->b->buflines[i - 1].len] == '\\')
+                                && window->b->buflines[i - 1].s[window->b->buflines[i - 1].len] == '\\')
                         {
                             i--;
-                            j = f->b->buflines[i].len;
+                            j = window->b->buflines[i].len;
                         }
                     }
                 }
-                else if (f->b->buflines[i].s[j] == '\'')
+                else if (window->b->buflines[i].s[j] == '\'')
                 {
                     for (j--; j >= 0; j--)
                     {
-                        if (f->b->buflines[i].s[j] == '\'')
+                        if (window->b->buflines[i].s[j] == '\'')
                         {
                             for (bsp = 0, j--;
-                                    j >= 0 && f->b->buflines[i].s[j] == '\\'; j--)
+                                    j >= 0 && window->b->buflines[i].s[j] == '\\'; j--)
                                 bsp = !bsp;
                             j++;
                             if (!bsp)
                                 break;
                         }
                         if (j == 0 && i > 0
-                                && f->b->buflines[i - 1].s[f->b->buflines[i - 1].len] == '\\')
+                                && window->b->buflines[i - 1].s[window->b->buflines[i - 1].len] == '\\')
                         {
                             i--;
-                            j = f->b->buflines[i].len;
+                            j = window->b->buflines[i].len;
                         }
                     }
                 }
-                else if (f->b->buflines[i].s[j] == '/' && f->b->buflines[i].s[j - 1] == '*')
+                else if (window->b->buflines[i].s[j] == '/' && window->b->buflines[i].s[j - 1] == '*')
                 {
                     for (j -= 2;
-                            f->b->buflines[i].s[j] != '*' || f->b->buflines[i].s[j - 1] != '/';
+                            window->b->buflines[i].s[j] != '*' || window->b->buflines[i].s[j - 1] != '/';
                             j--)
                     {
                         if (j <= 0)
@@ -2029,27 +2029,27 @@ e_nxt_brk (we_window_t * f)
                             if (i > 0)
                             {
                                 i--;
-                                j = f->b->buflines[i].len;
+                                j = window->b->buflines[i].len;
                             }
                             else
                                 break;
                         }
                     }
                 }
-                else if (f->b->buflines[i].s[j] == '#'
-                         && (!strncmp ((const char *) f->b->buflines[i].s, "#else", 5)
-                             || !strncmp ((const char *) f->b->buflines[i].s, "#elif",
+                else if (window->b->buflines[i].s[j] == '#'
+                         && (!strncmp ((const char *) window->b->buflines[i].s, "#else", 5)
+                             || !strncmp ((const char *) window->b->buflines[i].s, "#elif",
                                           5)))
                 {
                     for (nif = 1, i--; i > 0; i--)
                     {
-                        for (j = 0; isspace (f->b->buflines[i].s[j]); j++)
+                        for (j = 0; isspace (window->b->buflines[i].s[j]); j++)
                             ;
                         if (!strncmp
-                                ((const char *) f->b->buflines[i].s + j, "#endif", 6))
+                                ((const char *) window->b->buflines[i].s + j, "#endif", 6))
                             nif++;
                         else if (!strncmp
-                                 ((const char *) f->b->buflines[i].s + j, "#if", 3))
+                                 ((const char *) window->b->buflines[i].s + j, "#if", 3))
                             nif--;
                         if (!nif)
                             break;
@@ -2058,46 +2058,46 @@ e_nxt_brk (we_window_t * f)
                 }
                 else if (!ob)
                 {
-                    if (f->b->buflines[i].s[j] == '{' || f->b->buflines[i].s[j] == '('
-                            || f->b->buflines[i].s[j] == '[')
+                    if (window->b->buflines[i].s[j] == '{' || window->b->buflines[i].s[j] == '('
+                            || window->b->buflines[i].s[j] == '[')
                     {
                         brk++;
                         if (!brk)
                         {
-                            f->b->cursor.y = i;
-                            f->b->cursor.x = j;
+                            window->b->cursor.y = i;
+                            window->b->cursor.x = j;
                             return (0);
                         }
                     }
-                    else if (f->b->buflines[i].s[j] == '}' || f->b->buflines[i].s[j] == ')'
-                             || f->b->buflines[i].s[j] == ']')
+                    else if (window->b->buflines[i].s[j] == '}' || window->b->buflines[i].s[j] == ')'
+                             || window->b->buflines[i].s[j] == ']')
                         brk--;
                     else if (i == 0 && j == 0)
                     {
-                        f->b->cursor.y = i;
-                        f->b->cursor.x = j;
+                        window->b->cursor.y = i;
+                        window->b->cursor.x = j;
                         return (0);
                     }
                 }
                 else
                 {
-                    if (f->b->buflines[i].s[j] == ob)
+                    if (window->b->buflines[i].s[j] == ob)
                     {
                         brk++;
                         if (!brk)
                         {
-                            f->b->cursor.y = i;
-                            f->b->cursor.x = j;
+                            window->b->cursor.y = i;
+                            window->b->cursor.x = j;
                             return (0);
                         }
                     }
-                    else if (f->b->buflines[i].s[j] == cb)
+                    else if (window->b->buflines[i].s[j] == cb)
                         brk--;
                 }
             }
         }
     }
-    return (e_error ("No Matching Bracket!", 0, f->ed->colorset));
+    return (e_error ("No Matching Bracket!", 0, window->ed->colorset));
 }
 
 char *
@@ -2145,11 +2145,11 @@ e_mbt_str (BUFFER * b, int *ii, int *jj, unsigned char c, int n, int sw,
             for (j = 0, m = b->buflines[i].len; j < m && isspace (b->buflines[i].s[j]); j++)
                 ;
             if (j > 0)
-                e_del_nchar (b, b->f->s, 0, i, j);
+                e_del_nchar (b, b->window->s, 0, i, j);
             if (j < m)
             {
                 str = e_mbt_mk_sp (str, n + b->control->autoindent, sw, &m);
-                e_ins_nchar (b, b->f->s, (unsigned char *) str, 0, i, m);
+                e_ins_nchar (b, b->window->s, (unsigned char *) str, 0, i, m);
             }
             j = -1;
             free (str);
@@ -2179,11 +2179,11 @@ e_mbt_cnd (BUFFER * b, int *ii, int *jj, int n, int sw, int *cmnd)
                         j++)
                     ;
                 if (j > 0)
-                    e_del_nchar (b, b->f->s, 0, i, j);
+                    e_del_nchar (b, b->window->s, 0, i, j);
                 if (j < m && (b->buflines[i].s[0] != '*' || b->buflines[i].s[1] != '/'))
                 {
                     str = e_mbt_mk_sp (str, n + b->control->autoindent, sw, &m);
-                    e_ins_nchar (b, b->f->s, (unsigned char *) str, 0, i, m);
+                    e_ins_nchar (b, b->window->s, (unsigned char *) str, 0, i, m);
                 }
                 j = -1;
                 free (str);
@@ -2200,7 +2200,7 @@ e_mbt_cnd (BUFFER * b, int *ii, int *jj, int n, int sw, int *cmnd)
 }
 
 int
-e_mk_beauty (int sw, int ndif, we_window_t * f)
+e_mk_beauty (int sw, int ndif, we_window_t * window)
 {
     BUFFER *b;
     we_screen_t *s;
@@ -2215,7 +2215,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
     int *vkcb = malloc (sizeof (int));
     we_point_t sa, se, sb;
 
-    for (i = f->ed->mxedt; i > 0 && !DTMD_ISTEXT (f->ed->f[i]->dtmd); i--)
+    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--)
         ;
     if (i <= 0)
     {
@@ -2232,11 +2232,11 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
     *ifvekr = 0;
     *vkcs = 0;
     *vkcb = 0;
-    e_switch_window (f->ed->edt[i], f);
+    e_switch_window (window->ed->edt[i], window);
     WpeMouseChangeShape (WpeWorkingShape);
-    f = f->ed->f[f->ed->mxedt];
-    b = f->b;
-    s = f->s;
+    window = window->ed->window[window->ed->mxedt];
+    b = window->b;
+    s = window->s;
     sa = s->mark_begin;
     se = s->mark_end;
     sb = b->cursor;
@@ -2267,10 +2267,10 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
             if (b->buflines[i].s[j] == ' ')
                 n++;
             else if (b->buflines[i].s[j] == '\t')
-                n += f->ed->tabn - (n % f->ed->tabn);
+                n += window->ed->tabn - (n % window->ed->tabn);
         }
     }
-    tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+    tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
     for (k = 0; k < ndif; k++)
         bstr[k] = ' ';
     bstr[ndif] = '\0';
@@ -2296,11 +2296,11 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                         e_mbt_mk_sp (tstr,
                                      !cmnd ? n +
                                      b->control->autoindent : b->control->autoindent,
-                                     (sw & 4) ? 0 : f->ed->tabn, &m);
+                                     (sw & 4) ? 0 : window->ed->tabn, &m);
                     e_ins_nchar (b, s, (unsigned char *) tstr, 0, i, m);
                     j = m;
                     tstr =
-                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                 }
                 else
                 {
@@ -2318,11 +2318,11 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
         for (cmnd = 1; j < b->buflines[i].len; j++)
         {
             if (b->buflines[i].s[j] == '\"')
-                e_mbt_str (b, &i, &j, '\"', n, (sw & 4) ? 0 : f->ed->tabn, &cmnd);
-            else if (f->b->buflines[i].s[j] == '\'')
-                e_mbt_str (b, &i, &j, '\'', n, (sw & 4) ? 0 : f->ed->tabn, &cmnd);
+                e_mbt_str (b, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
+            else if (window->b->buflines[i].s[j] == '\'')
+                e_mbt_str (b, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
             else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '*')
-                e_mbt_cnd (b, &i, &j, n, (sw & 4) ? 0 : f->ed->tabn, &cmnd);
+                e_mbt_cnd (b, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
             else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '/')
                 break;
             else if (b->buflines[i].s[j] == ';')
@@ -2348,7 +2348,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                 brk = ifvekb[nif];
                 cbrk = ifvekr[nif];
                 n = nvek[brk];
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                 cmnd = 2;
             }
             else if (b->buflines[i].s[j] == '#'
@@ -2369,13 +2369,13 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                         j = 0;
                     }
                     else if (b->buflines[i].s[j] == '\"')
-                        e_mbt_str (b, &i, &j, '\"', n, (sw & 4) ? 0 : f->ed->tabn,
+                        e_mbt_str (b, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn,
                                    &cmnd);
-                    else if (f->b->buflines[i].s[j] == '\'')
-                        e_mbt_str (b, &i, &j, '\'', n, (sw & 4) ? 0 : f->ed->tabn,
+                    else if (window->b->buflines[i].s[j] == '\'')
+                        e_mbt_str (b, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn,
                                    &cmnd);
                     else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '*')
-                        e_mbt_cnd (b, &i, &j, n, (sw & 4) ? 0 : f->ed->tabn,
+                        e_mbt_cnd (b, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn,
                                    &cmnd);
                     else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '/')
                         break;
@@ -2432,17 +2432,17 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                     for (n = k = 0; k < j; k++)
                     {
                         if (b->buflines[i].s[k] == '\t')
-                            n += f->ed->tabn - (n % f->ed->tabn);
+                            n += window->ed->tabn - (n % window->ed->tabn);
                         else
                             n++;
                     }
                 }
                 n += ndif;
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                 nvek = realloc (nvek, (brk + 1) * sizeof (int));
                 nvek[brk] = n;
             }
-            else if (f->b->buflines[i].s[j] == '}')
+            else if (window->b->buflines[i].s[j] == '}')
             {
                 brk--;
                 cmnd = 1;
@@ -2465,12 +2465,12 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                     b->cursor = sb;
                     s->mark_begin = sa;
                     s->mark_end = se;
-                    e_schirm (f, 1);
+                    e_schirm (window, 1);
                     WpeMouseRestoreShape ();
                     return (0);
                 }
                 n -= ndif;
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                 for (k = j - 1; k >= 0 && isspace (b->buflines[i].s[k]); k--);
                 e_del_nchar (b, s, k + 1, i, j - 1 - k);
                 if (k > 0)
@@ -2485,7 +2485,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                     j = k + m + 2;
                 }
                 n = nvek[brk];
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
             }
             else if (((j == 0 || !isalnum1 (b->buflines[i].s[j - 1])) &&
                       (iscase ((const char *) b->buflines[i].s + j)
@@ -2496,7 +2496,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                 {
                     n = nvek[vkcb[nic] + 1];
                     tstr =
-                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                     for (k = j - 1; k >= 0 && isspace (b->buflines[i].s[k]); k--);
                     e_del_nchar (b, s, k + 1, i, j - 1 - k);
                     if (k > 0)
@@ -2532,7 +2532,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                         for (n = k = 0; k < j; k++)
                         {
                             if (b->buflines[i].s[k] == '\t')
-                                n += f->ed->tabn - (n % f->ed->tabn);
+                                n += window->ed->tabn - (n % window->ed->tabn);
                             else
                                 n++;
                         }
@@ -2543,7 +2543,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                 else
                     j--;
                 n += ndif;
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : f->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                 nvek = realloc (nvek, (brk + 1) * sizeof (int));
                 nvek[brk] = n;
                 cmnd = 3;
@@ -2565,9 +2565,9 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                       || (!strncmp ((const char *) b->buflines[i].s + j, "struct", 6)
                           && !isalnum1 (b->buflines[i].s[j + 6]))))
                 nstrct = 1;
-            else if (cmnd == 1 && !isspace (f->b->buflines[i].s[j]))
+            else if (cmnd == 1 && !isspace (window->b->buflines[i].s[j]))
                 cmnd = 0;
-            else if (cmnd == 3 && f->b->buflines[i].s[j] == ':')
+            else if (cmnd == 3 && window->b->buflines[i].s[j] == ':')
                 cmnd = 1;
         }
     }
@@ -2581,17 +2581,17 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
     s->mark_begin = sa;
     s->mark_end = se;
     b->cursor = sb;
-    e_schirm (f, 1);
+    e_schirm (window, 1);
     WpeMouseRestoreShape ();
     return (0);
 }
 
 int
-e_p_beautify (we_window_t * f)
+e_p_beautify (we_window_t * window)
 {
     static int b_sw = 0;
     int ret;
-    W_OPTSTR *o = e_init_opt_kst (f);
+    W_OPTSTR *o = e_init_opt_kst (window);
 
     if (!o)
         return (-1);
@@ -2605,7 +2605,7 @@ e_p_beautify (we_window_t * f)
     e_add_txtstr (4, 2, "Begin:", o);
     e_add_txtstr (4, 6, "Scope:", o);
     e_add_numstr (4, 12, 26, 12, 2, 100, 0, AltN, "Number of Columns:",
-                  f->ed->autoindent, o);
+                  window->ed->autoindent, o);
     e_add_sswstr (5, 10, 3, AltT, (b_sw & 4) ? 1 : 0, "No Tabulators     ", o);
     e_add_pswstr (0, 5, 3, 0, AltG, 0, "Global            ", o);
     e_add_pswstr (0, 5, 4, 0, AltS, b_sw & 1, "Selected Text     ", o);
@@ -2619,8 +2619,8 @@ e_p_beautify (we_window_t * f)
     {
         b_sw =
             o->pstr[0]->num + (o->pstr[1]->num << 1) + (o->sstr[0]->num << 2);
-        f->ed->autoindent = o->nstr[0]->num;
-        e_mk_beauty (b_sw, f->ed->autoindent, f);
+        window->ed->autoindent = o->nstr[0]->num;
+        e_mk_beauty (b_sw, window->ed->autoindent, window);
     }
     freeostr (o);
     return (0);

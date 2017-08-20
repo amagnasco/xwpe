@@ -241,7 +241,7 @@ typedef struct BFF
     we_undo_t *undo;          /**< pointer to (a list of) undo structs for undo */
     we_undo_t *redo;	      /**< pointer to (a list of) undo structs for redo */
     struct CNT* control;      /**< pointer to a control struct */
-    struct we_window_struct* f;			  /**< pointer to a window struct */
+    struct we_window_struct* window;			  /**< pointer to a window struct */
     we_colorset_t* colorset;  /**< pointer to a colorset struct */
 } BUFFER;
 
@@ -341,7 +341,7 @@ typedef struct CNT
     struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
     FIND find;
     we_colorset_t* colorset;
-    we_window_t* f[MAXEDT + 1];
+    we_window_t* window[MAXEDT + 1];
     char dtmd, autosv;
 } we_control_t;
 
@@ -357,7 +357,7 @@ typedef struct fl_wnd
     int mxe, mye;
     int srcha;
     struct dirfile* df; /**< directory tree or file list */
-    we_window_t* f;     /**< the window itself */
+    we_window_t* window;     /**< the window itself */
 } FLWND;
 
 typedef struct FLBFF
@@ -414,7 +414,7 @@ typedef struct
 {
     int x, y, nc, sw;
     char* header;
-    int (*fkt)(we_window_t* f);
+    int (*fkt)(we_window_t* window);
 } W_O_BTTSTR;
 
 typedef struct
@@ -443,7 +443,7 @@ typedef struct
     W_O_BTTSTR** bstr;
     W_O_WRSTR** wstr;
     W_O_NUMSTR** nstr;
-    we_window_t* f;
+    we_window_t* window;
 } W_OPTSTR;
 
 typedef struct wpeOptionSection

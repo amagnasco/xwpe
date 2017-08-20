@@ -11,8 +11,8 @@
 #include "we_opt.h"
 
 /*   we_menue.c   */
-int WpeHandleMainmenu(int n, we_window_t* f);
+int WpeHandleMainmenu(int n, we_window_t* window);
 int WpeHandleSubmenu(int xa, int ya, int xe, int ye,
-                     int nm, OPTK* fopt, we_window_t* f);
+                     int nm, OPTK* fopt, we_window_t* window);
 
 #endif
