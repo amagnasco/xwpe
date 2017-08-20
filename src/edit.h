@@ -190,16 +190,21 @@ typedef struct we_undo_struct
     we_point_t cursor_start; /**< the start (x, y) cursor position */
     /**
      * Marks
-     *  'a' (x,y)=begin of characters to be copied
+     *  'a' (x,y)=begin of characters to be copiedA
+     *  'c' mark block begin
+     *  'p' a.x=len(string) a.y=no value
      *  'r' a.x=len(search_string) a.y=len(result_string)
      *	's' a.x=len(search_string) a.y=len(result_string)
+     *  'v' mark block begin
      */
     we_point_t a;
     /**
      * Marks
      *  'a' (x,y)=end of characters to be copied
+     *  'c' mark block end
      *  'r' no value
      *  's' no value
+     *  'v' mark block end
      */
     we_point_t e;
     union
