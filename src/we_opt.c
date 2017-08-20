@@ -20,14 +20,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int WpeReadGeneral (we_control_t * cn, char *section, char *option, char *value);
-int WpeWriteGeneral (we_control_t * cn, char *section, FILE * opt_file);
-int WpeReadColor (we_control_t * cn, char *section, char *option, char *value);
-int WpeWriteColor (we_control_t * cn, char *section, FILE * opt_file);
-int WpeReadProgramming (we_control_t * cn, char *section, char *option, char *value);
-int WpeWriteProgramming (we_control_t * cn, char *section, FILE * opt_file);
-int WpeReadLanguage (we_control_t * cn, char *section, char *option, char *value);
-int WpeWriteLanguage (we_control_t * cn, char *section, FILE * opt_file);
+int WpeReadGeneral (we_control_t * control, char *section, char *option, char *value);
+int WpeWriteGeneral (we_control_t * control, char *section, FILE * opt_file);
+int WpeReadColor (we_control_t * control, char *section, char *option, char *value);
+int WpeWriteColor (we_control_t * control, char *section, FILE * opt_file);
+int WpeReadProgramming (we_control_t * control, char *section, char *option, char *value);
+int WpeWriteProgramming (we_control_t * control, char *section, FILE * opt_file);
+int WpeReadLanguage (we_control_t * control, char *section, char *option, char *value);
+int WpeWriteLanguage (we_control_t * control, char *section, FILE * opt_file);
 
 #define E_HLP_NUM 26
 char *e_hlp_str[E_HLP_NUM];
@@ -130,24 +130,24 @@ int
 e_clear_desk (we_window_t * f)
 {
     int i;
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
 #if  MOUSE
     int g[4];			/*  = { 2, 0, 0, 0, };  */
 
     g[0] = 2;
 #endif
     fk_cursor (0);
-    for (i = cn->mxedt; i > 0; i--)
+    for (i = control->mxedt; i > 0; i--)
     {
-        f = cn->f[cn->mxedt];
+        f = control->f[control->mxedt];
         if (e_close_window (f) == WPE_ESC)
             return (WPE_ESC);
     }
-    cn->mxedt = 0;
+    control->mxedt = 0;
 #if  MOUSE
     fk_mouse (g);
 #endif
-    e_ini_desk (cn);
+    e_ini_desk (control);
 #if  MOUSE
     g[0] = 1;
     fk_mouse (g);
@@ -160,7 +160,7 @@ int
 e_repaint_desk (we_window_t * f)
 {
     /* int j; */
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     int i;
 #if MOUSE
     int g[4];
@@ -171,7 +171,7 @@ e_repaint_desk (we_window_t * f)
 
     if (WpeIsXwin ())
     {
-        if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->view)
+        if (e_X_l_pic && e_X_l_pic != control->f[control->mxedt]->view)
         {
             sv_pic = e_X_l_pic;
             nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y,
@@ -180,7 +180,7 @@ e_repaint_desk (we_window_t * f)
         (*e_u_ini_size) ();
     }
 #endif
-    if (cn->mxedt < 1)
+    if (control->mxedt < 1)
     {
         e_cls (f->colorset->df.fb, f->colorset->dc);
         e_ini_desk (f->ed);
@@ -193,16 +193,16 @@ e_repaint_desk (we_window_t * f)
 #endif
         return (0);
     }
-    cn->curedt = cn->mxedt;
-    ini_repaint (cn);
+    control->curedt = control->mxedt;
+    ini_repaint (control);
     e_abs_refr ();
-    for (i = 1; i < cn->mxedt; i++)
+    for (i = 1; i < control->mxedt; i++)
     {
-        e_firstl (cn->f[i], 0);
-        e_schirm (cn->f[i], 0);
+        e_firstl (control->f[i], 0);
+        e_schirm (control->f[i], 0);
     }
-    e_firstl (cn->f[i], 1);
-    e_schirm (cn->f[i], 1);
+    e_firstl (control->f[i], 1);
+    e_schirm (control->f[i], 1);
 #ifndef NO_XWINDOWS
     if (WpeIsXwin () && nw_pic)
     {
@@ -215,7 +215,7 @@ e_repaint_desk (we_window_t * f)
     fk_mouse (g);
 #endif
     end_repaint ();
-    e_cursor (cn->f[i], 1);
+    e_cursor (control->f[i], 1);
 #if  MOUSE
     g[0] = 0;
     fk_mouse (g);
@@ -729,59 +729,59 @@ WpeValueToString (const char *value)
 }
 
 int
-WpeReadGeneral (we_control_t * cn, char *section, char *option, char *value)
+WpeReadGeneral (we_control_t * control, char *section, char *option, char *value)
 {
     UNUSED (section);
     if (WpeStrccmp ("Data", option) == 0)
-        cn->dtmd = atoi (value);
+        control->dtmd = atoi (value);
     else if (WpeStrccmp ("Autosave", option) == 0)
-        cn->autosv = atoi (value);
+        control->autosv = atoi (value);
     else if (WpeStrccmp ("MaxColumn", option) == 0)
-        cn->maxcol = atoi (value);
+        control->maxcol = atoi (value);
     else if (WpeStrccmp ("Tab", option) == 0)
-        cn->tabn = atoi (value);
+        control->tabn = atoi (value);
     else if (WpeStrccmp ("MaxChanges", option) == 0)
-        cn->maxchg = atoi (value);
+        control->maxchg = atoi (value);
     else if (WpeStrccmp ("NumUndo", option) == 0)
-        cn->numundo = atoi (value);
+        control->numundo = atoi (value);
     else if (WpeStrccmp ("Options1", option) == 0)
-        cn->flopt = atoi (value);
+        control->flopt = atoi (value);
     else if (WpeStrccmp ("Options2", option) == 0)
-        cn->edopt = atoi (value);
+        control->edopt = atoi (value);
     else if (WpeStrccmp ("InfoDir", option) == 0)
         info_file = WpeStrdup (value);
     else if (WpeStrccmp ("AutoIndent", option) == 0)
-        cn->autoindent = atoi (value);
+        control->autoindent = atoi (value);
     else if (WpeStrccmp ("PrintCmd", option) == 0)
-        cn->print_cmd = WpeStrdup (value);
+        control->print_cmd = WpeStrdup (value);
     else if (WpeStrccmp ("Version", option) == 0)
     {
-        sscanf (value, "%d.%d.%d", &cn->major, &cn->minor, &cn->patch);
+        sscanf (value, "%d.%d.%d", &control->major, &control->minor, &control->patch);
     }
     return 0;
 }
 
 int
-WpeWriteGeneral (we_control_t * cn, char *section, FILE * opt_file)
+WpeWriteGeneral (we_control_t * control, char *section, FILE * opt_file)
 {
     UNUSED (section);
     fprintf (opt_file, "Version : %s\n", VERSION);
-    fprintf (opt_file, "Data : %d\n", cn->dtmd);
-    fprintf (opt_file, "Autosave : %d\n", cn->autosv);
-    fprintf (opt_file, "MaxColumn : %d\n", cn->maxcol);
-    fprintf (opt_file, "Tab : %d\n", cn->tabn);
-    fprintf (opt_file, "MaxChanges : %d\n", cn->maxchg);
-    fprintf (opt_file, "NumUndo : %d\n", cn->numundo);
-    fprintf (opt_file, "Options1 : %d\n", cn->flopt);
-    fprintf (opt_file, "Options2 : %d\n", cn->edopt);
+    fprintf (opt_file, "Data : %d\n", control->dtmd);
+    fprintf (opt_file, "Autosave : %d\n", control->autosv);
+    fprintf (opt_file, "MaxColumn : %d\n", control->maxcol);
+    fprintf (opt_file, "Tab : %d\n", control->tabn);
+    fprintf (opt_file, "MaxChanges : %d\n", control->maxchg);
+    fprintf (opt_file, "NumUndo : %d\n", control->numundo);
+    fprintf (opt_file, "Options1 : %d\n", control->flopt);
+    fprintf (opt_file, "Options2 : %d\n", control->edopt);
     fprintf (opt_file, "InfoDir : %s\n", info_file);
-    fprintf (opt_file, "AutoIndent : %d\n", cn->autoindent);
-    fprintf (opt_file, "PrintCmd : %s\n", cn->print_cmd);
+    fprintf (opt_file, "AutoIndent : %d\n", control->autoindent);
+    fprintf (opt_file, "PrintCmd : %s\n", control->print_cmd);
     return 0;
 }
 
 int
-WpeReadColor (we_control_t * cn, char *section, char *option, char *value)
+WpeReadColor (we_control_t * control, char *section, char *option, char *value)
 {
     we_colorset_t *fb = NULL;
     we_color_t *c = NULL;
@@ -804,7 +804,7 @@ WpeReadColor (we_control_t * cn, char *section, char *option, char *value)
             we_colorset_Init (x_fb);
         }
         fb = x_fb;
-        if ((cn->major <= 1) && (cn->minor <= 5) && (cn->patch <= 27))
+        if ((control->major <= 1) && (control->minor <= 5) && (control->patch <= 27))
             convert = 1;
     }
     if (WpeStrccmp ("er", option) == 0)
@@ -955,9 +955,9 @@ WpeReadColor (we_control_t * cn, char *section, char *option, char *value)
 }
 
 int
-WpeWriteColor (we_control_t * cn, char *section, FILE * opt_file)
+WpeWriteColor (we_control_t * control, char *section, FILE * opt_file)
 {
-    UNUSED (cn);
+    UNUSED (control);
     we_colorset_t *fb = 0;
 
     if (WpeStrccmp ("Term", section + strlen (OPT_SECTION_COLOR) + 1) == 0)
@@ -1007,9 +1007,9 @@ WpeWriteColor (we_control_t * cn, char *section, FILE * opt_file)
 }
 
 int
-WpeReadProgramming (we_control_t * cn, char *section, char *option, char *value)
+WpeReadProgramming (we_control_t * control, char *section, char *option, char *value)
 {
-    UNUSED (cn);
+    UNUSED (control);
     UNUSED (section);
     if (WpeStrccmp ("Arguments", option) == 0)
         e_prog.arguments = WpeStrdup (value);
@@ -1025,9 +1025,9 @@ WpeReadProgramming (we_control_t * cn, char *section, char *option, char *value)
 }
 
 int
-WpeWriteProgramming (we_control_t * cn, char *section, FILE * opt_file)
+WpeWriteProgramming (we_control_t * control, char *section, FILE * opt_file)
 {
-    UNUSED (cn);
+    UNUSED (control);
     UNUSED (section);
     fprintf (opt_file, "Arguments : %s\n", e_prog.arguments);
     fprintf (opt_file, "Project : %s\n", e_prog.project);
@@ -1038,9 +1038,9 @@ WpeWriteProgramming (we_control_t * cn, char *section, FILE * opt_file)
 }
 
 int
-WpeReadLanguage (we_control_t * cn, char *section, char *option, char *value)
+WpeReadLanguage (we_control_t * control, char *section, char *option, char *value)
 {
-    UNUSED (cn);
+    UNUSED (control);
     int i, j;
     char *strtmp;
 
@@ -1121,9 +1121,9 @@ WpeReadLanguage (we_control_t * cn, char *section, char *option, char *value)
 }
 
 int
-WpeWriteLanguage (we_control_t * cn, char *section, FILE * opt_file)
+WpeWriteLanguage (we_control_t * control, char *section, FILE * opt_file)
 {
-    UNUSED (cn);
+    UNUSED (control);
     int i, j;
     char *str_tmp;
 
@@ -1157,19 +1157,19 @@ WpeWriteLanguage (we_control_t * cn, char *section, FILE * opt_file)
 int
 e_save_opt (we_window_t * f)
 {
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     FILE *fp;
     int i;
     char *str_line;
 
-    str_line = malloc ((strlen (cn->optfile) + 1) * sizeof (char));
-    strcpy (str_line, cn->optfile);
+    str_line = malloc ((strlen (control->optfile) + 1) * sizeof (char));
+    strcpy (str_line, control->optfile);
     for (i = strlen (str_line); i > 0 && str_line[i] != DIRC; i--);
     str_line[i] = '\0';
     if (access (str_line, F_OK))
         mkdir (str_line, 0700);
     free (str_line);
-    fp = fopen (cn->optfile, "w");
+    fp = fopen (control->optfile, "w");
     if (fp == NULL)
     {
         e_error (e_msg[ERR_OPEN_OPF], 0, f->colorset);
@@ -1177,25 +1177,25 @@ e_save_opt (we_window_t * f)
     }
     str_line = OPT_SECTION_GENERAL;
     fprintf (fp, "[%s]\n", str_line);
-    WpeWriteGeneral (cn, str_line, fp);
+    WpeWriteGeneral (control, str_line, fp);
     str_line = malloc (strlen (OPT_SECTION_COLOR) + 10);
     strcpy (str_line, OPT_SECTION_COLOR);
     if (u_fb)
     {
         strcat (str_line, "/Term");
         fprintf (fp, "[%s]\n", str_line);
-        WpeWriteColor (cn, str_line, fp);
+        WpeWriteColor (control, str_line, fp);
     }
     if (x_fb)
     {
         strcpy (str_line + strlen (OPT_SECTION_COLOR), "/X11");
         fprintf (fp, "[%s]\n", str_line);
-        WpeWriteColor (cn, str_line, fp);
+        WpeWriteColor (control, str_line, fp);
     }
     free (str_line);
     str_line = OPT_SECTION_PROGRAMMING;
     fprintf (fp, "[%s]\n", str_line);
-    WpeWriteProgramming (cn, str_line, fp);
+    WpeWriteProgramming (control, str_line, fp);
     str_line = malloc (strlen (OPT_SECTION_LANGUAGE) + 2);
     strcpy (str_line, OPT_SECTION_LANGUAGE);
     strcat (str_line, "/");
@@ -1208,7 +1208,7 @@ e_save_opt (we_window_t * f)
         strcpy (str_line + strlen (OPT_SECTION_LANGUAGE) + 1,
                 e_prog.comp[i]->language);
         fprintf (fp, "[%s]\n", str_line);
-        WpeWriteLanguage (cn, str_line, fp);
+        WpeWriteLanguage (control, str_line, fp);
     }
     free (str_line);
     fclose (fp);
@@ -1216,7 +1216,7 @@ e_save_opt (we_window_t * f)
 }
 
 int
-e_opt_read (we_control_t * cn)
+e_opt_read (we_control_t * control)
 {
     FILE *fp;
     char *str_line;
@@ -1227,7 +1227,7 @@ e_opt_read (we_control_t * cn)
     int sz;
     int i;
 
-    fp = fopen (cn->optfile, "r");
+    fp = fopen (control->optfile, "r");
     if (fp == NULL)
     {
         char *file = e_mkfilename (LIBRARY_DIR, OPTION_FILE);
@@ -1298,7 +1298,7 @@ e_opt_read (we_control_t * cn)
                           strlen (WpeSectionRead[i].section)) != 0); i++)
                     ;
                 if (i < OPTION_SECTIONS)
-                    (*WpeSectionRead[i].function) (cn, section, option, value);
+                    (*WpeSectionRead[i].function) (control, section, option, value);
                 else
                     return ERR_READ_OPF;
             }

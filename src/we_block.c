@@ -59,7 +59,7 @@ e_blck_del (we_window_t * f)
     else
     {
         e_add_undo ('d', b, s->mark_begin.x, s->mark_begin.y, 0);
-        f->save = b->cn->maxchg + 1;
+        f->save = b->control->maxchg + 1;
 
         /*********** start debugging code ************/
         y = s->mark_begin.y;
@@ -141,37 +141,37 @@ e_blck_clear (BUFFER * b, we_screen_t * s)
 int
 e_show_clipboard (we_window_t * f)
 {
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     we_window_t *fo;
     int i, j;
 
-    for (j = 1; j <= cn->mxedt; j++)
-        if (cn->f[j] == cn->f[0])
+    for (j = 1; j <= control->mxedt; j++)
+        if (control->f[j] == control->f[0])
         {
-            e_switch_window (cn->edt[j], f);
+            e_switch_window (control->edt[j], f);
             return (0);
         }
 
-    if (cn->mxedt > MAXEDT)
+    if (control->mxedt > MAXEDT)
     {
-        e_error (e_msg[ERR_MAXWINS], 0, cn->colorset);
+        e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (0);
     }
     for (j = 1; j <= MAXEDT; j++)
     {
-        for (i = 1; i <= cn->mxedt && cn->edt[i] != j; i++);
-        if (i > cn->mxedt)
+        for (i = 1; i <= control->mxedt && control->edt[i] != j; i++);
+        if (i > control->mxedt)
             break;
     }
-    cn->curedt = j;
-    (cn->mxedt)++;
-    cn->edt[cn->mxedt] = j;
+    control->curedt = j;
+    (control->mxedt)++;
+    control->edt[control->mxedt] = j;
 
-    f = cn->f[cn->mxedt] = cn->f[0];
+    f = control->f[control->mxedt] = control->f[0];
 #ifdef PROG
     if (WpeIsProg ())
     {
-        for (i = cn->mxedt - 1; i > 0; i--);
+        for (i = control->mxedt - 1; i > 0; i--);
         if (i < 1)
         {
             f->a = e_set_pnt (0, 1);
@@ -179,14 +179,14 @@ e_show_clipboard (we_window_t * f)
         }
         else
         {
-            f->a = e_set_pnt (cn->f[i]->a.x + 1, cn->f[i]->a.y + 1);
-            f->e = e_set_pnt (cn->f[i]->e.x, cn->f[i]->e.y);
+            f->a = e_set_pnt (control->f[i]->a.x + 1, control->f[i]->a.y + 1);
+            f->e = e_set_pnt (control->f[i]->e.x, control->f[i]->e.y);
         }
     }
     else
 #endif
     {
-        if (cn->mxedt < 2)
+        if (control->mxedt < 2)
         {
             f->a = e_set_pnt (0, 1);
             f->e = e_set_pnt (MAXSCOL - 1, MAXSLNS - 2);
@@ -194,17 +194,17 @@ e_show_clipboard (we_window_t * f)
         else
         {
             f->a =
-                e_set_pnt (cn->f[cn->mxedt - 1]->a.x + 1,
-                           cn->f[cn->mxedt - 1]->a.y + 1);
+                e_set_pnt (control->f[control->mxedt - 1]->a.x + 1,
+                           control->f[control->mxedt - 1]->a.y + 1);
             f->e =
-                e_set_pnt (cn->f[cn->mxedt - 1]->e.x, cn->f[cn->mxedt - 1]->e.y);
+                e_set_pnt (control->f[control->mxedt - 1]->e.x, control->f[control->mxedt - 1]->e.y);
         }
     }
-    f->winnum = cn->curedt;
+    f->winnum = control->curedt;
 
-    if (cn->mxedt > 1)
+    if (control->mxedt > 1)
     {
-        fo = cn->f[cn->mxedt - 1];
+        fo = control->f[control->mxedt - 1];
         e_ed_rahmen (fo, 0);
     }
     e_firstl (f, 1);
@@ -289,7 +289,7 @@ e_edt_einf (we_window_t * f)
     global_disable_add_undo = 0;
     e_add_undo ('c', b, b->cursor.x, b->cursor.y, 0);
     e_sc_txt_2 (f);
-    f->save = b->cn->maxchg + 1;
+    f->save = b->control->maxchg + 1;
     return (0);
 }
 
@@ -322,7 +322,7 @@ e_blck_move (we_window_t * f)
     e_move_block (b->cursor.x, b->cursor.y, b, b, f);
     global_disable_add_undo = 0;
     e_add_undo ('v', b, ka.x, ka.y, 0);
-    f->save = b->cn->maxchg + 1;
+    f->save = b->control->maxchg + 1;
     return (0);
 }
 
@@ -529,7 +529,7 @@ e_blck_copy (we_window_t * f)
     global_disable_add_undo = 0;
     e_add_undo ('c', b, b->cursor.x, b->cursor.y, 0);
     e_sc_txt_2 (f);
-    f->save = b->cn->maxchg + 1;
+    f->save = b->control->maxchg + 1;
     return (0);
 }
 

@@ -13,18 +13,18 @@
 
 #ifdef UNIX
 
-int e_data_eingabe(we_control_t* cn);
+int e_data_eingabe(we_control_t* control);
 
-char* WpeGetCurrentDir(we_control_t* cn);
-struct dirfile* WpeCreateWorkingDirTree(int sw, we_control_t* cn);
+char* WpeGetCurrentDir(we_control_t* control);
+struct dirfile* WpeCreateWorkingDirTree(int sw, we_control_t* control);
 char* WpeAssemblePath(char* pth, struct dirfile* cd, struct dirfile* dd,
                       int n, we_window_t* f);
-struct dirfile* WpeGraphicalFileList(struct dirfile* df, int sw, we_control_t* cn);
+struct dirfile* WpeGraphicalFileList(struct dirfile* df, int sw, we_control_t* control);
 struct dirfile* WpeGraphicalDirTree(struct dirfile* cd, struct dirfile* dd,
-                                    we_control_t* cn);
+                                    we_control_t* control);
 int e_funct(we_window_t* f);
 int e_funct_in(we_window_t* f);
-int e_data_first(int sw, we_control_t* cn, char* nstr);
+int e_data_first(int sw, we_control_t* control, char* nstr);
 int e_data_schirm(we_window_t* f);
 
 #endif
@@ -37,8 +37,8 @@ int e_duplicate(char* file, we_window_t* f);
 
 int WpeManager(we_window_t* f);
 int WpeManagerFirst(we_window_t* f);
-int WpeHandleFileManager(we_control_t* cn);
-int WpeCreateFileManager(int sw, we_control_t* cn, char* dirct);
+int WpeHandleFileManager(we_control_t* control);
+int WpeCreateFileManager(int sw, we_control_t* control, char* dirct);
 int WpeFileManagerOptions(we_window_t* f);
 int WpeDrawFileManager(we_window_t* f);
 int WpeFindWindow(we_window_t* f);

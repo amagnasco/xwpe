@@ -56,7 +56,7 @@ typedef struct wpeSyntaxExt
 extern WpeSyntaxExt **WpeSyntaxDef;
 
 /* WeSyntax.h */
-void WpeSyntaxReadFile (we_control_t * cn);
+void WpeSyntaxReadFile (we_control_t * control);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   Macros and Machine specific information

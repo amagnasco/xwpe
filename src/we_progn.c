@@ -803,7 +803,7 @@ e_add_synt_tl (char *filename, we_window_t * f)
 E_AFILE *
 e_aopen (char *name, char *path, int mode)
 {
-    we_control_t *cn = global_editor_control;
+    we_control_t *control = global_editor_control;
     E_AFILE *ep = malloc (sizeof (E_AFILE));
     char str[256];
     int i, j;
@@ -812,11 +812,11 @@ e_aopen (char *name, char *path, int mode)
     ep->fp = NULL;
     if (mode & 1)
     {
-        for (i = 1; i <= cn->mxedt && strcmp (cn->f[i]->datnam, name); i++)
+        for (i = 1; i <= control->mxedt && strcmp (control->f[i]->datnam, name); i++)
             ;
-        if (i <= cn->mxedt)
+        if (i <= control->mxedt)
         {
-            ep->b = cn->f[i]->b;
+            ep->b = control->f[i]->b;
             ep->p.x = ep->p.y = 0;
         }
     }
@@ -2148,7 +2148,7 @@ e_mbt_str (BUFFER * b, int *ii, int *jj, unsigned char c, int n, int sw,
                 e_del_nchar (b, b->f->s, 0, i, j);
             if (j < m)
             {
-                str = e_mbt_mk_sp (str, n + b->cn->autoindent, sw, &m);
+                str = e_mbt_mk_sp (str, n + b->control->autoindent, sw, &m);
                 e_ins_nchar (b, b->f->s, (unsigned char *) str, 0, i, m);
             }
             j = -1;
@@ -2182,7 +2182,7 @@ e_mbt_cnd (BUFFER * b, int *ii, int *jj, int n, int sw, int *cmnd)
                     e_del_nchar (b, b->f->s, 0, i, j);
                 if (j < m && (b->buflines[i].s[0] != '*' || b->buflines[i].s[1] != '/'))
                 {
-                    str = e_mbt_mk_sp (str, n + b->cn->autoindent, sw, &m);
+                    str = e_mbt_mk_sp (str, n + b->control->autoindent, sw, &m);
                     e_ins_nchar (b, b->f->s, (unsigned char *) str, 0, i, m);
                 }
                 j = -1;
@@ -2295,7 +2295,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * f)
                     tstr =
                         e_mbt_mk_sp (tstr,
                                      !cmnd ? n +
-                                     b->cn->autoindent : b->cn->autoindent,
+                                     b->control->autoindent : b->control->autoindent,
                                      (sw & 4) ? 0 : f->ed->tabn, &m);
                     e_ins_nchar (b, s, (unsigned char *) tstr, 0, i, m);
                     j = m;

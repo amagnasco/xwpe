@@ -166,7 +166,7 @@ int
 WpeMngMouseInFileManager (we_window_t * f)
 {
     extern struct mouse e_mouse;
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     FLBFFR *b = (FLBFFR *) f->b;
     int i, c = 0, by = 4;
 
@@ -177,14 +177,14 @@ WpeMngMouseInFileManager (we_window_t * f)
     else if (e_mouse.x < f->a.x || e_mouse.x > f->e.x
              || e_mouse.y < f->a.y || e_mouse.y > f->e.y)
     {
-        for (i = cn->mxedt; i > 0; i--)
+        for (i = control->mxedt; i > 0; i--)
         {
-            if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x
-                    && e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
+            if (e_mouse.x >= control->f[i]->a.x && e_mouse.x <= control->f[i]->e.x
+                    && e_mouse.y >= control->f[i]->a.y && e_mouse.y <= control->f[i]->e.y)
             {
                 while (e_mshit () != 0);
-                return (cn->edt[i] <
-                        10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i]);
+                return (control->edt[i] <
+                        10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
             }
         }
     }
@@ -290,7 +290,7 @@ int
 WpeMouseInFileDirList (int k, int sw, we_window_t * f)
 {
     extern struct mouse e_mouse;
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     FLBFFR *b = (FLBFFR *) f->b;
     int i;
     char tmp[256];
@@ -298,21 +298,21 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
     if (e_mouse.x >= f->a.x && e_mouse.x <= f->e.x
             && e_mouse.y >= f->a.y && e_mouse.y <= f->e.y)
         return (0);
-    for (i = cn->mxedt - 1; i > 0; i--)
+    for (i = control->mxedt - 1; i > 0; i--)
     {
-        if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x
-                && e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
+        if (e_mouse.x >= control->f[i]->a.x && e_mouse.x <= control->f[i]->e.x
+                && e_mouse.y >= control->f[i]->a.y && e_mouse.y <= control->f[i]->e.y)
             break;
     }
     if (i <= 0)
         return (0);
     if (sw)
     {
-        if (cn->f[i]->dirct[strlen (cn->f[i]->dirct) - 1] == DIRC)
-            sprintf (tmp, "%s%s", cn->f[i]->dirct,
+        if (control->f[i]->dirct[strlen (control->f[i]->dirct) - 1] == DIRC)
+            sprintf (tmp, "%s%s", control->f[i]->dirct,
                      b->dd->name[b->dw->nf - b->cd->nr_files]);
         else
-            sprintf (tmp, "%s/%s", cn->f[i]->dirct,
+            sprintf (tmp, "%s/%s", control->f[i]->dirct,
                      b->dd->name[b->dw->nf - b->cd->nr_files]);
         if (k == -2)
             e_copy (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, f);
@@ -324,8 +324,8 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
         freedf (b->dw->df);
         freedf (b->dd);
         b->dd = e_find_dir (SUDIR, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-        b->cd = WpeCreateWorkingDirTree (f->save, cn);	/* ??? cn */
-        b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
+        b->cd = WpeCreateWorkingDirTree (f->save, control);	/* ??? control */
+        b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
         b->dw->nf = b->cd->nr_files - 1;
         b->dw->ia = b->dw->ja = 0;
         e_pr_file_window (b->dw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
@@ -333,10 +333,10 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
     }
     else
     {
-        if (cn->f[i]->dirct[strlen (cn->f[i]->dirct) - 1] == DIRC)
-            sprintf (tmp, "%s%s", cn->f[i]->dirct, b->df->name[b->fw->nf]);
+        if (control->f[i]->dirct[strlen (control->f[i]->dirct) - 1] == DIRC)
+            sprintf (tmp, "%s%s", control->f[i]->dirct, b->df->name[b->fw->nf]);
         else
-            sprintf (tmp, "%s/%s", cn->f[i]->dirct, b->df->name[b->fw->nf]);
+            sprintf (tmp, "%s/%s", control->f[i]->dirct, b->df->name[b->fw->nf]);
         if (k == -2)
             e_copy (b->df->name[b->fw->nf], tmp, f);
         else if (k == -4)
@@ -347,13 +347,13 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * f)
         freedf (b->fw->df);
         b->df =
             e_find_files (b->rdfile, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-        b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
+        b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
         b->fw->ia = b->fw->nf = 0;
         b->fw->ja = b->fw->srcha;
         e_pr_file_window (b->fw, 0, 1, f->colorset->ft.fb, f->colorset->fz.fb,
                           f->colorset->frft.fb);
     }
-    return (cn->edt[i] < 10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i]);
+    return (control->edt[i] < 10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
 }
 
 
@@ -771,7 +771,7 @@ e_edt_mouse (int c, we_window_t * f)
 {
     int i, ret = 0;
     extern struct mouse e_mouse;
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
 
     if (e_mouse.y == 0)
         return (e_m1_mouse ());
@@ -918,13 +918,13 @@ e_edt_mouse (int c, we_window_t * f)
     }
     else
     {
-        for (i = cn->mxedt; i > 0; i--)
+        for (i = control->mxedt; i > 0; i--)
         {
-            if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x &&
-                    e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
+            if (e_mouse.x >= control->f[i]->a.x && e_mouse.x <= control->f[i]->e.x &&
+                    e_mouse.y >= control->f[i]->a.y && e_mouse.y <= control->f[i]->e.y)
             {
                 ret =
-                    cn->edt[i] < 10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i];
+                    control->edt[i] < 10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i];
                 break;
             }
         }
@@ -1264,7 +1264,7 @@ we_window_t *f;
 {
     extern struct mouse e_mouse;
     FLWND *fw = (FLWND *) f->b;
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     int i, c = 0;
     if (e_mouse.y == 0)
         return (AltBl);
@@ -1273,12 +1273,12 @@ we_window_t *f;
     else if (e_mouse.x < f->a.x || e_mouse.x > f->e.x
              || e_mouse.y < f->a.y || e_mouse.y > f->e.y)
     {
-        for (i = cn->mxedt; i > 0; i--)
+        for (i = control->mxedt; i > 0; i--)
         {
-            if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x
-                    && e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
-                return (cn->edt[i] <
-                        10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i]);
+            if (e_mouse.x >= control->f[i]->a.x && e_mouse.x <= control->f[i]->e.x
+                    && e_mouse.y >= control->f[i]->a.y && e_mouse.y <= control->f[i]->e.y)
+                return (control->edt[i] <
+                        10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
         }
     }
     else if (e_mouse.x == f->a.x + 3 && e_mouse.y == f->a.y)

@@ -55,7 +55,7 @@ BUFFER *e_p_w_buffer = NULL;
 
 /* open edit window */
 int
-e_edit (we_control_t * cn, char *filename)
+e_edit (we_control_t * control, char *filename)
 {
     extern char *e_hlp_str[];
     extern WOPT *eblst, *hblst, *mblst, *dblst;
@@ -76,43 +76,43 @@ e_edit (we_control_t * cn, char *filename)
         }
         else
         {
-            for (i = cn->mxedt; i > 0 &&
-                    (cn->f[i]->dtmd != DTMD_DATA || cn->f[i]->ins != 4); i--)
+            for (i = control->mxedt; i > 0 &&
+                    (control->f[i]->dtmd != DTMD_DATA || control->f[i]->ins != 4); i--)
                 ;
             if (i > 0)
             {
-                e_switch_window (cn->edt[i], cn->f[cn->mxedt]);
-                e_close_window (cn->f[cn->mxedt]);
+                e_switch_window (control->edt[i], control->f[control->mxedt]);
+                e_close_window (control->f[control->mxedt]);
             }
         }
         e_prog.project = realloc (e_prog.project, j + 1);
         strcpy (e_prog.project, filename);
-        e_make_prj_opt (cn->f[cn->mxedt]);
+        e_make_prj_opt (control->f[control->mxedt]);
         /************************************/
-        e_rel_brkwtch (cn->f[cn->mxedt]);
+        e_rel_brkwtch (control->f[control->mxedt]);
         /************************************/
-        e_prj_ob_file (cn->f[cn->mxedt]);
+        e_prj_ob_file (control->f[control->mxedt]);
         return 0;
     }
 
     /* Check to see if the file is already opened BD */
     WpeFilenameToPathFile (filename, &path, &file);
     /** \todo Should check for error here */
-    for (i = cn->mxedt; i >= 0; i--)
+    for (i = control->mxedt; i >= 0; i--)
     {
-        if ((strcmp (cn->f[i]->datnam, file) == 0) &&
-                (strcmp (cn->f[i]->dirct, path) == 0))
+        if ((strcmp (control->f[i]->datnam, file) == 0) &&
+                (strcmp (control->f[i]->dirct, path) == 0))
         {
-            e_switch_window (cn->edt[i], cn->f[cn->mxedt]);
+            e_switch_window (control->edt[i], control->f[control->mxedt]);
             free (path);
             free (file);
             return (0);
         }
     }
 
-    if (cn->mxedt >= MAXEDT)
+    if (control->mxedt >= MAXEDT)
     {
-        e_error (e_msg[ERR_MAXWINS], 0, cn->colorset);
+        e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (-1);
     }
     if (stat (filename, buf) == 0)
@@ -125,19 +125,19 @@ e_edit (we_control_t * cn, char *filename)
     }
     for (j = 1; j <= MAXEDT; j++)
     {
-        for (i = 1; i <= cn->mxedt && cn->edt[i] != j; i++);
-        if (i > cn->mxedt)
+        for (i = 1; i <= control->mxedt && control->edt[i] != j; i++);
+        if (i > control->mxedt)
             break;
     }
-    cn->curedt = j;
-    (cn->mxedt)++;
-    cn->edt[cn->mxedt] = j;
+    control->curedt = j;
+    (control->mxedt)++;
+    control->edt[control->mxedt] = j;
 
     if ((f = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
-    f->colorset = cn->colorset;
-    cn->f[cn->mxedt] = f;
+    f->colorset = control->colorset;
+    control->f[control->mxedt] = f;
 
     if ((f->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
@@ -146,17 +146,17 @@ e_edit (we_control_t * cn, char *filename)
     if ((f->b->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, f->colorset);
 #ifdef PROG
-    for (i = cn->mxedt - 1;
-            i > 0 && (!strcmp (cn->f[i]->datnam, "Messages")
-                      || !DTMD_ISTEXT (cn->f[i]->dtmd)
-                      || !strcmp (cn->f[i]->datnam, "Watches")
-                      || !strcmp (cn->f[i]->datnam, "Stack")); i--)
+    for (i = control->mxedt - 1;
+            i > 0 && (!strcmp (control->f[i]->datnam, "Messages")
+                      || !DTMD_ISTEXT (control->f[i]->dtmd)
+                      || !strcmp (control->f[i]->datnam, "Watches")
+                      || !strcmp (control->f[i]->datnam, "Stack")); i--)
         ;
-    for (j = cn->mxedt - 1; j > 0 && !st; j--)
-        if (!strcmp (cn->f[j]->datnam, "Stack"))
+    for (j = control->mxedt - 1; j > 0 && !st; j--)
+        if (!strcmp (control->f[j]->datnam, "Stack"))
             st = 1;
 #else
-    for (i = cn->mxedt - 1; i > 0 && !DTMD_ISTEXT (cn->f[i]->dtmd); i--)
+    for (i = control->mxedt - 1; i > 0 && !DTMD_ISTEXT (control->f[i]->dtmd); i--)
         ;
 #endif
 #ifdef PROG
@@ -184,10 +184,10 @@ e_edit (we_control_t * cn, char *filename)
             }
             else
             {
-                f->a = e_set_pnt (cn->f[i]->a.x + 1, cn->f[i]->a.y + 1);
+                f->a = e_set_pnt (control->f[i]->a.x + 1, control->f[i]->a.y + 1);
                 f->e =
-                    e_set_pnt (st ? 2 * MAXSCOL / 3 - 1 : cn->f[i]->e.x,
-                               cn->f[i]->e.y);
+                    e_set_pnt (st ? 2 * MAXSCOL / 3 - 1 : control->f[i]->e.x,
+                               control->f[i]->e.y);
             }
         }
     }
@@ -201,20 +201,20 @@ e_edit (we_control_t * cn, char *filename)
         }
         else
         {
-            f->a = e_set_pnt (cn->f[i]->a.x + 1, cn->f[i]->a.y + 1);
-            f->e = e_set_pnt (cn->f[i]->e.x, cn->f[i]->e.y);
+            f->a = e_set_pnt (control->f[i]->a.x + 1, control->f[i]->a.y + 1);
+            f->e = e_set_pnt (control->f[i]->e.x, control->f[i]->e.y);
         }
     }
     if (num_cols_on_screen(f) < 26)
         f->a.x = f->e.x - 26;
     if (num_lines_on_screen(f) < 3)
         f->a.y = f->e.y - 3;
-    f->winnum = cn->curedt;
-    f->dtmd = cn->dtmd;
+    f->winnum = control->curedt;
+    f->dtmd = control->dtmd;
     f->ins = 1;
     f->save = 0;
     f->zoom = 0;
-    f->ed = cn;
+    f->ed = control;
     f->view = NULL;
     f->hlp_str = e_hlp_str[0];
     f->blst = eblst;
@@ -222,10 +222,10 @@ e_edit (we_control_t * cn, char *filename)
     f->b->f = f;
     f->b->cursor = e_set_pnt (0, 0);
     f->b->cl = f->b->clsv = 0;
-    f->b->mx = e_set_pnt (cn->maxcol, MAXLINES);
+    f->b->mx = e_set_pnt (control->maxcol, MAXLINES);
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
-    f->b->cn = cn;
+    f->b->control = control;
     f->b->undo = NULL;
     f->b->redo = NULL;
     f->find.dirct = NULL;
@@ -260,10 +260,10 @@ e_edit (we_control_t * cn, char *filename)
     f->dirct = path;
     for (i = 0; i < 9; i++)
         f->s->pt[i] = e_set_pnt (-1, -1);
-    if (cn->mxedt == 0)		/*  Clipboard  */
+    if (control->mxedt == 0)		/*  Clipboard  */
     {
-        cn->curedt = 0;
-        cn->edt[cn->mxedt] = 0;
+        control->curedt = 0;
+        control->edt[control->mxedt] = 0;
         free (file);
         file = f->datnam = WpeStrdup (BUFFER_NAME);
 #ifdef UNIX
@@ -346,9 +346,9 @@ e_edit (we_control_t * cn, char *filename)
     {
         e_readin (0, 0, fp, f->b, &f->dtmd);
         if (fclose (fp) != 0)
-            e_error (e_msg[ERR_FCLOSE], 0, cn->colorset);
-        if (cn->dtmd == DTMD_HELP)
-            cn->dtmd = DTMD_NORMAL;
+            e_error (e_msg[ERR_FCLOSE], 0, control->colorset);
+        if (control->dtmd == DTMD_HELP)
+            control->dtmd = DTMD_NORMAL;
 #ifdef PROG
         if (WpeIsProg ())
         {
@@ -410,9 +410,9 @@ e_edit (we_control_t * cn, char *filename)
     {
         f->c_sw = e_sc_txt (f->c_sw, f->b);
     }
-    if (cn->mxedt > 1)
+    if (control->mxedt > 1)
     {
-        fo = cn->f[cn->mxedt - 1];
+        fo = control->f[control->mxedt - 1];
         e_ed_rahmen (fo, 0);
     }
     e_firstl (f, 1);
@@ -1380,7 +1380,7 @@ GetXOfCharNum (BUFFER * b, int line, int char_num)
             return x;
         }
         x = ((b->buflines[line].s[k] == '\t') ?
-             (x / b->cn->tabn + 1) * b->cn->tabn : x + 1);
+             (x / b->control->tabn + 1) * b->control->tabn : x + 1);
     }
     /* return 0 to secure result interpretation */
     return 0;
@@ -1395,7 +1395,7 @@ GetCharNumOfX (BUFFER * b, int line, int char_x)
     for (x = 0, k = 0; k < b->buflines[line].len; k++)
     {
         next_x = ((b->buflines[line].s[k] == '\t') ?
-                  (x / b->cn->tabn + 1) * b->cn->tabn : x + 1);
+                  (x / b->control->tabn + 1) * b->control->tabn : x + 1);
         if (next_x > char_x)
         {
             return x;
@@ -1412,7 +1412,7 @@ GetCharNumOfX (BUFFER * b, int line, int char_x)
 int
 e_tab_a_ind (BUFFER * b, we_screen_t * s)
 {
-    int a_indent = b->cn->autoindent;
+    int a_indent = b->control->autoindent;
     int line, x, k, char_to_ins;
     unsigned char *str;
     int do_auto_indent = 0;
@@ -1545,7 +1545,7 @@ e_del_a_ind (BUFFER * b, we_screen_t * s)
             {
                 i =
                     b->buflines[b->cursor.y].s[j] ==
-                    '\t' ? (i / b->cn->tabn + 1) * b->cn->tabn : i + 1;
+                    '\t' ? (i / b->control->tabn + 1) * b->control->tabn : i + 1;
             }
             if (i != j)
             {
@@ -1563,7 +1563,7 @@ e_del_a_ind (BUFFER * b, we_screen_t * s)
                         k++)
                     i =
                         b->buflines[j].s[k] ==
-                        '\t' ? (i / b->cn->tabn + 1) * b->cn->tabn : i + 1;
+                        '\t' ? (i / b->control->tabn + 1) * b->control->tabn : i + 1;
                 if (k < b->buflines[j].len && b->buflines[j].s[k] != '#' && i <= b->cursor.x)
                 {
                     i = b->cursor.x - i + 1;
@@ -1600,7 +1600,7 @@ e_car_a_ind (BUFFER * b, we_screen_t * s)
                 k < b->buflines[j].len && (isspace (b->buflines[j].s[k])
                                            || b->buflines[j].s[i] == '{'); k++)
             i =
-                b->buflines[j].s[k] == '\t' ? (i / b->cn->tabn + 1) * b->cn->tabn : i + 1;
+                b->buflines[j].s[k] == '\t' ? (i / b->control->tabn + 1) * b->control->tabn : i + 1;
     }
     while (j > 0 && b->buflines[j].s[k] == '#');
     if (k == b->buflines[j].len && k > 0 && b->buflines[j].s[k - 1] == '{')
@@ -2401,14 +2401,14 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         str[n] = '\0';
         next->u.pt = str;
 
-        next->a.y = e_phase == UNDO_PHASE ? b->cn->find.sn : b->cn->find.rn;
+        next->a.y = e_phase == UNDO_PHASE ? b->control->find.sn : b->control->find.rn;
 
     }
     else if (undo_type == 'l')
         next->u.pt = b->buflines[y].s;
     else if (undo_type == 'c' || undo_type == 'v')
     {
-        we_screen_t *s = b->cn->f[b->cn->mxedt]->s;
+        we_screen_t *s = b->control->f[b->control->mxedt]->s;
 
         next->a = s->mark_begin;
         next->e = s->mark_end;
@@ -2418,7 +2418,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         BUFFER *bn = malloc (sizeof (BUFFER));
         we_screen_t *sn = malloc (sizeof (we_screen_t));
         we_window_t *fn = malloc (sizeof (we_window_t));
-        we_window_t *f = b->cn->f[b->cn->mxedt];
+        we_window_t *f = b->control->f[b->control->mxedt];
 
         bn->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING));
         if (bn == NULL || sn == 0 || bn->buflines == NULL)
@@ -2431,10 +2431,10 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         bn->f = fn;
         bn->f->s = sn;
         bn->cursor = e_set_pnt (0, 0);
-        bn->mx = e_set_pnt (b->cn->maxcol, MAXLINES);
+        bn->mx = e_set_pnt (b->control->maxcol, MAXLINES);
         bn->mxlines = 0;
         sn->colorset = bn->colorset = b->colorset;
-        bn->cn = b->cn;
+        bn->control = b->control;
         bn->undo = NULL;
         bn->redo = NULL;
         sn->c = sn->ks = sn->mark_begin = sn->mark_end = sn->fa = sn->fe =

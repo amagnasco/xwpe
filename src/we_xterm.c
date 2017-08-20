@@ -994,19 +994,19 @@ e_x_system (const char *exe)
 int
 e_x_repaint_desk (we_window_t * f)
 {
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     int i, g[4];
     extern we_view_t *e_X_l_pic;
     we_view_t *sv_pic = NULL, *nw_pic = NULL;
 
-    if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->view)
+    if (e_X_l_pic && e_X_l_pic != control->f[control->mxedt]->view)
     {
         sv_pic = e_X_l_pic;
         nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y, e_X_l_pic->e.x,
                               e_X_l_pic->e.y, 0, 2);
     }
     e_ini_size ();
-    if (cn->mxedt < 1)
+    if (control->mxedt < 1)
     {
         e_cls (f->colorset->df.fb, f->colorset->dc);
         e_ini_desk (f->ed);
@@ -1017,34 +1017,34 @@ e_x_repaint_desk (we_window_t * f)
         }
         return (0);
     }
-    ini_repaint (cn);
+    ini_repaint (control);
     e_abs_refr ();
-    for (i = cn->mxedt; i >= 1; i--)
+    for (i = control->mxedt; i >= 1; i--)
     {
-        free (cn->f[i]->view->p);
-        free (cn->f[i]->view);
+        free (control->f[i]->view->p);
+        free (control->f[i]->view);
     }
-    for (i = 0; i <= cn->mxedt; i++)
+    for (i = 0; i <= control->mxedt; i++)
     {
-        if (cn->f[i]->e.x >= MAXSCOL)
-            cn->f[i]->e.x = MAXSCOL - 1;
-        if (cn->f[i]->e.y >= MAXSLNS - 1)
-            cn->f[i]->e.y = MAXSLNS - 2;
-        if (cn->f[i]->e.x - cn->f[i]->a.x < 26)
-            cn->f[i]->a.x = cn->f[i]->e.x - 26;
-        if (!DTMD_ISTEXT (cn->f[i]->dtmd) && cn->f[i]->e.y - cn->f[i]->a.y < 9)
-            cn->f[i]->a.y = cn->f[i]->e.y - 9;
-        else if (DTMD_ISTEXT (cn->f[i]->dtmd)
-                 && cn->f[i]->e.y - cn->f[i]->a.y < 3)
-            cn->f[i]->a.y = cn->f[i]->e.y - 3;
+        if (control->f[i]->e.x >= MAXSCOL)
+            control->f[i]->e.x = MAXSCOL - 1;
+        if (control->f[i]->e.y >= MAXSLNS - 1)
+            control->f[i]->e.y = MAXSLNS - 2;
+        if (control->f[i]->e.x - control->f[i]->a.x < 26)
+            control->f[i]->a.x = control->f[i]->e.x - 26;
+        if (!DTMD_ISTEXT (control->f[i]->dtmd) && control->f[i]->e.y - control->f[i]->a.y < 9)
+            control->f[i]->a.y = control->f[i]->e.y - 9;
+        else if (DTMD_ISTEXT (control->f[i]->dtmd)
+                 && control->f[i]->e.y - control->f[i]->a.y < 3)
+            control->f[i]->a.y = control->f[i]->e.y - 3;
     }
-    for (i = 1; i < cn->mxedt; i++)
+    for (i = 1; i < control->mxedt; i++)
     {
-        e_firstl (cn->f[i], 0);
-        e_schirm (cn->f[i], 0);
+        e_firstl (control->f[i], 0);
+        e_schirm (control->f[i], 0);
     }
-    e_firstl (cn->f[i], 1);
-    e_schirm (cn->f[i], 1);
+    e_firstl (control->f[i], 1);
+    e_schirm (control->f[i], 1);
     if (nw_pic)
     {
         e_close_view (nw_pic, 1);
@@ -1053,7 +1053,7 @@ e_x_repaint_desk (we_window_t * f)
     g[0] = 2;
     fk_mouse (g);
     end_repaint ();
-    e_cursor (cn->f[i], 1);
+    e_cursor (control->f[i], 1);
     g[0] = 0;
     fk_mouse (g);
     g[0] = 1;

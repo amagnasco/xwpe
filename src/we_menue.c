@@ -43,7 +43,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
     int i, c = 255, nold = n <= 0 ? 1 : n - 1;
     extern OPT opt[];
     extern char *e_hlp, *e_hlp_str[];
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
     MENU *mainmenu = malloc (MENOPT * sizeof (MENU));
 
     for (i = 0; i < MENOPT; i++)
@@ -501,7 +501,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
     while (c != WPE_ESC)
     {
 
-        f = cn->f[cn->mxedt];
+        f = control->f[control->mxedt];
         if (e_tst_dfkt (f, c) == 0)
         {
             c = 0;
@@ -605,7 +605,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
     }
 
     /* paint unselected the last selected main menu option */
-    f = cn->f[cn->mxedt];
+    f = control->f[control->mxedt];
     e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, f->colorset->mt.fb, 0, 1,
                   f->colorset->ms.fb, (nold == 0 ? 0 : opt[nold].x - e_mn_men),
                   (nold ==

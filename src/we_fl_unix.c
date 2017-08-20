@@ -96,7 +96,7 @@ int WpeRenameLink (char *old, char *ln, char *fl, we_window_t * f);
 
 */
 int
-WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
+WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
 {
     extern char *e_hlp_str[];
     extern WOPT *fblst, *rblst, *wblst, *xblst, *sblst, *ablst;
@@ -107,18 +107,18 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
     char *sfile;
 
     /* check whether we reached the maximum number of windows */
-    if (cn->mxedt >= MAXEDT)
+    if (control->mxedt >= MAXEDT)
     {
-        e_error (e_msg[ERR_MAXWINS], 0, cn->colorset);
+        e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (-1);
     }
 
     /* search for a not used window ID number (j) */
     for (j = 1; j <= MAXEDT; j++)
     {
-        for (i = 1; i <= cn->mxedt && cn->edt[i] != j; i++)
+        for (i = 1; i <= control->mxedt && control->edt[i] != j; i++)
             ;
-        if (i > cn->mxedt)
+        if (i > control->mxedt)
             break;
     }
 
@@ -128,28 +128,28 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
     /* currently active window,
        one more window in the system,
        its number is j */
-    cn->curedt = j;
-    (cn->mxedt)++;
-    cn->edt[cn->mxedt] = j;
+    control->curedt = j;
+    (control->mxedt)++;
+    control->edt[control->mxedt] = j;
 
     /* allocate window structure */
     if ((f = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* allocate buffer related to the window (NOT proper type, later casted) */
     if ((b = (FLBFFR *) malloc (sizeof (FLBFFR))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
-    f->colorset = cn->colorset;
-    cn->f[cn->mxedt] = f;		/* store the window structure at appropriate place */
+    f->colorset = control->colorset;
+    control->f[control->mxedt] = f;		/* store the window structure at appropriate place */
     f->a = e_set_pnt (11, 2);	/* beginning of the box */
     f->e = e_set_pnt (f->a.x + 55, f->a.y + 20);	/* other coord. of the box */
-    f->winnum = cn->curedt;
+    f->winnum = control->curedt;
     f->dtmd = DTMD_FILEMANAGER;
     f->ins = 1;
     f->save = 0;
     f->zoom = 0;
-    f->ed = cn;
+    f->ed = control;
     f->c_sw = NULL;
     f->c_st = NULL;
     f->view = NULL;
@@ -202,14 +202,14 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
     if (!dirct || dirct[0] == '\0')
     {
         /* no working directory has been given */
-        f->dirct = WpeGetCurrentDir (cn);
+        f->dirct = WpeGetCurrentDir (control);
     }
     else
     {
         /* working directory is given, copy it over */
         allocate_size = strlen (dirct);
         if ((f->dirct = malloc (allocate_size + 1)) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+            e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
         strcpy (f->dirct, dirct);
     }
@@ -226,32 +226,32 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
     f->b = (BUFFER *) b;
     /* the find pattern can only be 79 see FIND structure */
     if ((b->rdfile = malloc (80)) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
     strcpy (b->rdfile, f->find.file);	/* find file pattern */
 
     b->sw = sw;
 
     /* window for files */
     if ((b->fw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* window for directory */
     if ((b->dw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
 
     if ((sfile = malloc (strlen (f->dirct) + strlen (b->rdfile) + 2)) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* determine current directory */
-    b->cd = WpeCreateWorkingDirTree (f->save, cn);
+    b->cd = WpeCreateWorkingDirTree (f->save, control);
     /* it is necessary to do this, because the file manager may not be
        in the appropriate directory here */
     sprintf (sfile, "%s/%s", f->dirct, SUDIR);
     /* find all other directories in the current */
     b->dd = e_find_dir (sfile, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
     /* setup the drawing in the dir tree window */
-    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
+    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
 
     i = f->ed->flopt & FM_SHOW_HIDDEN_FILES ? 1 : 0;
     if (sw == 3)
@@ -264,7 +264,7 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
     free (sfile);
 
     /* setup the drawing in the file list window */
-    b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
+    b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
 
     /* file box - geometry and vertical slider settings */
     b->fw->mxa = f->a.x;
@@ -293,8 +293,8 @@ WpeCreateFileManager (int sw, we_control_t * cn, char *dirct)
     b->dw->srcha = -1;
     b->dw->nf = b->dw->nyfo = b->cd->nr_files - 1;
 
-    if (cn->mxedt > 1)
-        e_ed_rahmen (cn->f[cn->mxedt - 1], 0);
+    if (control->mxedt > 1)
+        e_ed_rahmen (control->f[control->mxedt - 1], 0);
 
     e_firstl (f, 1);
 
@@ -522,9 +522,9 @@ WpeSaveAsManager (we_window_t * f)
 
 /* File Manager Handler */
 int
-WpeHandleFileManager (we_control_t * cn)
+WpeHandleFileManager (we_control_t * control)
 {
-    we_window_t *f = cn->f[cn->mxedt], *fe = NULL;
+    we_window_t *f = control->f[control->mxedt], *fe = NULL;
     FLBFFR *b = (FLBFFR *) f->b;
     BUFFER *be = NULL;
     we_screen_t *se = NULL;
@@ -557,7 +557,7 @@ WpeHandleFileManager (we_control_t * cn)
     if (f->save == 1 || b->sw == 5)
     {
         if ((svdir = malloc (strlen (f->ed->dirct) + 1)) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+            e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
         strcpy (svdir, f->ed->dirct);
     }
 
@@ -569,14 +569,14 @@ WpeHandleFileManager (we_control_t * cn)
         fmode |= 2;
 
     /* searching for the last edited/touched file on the desktop */
-    for (i = cn->mxedt; i > 0; i--)
+    for (i = control->mxedt; i > 0; i--)
     {
-        if (DTMD_ISTEXT (cn->f[i]->dtmd))
+        if (DTMD_ISTEXT (control->f[i]->dtmd))
         {
-            fe = cn->f[i];
+            fe = control->f[i];
             be = fe->b;
             se = fe->s;
-            winnum = cn->edt[i];
+            winnum = control->edt[i];
             break;
         }
     }
@@ -618,7 +618,7 @@ WpeHandleFileManager (we_control_t * cn)
                 /* change the working directory */
                 free (f->dirct);
                 if ((f->dirct = malloc (strlen (b->rdfile) + 1)) == NULL)
-                    e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                    e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
                 strcpy (f->dirct, b->rdfile);
 
                 /* restore original filename */
@@ -660,7 +660,7 @@ WpeHandleFileManager (we_control_t * cn)
                 /* find files according to the new pattern */
                 b->df = e_find_files (b->rdfile, fmode);
                 /* setup the drawing in the dir tree window */
-                b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
+                b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
                 b->fw->ia = b->fw->nf = 0;
                 b->fw->ja = b->fw->srcha;
                 /* jump to file list window */
@@ -698,7 +698,7 @@ WpeHandleFileManager (we_control_t * cn)
 
             /* get the directory name */
             if ((dirtmp = malloc (WPE_PATHMAX)) == NULL)	/* dirct mat not have enough memory */
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
             if (strlen (f->dirct) >= WPE_PATHMAX)
             {
@@ -855,9 +855,9 @@ WpeHandleFileManager (we_control_t * cn)
 
                 /* we cannot determine where we are, try the home */
                 if ((dirtmp = getenv ("HOME")) == NULL)
-                    e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                    e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                 if (chdir (dirtmp))
-                    e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                    e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
             }
 
             /* get current directory */
@@ -884,12 +884,12 @@ WpeHandleFileManager (we_control_t * cn)
                 strcpy (f->ed->dirct, f->dirct);
 
             /* setup current directory structure */
-            b->cd = WpeCreateWorkingDirTree (f->save, cn);
+            b->cd = WpeCreateWorkingDirTree (f->save, control);
             /* find all other directories in the current dir */
             b->dd =
                 e_find_dir (SUDIR, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
             /* setup the drawing in the dir tree window */
-            b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
+            b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
 
             nco = b->dw->nf = b->cd->nr_files - 1;
             b->dw->ia = b->dw->ja = 0;
@@ -897,7 +897,7 @@ WpeHandleFileManager (we_control_t * cn)
             /* finds all files matching the pattern */
             b->df = e_find_files (b->rdfile, fmode);
             /* setup the drawing in the file list window */
-            b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
+            b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
             b->fw->nf = b->fw->ia = 0;
             b->fw->ja = 12;
 
@@ -923,7 +923,7 @@ WpeHandleFileManager (we_control_t * cn)
             if (cold == AltF)
             {
                 if ((ftmp = malloc (129)) == NULL)
-                    e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                    e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
                 if (strlen (*(b->df->name + b->fw->nf)) > 128)
                 {
@@ -957,7 +957,7 @@ WpeHandleFileManager (we_control_t * cn)
                     b->df = e_find_files (b->rdfile, fmode);
                     /* setup the drawing of it */
                     b->fw->df =
-                        WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
+                        WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
                     b->fw->ia = b->fw->nf = 0;
                     b->fw->ja = b->fw->srcha;
                 }
@@ -967,7 +967,7 @@ WpeHandleFileManager (we_control_t * cn)
             else if (cold == AltT && b->dw->nf >= b->cd->nr_files)
             {
                 if ((ftmp = malloc (129)) == NULL)
-                    e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                    e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
                 /* selected dir */
                 t = b->dw->nf - b->cd->nr_files;
@@ -1013,13 +1013,13 @@ WpeHandleFileManager (we_control_t * cn)
                     freedf (b->dd);
 
                     /* determine current directory */
-                    b->cd = WpeCreateWorkingDirTree (f->save, cn);
+                    b->cd = WpeCreateWorkingDirTree (f->save, control);
                     /* find all other directories in the current */
                     b->dd =
                         e_find_dir (SUDIR,
                                     f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
                     /* setup drawing */
-                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
+                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
                     nco = b->dw->nf = b->cd->nr_files - 1;
                     b->dw->ia = b->dw->ja = 0;
                 }
@@ -1054,7 +1054,7 @@ WpeHandleFileManager (we_control_t * cn)
 
                     /* setup drawing */
                     b->fw->df =
-                        WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
+                        WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
                     b->fw->ia = b->fw->nf = 0;
                     b->fw->ja = b->fw->srcha;
                 }
@@ -1071,13 +1071,13 @@ WpeHandleFileManager (we_control_t * cn)
                     freedf (b->dd);
 
                     /* determine current directory */
-                    b->cd = WpeCreateWorkingDirTree (f->save, cn);
+                    b->cd = WpeCreateWorkingDirTree (f->save, control);
                     /* find all other directories in the current */
                     b->dd =
                         e_find_dir (SUDIR,
                                     f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
                     /* setup drawing */
-                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
+                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
                     nco = b->dw->nf = b->cd->nr_files - 1;
                     b->dw->ia = b->dw->ja = 0;
                 }
@@ -1156,7 +1156,7 @@ WpeHandleFileManager (we_control_t * cn)
                         e_close_window (f);
                     }
                     /* editing the file */
-                    e_edit (cn, filen);
+                    e_edit (control, filen);
                 }
                 else
                 {
@@ -1171,10 +1171,10 @@ WpeHandleFileManager (we_control_t * cn)
                         f->ins = 8;
                     e_close_window (f);
                     e_switch_window (winnum, fe);
-                    fe = cn->f[cn->mxedt];
+                    fe = control->f[control->mxedt];
                     be = fe->b;
                     se = fe->s;
-                    f = cn->f[cn->mxedt];
+                    f = control->f[control->mxedt];
                     if (be->cursor.x != 0)
                     {
                         e_new_line (be->cursor.y + 1, be);
@@ -1205,32 +1205,32 @@ WpeHandleFileManager (we_control_t * cn)
                 }
 
                 /* if there was no error */
-                dirtmp = WpeGetCurrentDir (cn);
-                free (cn->dirct);
-                cn->dirct = dirtmp;
+                dirtmp = WpeGetCurrentDir (control);
+                free (control->dirct);
+                control->dirct = dirtmp;
 
                 if (svmode >= 0)
-                    cn->flopt = svmode;
+                    control->flopt = svmode;
 
                 if (svdir != NULL)
                 {
                     /* go back to the saved directory */
                     if (chdir (svdir))
                     {
-                        e_error (e_msg[ERR_WORKDIRACCESS], 0, cn->colorset);
+                        e_error (e_msg[ERR_WORKDIRACCESS], 0, control->colorset);
 
                         /* we cannot determine where we are, try the home */
                         if ((dirtmp = getenv ("HOME")) == NULL)
-                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                         if (chdir (dirtmp))
-                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                     }
 
                     /* determine current dir */
-                    dirtmp = WpeGetCurrentDir (cn);
+                    dirtmp = WpeGetCurrentDir (control);
 
-                    free (cn->dirct);
-                    cn->dirct = dirtmp;
+                    free (control->dirct);
+                    control->dirct = dirtmp;
 
                     free (svdir);
                     svdir = NULL;
@@ -1257,7 +1257,7 @@ WpeHandleFileManager (we_control_t * cn)
             if (!access (filen, F_OK))
             {
                 if ((ftmp = malloc (strlen (filen) + 42)) == NULL)
-                    e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                    e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
                 sprintf (ftmp, "File %s exist\nDo you want to overwrite it ?",
                          filen);
@@ -1321,20 +1321,20 @@ WpeHandleFileManager (we_control_t * cn)
                 /* go back to the saved directory */
                 if (chdir (svdir))
                 {
-                    e_error (e_msg[ERR_WORKDIRACCESS], 0, cn->colorset);
+                    e_error (e_msg[ERR_WORKDIRACCESS], 0, control->colorset);
 
                     /* we cannot determine where we are, try the home */
                     if ((dirtmp = getenv ("HOME")) == NULL)
-                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                     if (chdir (dirtmp))
-                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                 }
 
                 /* determine current dir */
-                dirtmp = WpeGetCurrentDir (cn);
+                dirtmp = WpeGetCurrentDir (control);
 
-                free (cn->dirct);
-                cn->dirct = dirtmp;
+                free (control->dirct);
+                control->dirct = dirtmp;
 
                 free (svdir);
                 svdir = NULL;
@@ -1365,7 +1365,7 @@ WpeHandleFileManager (we_control_t * cn)
             /* create new directory structure */
             b->dd =
                 e_find_dir (SUDIR, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-            b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
+            b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
             /* go to the line where the new dir is */
             for (i = 0; i < b->dd->nr_files && strcmp (b->dd->name[i], "new.dir");
                     i++)
@@ -1407,7 +1407,7 @@ WpeHandleFileManager (we_control_t * cn)
                     b->df = e_find_files (b->rdfile, fmode);
                     /* setup drawing */
                     b->fw->df =
-                        WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
+                        WpeGraphicalFileList (b->df, f->ed->flopt >> 9, control);
                 }
                 else if (cold == AltT && b->dw->nf >= b->cd->nr_files)	/* coming from dir tree */
                 {
@@ -1415,7 +1415,7 @@ WpeHandleFileManager (we_control_t * cn)
 
                     if ((ftmp =
                                 malloc (strlen (*(b->dd->name + t)) + 1)) == NULL)
-                        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
                     strcpy (ftmp, *(b->dd->name + t));
                     /* change the dir attributes */
@@ -1431,16 +1431,16 @@ WpeHandleFileManager (we_control_t * cn)
                         e_find_dir (SUDIR,
                                     f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
                     /* setup drawing */
-                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
+                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
                 }
                 c = cold;
             }
             else if (b->sw == 5)	/* it is in project management */
             {
-                FLWND *fw = (FLWND *) cn->f[cn->mxedt - 1]->b;
+                FLWND *fw = (FLWND *) control->f[control->mxedt - 1]->b;
                 if (cold != AltN)
                     strcpy (filen, *(b->df->name + b->fw->nf));
-                dirtmp = cn->f[cn->mxedt - 1]->dirct;
+                dirtmp = control->f[control->mxedt - 1]->dirct;
                 ftmp = malloc (strlen (f->dirct) + strlen (filen) + 2);
                 len = strlen (dirtmp);
                 if (strncmp (dirtmp, f->dirct, len) == 0)
@@ -1493,13 +1493,13 @@ WpeHandleFileManager (we_control_t * cn)
                     /* go back to the saved directory */
                     if (chdir (svdir))
                     {
-                        e_error (e_msg[ERR_WORKDIRACCESS], 0, cn->colorset);
+                        e_error (e_msg[ERR_WORKDIRACCESS], 0, control->colorset);
 
                         /* we cannot determine where we are, try the home */
                         if ((dirtmp = getenv ("HOME")) == NULL)
-                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                         if (chdir (dirtmp))
-                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                     }
 
                     /* determine current dir */
@@ -1540,20 +1540,20 @@ WpeHandleFileManager (we_control_t * cn)
                     /* go back to the saved directory */
                     if (chdir (svdir))
                     {
-                        e_error (e_msg[ERR_WORKDIRACCESS], 0, cn->colorset);
+                        e_error (e_msg[ERR_WORKDIRACCESS], 0, control->colorset);
 
                         /* we cannot determine where we are, try the home */
                         if ((dirtmp = getenv ("HOME")) == NULL)
-                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                         if (chdir (dirtmp))
-                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                            e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                     }
 
                     /* determine current dir */
-                    dirtmp = WpeGetCurrentDir (cn);
+                    dirtmp = WpeGetCurrentDir (control);
 
-                    free (cn->dirct);
-                    cn->dirct = dirtmp;
+                    free (control->dirct);
+                    control->dirct = dirtmp;
 
                     free (svdir);
                     svdir = NULL;
@@ -1564,7 +1564,7 @@ WpeHandleFileManager (we_control_t * cn)
 
                 /* restore options */
                 if (svmode >= 0)
-                    cn->flopt = svmode;
+                    control->flopt = svmode;
 
                 return (WPE_ESC);
             }
@@ -1579,20 +1579,20 @@ WpeHandleFileManager (we_control_t * cn)
         /* go back to the saved directory */
         if (chdir (svdir))
         {
-            e_error (e_msg[ERR_WORKDIRACCESS], 0, cn->colorset);
+            e_error (e_msg[ERR_WORKDIRACCESS], 0, control->colorset);
 
             /* we cannot determine where we are, try the home */
             if ((dirtmp = getenv ("HOME")) == NULL)
-                e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
             if (chdir (dirtmp))
-                e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
         }
 
         /* determine current dir */
-        dirtmp = WpeGetCurrentDir (cn);
+        dirtmp = WpeGetCurrentDir (control);
 
-        free (cn->dirct);
-        cn->dirct = dirtmp;
+        free (control->dirct);
+        control->dirct = dirtmp;
 
         free (svdir);
         svdir = NULL;
@@ -1600,7 +1600,7 @@ WpeHandleFileManager (we_control_t * cn)
 
     /* restore options */
     if (svmode >= 0)
-        cn->flopt = svmode;
+        control->flopt = svmode;
 
     /* if in save mode or project management */
     if (f->save == 1 || b->sw == 5)
@@ -1758,7 +1758,7 @@ WpeFileDirAttributes (char *filen, we_window_t * f)
                        - otherwise exit with "system error"
  */
 char *
-WpeGetCurrentDir (we_control_t * cn)
+WpeGetCurrentDir (we_control_t * control)
 {
     int allocate_size;
     char *current_dir = NULL, *check_dir, *dirtmp;
@@ -1768,7 +1768,7 @@ WpeGetCurrentDir (we_control_t * cn)
     allocate_size = 256;
     if ((current_dir = (char *) malloc (allocate_size + 1)) == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
         return NULL;
     }
 
@@ -1778,7 +1778,7 @@ WpeGetCurrentDir (we_control_t * cn)
         if ((current_dir =
                     (char *) realloc (current_dir, allocate_size + 1)) == NULL)
         {
-            e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+            e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
             return NULL;
         }
 
@@ -1790,18 +1790,18 @@ WpeGetCurrentDir (we_control_t * cn)
             case EACCES:	/* directory cannot be read */
                 if (home == 0)
                 {
-                    e_error (e_msg[ERR_WORKDIRACCESS], 0, cn->colorset);
+                    e_error (e_msg[ERR_WORKDIRACCESS], 0, control->colorset);
 
                     /* we cannot determine where we are, try the home */
                     if ((dirtmp = getenv ("HOME")) == NULL)
-                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
                     if (chdir (dirtmp))
-                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, cn->colorset);
+                        e_error (e_msg[ERR_HOMEDIRACCESS], 1, control->colorset);
 
                     home = 1;
                 }
                 else
-                    e_error (e_msg[ERR_SYSTEM], 1, cn->colorset);	/* will not return */
+                    e_error (e_msg[ERR_SYSTEM], 1, control->colorset);	/* will not return */
                 break;
             case EINVAL:	/* size is equal to 0 */
                 allocate_size = 256;	/* impossible !!! */
@@ -1810,7 +1810,7 @@ WpeGetCurrentDir (we_control_t * cn)
                 allocate_size <<= 1;
                 break;
             default:		/* System error */
-                e_error (e_msg[ERR_SYSTEM], 1, cn->colorset);	/* will not return */
+                e_error (e_msg[ERR_SYSTEM], 1, control->colorset);	/* will not return */
                 break;
             }
         }
@@ -1906,7 +1906,7 @@ WpeAssemblePath (char *pth, struct dirfile *cd, struct dirfile *dd, int n,
 
 /* create tree structure up to working directory */
 struct dirfile *
-WpeCreateWorkingDirTree (int sw, we_control_t * cn)
+WpeCreateWorkingDirTree (int sw, we_control_t * control)
 {
     struct dirfile *df;
     char *buf;
@@ -1916,16 +1916,16 @@ WpeCreateWorkingDirTree (int sw, we_control_t * cn)
     int maxd = 10;		/* inital number of directory levels */
     int i, j, k;
 
-    buf = WpeGetCurrentDir (cn);
+    buf = WpeGetCurrentDir (control);
 
     buflen = strlen (buf);
     if ((tmp = malloc (buflen + 1)) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* initialise directory list */
     if (((df = malloc (sizeof (struct dirfile))) == NULL)
             || ((df->name = malloc (sizeof (char *) * maxd)) == NULL))
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     df->nr_files = 0;
 
@@ -1935,7 +1935,7 @@ WpeCreateWorkingDirTree (int sw, we_control_t * cn)
            the "Wastebasket" name will appear */
         if ((tmp2 = WpeGetWastefile ("")) == NULL)
         {
-            e_error (e_msg[ERR_NOWASTE], 0, cn->colorset);	/* more error check ??? */
+            e_error (e_msg[ERR_NOWASTE], 0, control->colorset);	/* more error check ??? */
             i = 0;
         }
         else
@@ -1945,7 +1945,7 @@ WpeCreateWorkingDirTree (int sw, we_control_t * cn)
             df->nr_files = 1;
             /* save the name into first level */
             if ((*(df->name) = malloc (12 * sizeof (char))) == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
             strcpy (*(df->name), "Wastebasket");
 
             if (!strncmp (tmp2, buf, i) && buf[i])
@@ -1986,7 +1986,7 @@ WpeCreateWorkingDirTree (int sw, we_control_t * cn)
                 maxd += 10;
                 dftmp = df->name;
                 if ((df->name = malloc (sizeof (char *) * maxd)) == NULL)
-                    e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                    e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
                 for (k = 0; k < maxd - 10; k++)
                     *(df->name + k) = *(dftmp + k);
                 free (dftmp);
@@ -1994,7 +1994,7 @@ WpeCreateWorkingDirTree (int sw, we_control_t * cn)
             /* save the current directory */
             if ((*(df->name + df->nr_files) =
                         malloc ((strlen (tmp) + 1) * sizeof (char))) == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
             strcpy (*(df->name + df->nr_files), tmp);
             df->nr_files++;
             j = -1;
@@ -2080,7 +2080,7 @@ WpeGetWastefile (char *file)
 }
 
 struct dirfile *
-WpeGraphicalFileList (struct dirfile *df, int sw, we_control_t * cn)
+WpeGraphicalFileList (struct dirfile *df, int sw, we_control_t * control)
 {
     struct dirfile *edf;
     char **name, **ename, *stmp, str[256];
@@ -2088,7 +2088,7 @@ WpeGraphicalFileList (struct dirfile *df, int sw, we_control_t * cn)
 
     /* allocate the same structure as the argument */
     if ((edf = malloc (sizeof (struct dirfile))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     edf->nr_files = df->nr_files;
     edf->name = NULL;
@@ -2097,16 +2097,16 @@ WpeGraphicalFileList (struct dirfile *df, int sw, we_control_t * cn)
     if (df->nr_files)
     {
         if ((edf->name = malloc (df->nr_files * sizeof (char *))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+            e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
         if ((num = malloc (df->nr_files * sizeof (int))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+            e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
         for (i = 0; i < df->nr_files; i++)
         {
             e_file_info (*(df->name + i), str, num + i, sw);
             if ((*(edf->name + i) = malloc (strlen (str) + 1)) == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
             strcpy (*(edf->name + i), str);
         }
 
@@ -2114,10 +2114,10 @@ WpeGraphicalFileList (struct dirfile *df, int sw, we_control_t * cn)
         if (sw & 3)
         {
             if ((ename = malloc (df->nr_files * sizeof (char *))) == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
             if ((name = malloc (df->nr_files * sizeof (char *))) == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
             for (i = 0; i < df->nr_files; i++)
             {
@@ -2158,7 +2158,7 @@ WpeGraphicalFileList (struct dirfile *df, int sw, we_control_t * cn)
 }
 
 struct dirfile *
-WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, we_control_t * cn)
+WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, we_control_t * control)
 {
     extern char *ctree[5];
     struct dirfile *edf;
@@ -2166,14 +2166,14 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, we_control_t * cn)
     int i = 0, j;
 
     if ((edf = malloc (sizeof (struct dirfile))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* for the OSF and AIX this should never be zero, we are always somewhere */
     if (cd->nr_files + dd->nr_files > 0)
     {
         if ((edf->name =
                     malloc ((cd->nr_files + dd->nr_files) * sizeof (char *))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+            e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
         for (i = 0; i < cd->nr_files; i++)
         {
@@ -2198,7 +2198,7 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, we_control_t * cn)
             }
             if ((*(edf->name + i) =
                         malloc ((strlen (str) + 1) * sizeof (char))) == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
             strcpy (*(edf->name + i), str);
         }
 
@@ -2217,7 +2217,7 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, we_control_t * cn)
             }
             if ((*(edf->name + i) =
                         malloc ((strlen (str) + 1) * sizeof (char))) == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+                e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
             strcpy (*(edf->name + i), str);
         }
     }
@@ -3782,7 +3782,7 @@ extern struct dirfile **e_p_df;
 #endif
 
 int
-e_data_first (int sw, we_control_t * cn, char *nstr)
+e_data_first (int sw, we_control_t * control, char *nstr)
 {
     extern char *e_hlp_str[];
     extern WOPT *gblst, *oblst;
@@ -3791,35 +3791,35 @@ e_data_first (int sw, we_control_t * cn, char *nstr)
     struct dirfile *df = NULL;
     FLWND *fw;
 
-    if (cn->mxedt >= MAXEDT)
+    if (control->mxedt >= MAXEDT)
     {
-        e_error (e_msg[ERR_MAXWINS], 0, cn->colorset);
+        e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (-1);
     }
     for (j = 1; j <= MAXEDT; j++)
     {
-        for (i = 1; i <= cn->mxedt && cn->edt[i] != j; i++);
-        if (i > cn->mxedt)
+        for (i = 1; i <= control->mxedt && control->edt[i] != j; i++);
+        if (i > control->mxedt)
             break;
     }
-    cn->curedt = j;
-    (cn->mxedt)++;
-    cn->edt[cn->mxedt] = j;
+    control->curedt = j;
+    (control->mxedt)++;
+    control->edt[control->mxedt] = j;
 
     if ((f = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
     if ((fw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, cn->colorset);
-    f->colorset = cn->colorset;
-    cn->f[cn->mxedt] = f;
+        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
+    f->colorset = control->colorset;
+    control->f[control->mxedt] = f;
     f->a = e_set_pnt (22, 3);
     f->e = e_set_pnt (f->a.x + 35, f->a.y + 18);
-    f->winnum = cn->curedt;
+    f->winnum = control->curedt;
     f->dtmd = DTMD_DATA;
     f->ins = sw;
     f->save = 0;
     f->zoom = 0;
-    f->ed = cn;
+    f->ed = control;
     f->c_sw = NULL;
     f->c_st = NULL;
     f->view = NULL;
@@ -3841,14 +3841,14 @@ e_data_first (int sw, we_control_t * cn, char *nstr)
     else if (sw == 2)
     {
         f->datnam = "Grep";
-        df = WpeSearchFiles (f, nstr, cn->find.file,
-                             cn->find.search, NULL, cn->find.sw);
+        df = WpeSearchFiles (f, nstr, control->find.file,
+                             control->find.search, NULL, control->find.sw);
     }
     else if (sw == 3)
     {
         f->datnam = "Find";
-        df = WpeSearchFiles (f, nstr, cn->find.file,
-                             cn->find.search, NULL, cn->find.sw);
+        df = WpeSearchFiles (f, nstr, control->find.file,
+                             control->find.search, NULL, control->find.sw);
     }
     else if (sw == 7)
     {
@@ -3899,8 +3899,8 @@ e_data_first (int sw, we_control_t * cn, char *nstr)
     fw->ia = fw->nf = fw->nxfo = fw->nyfo = 0;
     fw->srcha = fw->ja = 0;
 
-    if (cn->mxedt > 1 && (f->ins < 5 || f->ins == 7))
-        e_ed_rahmen (cn->f[cn->mxedt - 1], 0);
+    if (control->mxedt > 1 && (f->ins < 5 || f->ins == 7))
+        e_ed_rahmen (control->f[control->mxedt - 1], 0);
     e_firstl (f, 1);
     e_data_schirm (f);
     return (0);
@@ -3973,9 +3973,9 @@ e_data_schirm (we_window_t * f)
 }
 
 int
-e_data_eingabe (we_control_t * cn)
+e_data_eingabe (we_control_t * control)
 {
-    we_window_t *f = cn->f[cn->mxedt];
+    we_window_t *f = control->f[control->mxedt];
     FLWND *fw = (FLWND *) f->b;
     int c = AltF;
 

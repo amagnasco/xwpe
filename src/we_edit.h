@@ -16,7 +16,7 @@
 
 extern int global_disable_add_undo;
 
-int e_edit(we_control_t* cn, char* filename);
+int e_edit(we_control_t* control, char* filename);
 int e_eingabe(we_control_t* e);
 int e_tst_cur(int c, we_control_t* e);
 int e_tst_fkt(int c, we_control_t* e);

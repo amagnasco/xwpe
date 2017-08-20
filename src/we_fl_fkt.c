@@ -222,12 +222,12 @@ int
 e_saveall (we_window_t * f)
 {
     int i, ret = 0;
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
 
-    for (i = cn->mxedt; i > 0; i--)
+    for (i = control->mxedt; i > 0; i--)
     {
-        if (cn->f[i]->save != 0 && cn->f[i]->ins != 8)
-            if (e_save (cn->f[i]) == WPE_ESC)
+        if (control->f[i]->save != 0 && control->f[i]->ins != 8)
+            if (e_save (control->f[i]) == WPE_ESC)
                 ret = WPE_ESC;
     }
     if (ret == WPE_ESC)
@@ -244,19 +244,19 @@ e_quit (we_window_t * f)
 #if  MOUSE
     int g[4];
 #endif
-    we_control_t *cn = f->ed;
+    we_control_t *control = f->ed;
 #ifdef DEBUGGER
     e_d_quit_basic (f);
 #endif
-    for (i = cn->mxedt; i > 0; i--)
+    for (i = control->mxedt; i > 0; i--)
     {
-        if (e_close_window (cn->f[cn->mxedt]) == WPE_ESC)
+        if (e_close_window (control->f[control->mxedt]) == WPE_ESC)
             return (WPE_ESC);
     }
-    if (cn->autosv & 1)
-        e_save_opt (cn->f[0]);
+    if (control->autosv & 1)
+        e_save_opt (control->f[0]);
 #ifdef UNIX
-    if (WpeQuitWastebasket (cn->f[0]))
+    if (WpeQuitWastebasket (control->f[0]))
         return (0);
     sprintf (tmp, "rm -rf %s&", e_tmp_dir);
     int ret = system (tmp);
@@ -283,7 +283,7 @@ e_quit (we_window_t * f)
     g[0] = 2;
     fk_mouse (g);
 #endif
-    e_cls (cn->colorset->ws, ' ');
+    e_cls (control->colorset->ws, ' ');
     fk_locate (0, 0);
     fk_cursor (1);
     e_refresh ();
@@ -888,7 +888,7 @@ e_read_help (char *str, we_window_t * f, int sw)
     f->b->mx = e_set_pnt (f->ed->maxcol, MAXLINES);
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
-    f->b->cn = f->ed;
+    f->b->control = f->ed;
     f->b->undo = NULL;
     e_new_line (0, f->b);
     if (str && str[0])
@@ -1537,7 +1537,7 @@ e_read_info (char *str, we_window_t * f, char *file)
     f->b->mx = e_set_pnt (f->ed->maxcol, MAXLINES);
     f->b->mxlines = 0;
     f->b->colorset = f->colorset;
-    f->b->cn = f->ed;
+    f->b->control = f->ed;
     f->b->undo = NULL;
     e_new_line (0, f->b);
     while ((ptmp = e_i_fgets (tstr, 256, fp)) != NULL)

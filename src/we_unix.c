@@ -438,7 +438,7 @@ static int e_bool_exit = 0;
 void
 e_err_save ()
 {
-    we_control_t *cn = global_editor_control;
+    we_control_t *control = global_editor_control;
     int i;
     unsigned long maxname;
     we_window_t *f;
@@ -448,12 +448,12 @@ e_err_save ()
     if (e_bool_exit)
         return;
     e_bool_exit = 1;
-    for (i = 0; i <= cn->mxedt; i++)
+    for (i = 0; i <= control->mxedt; i++)
     {
-        if (DTMD_ISTEXT (cn->f[i]->dtmd))
+        if (DTMD_ISTEXT (control->f[i]->dtmd))
         {
-            f = cn->f[i];
-            b = cn->f[i]->b;
+            f = control->f[i];
+            b = control->f[i]->b;
             if (b->mxlines > 1 || b->buflines[0].len > 0)
             {
                 /* Check if file system could have an autosave or emergency save file
@@ -803,10 +803,10 @@ e_file_info (char *filen, char *str, int *num, int sw)
 }
 
 void
-ini_repaint (we_control_t * cn)
+ini_repaint (we_control_t * control)
 {
-    e_cls (cn->colorset->df.fb, cn->colorset->dc);
-    e_ini_desk (cn);
+    e_cls (control->colorset->df.fb, control->colorset->dc);
+    e_ini_desk (control);
 }
 
 void
@@ -816,7 +816,7 @@ end_repaint ()
 }
 
 int
-e_recover (we_control_t * cn)
+e_recover (we_control_t * control)
 {
     struct dirfile *files;
     we_window_t *f = NULL;
@@ -827,13 +827,13 @@ e_recover (we_control_t * cn)
     files = e_find_files ("*.ESV", 1);
     for (i = 0; i < files->nr_files; i++)
     {
-        e_edit (cn, files->name[i]);
-        f = cn->f[cn->mxedt];
+        e_edit (control, files->name[i]);
+        f = control->f[control->mxedt];
         f->datnam[strlen (f->datnam) - 4] = '\0';
         if (!strcmp (f->datnam, BUFFER_NAME))
         {
-            s = cn->f[cn->mxedt]->s;
-            b = cn->f[cn->mxedt]->b;
+            s = control->f[control->mxedt]->s;
+            b = control->f[control->mxedt]->b;
             s->mark_end.y = b->mxlines - 1;
             s->mark_end.x = b->buflines[b->mxlines - 1].len;
             e_edt_copy (f);

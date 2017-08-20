@@ -304,53 +304,53 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
 };
 
 void
-ECNT_Init (we_control_t * cn)
+ECNT_Init (we_control_t * control)
 {
-    cn->mxedt = -1;
-    cn->curedt = 0;
-    cn->edt[0] = 0;
-    cn->colorset = NULL;
-    cn->print_cmd = WpeStrdup (PRNTCMD);
+    control->mxedt = -1;
+    control->curedt = 0;
+    control->edt[0] = 0;
+    control->colorset = NULL;
+    control->print_cmd = WpeStrdup (PRNTCMD);
 
-    cn->dirct = WpeGetCurrentDir (cn);
+    control->dirct = WpeGetCurrentDir (control);
 
-    strcpy (cn->find.search, "");
-    strcpy (cn->find.replace, "");
-    strcpy (cn->find.file, SUDIR);
-    cn->find.dirct = WpeStrdup (cn->dirct);
+    strcpy (control->find.search, "");
+    strcpy (control->find.replace, "");
+    strcpy (control->find.file, SUDIR);
+    control->find.dirct = WpeStrdup (control->dirct);
 
-    cn->find.sw = 16;
-    cn->find.sn = 0;
-    cn->find.rn = 0;
+    control->find.sw = 16;
+    control->find.sn = 0;
+    control->find.rn = 0;
 
-    cn->sdf = cn->rdf = cn->fdf = cn->ddf = cn->wdf = cn->hdf = cn->shdf = NULL;
+    control->sdf = control->rdf = control->fdf = control->ddf = control->wdf = control->hdf = control->shdf = NULL;
 
     /*   standard adjustments    */
-    cn->dtmd = DTMD_NORMAL;
-    cn->autosv = 0;
-    cn->maxchg = 999;
-    cn->numundo = 10;
-    cn->maxcol = MAXCOLUM;
-    cn->tabn = 8;
-    cn->autoindent = 3;
-    cn->tabs = malloc ((cn->tabn + 1) * sizeof (char));
-    WpeStringBlank (cn->tabs, cn->tabn);
-    cn->flopt = FM_REKURSIVE_ACTIONS | FM_REMOVE_INTO_WB | FM_MOVE_PROMPT |
+    control->dtmd = DTMD_NORMAL;
+    control->autosv = 0;
+    control->maxchg = 999;
+    control->numundo = 10;
+    control->maxcol = MAXCOLUM;
+    control->tabn = 8;
+    control->autoindent = 3;
+    control->tabs = malloc ((control->tabn + 1) * sizeof (char));
+    WpeStringBlank (control->tabs, control->tabn);
+    control->flopt = FM_REKURSIVE_ACTIONS | FM_REMOVE_INTO_WB | FM_MOVE_PROMPT |
                 FM_MOVE_PROMPT | FM_PROMPT_DELETE;
-    cn->edopt = ED_SOURCE_AUTO_INDENT | ED_ERRORS_STOP_AT | ED_SYNTAX_HIGHLIGHT;
+    control->edopt = ED_SOURCE_AUTO_INDENT | ED_ERRORS_STOP_AT | ED_SYNTAX_HIGHLIGHT;
 }
 
 int
-e_switch_blst (we_control_t * cn)
+e_switch_blst (we_control_t * control)
 {
     int i;
     we_window_t *f;
 
-    if (cn->edopt & ED_CUA_STYLE)
+    if (control->edopt & ED_CUA_STYLE)
     {
-        for (i = 0; i <= cn->mxedt; i++)
+        for (i = 0; i <= control->mxedt; i++)
         {
-            f = cn->f[i];
+            f = control->f[i];
             if (f->blst == eblst_o)
                 f->blst = eblst_u;
             else if (f->blst == fblst_o)
@@ -379,9 +379,9 @@ e_switch_blst (we_control_t * cn)
     }
     else
     {
-        for (i = 0; i <= cn->mxedt; i++)
+        for (i = 0; i <= control->mxedt; i++)
         {
-            f = cn->f[i];
+            f = control->f[i];
             if (f->blst == eblst_u)
                 f->blst = eblst_o;
             else if (f->blst == fblst_u)
@@ -412,12 +412,12 @@ e_switch_blst (we_control_t * cn)
 }
 
 void
-e_ini_desk (we_control_t * cn)
+e_ini_desk (we_control_t * control)
 {
     extern int e_mn_men;
     int i;
 
-    if (cn->edopt & ED_CUA_STYLE)
+    if (control->edopt & ED_CUA_STYLE)
     {
         eblst = eblst_u;
         fblst = fblst_u;
@@ -447,19 +447,19 @@ e_ini_desk (we_control_t * cn)
         gblst = gblst_o;
         oblst = oblst_o;
     }
-    e_cls (cn->colorset->df.fb, cn->colorset->dc);
-    e_blk (MAXSCOL, 0, 0, cn->colorset->mt.fb);
+    e_cls (control->colorset->df.fb, control->colorset->dc);
+    e_blk (MAXSCOL, 0, 0, control->colorset->mt.fb);
 
     /* put out the main menu */
     for (i = 0; i < MENOPT; ++i)
     {
-        e_pr_str_wsd (opt[i].x, 0, opt[i].t, cn->colorset->mt.fb, 0, 1, cn->colorset->ms.fb,
+        e_pr_str_wsd (opt[i].x, 0, opt[i].t, control->colorset->mt.fb, 0, 1, control->colorset->ms.fb,
                       (i == 0 ? 0 : opt[i].x - e_mn_men),
                       (i ==
                        MENOPT - 1) ? MAXSCOL - 1 : opt[i + 1].x - e_mn_men - 1);
     }
 
-    e_pr_uul (cn->colorset);
+    e_pr_uul (control->colorset);
 }
 
 void

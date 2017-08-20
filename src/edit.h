@@ -240,7 +240,7 @@ typedef struct BFF
     int cl, clsv;
     we_undo_t *undo;  /**< pointer to (a list of) undo structs for undo */
     we_undo_t *redo;	/**< pointer to (a list of) undo structs for redo */
-    struct CNT* cn;
+    struct CNT* control;
     struct FNST* f;
     we_colorset_t* colorset;
 } BUFFER;
@@ -449,7 +449,7 @@ typedef struct
 typedef struct wpeOptionSection
 {
     char* section;
-    int (*function)(we_control_t* cn, char* section, char* option, char* value);
+    int (*function)(we_control_t* control, char* section, char* option, char* value);
 } WpeOptionSection;
 
 #ifdef UNIX

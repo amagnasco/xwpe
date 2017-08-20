@@ -23,7 +23,7 @@ struct e_s_prog
 };
 extern struct e_s_prog e_s_prog;
 
-int e_ini_prog(we_control_t* cn);
+int e_ini_prog(we_control_t* control);
 
 struct e_prog
 {
@@ -59,14 +59,14 @@ int e_next_error(we_window_t* f);
 int e_line_read(int n, char* s, int max);
 int e_arguments(we_window_t* f);
 int e_check_c_file(char* name);
-int e_check_header(char* file, M_TIME otime, we_control_t* cn, int sw);
+int e_check_header(char* file, M_TIME otime, we_control_t* control, int sw);
 char* e_cat_string(char* p, char* str);
 int e_make_arg(char*** arg, char* str);
 int e_copy_prog(struct e_s_prog* out, struct e_s_prog* in);
 int e_run_options(we_window_t* f);
 int e_run_c_options(we_window_t* f);
 int e_project_options(we_window_t* f);
-int e_system(char* estr, we_control_t* cn);
+int e_system(char* estr, we_control_t* control);
 int e_d_p_message(char* str, we_window_t* f, int sw);
 int e_install(we_window_t* f);
 int e_exec_make(we_window_t* f);
