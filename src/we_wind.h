@@ -73,7 +73,7 @@ inline int col_num_on_screen_right(we_window_t* window)
 }
 
 /*   we_wind.c   */
-int e_error(char* text, int sw, we_colorset_t* f);
+int e_error(char* text, int sw, we_colorset_t* colorset);
 int e_message(int sw, char* str, we_window_t* f);
 void e_firstl(we_window_t* f, int sw);
 int e_pr_filetype(we_window_t* f);

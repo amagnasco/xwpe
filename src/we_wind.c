@@ -84,7 +84,7 @@ StringToStringArray (char *str, int *maxLen, int minWidth, int *nr_lines_return)
 /*
       Print error message        */
 int
-e_error (char *text, int sw, we_colorset_t * f)
+e_error (char *text, int sw, we_colorset_t * colorset)
 {
     we_view_t *view = NULL;
     int len, i, xa, xe, ya = 8, ye = 14;
@@ -106,7 +106,10 @@ e_error (char *text, int sw, we_colorset_t * f)
         header = "Fatal Error";
 
     if (sw < 2)
-        view = e_std_kst (xa, ya, xe, ye, header, 1, f->nr.fg_bg_color, f->nt.fg_bg_color, f->ne.fg_bg_color);
+        view = e_std_kst (xa, ya, xe, ye, header, 1,
+                          colorset->nr.fg_bg_color,
+                          colorset->nt.fg_bg_color,
+                          colorset->ne.fg_bg_color);
     if (sw == 2 || view == NULL)
     {
         view = e_open_view (xa, ya, xe, ye, 0, 0);
@@ -115,9 +118,11 @@ e_error (char *text, int sw, we_colorset_t * f)
     if (sw < 2)
     {
         e_pr_str ((xe + xa - e_str_len ((unsigned char *) text)) / 2,
-                  ya + 2, text, f->nt.fg_bg_color, 0, 0, 0, 0);
-        e_pr_str ((xe + xa - 4) / 2, ya + 4, " OK ", f->nz.fg_bg_color, 1, -1,
-                  f->ns.fg_bg_color, f->nt.fg_bg_color);
+                  ya + 2, text, colorset->nt.fg_bg_color, 0, 0, 0, 0);
+        e_pr_str ((xe + xa - 4) / 2, ya + 4, " OK ",
+                  colorset->nz.fg_bg_color, 1, -1,
+                  colorset->ns.fg_bg_color,
+                  colorset->nt.fg_bg_color);
     }
     else
     {

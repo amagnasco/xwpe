@@ -105,18 +105,18 @@ main (int argc, char **argv)
 #endif
     if (sd != 0)
     {
-        FILE *f = fopen (OPTION_FILE, "r");
-        if (f)
+        FILE *opt_file = fopen (OPTION_FILE, "r");
+        if (opt_file)
         {
-            fclose (f);
+            fclose (opt_file);
             control->optfile = e_mkfilename (control->dirct, OPTION_FILE);
         }
         else
         {
             control->optfile = e_mkfilename (getenv ("HOME"), XWPE_HOME);
             control->optfile = realloc (control->optfile,
-                                   strlen (control->optfile) + strlen (OPTION_FILE) +
-                                   2);
+                                        strlen (control->optfile) + strlen (OPTION_FILE) +
+                                        2);
             strcat (control->optfile, DIRS);
             strcat (control->optfile, OPTION_FILE);
         }
