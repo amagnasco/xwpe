@@ -170,15 +170,17 @@ typedef struct we_colorset_struct
  *
  *  The types that undo/redo struct exist as are:
  *
- *  - 'a' Undo / redo struct for character insertion.
- *  - 'c' Undo / redo struct for block copy.
- *  - 'd' Undo / redo struct for block delete.
- *  - 'l' Undo / redo struct for line delete.
- *  - 'p' Undo / redo struct for character overwrite ('put').
- *  - 'r' Undo / redo struct for character deletion.
- *  - 's' Undo / redo struct for search / replace.
- *  - 'v' Undo / redo struct for block paste.
- *  - 'y' Undo / redo struct for line delete ( counters undo of 'l'?)
+ *  Undotype | Undo struct for
+ *  ---------|--------------------------------------
+ *  'a'      | character insertion.
+ *  'c'      | block copy.
+ *  'd'      | block delete.
+ *  'l'      | line delete.
+ *  'p'      | character overwrite ('put').
+ *  'r'      | character deletion.
+ *  's'      | search / replace.
+ *  'v'      | block paste.
+ *  'y'      | line undelete
  *
  *
  */
