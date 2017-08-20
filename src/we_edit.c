@@ -227,7 +227,7 @@ e_edit (we_control_t * cn, char *filename)
     f->b->colorset = f->colorset;
     f->b->cn = cn;
     f->b->undo = NULL;
-    f->b->rd = NULL;
+    f->b->redo = NULL;
     f->find.dirct = NULL;
     if (WpeIsProg ())
         e_add_synt_tl (filename, f);
@@ -2367,8 +2367,8 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
 
     if (global_disable_add_undo)
         return (0);
-    if (e_phase == EDIT_PHASE && b->rd)
-        b->rd = e_remove_undo (b->rd, global_editor_control->numundo + 1);
+    if (e_phase == EDIT_PHASE && b->redo)
+        b->redo = e_remove_undo (b->redo, global_editor_control->numundo + 1);
     if ((next = malloc (sizeof (we_undo_t))) == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, b->colorset);
@@ -2379,7 +2379,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
     next->b.y = y;
     next->a.x = n;
     if (e_phase == UNDO_PHASE)
-        next->next = b->rd;
+        next->next = b->redo;
     else
         next->next = b->undo;
     if (undo_type == 'a');
@@ -2436,7 +2436,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         sn->colorset = bn->colorset = b->colorset;
         bn->cn = b->cn;
         bn->undo = NULL;
-        bn->rd = NULL;
+        bn->redo = NULL;
         sn->c = sn->ks = sn->mark_begin = sn->mark_end = sn->fa = sn->fe =
                                               e_set_pnt (0, 0);
         e_new_line (0, bn);
@@ -2450,7 +2450,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
         global_disable_add_undo = 0;
     }
     if (e_phase == UNDO_PHASE)
-        b->rd = next;
+        b->redo = next;
     else
     {
         next->next = e_remove_undo (b->undo, 1);
@@ -2486,7 +2486,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     window = window->ed->f[window->ed->mxedt];
     b = window->b;
     s = window->s;
-    undo = doing_redo ? b->rd : b->undo;
+    undo = doing_redo ? b->redo : b->undo;
     if (undo == NULL)
     {
         e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), 0, b->colorset);
@@ -2569,7 +2569,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         e_add_undo ('c', b, undo->b.x, undo->b.y, 0);
     }
     if (doing_redo)
-        b->rd = undo->next;
+        b->redo = undo->next;
     else
         b->undo = undo->next;
     e_phase = EDIT_PHASE;

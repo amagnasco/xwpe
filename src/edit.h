@@ -239,7 +239,7 @@ typedef struct BFF
     int mxlines;   /**< number of lines */
     int cl, clsv;
     we_undo_t *undo;  /**< pointer to (a list of) undo structs for undo */
-    we_undo_t *rd;	/**< pointer to (a list of) undo structs for redo */
+    we_undo_t *redo;	/**< pointer to (a list of) undo structs for redo */
     struct CNT* cn;
     struct FNST* f;
     we_colorset_t* colorset;
