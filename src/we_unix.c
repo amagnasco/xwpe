@@ -912,7 +912,7 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
     rfrb = sw == 0 ? f->colorset->nt.fg_bg_color : f->colorset->fs.fg_bg_color;
     e_std_rahmen (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya, "Colors", rfrb, 0, 1,
-                                            f->colorset->ms.f+16*(rfrb/16), 0);
+                                            f->colorset->ms.fg_color+16*(rfrb/16), 0);
     */
     e_pr_nstr (xa + 2, ya + 1, xe - xa - 1, "A_NORMAL   ", 0, 0);
     e_pr_nstr (xa + 2, ya + 2, xe - xa - 1, "A_STANDOUT ", A_STANDOUT,

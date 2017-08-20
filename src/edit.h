@@ -99,7 +99,7 @@ typedef struct we_point_struct
 typedef struct we_color_struct
 {
     /** The foreground color */
-    int f;
+    int fg_color;
     /** The background color */
     int b;
     /** The text color */

@@ -350,7 +350,7 @@ e_dif_colors (int sw, int xa, int ya, we_window_t * f, int md)
     while (c != WPE_ESC && c > -2)
     {
         e_pr_dif_colors (sw, xa, ya, f, 1, md);
-        e_pr_col_kasten (xa - 28, ya + 1, frb[sw + bg].f, frb[sw + bg].b, f, 0);
+        e_pr_col_kasten (xa - 28, ya + 1, frb[sw + bg].fg_color, frb[sw + bg].b, f, 0);
         e_pr_ed_beispiel (1, 2, f, sw, md);
 #if  MOUSE
         if ((c = e_getch ()) == -1)
@@ -444,7 +444,7 @@ e_frb_x_menue (int sw, int xa, int ya, we_window_t * f, int md)
     else if (md == 3)
         sw += 32;
     y = frb[sw].b;
-    x = frb[sw].f;
+    x = frb[sw].fg_color;
     do
     {
         if (c == CRI && y < 7)
@@ -486,7 +486,7 @@ e_pr_x_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
     ffrb = rfrb % 16;
     e_std_rahmen (xa - 2, ya - 1, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya-1, "Colors", rfrb, 0, 1,
-                                            f->colorset->ms.f+16*(rfrb/16), 0);
+                                            f->colorset->ms.fg_color+16*(rfrb/16), 0);
     */
     for (j = 0; j < 8; j++)
         for (i = 0; i < 16; i++)
@@ -543,7 +543,7 @@ e_pr_ed_beispiel (int xa, int ya, we_window_t * f, int sw, int md)
     we_colorset_t *fb = f->colorset;
     int i, j, xe = xa + 31, ye = ya + 19;
 
-    frb[sw] = e_s_clr (frb[sw].f, frb[sw].b);
+    frb[sw] = e_s_clr (frb[sw].fg_color, frb[sw].b);
     if (md == 1)
     {
         e_blk (xe - xa + 1, xa + 1, ya, fb->mt.fg_bg_color);
@@ -656,7 +656,7 @@ e_pr_ed_beispiel (int xa, int ya, we_window_t * f, int sw, int md)
                       0);
         }
     }
-    frb[sw] = e_s_clr (frb[sw].f, frb[sw].b);
+    frb[sw] = e_s_clr (frb[sw].fg_color, frb[sw].b);
 }
 
 /*   Save - Options - Menu   */
@@ -887,34 +887,34 @@ WpeReadColor (we_control_t * control, char *section, char *option, char *value)
         fb->ws = atoi (value);
     if (c != NULL)
     {
-        sscanf (value, "%d%d", &c->f, &c->b);
+        sscanf (value, "%d%d", &c->fg_color, &c->b);
         if (convert)
         {
-            switch (c->f)
+            switch (c->fg_color)
             {
             case 1:
-                c->f = 4;
+                c->fg_color = 4;
                 break;
             case 3:
-                c->f = 6;
+                c->fg_color = 6;
                 break;
             case 4:
-                c->f = 1;
+                c->fg_color = 1;
                 break;
             case 6:
-                c->f = 3;
+                c->fg_color = 3;
                 break;
             case 9:
-                c->f = 12;
+                c->fg_color = 12;
                 break;
             case 11:
-                c->f = 14;
+                c->fg_color = 14;
                 break;
             case 12:
-                c->f = 9;
+                c->fg_color = 9;
                 break;
             case 14:
-                c->f = 11;
+                c->fg_color = 11;
                 break;
             default:
                 break;
@@ -949,7 +949,7 @@ WpeReadColor (we_control_t * control, char *section, char *option, char *value)
                 break;
             }
         }
-        *c = e_s_clr (c->f, c->b);
+        *c = e_s_clr (c->fg_color, c->b);
     }
     return 0;
 }
@@ -964,43 +964,43 @@ WpeWriteColor (we_control_t * control, char *section, FILE * opt_file)
         fb = u_fb;
     if (WpeStrccmp ("X11", section + strlen (OPT_SECTION_COLOR) + 1) == 0)
         fb = x_fb;
-    fprintf (opt_file, "er : %d %d\n", fb->er.f, fb->er.b);
-    fprintf (opt_file, "es : %d %d\n", fb->es.f, fb->es.b);
-    fprintf (opt_file, "et : %d %d\n", fb->et.f, fb->et.b);
-    fprintf (opt_file, "ez : %d %d\n", fb->ez.f, fb->ez.b);
-    fprintf (opt_file, "ek : %d %d\n", fb->ek.f, fb->ek.b);
-    fprintf (opt_file, "em : %d %d\n", fb->em.f, fb->em.b);
-    fprintf (opt_file, "hh : %d %d\n", fb->hh.f, fb->hh.b);
-    fprintf (opt_file, "hb : %d %d\n", fb->hb.f, fb->hb.b);
-    fprintf (opt_file, "hm : %d %d\n", fb->hm.f, fb->hm.b);
-    fprintf (opt_file, "db : %d %d\n", fb->db.f, fb->db.b);
-    fprintf (opt_file, "dy : %d %d\n", fb->dy.f, fb->dy.b);
-    fprintf (opt_file, "mr : %d %d\n", fb->mr.f, fb->mr.b);
-    fprintf (opt_file, "ms : %d %d\n", fb->ms.f, fb->ms.b);
-    fprintf (opt_file, "mt : %d %d\n", fb->mt.f, fb->mt.b);
-    fprintf (opt_file, "mz : %d %d\n", fb->mz.f, fb->mz.b);
-    fprintf (opt_file, "df : %d %d\n", fb->df.f, fb->df.b);
-    fprintf (opt_file, "nr : %d %d\n", fb->nr.f, fb->nr.b);
-    fprintf (opt_file, "ne : %d %d\n", fb->ne.f, fb->ne.b);
-    fprintf (opt_file, "nt : %d %d\n", fb->nt.f, fb->nt.b);
-    fprintf (opt_file, "nsnt : %d %d\n", fb->nsnt.f, fb->nsnt.b);
-    fprintf (opt_file, "fr : %d %d\n", fb->fr.f, fb->fr.b);
-    fprintf (opt_file, "fa : %d %d\n", fb->fa.f, fb->fa.b);
-    fprintf (opt_file, "ft : %d %d\n", fb->ft.f, fb->ft.b);
-    fprintf (opt_file, "fz : %d %d\n", fb->fz.f, fb->fz.b);
-    fprintf (opt_file, "frft : %d %d\n", fb->frft.f, fb->frft.b);
-    fprintf (opt_file, "fs : %d %d\n", fb->fs.f, fb->fs.b);
-    fprintf (opt_file, "nsft : %d %d\n", fb->nsft.f, fb->nsft.b);
-    fprintf (opt_file, "fsm : %d %d\n", fb->fsm.f, fb->fsm.b);
-    fprintf (opt_file, "nz : %d %d\n", fb->nz.f, fb->nz.b);
-    fprintf (opt_file, "ns : %d %d\n", fb->ns.f, fb->ns.b);
-    fprintf (opt_file, "nm : %d %d\n", fb->nm.f, fb->nm.b);
-    fprintf (opt_file, "of : %d %d\n", fb->of.f, fb->of.b);
-    fprintf (opt_file, "ct : %d %d\n", fb->ct.f, fb->ct.b);
-    fprintf (opt_file, "cr : %d %d\n", fb->cr.f, fb->cr.b);
-    fprintf (opt_file, "ck : %d %d\n", fb->ck.f, fb->ck.b);
-    fprintf (opt_file, "cp : %d %d\n", fb->cp.f, fb->cp.b);
-    fprintf (opt_file, "cc : %d %d\n", fb->cc.f, fb->cc.b);
+    fprintf (opt_file, "er : %d %d\n", fb->er.fg_color, fb->er.b);
+    fprintf (opt_file, "es : %d %d\n", fb->es.fg_color, fb->es.b);
+    fprintf (opt_file, "et : %d %d\n", fb->et.fg_color, fb->et.b);
+    fprintf (opt_file, "ez : %d %d\n", fb->ez.fg_color, fb->ez.b);
+    fprintf (opt_file, "ek : %d %d\n", fb->ek.fg_color, fb->ek.b);
+    fprintf (opt_file, "em : %d %d\n", fb->em.fg_color, fb->em.b);
+    fprintf (opt_file, "hh : %d %d\n", fb->hh.fg_color, fb->hh.b);
+    fprintf (opt_file, "hb : %d %d\n", fb->hb.fg_color, fb->hb.b);
+    fprintf (opt_file, "hm : %d %d\n", fb->hm.fg_color, fb->hm.b);
+    fprintf (opt_file, "db : %d %d\n", fb->db.fg_color, fb->db.b);
+    fprintf (opt_file, "dy : %d %d\n", fb->dy.fg_color, fb->dy.b);
+    fprintf (opt_file, "mr : %d %d\n", fb->mr.fg_color, fb->mr.b);
+    fprintf (opt_file, "ms : %d %d\n", fb->ms.fg_color, fb->ms.b);
+    fprintf (opt_file, "mt : %d %d\n", fb->mt.fg_color, fb->mt.b);
+    fprintf (opt_file, "mz : %d %d\n", fb->mz.fg_color, fb->mz.b);
+    fprintf (opt_file, "df : %d %d\n", fb->df.fg_color, fb->df.b);
+    fprintf (opt_file, "nr : %d %d\n", fb->nr.fg_color, fb->nr.b);
+    fprintf (opt_file, "ne : %d %d\n", fb->ne.fg_color, fb->ne.b);
+    fprintf (opt_file, "nt : %d %d\n", fb->nt.fg_color, fb->nt.b);
+    fprintf (opt_file, "nsnt : %d %d\n", fb->nsnt.fg_color, fb->nsnt.b);
+    fprintf (opt_file, "fr : %d %d\n", fb->fr.fg_color, fb->fr.b);
+    fprintf (opt_file, "fa : %d %d\n", fb->fa.fg_color, fb->fa.b);
+    fprintf (opt_file, "ft : %d %d\n", fb->ft.fg_color, fb->ft.b);
+    fprintf (opt_file, "fz : %d %d\n", fb->fz.fg_color, fb->fz.b);
+    fprintf (opt_file, "frft : %d %d\n", fb->frft.fg_color, fb->frft.b);
+    fprintf (opt_file, "fs : %d %d\n", fb->fs.fg_color, fb->fs.b);
+    fprintf (opt_file, "nsft : %d %d\n", fb->nsft.fg_color, fb->nsft.b);
+    fprintf (opt_file, "fsm : %d %d\n", fb->fsm.fg_color, fb->fsm.b);
+    fprintf (opt_file, "nz : %d %d\n", fb->nz.fg_color, fb->nz.b);
+    fprintf (opt_file, "ns : %d %d\n", fb->ns.fg_color, fb->ns.b);
+    fprintf (opt_file, "nm : %d %d\n", fb->nm.fg_color, fb->nm.b);
+    fprintf (opt_file, "of : %d %d\n", fb->of.fg_color, fb->of.b);
+    fprintf (opt_file, "ct : %d %d\n", fb->ct.fg_color, fb->ct.b);
+    fprintf (opt_file, "cr : %d %d\n", fb->cr.fg_color, fb->cr.b);
+    fprintf (opt_file, "ck : %d %d\n", fb->ck.fg_color, fb->ck.b);
+    fprintf (opt_file, "cp : %d %d\n", fb->cp.fg_color, fb->cp.b);
+    fprintf (opt_file, "cc : %d %d\n", fb->cc.fg_color, fb->cc.b);
     fprintf (opt_file, "dc : %d\n", fb->dc);
     fprintf (opt_file, "ws : %d\n", fb->ws);
     return 0;
