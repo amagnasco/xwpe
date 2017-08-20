@@ -73,7 +73,7 @@ char e_d_tty[80];
 extern int wfildes[2], efildes[2];
 extern struct termios otermio, ntermio, ttermio;
 extern struct e_s_prog e_sv_prog;
-extern BUFFER *e_p_w_buffer;
+extern we_buffer_t *e_p_w_buffer;
 extern char *att_no;
 extern char *e_tmp_dir;
 
@@ -451,7 +451,7 @@ int
 e_d_p_exec (we_window_t * window)
 {
     we_control_t *control = window->ed;
-    BUFFER *b;
+    we_buffer_t *b;
     int ret, i, is, j;
     char str[512];
 
@@ -700,7 +700,7 @@ int
 e_delete_watches (we_window_t * window)
 {
     we_control_t *control = window->ed;
-    BUFFER *b = control->window[control->mxedt]->b;
+    we_buffer_t *b = control->window[control->mxedt]->b;
     int n;
 
     window = control->window[control->mxedt];
@@ -774,7 +774,7 @@ e_make_watches (we_window_t * window)
 int
 e_edit_watches (we_window_t * window)
 {
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     char str[128];
     int l;
 
@@ -803,7 +803,7 @@ int
 e_d_p_watches (we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
-    BUFFER *b;
+    we_buffer_t *b;
     int iw, k = 0, l, ret;
     char str1[256], *str;		/* is 256 always large enough? */
     char *str2;
@@ -833,7 +833,7 @@ e_d_p_watches (we_window_t * window, int sw)
     window = control->window[iw];
     b = control->window[iw]->b;
 
-    /* free all lines of BUFFER b */
+    /* free all lines of we_buffer_t b */
     e_p_red_buffer (b);
     free (b->buflines[0].s);
     b->mxlines = 0;
@@ -1027,7 +1027,7 @@ int
 e_d_p_stack (we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     int is, i, j, k, l, ret;
     char str[256];
@@ -1153,7 +1153,7 @@ e_make_stack (we_window_t * window)
 {
     char file[128], str[128], *tmpstr = malloc (1);
     int i, ret, line = 0, dif;
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     e_d_switch_out (0);
     if (e_deb_type != 1)
     {
@@ -1359,7 +1359,7 @@ int
 e_brk_recalc (we_window_t * window, int start, int len)
 {
     we_control_t *control = window->ed;
-    BUFFER *b;
+    we_buffer_t *b;
     int n, rend, count, yline;
     int *br_lines;
 
@@ -1658,7 +1658,7 @@ e_make_breakpoint (we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
     we_screen_t *s = control->window[control->mxedt]->s;
-    BUFFER *b = control->window[control->mxedt]->b;
+    we_buffer_t *b = control->window[control->mxedt]->b;
     int ret, i;
     char eing[128], str[256];
 
@@ -2414,7 +2414,7 @@ int
 e_d_goto_func (we_window_t * window, int flag)
 {
     we_control_t *control = window->ed;
-    BUFFER *b = control->window[control->mxedt]->b;
+    we_buffer_t *b = control->window[control->mxedt]->b;
     int ret = 0, main_brk = 0;
     char str[128];
 
@@ -2987,7 +2987,7 @@ int
 e_d_goto_break (char *file, int line, we_window_t * window)
 {
     we_control_t *control = window->ed;
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     we_window_t ftmp;
     int i;

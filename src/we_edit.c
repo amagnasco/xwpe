@@ -44,12 +44,12 @@ char *e_make_postf ();
 int e_del_a_ind ();
 int e_tab_a_ind ();
 int e_help_next ();
-int e_car_ret(BUFFER* b, we_screen_t* s);
+int e_car_ret(we_buffer_t* b, we_screen_t* s);
 
 #ifdef PROG
-BUFFER *e_p_m_buffer = NULL;
+we_buffer_t *e_p_m_buffer = NULL;
 #ifdef DEBUGGER
-BUFFER *e_p_w_buffer = NULL;
+we_buffer_t *e_p_w_buffer = NULL;
 #endif
 #endif
 
@@ -139,7 +139,7 @@ e_edit (we_control_t * control, char *filename)
     window->colorset = control->colorset;
     control->window[control->mxedt] = window;
 
-    if ((window->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
+    if ((window->b = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     if ((window->s = (we_screen_t *) malloc (sizeof (we_screen_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
@@ -427,7 +427,7 @@ e_edit (we_control_t * control, char *filename)
 int
 e_eingabe (we_control_t * e)
 {
-    BUFFER *b = e->window[e->mxedt]->b;
+    we_buffer_t *b = e->window[e->mxedt]->b;
     we_screen_t *s = e->window[e->mxedt]->s;
     we_window_t *window = e->window[e->mxedt];
     int ret, c = 0;
@@ -590,7 +590,7 @@ int
 e_tst_cur (int c, we_control_t * e)
 {
     we_window_t *window = e->window[e->mxedt];
-    BUFFER *b = window->b;
+    we_buffer_t *b = window->b;
     we_screen_t *s = window->s;
 
     switch (c)
@@ -963,7 +963,7 @@ e_tst_fkt (int c, we_control_t * e)
 int
 e_ctrl_k (we_window_t * window)
 {
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     we_screen_t *screen = window->ed->window[window->ed->mxedt]->s;
     int c;
 
@@ -1065,7 +1065,7 @@ e_ctrl_k (we_window_t * window)
 int
 e_ctrl_o (we_window_t * window)
 {
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
     int i, c;
     unsigned char cc;
@@ -1319,7 +1319,7 @@ e_tst_dfkt (we_window_t * window, int c)
 }
 
 int
-e_chr_sp (int x, BUFFER * b, we_window_t * window)
+e_chr_sp (int x, we_buffer_t * b, we_window_t * window)
 {
     int i, j;
 
@@ -1352,7 +1352,7 @@ e_chr_sp (int x, BUFFER * b, we_window_t * window)
 
 /****************************************/
 int
-FindFirstNospaceChar (BUFFER * b, int line)
+FindFirstNospaceChar (we_buffer_t * b, int line)
 /* returns char number in the line, -1 otherwise */
 {
     int k;
@@ -1369,7 +1369,7 @@ FindFirstNospaceChar (BUFFER * b, int line)
 
 /****************************************/
 int
-GetXOfCharNum (BUFFER * b, int line, int char_num)
+GetXOfCharNum (we_buffer_t * b, int line, int char_num)
 {
     int x, k;
 
@@ -1388,7 +1388,7 @@ GetXOfCharNum (BUFFER * b, int line, int char_num)
 
 /****************************************/
 int
-GetCharNumOfX (BUFFER * b, int line, int char_x)
+GetCharNumOfX (we_buffer_t * b, int line, int char_x)
 {
     int x, k, next_x;
 
@@ -1410,7 +1410,7 @@ GetCharNumOfX (BUFFER * b, int line, int char_x)
 
 /* New version of auto-indent */
 int
-e_tab_a_ind (BUFFER * b, we_screen_t * s)
+e_tab_a_ind (we_buffer_t * b, we_screen_t * s)
 {
     int a_indent = b->control->autoindent;
     int line, x, k, char_to_ins;
@@ -1529,7 +1529,7 @@ e_tab_a_ind (BUFFER * b, we_screen_t * s)
 }
 
 int
-e_del_a_ind (BUFFER * b, we_screen_t * s)
+e_del_a_ind (we_buffer_t * b, we_screen_t * s)
 {
     int i = 1, j = -1, k;
 
@@ -1585,7 +1585,7 @@ e_del_a_ind (BUFFER * b, we_screen_t * s)
 }
 
 int
-e_car_a_ind (BUFFER * b, we_screen_t * s)
+e_car_a_ind (we_buffer_t * b, we_screen_t * s)
 {
     int i, j, k;
     unsigned char *str;
@@ -1628,7 +1628,7 @@ e_blk (int anz, int xa, int ya, int col)
 
 /*       insert Carriage Return     */
 int
-e_car_ret (BUFFER * b, we_screen_t * s)
+e_car_ret (we_buffer_t * b, we_screen_t * s)
 {
     int len, i;
     len = b->buflines[b->cursor.y].len;
@@ -1682,7 +1682,7 @@ e_car_ret (BUFFER * b, we_screen_t * s)
 void
 e_cursor (we_window_t * window, int sw)
 {
-    BUFFER *b = window->b;
+    we_buffer_t *b = window->b;
     we_screen_t *s = window->s;
     static int iold = 0, jold = 0;
     int i, j;
@@ -1787,7 +1787,7 @@ e_cursor (we_window_t * window, int sw)
 
 /*   delete one line */
 int
-e_del_line (int yd, BUFFER * b, we_screen_t * s)
+e_del_line (int yd, we_buffer_t * b, we_screen_t * s)
 {
     int i;
 
@@ -1825,7 +1825,7 @@ e_del_line (int yd, BUFFER * b, we_screen_t * s)
 
 /*   delete N chars from buffer */
 int
-e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
+e_del_nchar (we_buffer_t * b, we_screen_t * s, int x, int y, int n)
 {
     we_window_t *window = global_editor_control->window[global_editor_control->mxedt];
     int len, i, j;
@@ -1884,7 +1884,7 @@ e_del_nchar (BUFFER * b, we_screen_t * s, int x, int y, int n)
 
 /*   insert N chars in buffer */
 int
-e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
+e_ins_nchar (we_buffer_t * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
              int n)
 {
     we_window_t *window = global_editor_control->window[global_editor_control->mxedt];
@@ -2027,7 +2027,7 @@ e_ins_nchar (BUFFER * b, we_screen_t * sch, unsigned char *s, int xa, int ya,
 
 /*   insert new line */
 int
-e_new_line (int yd, BUFFER * b)
+e_new_line (int yd, we_buffer_t * b)
 {
     int i;
 
@@ -2055,7 +2055,7 @@ e_new_line (int yd, BUFFER * b)
 
 /*     Overwriting of a character       */
 int
-e_put_char (int c, BUFFER * b, we_screen_t * s)
+e_put_char (int c, we_buffer_t * b, we_screen_t * s)
 {
     unsigned char cc = c;
 
@@ -2313,7 +2313,7 @@ e_remove_undo (we_undo_t * undo, int sw)
             free (undo->u.pt);
         else if (undo->type == 'd')
         {
-            BUFFER *b = (BUFFER *) undo->u.pt;
+            we_buffer_t *b = (we_buffer_t *) undo->u.pt;
             int i;
 
             free (b->window->s);
@@ -2361,7 +2361,7 @@ e_remove_undo (we_undo_t * undo, int sw)
  *  if global_disable_add_undo is true, this function does nothing.
  */
 int
-e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
+e_add_undo (int undo_type, we_buffer_t * b, int x, int y, int n)
 {
     we_undo_t *next;
 
@@ -2415,7 +2415,7 @@ e_add_undo (int undo_type, BUFFER * b, int x, int y, int n)
     }
     else if (undo_type == 'd')
     {
-        BUFFER *bn = malloc (sizeof (BUFFER));
+        we_buffer_t *bn = malloc (sizeof (we_buffer_t));
         we_screen_t *sn = malloc (sizeof (we_screen_t));
         we_window_t *fn = malloc (sizeof (we_window_t));
         we_window_t *window = b->control->window[b->control->mxedt];
@@ -2474,7 +2474,7 @@ e_make_redo (we_window_t * window)
 int
 e_make_rudo (we_window_t * window, int doing_redo)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     we_undo_t *undo;
     int i;
@@ -2555,7 +2555,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     }
     else if (undo->type == 'd')
     {
-        BUFFER *bn = (BUFFER *) undo->u.pt;
+        we_buffer_t *bn = (we_buffer_t *) undo->u.pt;
         global_disable_add_undo = 1;
         s->mark_begin = bn->window->s->mark_begin;
         s->mark_end = bn->window->s->mark_end;

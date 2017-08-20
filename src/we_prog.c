@@ -58,7 +58,7 @@ char library[80];
 int e_save_pid;
 struct dirfile **e_p_df;
 
-extern BUFFER *e_p_m_buffer;
+extern we_buffer_t *e_p_m_buffer;
 extern char *e_tmp_dir;
 #ifdef DEBUGGER
 extern int e_d_swtch;
@@ -253,7 +253,7 @@ int
 e_run (we_window_t * window)
 {
     we_control_t *control = window->ed;
-    BUFFER *b;
+    we_buffer_t *b;
     char estr[256];
     int len, ret;
 
@@ -495,7 +495,7 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
 {
     UNUSED (file);
     we_control_t *control = window->ed;
-    BUFFER *b = control->window[control->mxedt]->b;
+    we_buffer_t *b = control->window[control->mxedt]->b;
     int ret = 0, i = 0, is, fd, stat_loc;
     char str[128];
     char *buff;
@@ -566,7 +566,7 @@ int
 e_show_error (int n, we_window_t * window)
 {
     we_control_t *control = window->ed;
-    BUFFER *b = control->window[control->mxedt]->b;
+    we_buffer_t *b = control->window[control->mxedt]->b;
     int i, j, bg = 0;
     char *filename;
     unsigned char *cp;
@@ -689,7 +689,7 @@ e_make_error_list (we_window_t * window)
 {
     char file[256];
     we_control_t *control = window->ed;
-    BUFFER *b = control->window[control->mxedt]->b;
+    we_buffer_t *b = control->window[control->mxedt]->b;
     int i, j, k = 0, ret = 0;
     char *spt;
 
@@ -1640,7 +1640,7 @@ e_system (char *estr, we_control_t * control)
 /* arranges string str into buffer b and eventually wrappes string around
  wrap_limit columns */
 int
-print_to_end_of_buffer (BUFFER * b, char *str, int wrap_limit)
+print_to_end_of_buffer (we_buffer_t * b, char *str, int wrap_limit)
 {
     int i, k, j;
 
@@ -1708,7 +1708,7 @@ int
 e_d_p_message (char *str, we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
-    BUFFER *b;
+    we_buffer_t *b;
     int i;
 
     if (str[0] == '\0' || str[0] == '\n')
@@ -1752,7 +1752,7 @@ int
 e_d_car_mouse (we_window_t * window)
 {
     extern struct mouse e_mouse;
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
 
     if (e_mouse.y - window->a.y + s->c.y - 1 == b->cursor.y)
@@ -3153,7 +3153,7 @@ e_p_mess_win (char *header, int argc, char **argv, we_view_t ** view, we_window_
 /* After this function b has exactly 1 line allocated (b->mxlines==1).
    This line is initialized to the string WPE_WR,0 */
 int
-e_p_red_buffer (BUFFER * b)
+e_p_red_buffer (we_buffer_t * b)
 {
     int i;
 
@@ -3435,7 +3435,7 @@ e_p_comp_mess (char *a, char *b, char *c, char *txt, char *file, char *cmp,
 }
 
 int
-e_p_cmp_mess (char *srch, BUFFER * b, int *ii, int *kk, int ret)
+e_p_cmp_mess (char *srch, we_buffer_t * b, int *ii, int *kk, int ret)
 {
     char *cp, cmp[128], file[128], search[80], tmp[4][128], **wtxt = NULL;
     int j, l, m, n, iy, iorig, i = *ii, k = *kk, x = 0, y = -1, wnum = 0;

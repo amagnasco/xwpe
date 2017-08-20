@@ -442,7 +442,7 @@ e_err_save ()
     int i;
     unsigned long maxname;
     we_window_t *window;
-    BUFFER *b;
+    we_buffer_t *b;
 
     /* Quick fix to multiple emergency save problems */
     if (e_bool_exit)
@@ -820,7 +820,7 @@ e_recover (we_control_t * control)
 {
     struct dirfile *files;
     we_window_t *window = NULL;
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     int i;
 

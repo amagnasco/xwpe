@@ -243,7 +243,7 @@ typedef struct BFF
     struct CNT* control;      /**< pointer to a control struct */
     struct we_window_struct* window;			  /**< pointer to a window struct */
     we_colorset_t* colorset;  /**< pointer to a colorset struct */
-} BUFFER;
+} we_buffer_t;
 
 typedef struct SCHRM
 {

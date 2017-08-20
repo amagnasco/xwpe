@@ -10,13 +10,13 @@
 typedef struct
 {
     FILE* fp;
-    BUFFER* b;
+    we_buffer_t* b;
     we_point_t p;
 } E_AFILE;
 
-int* e_sc_txt(int* c_sw, BUFFER* b);
+int* e_sc_txt(int* c_sw, we_buffer_t* b);
 void e_sc_txt_2 (we_window_t *window);
-int e_sc_nw_txt(int y, BUFFER* b, int sw);
+int e_sc_nw_txt(int y, we_buffer_t* b, int sw);
 int e_add_synt_tl(char* filename, we_window_t* window);
 int e_mk_beauty(int sw, int ndif, we_window_t* window);
 int e_sh_def(we_window_t* window);

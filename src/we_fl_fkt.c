@@ -58,7 +58,7 @@ e_mkfilename (char *dr, char *fn)
 
 /*   read file routine     */
 we_point_t
-e_readin (int i, int j, FILE * fp, BUFFER * b, char *type)
+e_readin (int i, int j, FILE * fp, we_buffer_t * b, char *type)
 {
     we_point_t pkt;
     int ii, k, n = 1, hb = 0;
@@ -199,7 +199,7 @@ e_m_save (we_window_t * window)
 int
 e_save (we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     int ret;
 
     if (!DTMD_ISTEXT (window->dtmd))
@@ -295,7 +295,7 @@ e_quit (we_window_t * window)
 int
 e_write (int xa, int ya, int xe, int ye, we_window_t * window, int backup)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     int i = xa, j;
     char *tmp, *ptmp;
     FILE *fp;
@@ -879,7 +879,7 @@ e_read_help (char *str, we_window_t * window, int sw)
     if (!fp)
         return (1);
     e_close_buffer (window->b);
-    if ((window->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
+    if ((window->b = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     if ((window->b->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
@@ -959,7 +959,7 @@ e_read_help (char *str, we_window_t * window, int sw)
 int
 e_help_ret (we_window_t * window)
 {
-    BUFFER *b = window->b;
+    we_buffer_t *b = window->b;
     int i, j;
     unsigned char str[126];
     struct help_ud *next;
@@ -1168,7 +1168,7 @@ e_help_free (we_window_t * window)
 int
 e_help_comp (we_window_t * window)
 {
-    BUFFER *b = window->b;
+    we_buffer_t *b = window->b;
     int i, j, k, hn = 0, sn = 0;
     char **swtch = malloc (sizeof (char *));
     char **hdrs = malloc (sizeof (char *));
@@ -1528,7 +1528,7 @@ e_read_info (char *str, we_window_t * window, char *file)
     if (!fp)
         return (1);
     e_close_buffer (window->b);
-    if ((window->b = (BUFFER *) malloc (sizeof (BUFFER))) == NULL)
+    if ((window->b = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     if ((window->b->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
@@ -1769,7 +1769,7 @@ e_topic_search (we_window_t * window)
 {
     int x, y;
     unsigned char *s;
-    BUFFER *b;
+    we_buffer_t *b;
     unsigned char item[100], *ptr = item;
 
     if (!DTMD_ISTEXT (window->ed->window[window->ed->mxedt]->dtmd))

@@ -223,7 +223,7 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
     window->find.sn = 0;
     window->find.rn = 0;
 
-    window->b = (BUFFER *) b;
+    window->b = (we_buffer_t *) b;
     /* the find pattern can only be 79 see FIND structure */
     if ((b->rdfile = malloc (80)) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
@@ -526,7 +526,7 @@ WpeHandleFileManager (we_control_t * control)
 {
     we_window_t *window = control->window[control->mxedt], *fe = NULL;
     FLBFFR *b = (FLBFFR *) window->b;
-    BUFFER *be = NULL;
+    we_buffer_t *be = NULL;
     we_screen_t *se = NULL;
     int c = AltC, i, j, t;
     int winnum = 0, nco, svmode = -1, fmode, len, start;
@@ -3507,7 +3507,7 @@ e_ed_man (unsigned char *str, we_window_t * window)
     char command[256], tstr[_POSIX_PATH_MAX];
     char cc, hstr[80], nstr[10];
     int mdsv = window->ed->dtmd, bg, i, j = 0;
-    BUFFER *b = 0;
+    we_buffer_t *b = 0;
 
     if (!str)
         return (0);
@@ -3884,7 +3884,7 @@ e_data_first (int sw, we_control_t * control, char *nstr)
         window->nblst = 4;
     }
     WpeMouseRestoreShape ();
-    window->b = (BUFFER *) fw;
+    window->b = (we_buffer_t *) fw;
     fw->df = df;
 
     fw->mxa = window->a.x;

@@ -516,7 +516,7 @@ e_program_opt (we_window_t * window)
 }
 
 int
-e_sc_nw_txt (int y, BUFFER * b, int sw)
+e_sc_nw_txt (int y, we_buffer_t * b, int sw)
 {
     int i, out;
 
@@ -577,7 +577,7 @@ e_sc_nw_txt (int y, BUFFER * b, int sw)
 }
 
 int *
-e_sc_txt (int *c_sw, BUFFER * b)
+e_sc_txt (int *c_sw, we_buffer_t * b)
 {
     int i;
 
@@ -621,7 +621,7 @@ void e_sc_txt_2 (we_window_t *window)
 void
 e_pr_c_line (int y, we_window_t * window)
 {
-    BUFFER *b = window->b;
+    we_buffer_t *b = window->b;
     we_screen_t *s = window->s;
     int i, j, k, frb = 0;
     int mcsw = window->c_sw[y], svmsw = window->c_sw[y] == 5 ? 5 : 0, bssw = 0;
@@ -2122,7 +2122,7 @@ e_mbt_mk_sp (char *str, int n, int sw, int *m)
 }
 
 int
-e_mbt_str (BUFFER * b, int *ii, int *jj, unsigned char c, int n, int sw,
+e_mbt_str (we_buffer_t * b, int *ii, int *jj, unsigned char c, int n, int sw,
            int *cmnd)
 {
     int i = *ii, j = *jj + 1, bsp;
@@ -2161,7 +2161,7 @@ e_mbt_str (BUFFER * b, int *ii, int *jj, unsigned char c, int n, int sw,
 }
 
 int
-e_mbt_cnd (BUFFER * b, int *ii, int *jj, int n, int sw, int *cmnd)
+e_mbt_cnd (we_buffer_t * b, int *ii, int *jj, int n, int sw, int *cmnd)
 {
     int i = *ii, j = *jj + 2;
 
@@ -2202,7 +2202,7 @@ e_mbt_cnd (BUFFER * b, int *ii, int *jj, int n, int sw, int *cmnd)
 int
 e_mk_beauty (int sw, int ndif, we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     int bg, nd, m, n, i, j, k, brk, cbrk = 0, nif = 0, nic = 0;
     int nstrct = 0, cmnd, cm_sv;

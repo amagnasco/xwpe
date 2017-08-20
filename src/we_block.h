@@ -15,9 +15,9 @@ int e_edt_del(we_window_t* window);
 int e_edt_copy(we_window_t* window);
 int e_edt_einf(we_window_t* window);
 int e_blck_move(we_window_t* window);
-void e_move_block(int x, int y, BUFFER* bv, BUFFER* bz, we_window_t* window);
+void e_move_block(int x, int y, we_buffer_t* bv, we_buffer_t* bz, we_window_t* window);
 int e_blck_copy(we_window_t* window);
-void e_copy_block(int x, int y, BUFFER* buffer_src, BUFFER* buffer_dst,
+void e_copy_block(int x, int y, we_buffer_t* buffer_src, we_buffer_t* buffer_dst,
                   we_window_t* window);
 int e_blck_begin(we_window_t* window);
 int e_blck_end(we_window_t* window);

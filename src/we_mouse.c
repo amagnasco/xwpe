@@ -935,7 +935,7 @@ e_edt_mouse (int c, we_window_t * window)
 }
 
 int
-e_mouse_cursor (BUFFER * b, we_screen_t * s, we_window_t * window)
+e_mouse_cursor (we_buffer_t * b, we_screen_t * s, we_window_t * window)
 {
     extern struct mouse e_mouse;
 
@@ -952,7 +952,7 @@ e_mouse_cursor (BUFFER * b, we_screen_t * s, we_window_t * window)
 int
 e_ccp_mouse (int c, we_window_t * window)
 {
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
 
     while (e_mshit () != 0)
@@ -976,7 +976,7 @@ void
 e_cur_mouse (window)
 we_window_t *window;
 {
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
     we_point_t bs;
     bs.x = b->cursor.x;

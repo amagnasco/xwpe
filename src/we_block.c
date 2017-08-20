@@ -31,7 +31,7 @@
 int
 e_blck_del (we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     int i, y, len;
 
@@ -82,7 +82,7 @@ e_blck_del (we_window_t * window)
 int
 e_blck_dup (char *dup, we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     int i;
 
@@ -108,7 +108,7 @@ e_blck_dup (char *dup, we_window_t * window)
 }
 
 int
-e_blck_clear (BUFFER * b, we_screen_t * s)
+e_blck_clear (we_buffer_t * b, we_screen_t * s)
 {
     int i;
     int len = (s->mark_end.y - s->mark_begin.y - 1);
@@ -227,8 +227,8 @@ e_edt_del (we_window_t * window)
 int
 e_edt_copy (we_window_t * window)
 {
-    BUFFER *b;
-    BUFFER *b0 = window->ed->window[0]->b;
+    we_buffer_t *b;
+    we_buffer_t *b0 = window->ed->window[0]->b;
     int i, save;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
@@ -259,8 +259,8 @@ e_edt_copy (we_window_t * window)
 int
 e_edt_einf (we_window_t * window)
 {
-    BUFFER *b;
-    BUFFER *b0 = window->ed->window[0]->b;
+    we_buffer_t *b;
+    we_buffer_t *b0 = window->ed->window[0]->b;
     int i, y, len;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
@@ -297,7 +297,7 @@ e_edt_einf (we_window_t * window)
 int
 e_blck_move (we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     int i;
     we_point_t ka;
 
@@ -328,7 +328,7 @@ e_blck_move (we_window_t * window)
 
 /*    move Block    */
 void
-e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window_t * window)
+e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * window)
 {
     we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
     we_screen_t *sv = bv->window->s;
@@ -512,7 +512,7 @@ e_move_block (int x, int y, BUFFER * bv, BUFFER * bz, we_window_t * window)
 int
 e_blck_copy (we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     int i;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
@@ -535,10 +535,10 @@ e_blck_copy (we_window_t * window)
 
 /*   copy block  */
 void
-e_copy_block (int x, int y, BUFFER * buffer_src, BUFFER * buffer_dst,
+e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
               we_window_t * window)
 {
-    BUFFER *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
     we_screen_t *s_src = buffer_src->window->s;
     we_screen_t *s_dst = buffer_dst->window->s;
     int i, j, n = s_src->mark_end.y - s_src->mark_begin.y - 1;
@@ -793,7 +793,7 @@ mode=3 first character in each line upcase   */
 int
 e_blck_changecase (we_window_t * window, int mode)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *screen;
     int i, x, y, x_begin, x_end;
 
@@ -869,7 +869,7 @@ e_changecase_dialog (we_window_t * window)
 int
 e_blck_to_left (we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     int n = window->ed->tabn / 2, i, j, k, l, m, nn;
     unsigned char *tstr = malloc ((n + 2) * sizeof (char));
@@ -923,7 +923,7 @@ e_blck_to_left (we_window_t * window)
 int
 e_blck_to_right (we_window_t * window)
 {
-    BUFFER *b;
+    we_buffer_t *b;
     we_screen_t *s;
     int n = window->ed->tabn / 2, i, j;
     unsigned char *tstr = malloc ((n + 1) * sizeof (char));
@@ -989,7 +989,7 @@ int
 e_repeat_search (we_window_t * window)
 {
     we_screen_t *screen;
-    BUFFER *buffer;
+    we_buffer_t *buffer;
     FIND *find = &(window->ed->find);
     int i, j, iend, jend;
     int start_offset;
@@ -1110,7 +1110,7 @@ int
 e_goto_line (we_window_t * window)
 {
     int i, num;
-    BUFFER *b;
+    we_buffer_t *b;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
     if (i <= 0)
@@ -1132,7 +1132,7 @@ int
 e_find (we_window_t * window)
 {
     we_screen_t *wind_screen;
-    BUFFER *buffer;
+    we_buffer_t *buffer;
     FIND *find = &(window->ed->find);
     int i, ret;
     char strTemp[80];
@@ -1222,7 +1222,7 @@ int
 e_replace (we_window_t *window)
 {
     we_screen_t *screen;
-    BUFFER *buffer;
+    we_buffer_t *buffer;
     FIND *find = &(window->ed->find);
     int i, ret, c, rep = 0, found = 0;
     char strTemp[80];

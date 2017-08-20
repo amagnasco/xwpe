@@ -104,7 +104,7 @@ int e_schr_lst_wsv(char* str, int xa, int ya, int n, int strlen, int ft,
                    int fz, struct dirfile** df, we_window_t* window);
 int e_rep_win_tree(we_control_t* control);
 int e_opt_sec_box(int xa, int ya, int num, OPTK* opt, we_window_t* window, int sw);
-int e_close_buffer(BUFFER* b);
+int e_close_buffer(we_buffer_t* b);
 int e_list_all_win(we_window_t* window);
 
 #endif

@@ -800,7 +800,7 @@ e_ed_kst (we_window_t * window, we_view_t * view, int sw)
 
 /*    delete buffer     */
 int
-e_close_buffer (BUFFER * b)
+e_close_buffer (we_buffer_t * b)
 {
     int i;
 
@@ -1202,7 +1202,7 @@ e_ed_next (we_window_t * window)
 void
 e_pr_line (int y, we_window_t * window)
 {
-    BUFFER *b = window->b;
+    we_buffer_t *b = window->b;
     we_screen_t *s = window->s;
     int i, j, k, frb;
 #ifdef DEBUGGER
@@ -1589,7 +1589,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
         e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
         return (0);
     }
-    window->b = (BUFFER *) fw;
+    window->b = (we_buffer_t *) fw;
     fw->mxa = xa;
     fw->mxe = xe;
     fw->mya = ya;

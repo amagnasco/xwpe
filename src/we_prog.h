@@ -41,7 +41,7 @@ int e_make_error_list(we_window_t* window);
 int e_d_car_ret(we_window_t* window);
 int e_prog_switch(we_window_t* window, int c);
 
-int print_to_end_of_buffer(BUFFER* b, char* str, int wrap_limit);
+int print_to_end_of_buffer(we_buffer_t* b, char* str, int wrap_limit);
 
 /*   we_prog.c   */
 
@@ -80,12 +80,12 @@ int e_p_edit_df(FLWND* fw, int sw);
 int e_d_car_mouse(we_window_t* window);
 int e_add_arg(char*** arg, char* str, int n, int argc);
 int e_new_message(we_window_t* window);
-int e_p_cmp_mess(char* srch, BUFFER* b, int* ii, int* kk, int ret);
+int e_p_cmp_mess(char* srch, we_buffer_t* b, int* ii, int* kk, int ret);
 int e_project_name(we_window_t* window);
 int e_wrt_prj_fl(we_window_t* window);
 int e_p_update_prj_fl(we_window_t* window);
 int freedfN(struct dirfile** df, int n);
-int e_p_red_buffer(BUFFER* b);
+int e_p_red_buffer(we_buffer_t* b);
 int e_read_var(we_window_t* window);
 
 #endif
