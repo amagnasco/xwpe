@@ -43,7 +43,6 @@ we_undo_t* e_remove_undo(we_undo_t* undo, int sw);
 int e_add_undo(int undo_type, we_buffer_t* b, int x, int y, int n);
 int e_make_undo(we_window_t* window);
 int e_make_redo(we_window_t* window);
-int e_make_rudo(we_window_t* window, int sw);
 int e_autosave(we_window_t* window);
 char* e_make_postf(char* out, char* name, char* pf);
 

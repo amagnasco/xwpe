@@ -118,6 +118,13 @@ typedef struct view_struct
     we_point_t e;
 } we_view_t;
 
+/**
+ * \struct we_colorset_struct.
+ *
+ * contains the colors for window text, border, editor text, buttons, marked words, menu, widgets
+ * and some syntax coloring.
+ *
+ */
 typedef struct we_colorset_struct
 {
     we_color_t er;   /**< editor window border and text */
@@ -228,6 +235,15 @@ typedef struct we_undo_struct
     struct we_undo_struct* next;
 } we_undo_t;
 
+
+/**
+ * \struct STR.
+ *
+ * Contains string with length and number of characters. Length does not include
+ * the newline at the end.
+ *
+ *
+ */
 typedef struct STR
 {
     unsigned char* s;

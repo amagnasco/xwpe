@@ -484,6 +484,15 @@ e_ed_rahmen (we_window_t * window, int sw)
 }
 
 /*   Output - screen content */
+/**
+ * \brief Outputs the screen content.
+ *
+ * @param window we_window_t
+ * @param sw int
+ * @return int equal to the line number of the bottom of the screen for this window for an text edit window.
+ *         returns zero for data, filemanager windows and dropdown windows.
+ *
+ */
 int
 e_schirm (we_window_t * window, int sw)
 {
@@ -495,7 +504,9 @@ e_schirm (we_window_t * window, int sw)
         return (e_data_schirm (window));
     else if (window->dtmd == DTMD_FILEDROPDOWN)
         return (e_pr_file_window
-                ((FLWND *) window->b, 1, sw, window->colorset->er.fg_bg_color, window->colorset->ez.fg_bg_color,
+                ((FLWND *) window->b, 1, sw,
+                 window->colorset->er.fg_bg_color,
+                 window->colorset->ez.fg_bg_color,
                  window->colorset->frft.fg_bg_color));
     if (num_lines_off_screen_top(window) < 0)
         window->s->c.y = 0;

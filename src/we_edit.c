@@ -19,6 +19,7 @@
 #include "we_prog.h"
 #include "WeString.h"
 #include "we_wind.h"
+#include "we_fl_fkt.h"
 
 #ifdef UNIX
 #include<sys/types.h>		/*  included for digital station  */
@@ -40,10 +41,10 @@ int global_disable_add_undo = 0;
 enum e_phases {EDIT_PHASE, UNDO_PHASE, REDO_PHASE};
 static enum e_phases e_phase = EDIT_PHASE;
 
-char *e_make_postf ();
-int e_del_a_ind ();
-int e_tab_a_ind ();
-int e_help_next ();
+/* prototypes of private functions */
+int e_make_rudo(we_window_t* window, int sw);
+int e_del_a_ind (we_buffer_t * b, we_screen_t * s);
+int e_tab_a_ind (we_buffer_t * b, we_screen_t * s);
 int e_car_ret(we_buffer_t* b, we_screen_t* s);
 
 #ifdef PROG
@@ -2345,20 +2346,29 @@ e_remove_undo (we_undo_t * undo, int sw)
  * Remark that the options file (if it exists) has a maximum number of undo's and redo's.
  * The default is a maximum of 10 that you can change using the Options/Editor menu-option.
  *
- * type  action
- * ----  ------
- *  d    Uses d to remember delete characters in a block
- *  c    Uses c to remember a block copy
- *  v    Uses v to paste block
- *  a    Uses a to add characters
- *  l    Uses l to delete line
- *  r    Uses r to remember deleted characters on one line
- *  p    Uses p to put char over another char (replace)
- *  y    Uses y to redo a previous undo of l
- *  s    Uses s to replace a string of characters (verified with test)
+ * @param undo_type int the type of the undo action see table below.
+ *
+ * type| action
+ * ----|----------------------------------
+ *  d  | Uses d to remember delete characters in a block
+ *  c  | Uses c to remember a block copy
+ *  v  | Uses v to paste block
+ *  a  | Uses a to add characters
+ *  l  | Uses l to delete line
+ *  r  | Uses r to remember deleted characters on one line
+ *  p  | Uses p to put char over another char (replace)
+ *  y  | Uses y to redo a previous undo of l
+ *  s  | Uses s to replace a string of characters (verified with test)
  *
  *  Remark: the global_disable_add_undo is a disabler for this function.
  *  if global_disable_add_undo is true, this function does nothing.
+ *
+ *  @param b we_buffer_t the buffer where the undo and search/replace string is stored
+ *  @param x int the x coordinate (column)
+ *  @param y int the y coordinate (row)
+ *  @param n the length of the undo/redo concerned
+ *  @return int 0 if the undo was constructed correctly, -1 if an error occurred. The error
+ *          is accompanied by an error message on stdout.
  */
 int
 e_add_undo (int undo_type, we_buffer_t * b, int x, int y, int n)
@@ -2459,18 +2469,52 @@ e_add_undo (int undo_type, we_buffer_t * b, int x, int y, int n)
     return (0);
 }
 
+/**
+ * \brief executes an undo from the undo queue in the buffer
+ *
+ * @param window we_window_t the editting window containing the text where a change
+ *               is to be undone.
+ * @return int 0 if no error was encountered, -1 in case of an error,
+ *
+ */
 int
 e_make_undo (we_window_t * window)
 {
     return (e_make_rudo (window, 0));
 }
 
+/**
+ * \brief executes a redo from the redo queue in the buffer
+ *
+ * @param window we_window_t the editting window containing the text where a change
+ *               is to be undone.
+ * @return int 0 if no error was encountered, -1 in case of an error,
+ *
+ */
 int
 e_make_redo (we_window_t * window)
 {
     return (e_make_rudo (window, 1));
 }
 
+/**
+ * \brief executes an undo or a redo from the undo respectively the redo queue in the buffer
+ *
+ * @param window we_window_t the editting window containing the text where a change
+ *               is to be undone.
+ * @param doing_redo int 0 if doing an undo, 1 if doing a redo.
+ * @return int 0 if no error was encountered, -1 in case of an error,
+ *
+ * @see \struct undo for more information on `undo->type`.
+ *
+ * Remarks:
+ *
+ * * This function returns 0 but does nothing if it cannot find the editting
+ *   containing the text to undo. This is perceived as an not an error!
+ *
+ * \todo find out how the function e_make_rudo recognizes the right window (uses DTMD_ISTEXT).
+ *
+ */
 int
 e_make_rudo (we_window_t * window, int doing_redo)
 {

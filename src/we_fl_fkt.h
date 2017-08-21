@@ -28,6 +28,7 @@ char* e_bakfilename(char* s);
 int freedf(struct dirfile* df);
 int e_file_window(int sw, FLWND* fw, int ft, int fz);
 int e_pr_file_window(FLWND* fw, int c, int sw, int ft, int fz, int fs);
+int e_help_next (we_window_t * window, int sw);
 int e_help_last(we_window_t* window);
 int e_help_comp(we_window_t* window);
 int e_help(we_window_t* window);
