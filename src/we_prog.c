@@ -1753,7 +1753,7 @@ e_d_car_mouse (we_window_t * window)
 {
     extern struct mouse e_mouse;
     we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
+    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
 
     if (e_mouse.y - window->a.y + s->c.y - 1 == buffer->cursor.y)
         return (WPE_CR);
@@ -3209,7 +3209,7 @@ e_p_show_messages (we_window_t * window)
     if (window->buffer->mxlines == 0)
     {
         e_new_line (0, window->buffer);
-        e_ins_nchar (window->buffer, window->s, (unsigned char *) "No Messages", 0, 0, 11);
+        e_ins_nchar (window->buffer, window->screen, (unsigned char *) "No Messages", 0, 0, 11);
         e_schirm (window, 1);
     }
     return (0);

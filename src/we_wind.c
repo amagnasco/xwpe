@@ -509,7 +509,7 @@ e_schirm (we_window_t * window, int sw)
                  window->colorset->ez.fg_bg_color,
                  window->colorset->frft.fg_bg_color));
     if (num_lines_off_screen_top(window) < 0)
-        window->s->c.y = 0;
+        window->screen->c.y = 0;
 
 #ifdef PROG
     if (window->c_sw)
@@ -933,8 +933,8 @@ e_close_window (we_window_t * window)
             free (window->datnam);
         if (window->dirct != NULL)
             free (window->dirct);
-        if (window && window->s != NULL)
-            free (window->s);
+        if (window && window->screen != NULL)
+            free (window->screen);
     }
     (control->mxedt)--;
     control->curedt = control->edt[control->mxedt];
@@ -1214,7 +1214,7 @@ void
 e_pr_line (int y, we_window_t * window)
 {
     we_buffer_t *buffer = window->buffer;
-    we_screen_t *s = window->s;
+    we_screen_t *s = window->screen;
     int i, j, k, frb;
 #ifdef DEBUGGER
     int fsw = 0;

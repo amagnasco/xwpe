@@ -832,7 +832,7 @@ e_recover (we_control_t * control)
         window->datnam[strlen (window->datnam) - 4] = '\0';
         if (!strcmp (window->datnam, BUFFER_NAME))
         {
-            s = control->window[control->mxedt]->s;
+            s = control->window[control->mxedt]->screen;
             buffer = control->window[control->mxedt]->buffer;
             s->mark_end.y = buffer->mxlines - 1;
             s->mark_end.x = buffer->buflines[buffer->mxlines - 1].len;

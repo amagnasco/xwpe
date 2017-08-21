@@ -34,7 +34,7 @@
  */
 inline int num_lines_off_screen_top(we_window_t* window)
 {
-    return window->s->c.y;
+    return window->screen->c.y;
 }
 inline int num_lines_on_screen(we_window_t* window)
 {
@@ -50,7 +50,7 @@ inline int num_cols_on_screen(we_window_t* window)
 }
 inline int num_cols_off_screen_left(we_window_t* window)
 {
-    return window->s->c.x;
+    return window->screen->c.x;
 }
 /*this seems to include the scroll bar to the right*/
 /*it's values is always +1 to the actual visible columns*/

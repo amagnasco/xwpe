@@ -575,7 +575,7 @@ WpeHandleFileManager (we_control_t * control)
         {
             fe = control->window[i];
             be = fe->buffer;
-            se = fe->s;
+            se = fe->screen;
             winnum = control->edt[i];
             break;
         }
@@ -1173,7 +1173,7 @@ WpeHandleFileManager (we_control_t * control)
                     e_switch_window (winnum, fe);
                     fe = control->window[control->mxedt];
                     be = fe->buffer;
-                    se = fe->s;
+                    se = fe->screen;
                     window = control->window[control->mxedt];
                     if (be->cursor.x != 0)
                     {
@@ -3587,16 +3587,16 @@ e_ed_man (unsigned char *str, we_window_t * window)
     }
     if (buffer->mxlines == 1 && buffer->buflines[0].len == 0)
     {
-        e_ins_nchar (window->buffer, window->s, (unsigned char *) "No manual entry for ", 0, 0,
+        e_ins_nchar (window->buffer, window->screen, (unsigned char *) "No manual entry for ", 0, 0,
                      20);
-        e_ins_nchar (window->buffer, window->s, (unsigned char *) hstr, buffer->cursor.x, buffer->cursor.y,
+        e_ins_nchar (window->buffer, window->screen, (unsigned char *) hstr, buffer->cursor.x, buffer->cursor.y,
                      strlen (hstr));
-        e_ins_nchar (window->buffer, window->s, (unsigned char *) ".", buffer->cursor.x, buffer->cursor.y, 1);
+        e_ins_nchar (window->buffer, window->screen, (unsigned char *) ".", buffer->cursor.x, buffer->cursor.y, 1);
     }
     for (i = 0; i < buffer->mxlines; i++)
         if (buffer->buflines[i].len == 0 && (i == 0 || buffer->buflines[i - 1].len == 0))
         {
-            e_del_line (i, buffer, window->s);
+            e_del_line (i, buffer, window->screen);
             i--;
         }
     for (bg = 0; bg < buffer->buflines[0].len && isspace (buffer->buflines[0].s[bg]); bg++);
@@ -3626,7 +3626,7 @@ e_ed_man (unsigned char *str, we_window_t * window)
                     break;
                 }
                 if (buffer->buflines[i].s[j - 1] == 5)
-                    e_del_nchar (buffer, window->s, j - 1, i, 1);
+                    e_del_nchar (buffer, window->screen, j - 1, i, 1);
                 for (j++;
                         buffer->buflines[i].s[j] && buffer->buflines[i].s[j] != ','
                         && buffer->buflines[i].s[j] != '.'; j++);
@@ -3635,11 +3635,11 @@ e_ed_man (unsigned char *str, we_window_t * window)
                 else
                 {
                     cc = HFB;
-                    e_ins_nchar (buffer, window->s, (unsigned char *) &cc, bg, i, 1);
+                    e_ins_nchar (buffer, window->screen, (unsigned char *) &cc, bg, i, 1);
                     j++;
                 }
                 cc = HED;
-                e_ins_nchar (buffer, window->s, (unsigned char *) &cc, j, i, 1);
+                e_ins_nchar (buffer, window->screen, (unsigned char *) &cc, j, i, 1);
                 j++;
                 if (buffer->buflines[i].s[j])
                     j++;

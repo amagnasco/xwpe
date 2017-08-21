@@ -1094,7 +1094,7 @@ int
 e_x_cp_X_to_buffer (we_window_t * window)
 {
     we_buffer_t *b0 = window->ed->window[0]->buffer;
-    we_screen_t *s0 = window->ed->window[0]->s;
+    we_screen_t *s0 = window->ed->window[0]->screen;
     int i, j, k, n;
     unsigned char *str;
     XEvent report;
@@ -1192,7 +1192,7 @@ int
 e_x_paste_X_buffer (we_window_t * window)
 {
     we_buffer_t *b0 = window->ed->window[0]->buffer;
-    we_screen_t *s0 = window->ed->window[0]->s;
+    we_screen_t *s0 = window->ed->window[0]->screen;
     int i, n;
     unsigned int j;
 

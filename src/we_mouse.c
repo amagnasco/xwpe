@@ -829,7 +829,7 @@ e_edt_mouse (int c, we_window_t * window)
             else if (window->dtmd == DTMD_HELP && window->ins == 8 &&
                      window->buffer->cursor.y ==
                      e_mouse.y - window->a.y + num_lines_off_screen_top(window) - 1
-                     && ((i = window->buffer->cursor.x) == e_mouse_cursor (window->buffer, window->s, window)))
+                     && ((i = window->buffer->cursor.x) == e_mouse_cursor (window->buffer, window->screen, window)))
                 ret = WPE_CR;
             else
 #ifdef PROG
@@ -872,7 +872,7 @@ e_edt_mouse (int c, we_window_t * window)
             do
             {
                 window->buffer->cursor.y = window->buffer->cursor.y < window->buffer->mxlines - 1 ?
-                                      window->buffer->cursor.y + 1 : window->buffer->mxlines - 1;
+                                           window->buffer->cursor.y + 1 : window->buffer->mxlines - 1;
                 window->buffer->cursor.x = e_chr_sp (window->buffer->clsv, window->buffer, window);
                 e_cursor (window, 1);
                 e_refresh ();
@@ -883,7 +883,7 @@ e_edt_mouse (int c, we_window_t * window)
                  e_mouse.y > window->a.y + 1 && e_mouse.y < window->e.y - 1)
         {
             window->buffer->cursor.y = e_lst_mouse (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
-                                               window->buffer->mxlines, window->buffer->cursor.y);
+                                                    window->buffer->mxlines, window->buffer->cursor.y);
             e_cursor (window, 1);
             e_refresh ();
         }
@@ -901,7 +901,7 @@ e_edt_mouse (int c, we_window_t * window)
             while (e_mshit ())
             {
                 window->buffer->cursor.x = window->buffer->cursor.x < window->buffer->buflines[window->buffer->cursor.y].len ?
-                                      window->buffer->cursor.x + 1 : window->buffer->buflines[window->buffer->cursor.y].len;
+                                           window->buffer->cursor.x + 1 : window->buffer->buflines[window->buffer->cursor.y].len;
                 e_cursor (window, 1);
                 e_refresh ();
             }
@@ -953,7 +953,7 @@ int
 e_ccp_mouse (int c, we_window_t * window)
 {
     we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
+    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
 
     while (e_mshit () != 0)
         ;
@@ -977,7 +977,7 @@ e_cur_mouse (window)
 we_window_t *window;
 {
     we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
+    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
     we_point_t bs;
     bs.x = buffer->cursor.x;
     bs.y = buffer->cursor.y;

@@ -32,7 +32,7 @@ int
 e_blck_del (we_window_t * window)
 {
     we_buffer_t *buffer;
-    we_screen_t *s;
+    we_screen_t *screen;
     int i, y, len;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
@@ -41,31 +41,31 @@ e_blck_del (we_window_t * window)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    s = window->s;
-    if ((s->mark_end.y < s->mark_begin.y) ||
-            ((s->mark_begin.y == s->mark_end.y)
-             && (s->mark_end.x <= s->mark_begin.x)))
+    screen = window->screen;
+    if ((screen->mark_end.y < screen->mark_begin.y) ||
+            ((screen->mark_begin.y == screen->mark_end.y)
+             && (screen->mark_end.x <= screen->mark_begin.x)))
     {
         return (0);
     }
     if (window->ins == (char) 8)
         return (WPE_ESC);
-    if (s->mark_begin.y == s->mark_end.y)
+    if (screen->mark_begin.y == screen->mark_end.y)
     {
-        e_del_nchar (buffer, s, s->mark_begin.x, s->mark_begin.y,
-                     s->mark_end.x - s->mark_begin.x);
-        buffer->cursor.x = s->mark_end.x = s->mark_begin.x;
+        e_del_nchar (buffer, screen, screen->mark_begin.x, screen->mark_begin.y,
+                     screen->mark_end.x - screen->mark_begin.x);
+        buffer->cursor.x = screen->mark_end.x = screen->mark_begin.x;
     }
     else
     {
-        e_add_undo ('d', buffer, s->mark_begin.x, s->mark_begin.y, 0);
+        e_add_undo ('d', buffer, screen->mark_begin.x, screen->mark_begin.y, 0);
         window->save = buffer->control->maxchg + 1;
 
         /*********** start debugging code ************/
-        y = s->mark_begin.y;
-        if (s->mark_begin.x > 0)
+        y = screen->mark_begin.y;
+        if (screen->mark_begin.x > 0)
             y++;
-        len = y - s->mark_end.y + 1;
+        len = y - screen->mark_end.y + 1;
         e_brk_recalc (window, y, len);		// recalculate breakpoints
         /*********** start debugging code ************/
     }
@@ -83,7 +83,7 @@ int
 e_blck_dup (char *dup, we_window_t * window)
 {
     we_buffer_t *buffer;
-    we_screen_t *s;
+    we_screen_t *screen;
     int i;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
@@ -94,15 +94,15 @@ e_blck_dup (char *dup, we_window_t * window)
     if (window->ins == 8)
         return (0);
     buffer = window->buffer;
-    s = window->s;
-    i = s->mark_end.x - s->mark_begin.x;
+    screen = window->screen;
+    i = screen->mark_end.x - screen->mark_begin.x;
     /* Brian thinks that 80 characters is enough.  For the time being return
        nothing if longer than that. */
-    if ((s->mark_end.y != s->mark_begin.y) || (i <= 0) || (i >= 80))
+    if ((screen->mark_end.y != screen->mark_begin.y) || (i <= 0) || (i >= 80))
     {
         return (0);
     }
-    strncpy (dup, (const char *) &buffer->buflines[s->mark_begin.y].s[s->mark_begin.x], i);
+    strncpy (dup, (const char *) &buffer->buflines[screen->mark_begin.y].s[screen->mark_begin.x], i);
     dup[i] = 0;
     return (i);
 }
@@ -238,9 +238,9 @@ e_edt_copy (we_window_t * window)
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
     save = window->save;
-    if ((window->s->mark_end.y < window->s->mark_begin.y) ||
-            ((window->s->mark_begin.y == window->s->mark_end.y) &&
-             (window->s->mark_end.x <= window->s->mark_begin.x)))
+    if ((window->screen->mark_end.y < window->screen->mark_begin.y) ||
+            ((window->screen->mark_begin.y == window->screen->mark_end.y) &&
+             (window->screen->mark_end.x <= window->screen->mark_begin.x)))
     {
         return (0);
     }
@@ -282,7 +282,7 @@ e_edt_einf (we_window_t * window)
     e_copy_block (buffer->cursor.x, buffer->cursor.y, b0, buffer, window);
 
     /**********************/
-    len = b0->window->s->mark_end.y - b0->window->s->mark_begin.y;
+    len = b0->window->screen->mark_end.y - b0->window->screen->mark_begin.y;
     e_brk_recalc (window, y, len);		// recalculate breakpoints
     /**********************/
 
@@ -307,16 +307,16 @@ e_blck_move (we_window_t * window)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    ka.x = window->ed->window[window->ed->mxedt]->s->mark_begin.x;
-    if (buffer->cursor.y > window->ed->window[window->ed->mxedt]->s->mark_begin.y)
-        ka.y = window->ed->window[window->ed->mxedt]->s->mark_begin.y;
+    ka.x = window->ed->window[window->ed->mxedt]->screen->mark_begin.x;
+    if (buffer->cursor.y > window->ed->window[window->ed->mxedt]->screen->mark_begin.y)
+        ka.y = window->ed->window[window->ed->mxedt]->screen->mark_begin.y;
     else
     {
-        ka.y = window->ed->window[window->ed->mxedt]->s->mark_end.y;
-        if (buffer->cursor.y == window->ed->window[window->ed->mxedt]->s->mark_begin.y &&
-                buffer->cursor.x < window->ed->window[window->ed->mxedt]->s->mark_begin.x)
-            ka.x = window->ed->window[window->ed->mxedt]->s->mark_end.x +
-                   window->ed->window[window->ed->mxedt]->s->mark_begin.x - buffer->cursor.x;
+        ka.y = window->ed->window[window->ed->mxedt]->screen->mark_end.y;
+        if (buffer->cursor.y == window->ed->window[window->ed->mxedt]->screen->mark_begin.y &&
+                buffer->cursor.x < window->ed->window[window->ed->mxedt]->screen->mark_begin.x)
+            ka.x = window->ed->window[window->ed->mxedt]->screen->mark_end.x +
+                   window->ed->window[window->ed->mxedt]->screen->mark_begin.x - buffer->cursor.x;
     }
     global_disable_add_undo = 1;
     e_move_block (buffer->cursor.x, buffer->cursor.y, buffer, buffer, window);
@@ -330,9 +330,9 @@ e_blck_move (we_window_t * window)
 void
 e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * window)
 {
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
-    we_screen_t *sv = bv->window->s;
-    we_screen_t *sz = bz->window->s;
+    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
+    we_screen_t *sv = bv->window->screen;
+    we_screen_t *sz = bz->window->screen;
     int sw = (y < s->mark_begin.y) ? 0 : 1;
     int i;
     int n = s->mark_end.y - s->mark_begin.y - 1;
@@ -539,8 +539,8 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
               we_window_t * window)
 {
     we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s_src = buffer_src->window->s;
-    we_screen_t *s_dst = buffer_dst->window->s;
+    we_screen_t *s_src = buffer_src->window->screen;
+    we_screen_t *s_dst = buffer_dst->window->screen;
     int i, j, n = s_src->mark_end.y - s_src->mark_begin.y - 1;
     int kax = s_src->mark_begin.x, kay = s_src->mark_begin.y, kex =
             s_src->mark_end.x, key = s_src->mark_end.y;
@@ -660,7 +660,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
 int
 e_blck_hide (we_window_t * window)
 {
-    we_screen_t *s;
+    we_screen_t *screen;
     int i;
 
     for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
@@ -668,9 +668,9 @@ e_blck_hide (we_window_t * window)
         return (0);
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
-    s = window->s;
-    s->mark_begin = e_set_pnt (0, 0);
-    s->mark_end = e_set_pnt (0, 0);
+    screen = window->screen;
+    screen->mark_begin = e_set_pnt (0, 0);
+    screen->mark_end = e_set_pnt (0, 0);
     e_schirm (window, 1);
     return (0);
 }
@@ -686,7 +686,7 @@ e_blck_begin (we_window_t * window)
         return (0);
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
-    window->s->mark_begin = window->buffer->cursor;
+    window->screen->mark_begin = window->buffer->cursor;
     e_schirm (window, 1);
     return (0);
 }
@@ -702,7 +702,7 @@ e_blck_end (we_window_t * window)
         return (0);
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
-    window->s->mark_end = window->buffer->cursor;
+    window->screen->mark_end = window->buffer->cursor;
     e_schirm (window, 1);
     return (0);
 }
@@ -718,7 +718,7 @@ e_blck_gt_beg (we_window_t * window)
         return (0);
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
-    window->buffer->cursor = window->s->mark_begin;
+    window->buffer->cursor = window->screen->mark_begin;
     e_schirm (window, 1);
     return (0);
 }
@@ -734,7 +734,7 @@ e_blck_gt_end (we_window_t * window)
         return (0);
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
-    window->buffer->cursor = window->s->mark_end;
+    window->buffer->cursor = window->screen->mark_end;
     e_schirm (window, 1);
     return (0);
 }
@@ -750,10 +750,10 @@ e_blck_mrk_all (we_window_t * window)
         return (0);
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
-    window->s->mark_begin.x = 0;
-    window->s->mark_begin.y = 0;
-    window->s->mark_end.y = window->buffer->mxlines - 1;
-    window->s->mark_end.x = window->buffer->buflines[window->buffer->mxlines - 1].len;
+    window->screen->mark_begin.x = 0;
+    window->screen->mark_begin.y = 0;
+    window->screen->mark_end.y = window->buffer->mxlines - 1;
+    window->screen->mark_end.x = window->buffer->buflines[window->buffer->mxlines - 1].len;
     e_schirm (window, 1);
     return (0);
 }
@@ -769,17 +769,17 @@ e_blck_mrk_line (we_window_t * window)
         return (0);
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
-    window->s->mark_begin.x = 0;
-    window->s->mark_begin.y = window->buffer->cursor.y;
+    window->screen->mark_begin.x = 0;
+    window->screen->mark_begin.y = window->buffer->cursor.y;
     if (window->buffer->cursor.y < window->buffer->mxlines - 1)
     {
-        window->s->mark_end.x = 0;
-        window->s->mark_end.y = window->buffer->cursor.y + 1;
+        window->screen->mark_end.x = 0;
+        window->screen->mark_end.y = window->buffer->cursor.y + 1;
     }
     else
     {
-        window->s->mark_end.x = window->buffer->buflines[window->buffer->cursor.y].len;
-        window->s->mark_end.y = window->buffer->cursor.y;
+        window->screen->mark_end.x = window->buffer->buflines[window->buffer->cursor.y].len;
+        window->screen->mark_end.y = window->buffer->cursor.y;
     }
     e_schirm (window, 1);
     return (0);
@@ -803,7 +803,7 @@ e_blck_changecase (we_window_t * window, int mode)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    screen = window->s;
+    screen = window->screen;
 
     for (y = screen->mark_begin.y; y <= screen->mark_end.y; y++)
     {
@@ -880,7 +880,7 @@ e_blck_to_left (we_window_t * window)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    s = window->s;
+    s = window->screen;
     for (i = 0; i <= n; i++)
         tstr[i] = ' ';
     tstr[n] = '\0';
@@ -934,7 +934,7 @@ e_blck_to_right (we_window_t * window)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    s = window->s;
+    s = window->screen;
     for (i = 0; i < n; i++)
         tstr[i] = ' ';
     tstr[n] = '\0';
@@ -1001,7 +1001,7 @@ e_repeat_search (we_window_t * window)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    screen = window->s;
+    screen = window->screen;
     if (find_global_scope(find->sw))
     {
         jend = find_search_backward(find->sw) ? 0 : buffer->mxlines - 1;
@@ -1147,7 +1147,7 @@ e_find (we_window_t * window)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    wind_screen = window->s;
+    wind_screen = window->screen;
     if (e_blck_dup (strTemp, window))
     {
         strcpy (find->search, strTemp);
@@ -1236,7 +1236,7 @@ e_replace (we_window_t *window)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    screen = window->s;
+    screen = window->screen;
     if (e_blck_dup (strTemp, window))
     {
         strcpy (find->search, strTemp);

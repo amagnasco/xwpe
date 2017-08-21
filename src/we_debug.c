@@ -1049,7 +1049,7 @@ e_d_p_stack (we_window_t * window, int sw)
     }
     window = control->window[is];
     buffer = control->window[is]->buffer;
-    s = control->window[is]->s;
+    s = control->window[is]->screen;
     if (!e_d_swtch)
         return (0);
     int n;
@@ -1259,7 +1259,7 @@ e_brk_schirm (we_window_t * window)
     int i;
     int n;
 
-    we_screen_t *s = window->s;
+    we_screen_t *s = window->screen;
     s->brp = realloc (s->brp, sizeof (int));
     s->brp[0] = 0;
     for (i = 0; i < e_d_nbrpts; i++)
@@ -1455,7 +1455,7 @@ e_remove_breakpoints (we_window_t * window)
         free (e_d_sbrpts[i]);
     for (i = control->mxedt; i >= 0; i--)
         if (DTMD_ISTEXT (control->window[i]->dtmd))
-            control->window[i]->s->brp[0] = 0;
+            control->window[i]->screen->brp[0] = 0;
     e_d_nbrpts = 0;
     if (e_d_sbrpts)
     {
@@ -1657,7 +1657,7 @@ int
 e_make_breakpoint (we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
-    we_screen_t *s = control->window[control->mxedt]->s;
+    we_screen_t *s = control->window[control->mxedt]->screen;
     we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int ret, i;
     char eing[128], str[256];
@@ -3025,11 +3025,11 @@ e_d_goto_break (char *file, int line, we_window_t * window)
         if (e_edit (control, file))
             return (WPE_ESC);
         buffer = control->window[control->mxedt]->buffer;
-        s = control->window[control->mxedt]->s;
+        s = control->window[control->mxedt]->screen;
     }
     window = control->window[control->mxedt];
     buffer = control->window[control->mxedt]->buffer;
-    s = control->window[control->mxedt]->s;
+    s = control->window[control->mxedt]->screen;
     s->da.y = buffer->cursor.y = line - 1;
     s->da.x = buffer->cursor.x = 0;
     s->de.x = MAXSCOL;
@@ -3046,7 +3046,7 @@ e_d_delbreak (we_window_t * window)
 
     for (i = control->mxedt; i >= 0; i--)
         if (DTMD_ISTEXT (control->window[i]->dtmd))
-            control->window[i]->s->da.y = -1;
+            control->window[i]->screen->da.y = -1;
     e_rep_win_tree (control);
     e_refresh ();
     return (0);

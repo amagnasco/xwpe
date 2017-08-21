@@ -557,7 +557,7 @@ e_sc_nw_txt (int y, we_buffer_t * buffer, int sw)
                                  c_sw[y -
                                         1],
                                  buffer->buflines[y -
-                                               1].
+                                                    1].
                                  s,
                                  buffer->window->
                                  c_st);
@@ -607,8 +607,8 @@ void e_sc_txt_2 (we_window_t *window)
 {
     if(window->c_sw)
     {
-        if(window->s->mark_begin.y == window->s->mark_end.y)
-            e_sc_nw_txt(window->s->mark_end.y, window->buffer, 0);
+        if(window->screen->mark_begin.y == window->screen->mark_end.y)
+            e_sc_nw_txt(window->screen->mark_end.y, window->buffer, 0);
         else
         {
             window->c_sw = realloc(window->c_sw, window->buffer->mx.y * sizeof(int));
@@ -622,7 +622,7 @@ void
 e_pr_c_line (int y, we_window_t * window)
 {
     we_buffer_t *buffer = window->buffer;
-    we_screen_t *s = window->s;
+    we_screen_t *s = window->screen;
     int i, j, k, frb = 0;
     int mcsw = window->c_sw[y], svmsw = window->c_sw[y] == 5 ? 5 : 0, bssw = 0;
     int n_bg = -1, n_nd = strlen ((const char *) window->c_st->end_comment) - 1;
@@ -1767,11 +1767,11 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     }
     else
         len = 0;
-    window->s->fa.y = window->s->fe.y = window->buffer->cursor.y = num;
-    window->s->fe.x = window->buffer->cursor.x = x + len;
-    window->s->fa.x = x;
+    window->screen->fa.y = window->screen->fe.y = window->buffer->cursor.y = num;
+    window->screen->fe.x = window->buffer->cursor.x = x + len;
+    window->screen->fa.x = x;
     e_cursor (window, 1);
-    window->s->fa.y = num;
+    window->screen->fa.y = num;
     e_schirm (window, 1);
     WpeMouseRestoreShape ();
     return (num);
@@ -1967,7 +1967,7 @@ e_nxt_brk (we_window_t * window)
             if (i == window->buffer->cursor.y)
                 for (j = 0;
                         j < window->buffer->cursor.x && (window->buffer->buflines[i].s[j] != '/'
-                                                    || window->buffer->buflines[i].s[j + 1] != '/'); j++)
+                                || window->buffer->buflines[i].s[j + 1] != '/'); j++)
                     ;
             else
                 for (j = 0;
@@ -2145,11 +2145,11 @@ e_mbt_str (we_buffer_t * buffer, int *ii, int *jj, unsigned char c, int n, int s
             for (j = 0, m = buffer->buflines[i].len; j < m && isspace (buffer->buflines[i].s[j]); j++)
                 ;
             if (j > 0)
-                e_del_nchar (buffer, buffer->window->s, 0, i, j);
+                e_del_nchar (buffer, buffer->window->screen, 0, i, j);
             if (j < m)
             {
                 str = e_mbt_mk_sp (str, n + buffer->control->autoindent, sw, &m);
-                e_ins_nchar (buffer, buffer->window->s, (unsigned char *) str, 0, i, m);
+                e_ins_nchar (buffer, buffer->window->screen, (unsigned char *) str, 0, i, m);
             }
             j = -1;
             free (str);
@@ -2179,11 +2179,11 @@ e_mbt_cnd (we_buffer_t * buffer, int *ii, int *jj, int n, int sw, int *cmnd)
                         j++)
                     ;
                 if (j > 0)
-                    e_del_nchar (buffer, buffer->window->s, 0, i, j);
+                    e_del_nchar (buffer, buffer->window->screen, 0, i, j);
                 if (j < m && (buffer->buflines[i].s[0] != '*' || buffer->buflines[i].s[1] != '/'))
                 {
                     str = e_mbt_mk_sp (str, n + buffer->control->autoindent, sw, &m);
-                    e_ins_nchar (buffer, buffer->window->s, (unsigned char *) str, 0, i, m);
+                    e_ins_nchar (buffer, buffer->window->screen, (unsigned char *) str, 0, i, m);
                 }
                 j = -1;
                 free (str);
@@ -2236,7 +2236,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     WpeMouseChangeShape (WpeWorkingShape);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    s = window->s;
+    s = window->screen;
     sa = s->mark_begin;
     se = s->mark_end;
     sb = buffer->cursor;

@@ -142,7 +142,7 @@ e_edit (we_control_t * control, char *filename)
 
     if ((window->buffer = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
-    if ((window->s = (we_screen_t *) malloc (sizeof (we_screen_t))) == NULL)
+    if ((window->screen = (we_screen_t *) malloc (sizeof (we_screen_t))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     if ((window->buffer->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
@@ -246,21 +246,21 @@ e_edit (we_control_t * control, char *filename)
     {
         window->flg = 0;
     }
-    window->s->c = e_set_pnt (0, 0);
-    window->s->ks = e_set_pnt (0, 0);
-    window->s->mark_begin = e_set_pnt (0, 0);
-    window->s->mark_end = e_set_pnt (0, 0);
-    window->s->fa = e_set_pnt (0, 0);
-    window->s->fe = e_set_pnt (0, 0);
-    window->s->colorset = window->colorset;
+    window->screen->c = e_set_pnt (0, 0);
+    window->screen->ks = e_set_pnt (0, 0);
+    window->screen->mark_begin = e_set_pnt (0, 0);
+    window->screen->mark_end = e_set_pnt (0, 0);
+    window->screen->fa = e_set_pnt (0, 0);
+    window->screen->fe = e_set_pnt (0, 0);
+    window->screen->colorset = window->colorset;
 #ifdef DEBUGGER
-    window->s->brp = malloc (sizeof (int));
-    window->s->brp[0] = 0;
-    window->s->da.y = -1;
+    window->screen->brp = malloc (sizeof (int));
+    window->screen->brp[0] = 0;
+    window->screen->da.y = -1;
 #endif
     window->dirct = path;
     for (i = 0; i < 9; i++)
-        window->s->pt[i] = e_set_pnt (-1, -1);
+        window->screen->pt[i] = e_set_pnt (-1, -1);
     if (control->mxedt == 0)		/*  Clipboard  */
     {
         control->curedt = 0;
@@ -429,7 +429,7 @@ int
 e_eingabe (we_control_t * e)
 {
     we_buffer_t *buffer = e->window[e->mxedt]->buffer;
-    we_screen_t *s = e->window[e->mxedt]->s;
+    we_screen_t *s = e->window[e->mxedt]->screen;
     we_window_t *window = e->window[e->mxedt];
     int ret, c = 0;
     unsigned char cc;
@@ -573,7 +573,7 @@ weiter:
         if (e->mxedt > 0 && DTMD_ISTEXT (window->dtmd))
         {
             buffer = window->buffer;
-            s = window->s;
+            s = window->screen;
             s->ks.x = buffer->cursor.x;
             s->ks.y = buffer->cursor.y;
             e_cursor (window, 1);
@@ -592,7 +592,7 @@ e_tst_cur (int c, we_control_t * e)
 {
     we_window_t *window = e->window[e->mxedt];
     we_buffer_t *buffer = window->buffer;
-    we_screen_t *s = window->s;
+    we_screen_t *s = window->screen;
 
     switch (c)
     {
@@ -965,7 +965,7 @@ int
 e_ctrl_k (we_window_t * window)
 {
     we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *screen = window->ed->window[window->ed->mxedt]->s;
+    we_screen_t *screen = window->ed->window[window->ed->mxedt]->screen;
     int c;
 
     c = toupper (e_getch ());
@@ -1001,17 +1001,17 @@ e_ctrl_k (we_window_t * window)
         e_schirm (window, 1);
         break;
     case 'L':
-        window->s->mark_begin.x = 0;
-        window->s->mark_begin.y = window->buffer->cursor.y;
+        window->screen->mark_begin.x = 0;
+        window->screen->mark_begin.y = window->buffer->cursor.y;
         if (window->buffer->cursor.y < window->buffer->mxlines - 1)
         {
-            window->s->mark_end.x = 0;
-            window->s->mark_end.y = window->buffer->cursor.y + 1;
+            window->screen->mark_end.x = 0;
+            window->screen->mark_end.y = window->buffer->cursor.y + 1;
         }
         else
         {
-            window->s->mark_end.x = window->buffer->buflines[window->buffer->cursor.y].len;
-            window->s->mark_end.y = window->buffer->cursor.y;
+            window->screen->mark_end.x = window->buffer->buflines[window->buffer->cursor.y].len;
+            window->screen->mark_end.y = window->buffer->cursor.y;
         }
         e_schirm (window, 1);
         break;
@@ -1067,7 +1067,7 @@ int
 e_ctrl_o (we_window_t * window)
 {
     we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
+    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
     int i, c;
     unsigned char cc;
 
@@ -1599,7 +1599,7 @@ e_car_a_ind (we_buffer_t * buffer, we_screen_t * s)
         j--;
         for (i = 0, k = 0;
                 k < buffer->buflines[j].len && (isspace (buffer->buflines[j].s[k])
-                                           || buffer->buflines[j].s[i] == '{'); k++)
+                                                || buffer->buflines[j].s[i] == '{'); k++)
             i =
                 buffer->buflines[j].s[k] == '\t' ? (i / buffer->control->tabn + 1) * buffer->control->tabn : i + 1;
     }
@@ -1684,7 +1684,7 @@ void
 e_cursor (we_window_t * window, int sw)
 {
     we_buffer_t *buffer = window->buffer;
-    we_screen_t *s = window->s;
+    we_screen_t *s = window->screen;
     static int iold = 0, jold = 0;
     int i, j;
 
@@ -2317,7 +2317,7 @@ e_remove_undo (we_undo_t * undo, int sw)
             we_buffer_t *buffer = (we_buffer_t *) undo->u.pt;
             int i;
 
-            free (buffer->window->s);
+            free (buffer->window->screen);
             free (buffer->window);
             if (buffer->buflines != NULL)
             {
@@ -2418,7 +2418,7 @@ e_add_undo (int undo_type, we_buffer_t * buffer, int x, int y, int n)
         next->u.pt = buffer->buflines[y].s;
     else if (undo_type == 'c' || undo_type == 'v')
     {
-        we_screen_t *s = buffer->control->window[buffer->control->mxedt]->s;
+        we_screen_t *s = buffer->control->window[buffer->control->mxedt]->screen;
 
         next->begin_block = s->mark_begin;
         next->end_block = s->mark_end;
@@ -2439,7 +2439,7 @@ e_add_undo (int undo_type, we_buffer_t * buffer, int x, int y, int n)
         fn->ed = NULL;		/* Quick fix so that breakpoints aren't recalculated */
         fn->find.dirct = NULL;
         bn->window = fn;
-        bn->window->s = sn;
+        bn->window->screen = sn;
         bn->cursor = e_set_pnt (0, 0);
         bn->mx = e_set_pnt (buffer->control->maxcol, MAXLINES);
         bn->mxlines = 0;
@@ -2529,7 +2529,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     e_switch_window (window->ed->edt[i], window);
     window = window->ed->window[window->ed->mxedt];
     buffer = window->buffer;
-    s = window->s;
+    s = window->screen;
     undo = doing_redo ? buffer->redo : buffer->undo;
     if (undo == NULL)
     {
@@ -2601,11 +2601,11 @@ e_make_rudo (we_window_t * window, int doing_redo)
     {
         we_buffer_t *bn = (we_buffer_t *) undo->u.pt;
         global_disable_add_undo = 1;
-        s->mark_begin = bn->window->s->mark_begin;
-        s->mark_end = bn->window->s->mark_end;
+        s->mark_begin = bn->window->screen->mark_begin;
+        s->mark_end = bn->window->screen->mark_end;
         e_move_block (undo->cursor_start.x, undo->cursor_start.y, bn, buffer, window);
         global_disable_add_undo = 0;
-        free (bn->window->s);
+        free (bn->window->screen);
         free (bn->window);
         free (bn->buflines[0].s);
         free (bn->buflines);
