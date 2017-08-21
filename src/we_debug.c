@@ -451,7 +451,7 @@ int
 e_d_p_exec (we_window_t * window)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     int ret, i, is, j;
     char str[512];
 
@@ -463,28 +463,28 @@ e_d_p_exec (we_window_t * window)
         i = control->mxedt;
     }
     window = control->window[i];
-    b = control->window[i]->b;
-    if (b->buflines[b->mxlines - 1].len != 0)
-        e_new_line (b->mxlines, b);
-    for (j = 0, i = is = b->mxlines - 1;
+    buffer = control->window[i]->buffer;
+    if (buffer->buflines[buffer->mxlines - 1].len != 0)
+        e_new_line (buffer->mxlines, buffer);
+    for (j = 0, i = is = buffer->mxlines - 1;
             (ret = e_d_line_read (wfildes[0], str, 512, 0, 0)) == 0;)
     {
         if (ret == -1)
             return (ret);
-        print_to_end_of_buffer (b, str, b->mx.x);
+        print_to_end_of_buffer (buffer, str, buffer->mx.x);
     }
     if (ret == 1)
     {
-        e_new_line (i, b);
+        e_new_line (i, buffer);
         for (j = 0; j < num_cols_on_screen_safe(window) - 2 && str[j] != '\n' &&
                 str[j] != '\0'; j++)
-            *(b->buflines[i].s + j) = str[j];
-        b->cursor.y = i;
-        b->cursor.x = b->buflines[i].len = j;
-        b->buflines[i].nrc = j;
+            *(buffer->buflines[i].s + j) = str[j];
+        buffer->cursor.y = i;
+        buffer->cursor.x = buffer->buflines[i].len = j;
+        buffer->buflines[i].nrc = j;
     }
-    b->cursor.y = b->mxlines - 1;
-    b->cursor.x = 0;
+    buffer->cursor.y = buffer->mxlines - 1;
+    buffer->cursor.x = 0;
 
     e_rep_win_tree (control);
     return (ret);
@@ -700,13 +700,13 @@ int
 e_delete_watches (we_window_t * window)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b = control->window[control->mxedt]->b;
+    we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int n;
 
     window = control->window[control->mxedt];
     if (e_d_nwtchs < 1 || strcmp (window->datnam, "Watches"))
         return (0);
-    for (n = 0; n < e_d_nwtchs && e_d_nrwtchs[n] <= b->cursor.y; n++)
+    for (n = 0; n < e_d_nwtchs && e_d_nrwtchs[n] <= buffer->cursor.y; n++)
         ;
     free (e_d_swtchs[n - 1]);
     for (; n < e_d_nwtchs; n++)
@@ -727,7 +727,7 @@ e_make_watches (we_window_t * window)
     if ((window->ed->mxedt > 0) && (strcmp (window->datnam, "Watches") == 0))
     {
         /* sets y=number of watch we're inserting */
-        for (y = 0; y < e_d_nwtchs && e_d_nrwtchs[y] < window->b->cursor.y; y++)
+        for (y = 0; y < e_d_nwtchs && e_d_nrwtchs[y] < window->buffer->cursor.y; y++)
             ;
     }
     else
@@ -774,15 +774,15 @@ e_make_watches (we_window_t * window)
 int
 e_edit_watches (we_window_t * window)
 {
-    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
     char str[128];
     int l;
 
     if (strcmp (window->datnam, "Watches"))
         return (0);
-    for (l = 0; l < e_d_nwtchs && e_d_nrwtchs[l] <= b->cursor.y; l++)
+    for (l = 0; l < e_d_nwtchs && e_d_nrwtchs[l] <= buffer->cursor.y; l++)
         ;
-    if (l == e_d_nwtchs && b->buflines[b->cursor.y].len == 0)
+    if (l == e_d_nwtchs && buffer->buflines[buffer->cursor.y].len == 0)
         return (e_make_watches (window));
     strcpy (str, e_d_swtchs[l - 1]);
     if (e_d_add_watch (str, window))
@@ -803,7 +803,7 @@ int
 e_d_p_watches (we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     int iw, k = 0, l, ret;
     char str1[256], *str;		/* is 256 always large enough? */
     char *str2;
@@ -831,12 +831,12 @@ e_d_p_watches (we_window_t * window, int sw)
         }
     }
     window = control->window[iw];
-    b = control->window[iw]->b;
+    buffer = control->window[iw]->buffer;
 
-    /* free all lines of we_buffer_t b */
-    e_p_red_buffer (b);
-    free (b->buflines[0].s);
-    b->mxlines = 0;
+    /* free all lines of we_buffer_t buffer */
+    e_p_red_buffer (buffer);
+    free (buffer->buflines[0].s);
+    buffer->mxlines = 0;
 
     for (l = 0; l < e_d_nwtchs; l++)
     {
@@ -930,8 +930,8 @@ e_d_p_watches (we_window_t * window, int sw)
         str2 = malloc (strlen (e_d_swtchs[l]) + strlen (str + k) + 4);
         sprintf (str2, "%s: %s", e_d_swtchs[l], str + k);
 
-        e_d_nrwtchs[l] = b->mxlines;
-        print_to_end_of_buffer (b, str2, b->mx.x);
+        e_d_nrwtchs[l] = buffer->mxlines;
+        print_to_end_of_buffer (buffer, str2, buffer->mx.x);
 
         /* Free any allocated string */
         free (str2);
@@ -941,7 +941,7 @@ e_d_p_watches (we_window_t * window, int sw)
         }
     }
 
-    e_new_line (b->mxlines, b);
+    e_new_line (buffer->mxlines, buffer);
     fk_cursor (1);
     if (sw && iw != control->mxedt)
         e_switch_window (control->edt[iw], control->window[control->mxedt]);
@@ -1027,7 +1027,7 @@ int
 e_d_p_stack (we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     we_screen_t *s;
     int is, i, j, k, l, ret;
     char str[256];
@@ -1048,7 +1048,7 @@ e_d_p_stack (we_window_t * window, int sw)
             is = control->mxedt;
     }
     window = control->window[is];
-    b = control->window[is]->b;
+    buffer = control->window[is]->buffer;
     s = control->window[is]->s;
     if (!e_d_swtch)
         return (0);
@@ -1084,48 +1084,48 @@ e_d_p_stack (we_window_t * window, int sw)
         k = 0;
         do
         {
-            if (i >= b->mxlines)
-                e_new_line (i, b);
+            if (i >= buffer->mxlines)
+                e_new_line (i, buffer);
             if ((i > 0 && j == 0
-                    && *(b->buflines[i - 1].s + b->buflines[i - 1].len - 1) == '\\')
+                    && *(buffer->buflines[i - 1].s + buffer->buflines[i - 1].len - 1) == '\\')
                     || (!e_deb_type && j == 0 && (k > 0 || str[k] != '#')))
             {
                 for (j = 0; j < 3; j++)
-                    b->buflines[i].s[j] = ' ';
+                    buffer->buflines[i].s[j] = ' ';
             }
             for (; isspace (str[k]); k++)
                 ;
             for (;
                     j < num_cols_on_screen_safe(window) - 2 && str[k] != '\n'
                     && str[k] != '\0'; j++, k++)
-                *(b->buflines[i].s + j) = str[k];
+                *(buffer->buflines[i].s + j) = str[k];
             if (str[k] != '\0')
             {
                 if (str[k] != '\n')
                 {
                     for (l = j - 1;
-                            l > 2 && !isspace (b->buflines[i].s[l])
-                            && b->buflines[i].s[l] != '='; l--)
+                            l > 2 && !isspace (buffer->buflines[i].s[l])
+                            && buffer->buflines[i].s[l] != '='; l--)
                         ;
                     if (l > 2)
                     {
                         k -= (j - l - 1);
                         for (l++; l < j; l++)
-                            b->buflines[i].s[l] = ' ';
+                            buffer->buflines[i].s[l] = ' ';
                     }
-                    *(b->buflines[i].s + j) = '\\';
-                    *(b->buflines[i].s + j + 1) = '\n';
-                    *(b->buflines[i].s + j + 2) = '\0';
+                    *(buffer->buflines[i].s + j) = '\\';
+                    *(buffer->buflines[i].s + j + 1) = '\n';
+                    *(buffer->buflines[i].s + j + 2) = '\0';
                     j++;
                 }
                 else
                 {
-                    *(b->buflines[i].s + j) = '\n';
-                    *(b->buflines[i].s + j + 1) = '\0';
+                    *(buffer->buflines[i].s + j) = '\n';
+                    *(buffer->buflines[i].s + j + 1) = '\0';
                 }
             }
-            b->buflines[i].len = j;
-            b->buflines[i].nrc = j + 1;
+            buffer->buflines[i].len = j;
+            buffer->buflines[i].nrc = j + 1;
             if (j != 0 && str[k] != '\0')
             {
                 i++;
@@ -1140,8 +1140,8 @@ e_d_p_stack (we_window_t * window, int sw)
         if (ret == -1)
             return (-1);
     }
-    for (; i < b->mxlines; i++)
-        e_del_line (i, b, s);
+    for (; i < buffer->mxlines; i++)
+        e_del_line (i, buffer, s);
     if (sw && is != control->mxedt)
         e_switch_window (control->edt[is], control->window[control->mxedt]);
     e_rep_win_tree (control);
@@ -1153,30 +1153,30 @@ e_make_stack (we_window_t * window)
 {
     char file[128], str[128], *tmpstr = malloc (1);
     int i, ret, line = 0, dif;
-    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
     e_d_switch_out (0);
     if (e_deb_type != 1)
     {
         tmpstr[0] = '\0';
         if (e_deb_type == 0)
         {
-            for (i = dif = 0; i <= b->cursor.y; i++)
-                if (b->buflines[i].s[0] == '#')
-                    dif = atoi ((char *) (b->buflines[i].s + 1));
-            for (i = b->cursor.y; i >= 0 && b->buflines[i].s[0] != '#'; i--);
+            for (i = dif = 0; i <= buffer->cursor.y; i++)
+                if (buffer->buflines[i].s[0] == '#')
+                    dif = atoi ((char *) (buffer->buflines[i].s + 1));
+            for (i = buffer->cursor.y; i >= 0 && buffer->buflines[i].s[0] != '#'; i--);
             if (i < 0)
                 return (1);
-            for (; i < b->mxlines; i++)
+            for (; i < buffer->mxlines; i++)
             {
                 if (!
                         (tmpstr =
-                             realloc (tmpstr, strlen (tmpstr) + b->buflines[i].len + 2)))
+                             realloc (tmpstr, strlen (tmpstr) + buffer->buflines[i].len + 2)))
                 {
                     e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
                     return (-1);
                 }
-                strcat (tmpstr, (char *) b->buflines[i].s);
-                if (i == b->mxlines - 1 || b->buflines[i + 1].s[0] == '#')
+                strcat (tmpstr, (char *) buffer->buflines[i].s);
+                if (i == buffer->mxlines - 1 || buffer->buflines[i + 1].s[0] == '#')
                     break;
                 else if (tmpstr[strlen (tmpstr) - 2] == '\\')
                     tmpstr[strlen (tmpstr) - 2] = '\0';
@@ -1186,24 +1186,24 @@ e_make_stack (we_window_t * window)
         }
         else
         {
-            for (i = 1, dif = 0; i <= b->cursor.y; i++)
-                if (b->buflines[i - 1].s[b->buflines[i - 1].len - 1] != '\\')
+            for (i = 1, dif = 0; i <= buffer->cursor.y; i++)
+                if (buffer->buflines[i - 1].s[buffer->buflines[i - 1].len - 1] != '\\')
                     dif++;
-            for (i = b->cursor.y;
-                    i > 0 && b->buflines[i - 1].s[b->buflines[i - 1].len - 1] == '\\'; i--);
-            if (i == 0 && b->buflines[i].len == 0)
+            for (i = buffer->cursor.y;
+                    i > 0 && buffer->buflines[i - 1].s[buffer->buflines[i - 1].len - 1] == '\\'; i--);
+            if (i == 0 && buffer->buflines[i].len == 0)
                 return (1);
-            for (; i < b->mxlines; i++)
+            for (; i < buffer->mxlines; i++)
             {
                 if (!
                         (tmpstr =
-                             realloc (tmpstr, strlen (tmpstr) + b->buflines[i].len + 2)))
+                             realloc (tmpstr, strlen (tmpstr) + buffer->buflines[i].len + 2)))
                 {
                     e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
                     return (-1);
                 }
-                strcat (tmpstr, (char *) b->buflines[i].s);
-                if (i == b->mxlines - 1 || b->buflines[i].s[b->buflines[i].len - 1] != '\\')
+                strcat (tmpstr, (char *) buffer->buflines[i].s);
+                if (i == buffer->mxlines - 1 || buffer->buflines[i].s[buffer->buflines[i].len - 1] != '\\')
                     break;
                 else if (tmpstr[strlen (tmpstr) - 2] == '\\')
                     tmpstr[strlen (tmpstr) - 2] = '\0';
@@ -1240,9 +1240,9 @@ e_make_stack (we_window_t * window)
     }
     else if (e_deb_type == 1)
     {
-        for (i = b->cursor.y; i >= 0 && (line =
-                                             e_make_line_num2 ((char *) b->buflines[i].s,
-                                                     file)) < 0; i--);
+        for (i = buffer->cursor.y; i >= 0 && (line =
+                e_make_line_num2 ((char *) buffer->buflines[i].s,
+                                  file)) < 0; i--);
     }
     if (e_d_p_watches (window, 0) == -1)
         return (-1);
@@ -1359,16 +1359,16 @@ int
 e_brk_recalc (we_window_t * window, int start, int len)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     int n, rend, count, yline;
     int *br_lines;
 
     if ((len == 0) || (control == NULL))
         return 1;
-    b = control->window[control->mxedt]->b;
+    buffer = control->window[control->mxedt]->buffer;
 
     rend = start - 1 + abs (len);
-    yline = b->cursor.y;
+    yline = buffer->cursor.y;
 
     /**** deleting removed breakpoints ****/
     if (len < 0)
@@ -1377,7 +1377,7 @@ e_brk_recalc (we_window_t * window, int start, int len)
             if ((!strcmp (window->datnam, e_d_sbrpts[n])) &&
                     (e_d_ybrpts[n] <= (rend + 1)) && (e_d_ybrpts[n] >= (start + 1)))
             {
-                b->cursor.y = e_d_ybrpts[n] - 1;
+                buffer->cursor.y = e_d_ybrpts[n] - 1;
                 e_make_breakpoint (window, 0);
             }
     }
@@ -1400,15 +1400,15 @@ e_brk_recalc (we_window_t * window, int start, int len)
     /**** moving breakpoints ****/
     for (n = 0; n < count; n++)
     {
-        b->cursor.y = br_lines[n] - 1;
+        buffer->cursor.y = br_lines[n] - 1;
         e_make_breakpoint (window, 0);
     }
     for (n = 0; n < count; n++)
     {
-        b->cursor.y = br_lines[n] + len - 1;
+        buffer->cursor.y = br_lines[n] + len - 1;
         e_make_breakpoint (window, 0);
     }
-    b->cursor.y = yline;
+    buffer->cursor.y = yline;
     free (br_lines);
     return 0;
 }
@@ -1626,7 +1626,7 @@ e_mk_brk_main (we_window_t * window, int sw)
                 }
                 if (e_d_dum_read () == -1)
                     return (-1);
-                sprintf (eing, "b\n");
+                sprintf (eing, "buffer\n");
                 n = strlen (eing);
                 if (n != write (rfildes[1], eing, n))
                 {
@@ -1658,7 +1658,7 @@ e_make_breakpoint (we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
     we_screen_t *s = control->window[control->mxedt]->s;
-    we_buffer_t *b = control->window[control->mxedt]->b;
+    we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int ret, i;
     char eing[128], str[256];
 
@@ -1666,7 +1666,7 @@ e_make_breakpoint (we_window_t * window, int sw)
     {
         if (!e_check_c_file (window->datnam))
             return (e_error (e_p_msg[ERR_NO_CFILE], 0, window->colorset));
-        for (i = 0; i < s->brp[0] && s->brp[i + 1] != b->cursor.y; i++)
+        for (i = 0; i < s->brp[0] && s->brp[i + 1] != buffer->cursor.y; i++)
             ;
         if (i < s->brp[0])
         {
@@ -1674,7 +1674,7 @@ e_make_breakpoint (we_window_t * window, int sw)
                 s->brp[i] = s->brp[i + 1];
             (s->brp[0])--;
             for (i = 0; i < e_d_nbrpts && (strcmp (e_d_sbrpts[i], window->datnam) ||
-                                           e_d_ybrpts[i] != b->cursor.y + 1); i++)
+                                           e_d_ybrpts[i] != buffer->cursor.y + 1); i++)
                 ;
             if (e_d_swtch)
             {
@@ -1743,12 +1743,12 @@ e_make_breakpoint (we_window_t * window, int sw)
             }
             e_d_sbrpts[e_d_nbrpts - 1] = malloc (strlen (window->datnam) + 1);
             strcpy (e_d_sbrpts[e_d_nbrpts - 1], window->datnam);
-            e_d_ybrpts[e_d_nbrpts - 1] = b->cursor.y + 1;
+            e_d_ybrpts[e_d_nbrpts - 1] = buffer->cursor.y + 1;
             if (e_d_swtch)
             {
                 if (e_deb_type == 0)
                 {
-                    sprintf (eing, "b %s:%d\n", window->datnam, b->cursor.y + 1);
+                    sprintf (eing, "b %s:%d\n", window->datnam, buffer->cursor.y + 1);
                     int n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1771,7 +1771,7 @@ e_make_breakpoint (we_window_t * window, int sw)
                 else if (e_deb_type == 2)
                 {
                     sprintf (eing, "stop at \"%s\":%d\n", window->datnam,
-                             b->cursor.y + 1);
+                             buffer->cursor.y + 1);
                     int n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1793,7 +1793,7 @@ e_make_breakpoint (we_window_t * window, int sw)
                 }
                 else if (e_deb_type == 3)
                 {
-                    sprintf (eing, "b %s:%d\n", window->datnam, b->cursor.y + 1);
+                    sprintf (eing, "b %s:%d\n", window->datnam, buffer->cursor.y + 1);
                     int n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1826,7 +1826,7 @@ e_make_breakpoint (we_window_t * window, int sw)
                     }
                     if (e_d_dum_read () == -1)
                         return (-1);
-                    sprintf (eing, "%d b\n", b->cursor.y + 1);
+                    sprintf (eing, "%d b\n", buffer->cursor.y + 1);
                     n = strlen (eing);
                     if (n != write (rfildes[1], eing, n))
                     {
@@ -1840,7 +1840,7 @@ e_make_breakpoint (we_window_t * window, int sw)
             }
             (s->brp[0])++;
             s->brp = realloc (s->brp, (s->brp[0] + 1) * sizeof (int));
-            s->brp[s->brp[0]] = b->cursor.y;
+            s->brp[s->brp[0]] = buffer->cursor.y;
         }
     }
     else
@@ -1898,7 +1898,7 @@ e_make_breakpoint (we_window_t * window, int sw)
         {
             for (i = 0; i < e_d_nbrpts; i++)
             {
-                sprintf (eing, "b %s:%d\n", window->datnam, b->cursor.y + 1);
+                sprintf (eing, "b %s:%d\n", window->datnam, buffer->cursor.y + 1);
                 int n = strlen (eing);
                 if (n != write (rfildes[1], eing, n))
                 {
@@ -2414,7 +2414,7 @@ int
 e_d_goto_func (we_window_t * window, int flag)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b = control->window[control->mxedt]->b;
+    we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int ret = 0, main_brk = 0;
     char str[128];
 
@@ -2443,7 +2443,7 @@ e_d_goto_func (we_window_t * window, int flag)
     switch (flag)
     {
     case 'U':
-        sprintf (str, "until %d\n", b->cursor.y + 1);
+        sprintf (str, "until %d\n", buffer->cursor.y + 1);
         break;
     case 'F':
         sprintf (str, "finish\n");
@@ -2987,7 +2987,7 @@ int
 e_d_goto_break (char *file, int line, we_window_t * window)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     we_screen_t *s;
     we_window_t ftmp;
     int i;
@@ -3024,14 +3024,14 @@ e_d_goto_break (char *file, int line, we_window_t * window)
         }
         if (e_edit (control, file))
             return (WPE_ESC);
-        b = control->window[control->mxedt]->b;
+        buffer = control->window[control->mxedt]->buffer;
         s = control->window[control->mxedt]->s;
     }
     window = control->window[control->mxedt];
-    b = control->window[control->mxedt]->b;
+    buffer = control->window[control->mxedt]->buffer;
     s = control->window[control->mxedt]->s;
-    s->da.y = b->cursor.y = line - 1;
-    s->da.x = b->cursor.x = 0;
+    s->da.y = buffer->cursor.y = line - 1;
+    s->da.x = buffer->cursor.x = 0;
     s->de.x = MAXSCOL;
     e_schirm (window, 1);
     e_cursor (window, 1);

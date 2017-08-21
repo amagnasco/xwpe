@@ -339,7 +339,7 @@ typedef struct we_window_struct
     int* c_sw;
     struct wpeSyntaxRule* c_st;
     struct CNT* ed;		     /**< edit control structure */
-    we_buffer_t *b;		     /**< Buffer */
+    we_buffer_t *buffer;		     /**< Buffer */
     we_screen_t *s;	         /**< screen */
     FIND find;
 } we_window_t;

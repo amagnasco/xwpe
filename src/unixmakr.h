@@ -91,7 +91,7 @@ extern char *ctree[5];
 #define e_frb_menue(sw, xa, ya, window, md) (*e_frb_u_menue)(sw, xa, ya, window, md)
 #define e_pr_col_kasten(xa, ya, x, y, window, sw) \
 		(*e_pr_u_col_kasten)(xa, ya, x, y, window, sw)
-#define e_s_clr(window, b) (*e_s_u_clr)(window, b)
+#define e_s_clr(window, buffer) (*e_s_u_clr)(window, buffer)
 #define e_n_clr(fb) (*e_n_u_clr)(fb)
 
 #ifdef NEWSTYLE

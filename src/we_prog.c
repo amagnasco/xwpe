@@ -253,7 +253,7 @@ int
 e_run (we_window_t * window)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     char estr[256];
     int len, ret;
 
@@ -303,12 +303,12 @@ e_run (we_window_t * window)
 #endif
         ret = e_system (estr, control);
     window = control->window[control->mxedt];
-    b = control->window[control->mxedt]->b;
+    buffer = control->window[control->mxedt]->buffer;
 
     sprintf (estr, e_p_msg[ERR_RETCODE], ret);
-    print_to_end_of_buffer (b, estr, b->mx.x);
+    print_to_end_of_buffer (buffer, estr, buffer->mx.x);
 
-    b->cursor.y = b->mxlines - 1;
+    buffer->cursor.y = buffer->mxlines - 1;
     e_cursor (window, 1);
     e_schirm (window, 1);
     e_refresh ();
@@ -495,7 +495,7 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
 {
     UNUSED (file);
     we_control_t *control = window->ed;
-    we_buffer_t *b = control->window[control->mxedt]->b;
+    we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int ret = 0, i = 0, is, fd, stat_loc;
     char str[128];
     char *buff;
@@ -504,7 +504,7 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
     while ((ret = wait (&stat_loc)) >= 0 && ret != e_save_pid)
         ;
     ret = 0;
-    for (is = b->mxlines - 1, fd = efildes[0]; fd > 0; fd = wfildes[0])
+    for (is = buffer->mxlines - 1, fd = efildes[0]; fd > 0; fd = wfildes[0])
     {
         buff = malloc (1);
         buff[0] = '\0';
@@ -515,13 +515,13 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
 
             fflush (stdout);
         }
-        print_to_end_of_buffer (b, buff, b->mx.x);
+        print_to_end_of_buffer (buffer, buff, buffer->mx.x);
         free (buff);
 
         if (fd == wfildes[0])
             break;
     }
-    b->cursor.y = b->mxlines - 1;
+    buffer->cursor.y = buffer->mxlines - 1;
     if (efildes[0] >= 0)
         close (efildes[0]);
     if (wfildes[0] >= 0)
@@ -546,14 +546,14 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
     wfildes[0] = wfildes[1] = -1;
     if (view)
         e_close_view (view, 1);
-    if (ret || (b->mxlines - is > 2 && (i = e_make_error_list (window))))
+    if (ret || (buffer->mxlines - is > 2 && (i = e_make_error_list (window))))
     {
         if (i != -2 && !ret)
             e_show_error (err_no = 0, window);
         return (-1);
     }
 
-    print_to_end_of_buffer (b, "Success", b->mx.x);
+    print_to_end_of_buffer (buffer, "Success", buffer->mx.x);
 
     e_cursor (window, 1);
     e_schirm (window, 1);
@@ -566,7 +566,7 @@ int
 e_show_error (int n, we_window_t * window)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b = control->window[control->mxedt]->b;
+    we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int i, j, bg = 0;
     char *filename;
     unsigned char *cp;
@@ -615,46 +615,46 @@ e_show_error (int n, we_window_t * window)
                   window->colorset->mt.fg_bg_color, 1, MAXSCOL - 2);
     /*   e_pr_nstr(2, MAXSLNS - 1, MAXSCOL-2, err_li[n].text,
                                                     window->colorset->mt.fg_bg_color, window->colorset->mt.fg_bg_color); */
-    b = control->window[control->mxedt]->b;
-    b->cursor.y = err_li[n].line > b->mxlines ? b->mxlines - 1 : err_li[n].line - 1;
+    buffer = control->window[control->mxedt]->buffer;
+    buffer->cursor.y = err_li[n].line > buffer->mxlines ? buffer->mxlines - 1 : err_li[n].line - 1;
     if (!err_li[n].srch)
     {
-        for (i = j = 0; i + j < err_li[n].x && i < b->buflines[b->cursor.y].len; i++)
+        for (i = j = 0; i + j < err_li[n].x && i < buffer->buflines[buffer->cursor.y].len; i++)
         {
-            if (*(b->buflines[b->cursor.y].s + i) == WPE_TAB)
+            if (*(buffer->buflines[buffer->cursor.y].s + i) == WPE_TAB)
                 j += (window->ed->tabn - ((j + i) % window->ed->tabn) - 1);
 #ifdef UNIX
-            else if (((unsigned char) *(b->buflines[b->cursor.y].s + i)) > 126)
+            else if (((unsigned char) *(buffer->buflines[buffer->cursor.y].s + i)) > 126)
             {
                 j++;
-                if (((unsigned char) *(b->buflines[b->cursor.y].s + i)) < 128 + ' ')
+                if (((unsigned char) *(buffer->buflines[buffer->cursor.y].s + i)) < 128 + ' ')
                     j++;
             }
-            else if (*(b->buflines[b->cursor.y].s + i) < ' ')
+            else if (*(buffer->buflines[buffer->cursor.y].s + i) < ' ')
                 j++;
 #endif
         }
-        b->cursor.x = i;
+        buffer->cursor.x = i;
     }
     else
     {
         cp =
-            (unsigned char *) strstr ((const char *) b->buflines[b->cursor.y].s,
+            (unsigned char *) strstr ((const char *) buffer->buflines[buffer->cursor.y].s,
                                       err_li[n].srch + 1);
-        for (i = 0; b->buflines[b->cursor.y].s + i < cp; i++);
+        for (i = 0; buffer->buflines[buffer->cursor.y].s + i < cp; i++);
         if (err_li[n].srch[0] == 'B')
         {
-            for (i--; i >= 0 && isspace (b->buflines[b->cursor.y].s[i]); i--);
-            if (i < 0 && b->cursor.y > 0)
+            for (i--; i >= 0 && isspace (buffer->buflines[buffer->cursor.y].s[i]); i--);
+            if (i < 0 && buffer->cursor.y > 0)
             {
-                (b->cursor.y)--;
-                i = b->buflines[b->cursor.y].len + 1;
+                (buffer->cursor.y)--;
+                i = buffer->buflines[buffer->cursor.y].len + 1;
             }
             else
                 i++;
         }
         /*      else if(err_li[n].x < -1) i++;    */
-        b->cursor.x = i + err_li[n].x;
+        buffer->cursor.x = i + err_li[n].x;
     }
     e_cursor (control->window[control->mxedt], 1);
     return (0);
@@ -689,7 +689,7 @@ e_make_error_list (we_window_t * window)
 {
     char file[256];
     we_control_t *control = window->ed;
-    we_buffer_t *b = control->window[control->mxedt]->b;
+    we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int i, j, k = 0, ret = 0;
     char *spt;
 
@@ -706,38 +706,38 @@ e_make_error_list (we_window_t * window)
         }
         free (err_li);
     }
-    err_li = malloc (sizeof (struct ERR_LI) * b->mxlines);
+    err_li = malloc (sizeof (struct ERR_LI) * buffer->mxlines);
     err_num = 0;
-    for (i = 0; i < b->mxlines; i++)
+    for (i = 0; i < buffer->mxlines; i++)
     {
-        if (!strncmp ((char *) b->buflines[i].s, "Error at Command:", 17))
+        if (!strncmp ((char *) buffer->buflines[i].s, "Error at Command:", 17))
             return (!ret ? -2 : ret);
-        if ((!strncmp ((char *) b->buflines[i].s, "ld", 2) &&
-                (b->buflines[i].s[2] == ' ' || b->buflines[i].s[2] == ':')) ||
-                !strncmp ((char *) b->buflines[i].s, "collect:", 8))
+        if ((!strncmp ((char *) buffer->buflines[i].s, "ld", 2) &&
+                (buffer->buflines[i].s[2] == ' ' || buffer->buflines[i].s[2] == ':')) ||
+                !strncmp ((char *) buffer->buflines[i].s, "collect:", 8))
             ret = -2;
-        else if (!strncmp ((char *) b->buflines[i].s, "makefile:", 9) ||
-                 !strncmp ((char *) b->buflines[i].s, "Makefile:", 9))
+        else if (!strncmp ((char *) buffer->buflines[i].s, "makefile:", 9) ||
+                 !strncmp ((char *) buffer->buflines[i].s, "Makefile:", 9))
         {
             err_li[k].file = malloc (9);
             for (j = 0; j < 8; j++)
-                err_li[k].file[j] = b->buflines[i].s[j];
+                err_li[k].file[j] = buffer->buflines[i].s[j];
             err_li[k].file[8] = '\0';
-            err_li[k].line = atoi ((char *) b->buflines[i].s + 9);
+            err_li[k].line = atoi ((char *) buffer->buflines[i].s + 9);
             err_li[k].y = i;
             err_li[k].x = 0;
             err_li[k].srch = NULL;
-            err_li[k].text = malloc (strlen ((char *) b->buflines[i].s) + 1);
-            strcpy (err_li[k].text, (char *) b->buflines[i].s);
-            err_li[k].text[b->buflines[i].len] = '\0';
+            err_li[k].text = malloc (strlen ((char *) buffer->buflines[i].s) + 1);
+            strcpy (err_li[k].text, (char *) buffer->buflines[i].s);
+            err_li[k].text[buffer->buflines[i].len] = '\0';
             k++;
             err_num++;
             ret = -1;
             continue;
         }
-        else if (!strncmp ((char *) b->buflines[i].s, "make:", 5) &&
-                 ((spt = strstr ((char *) b->buflines[i].s, "makefile")) ||
-                  (spt = strstr ((char *) b->buflines[i].s, "Makefile"))) &&
+        else if (!strncmp ((char *) buffer->buflines[i].s, "make:", 5) &&
+                 ((spt = strstr ((char *) buffer->buflines[i].s, "makefile")) ||
+                  (spt = strstr ((char *) buffer->buflines[i].s, "Makefile"))) &&
                  (err_li[k].line = atoi (spt + 14)) > 0)
         {
             err_li[k].file = malloc (9);
@@ -747,9 +747,9 @@ e_make_error_list (we_window_t * window)
             err_li[k].y = i;
             err_li[k].x = 0;
             err_li[k].srch = NULL;
-            err_li[k].text = malloc (strlen ((char *) b->buflines[i].s) + 1);
-            strcpy (err_li[k].text, (char *) b->buflines[i].s);
-            err_li[k].text[b->buflines[i].len] = '\0';
+            err_li[k].text = malloc (strlen ((char *) buffer->buflines[i].s) + 1);
+            strcpy (err_li[k].text, (char *) buffer->buflines[i].s);
+            err_li[k].text[buffer->buflines[i].len] = '\0';
             k++;
             err_num++;
             continue;
@@ -757,18 +757,18 @@ e_make_error_list (we_window_t * window)
         else
         {
             char *tststr = e_s_prog.comp_sw ? e_s_prog.intstr : gnu_intstr;
-            if (!(ret = e_p_cmp_mess (tststr, b, &i, &k, ret)))
+            if (!(ret = e_p_cmp_mess (tststr, buffer, &i, &k, ret)))
             {
                 int ip, in;
                 ip = e_pure_bin ((char *) e_s_prog.compiler, ' ');
-                in = e_pure_bin ((char *) b->buflines[i].s, ':');
+                in = e_pure_bin ((char *) buffer->buflines[i].s, ':');
                 sprintf (file, "%s:", e_s_prog.compiler + ip);
                 if (!strncmp
-                        (file, (const char *) b->buflines[i].s + in, strlen (file)))
+                        (file, (const char *) buffer->buflines[i].s + in, strlen (file)))
                     ret = -2;
-                else if (!strncmp ("ld:", (const char *) b->buflines[i].s + in, 3))
+                else if (!strncmp ("ld:", (const char *) buffer->buflines[i].s + in, 3))
                     ret = -2;
-                else if (!strncmp ("as:", (const char *) b->buflines[i].s + in, 3))
+                else if (!strncmp ("as:", (const char *) buffer->buflines[i].s + in, 3))
                     ret = -2;
             }
         }
@@ -815,7 +815,7 @@ int
 e_d_car_ret (we_window_t * window)
 {
     if (!strcmp (window->datnam, "Messages"))
-        return (e_cur_error (window->ed->window[window->ed->mxedt]->b->cursor.y, window));
+        return (e_cur_error (window->ed->window[window->ed->mxedt]->buffer->cursor.y, window));
 #ifdef DEBUGGER
     if (!strcmp (window->datnam, "Watches"))
         return (e_edit_watches (window));
@@ -1149,7 +1149,7 @@ e_prj_ob_btt (we_window_t * window, int sw)
         else
             while (e_data_eingabe (window->ed) != CF4)
                 ;
-        fw = (FLWND *) window->ed->window[window->ed->mxedt]->b;
+        fw = (FLWND *) window->ed->window[window->ed->mxedt]->buffer;
         fw->df = NULL;
         e_close_window (window->ed->window[window->ed->mxedt]);
     }
@@ -1536,7 +1536,7 @@ e_p_add_item (we_window_t * window)
 
         e_make_prj_opt (window);
         e_prj_ob_file (window);
-        fw = (FLWND *) control->window[control->mxedt]->b;
+        fw = (FLWND *) control->window[control->mxedt]->buffer;
         fw->nf = fw->df->nr_files - 1;
     }
     control->window[control->mxedt]->save = 1;
@@ -1560,7 +1560,7 @@ e_p_del_item (we_window_t * window)
         return (e_error (e_p_msg[ERR_NOPROJECT], 0, window->colorset));
     window = control->window[control->mxedt];
     window->save = 1;
-    e_p_del_df ((FLWND *) window->b, window->ins);
+    e_p_del_df ((FLWND *) window->buffer, window->ins);
     return 0;
 }
 
@@ -1637,10 +1637,10 @@ e_system (char *estr, we_control_t * control)
     return (ret);
 }
 
-/* arranges string str into buffer b and eventually wrappes string around
+/* arranges string str into buffer buffer and eventually wrappes string around
  wrap_limit columns */
 int
-print_to_end_of_buffer (we_buffer_t * b, char *str, int wrap_limit)
+print_to_end_of_buffer (we_buffer_t * buffer, char *str, int wrap_limit)
 {
     int i, k, j;
 
@@ -1659,34 +1659,34 @@ print_to_end_of_buffer (we_buffer_t * b, char *str, int wrap_limit)
         if (j == k)
             break;
 
-        /* b->mxlines - count of lines in b
+        /* buffer->mxlines - count of lines in buffer
            so add one more line at the end of buffer */
-        e_new_line (b->mxlines, b);
-        i = b->mxlines - 1;
+        e_new_line (buffer->mxlines, buffer);
+        i = buffer->mxlines - 1;
 
         /* copy char from string (str) to buffer */
 
         if (str[j + k] != '\0')
-            b->buflines[i].s = realloc (b->buflines[i].s, j + 2);
+            buffer->buflines[i].s = realloc (buffer->buflines[i].s, j + 2);
         else
-            b->buflines[i].s = realloc (b->buflines[i].s, j + 1);
-        strncpy ((char *) b->buflines[i].s, str + k, j);
+            buffer->buflines[i].s = realloc (buffer->buflines[i].s, j + 1);
+        strncpy ((char *) buffer->buflines[i].s, str + k, j);
 
         /* if this is not end of string, then we created substring
-         if *(b->buflines[i].s+j) is not '\0' then it is soft break is not written to file */
+         if *(buffer->buflines[i].s+j) is not '\0' then it is soft break is not written to file */
 
         if (str[j + k] != '\0')
         {
-            *(b->buflines[i].s + j) = '\n';
-            *(b->buflines[i].s + j + 1) = '\0';
+            *(buffer->buflines[i].s + j) = '\n';
+            *(buffer->buflines[i].s + j + 1) = '\0';
         }
         else
         {
-            *(b->buflines[i].s + j) = '\0';
+            *(buffer->buflines[i].s + j) = '\0';
         }
         /* update len of line in buffer */
-        b->buflines[i].len = j;
-        b->buflines[i].nrc = j + 1;
+        buffer->buflines[i].len = j;
+        buffer->buflines[i].nrc = j + 1;
 
         if (str[j + k] == '\n')
         {
@@ -1708,7 +1708,7 @@ int
 e_d_p_message (char *str, we_window_t * window, int sw)
 {
     we_control_t *control = window->ed;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     int i;
 
     if (str[0] == '\0' || str[0] == '\n')
@@ -1726,15 +1726,15 @@ e_d_p_message (char *str, we_window_t * window, int sw)
     /* window - window */
     window = control->window[i];
 
-    /* b - buffer */
-    b = control->window[i]->b;
+    /* buffer - buffer */
+    buffer = control->window[i]->buffer;
 
     /* s - content of window -----> not used */
 
-    print_to_end_of_buffer (b, str, b->mx.x);
+    print_to_end_of_buffer (buffer, str, buffer->mx.x);
 
     /* place cursor on the last line */
-    b->cursor.y = b->mxlines - 1;
+    buffer->cursor.y = buffer->mxlines - 1;
 
     if (sw)
         e_rep_win_tree (control);
@@ -1752,15 +1752,15 @@ int
 e_d_car_mouse (we_window_t * window)
 {
     extern struct mouse e_mouse;
-    we_buffer_t *b = window->ed->window[window->ed->mxedt]->b;
+    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
     we_screen_t *s = window->ed->window[window->ed->mxedt]->s;
 
-    if (e_mouse.y - window->a.y + s->c.y - 1 == b->cursor.y)
+    if (e_mouse.y - window->a.y + s->c.y - 1 == buffer->cursor.y)
         return (WPE_CR);
     else
     {
-        b->cursor.y = e_mouse.y - window->a.y + s->c.y - 1;
-        b->cursor.x = e_mouse.x - window->a.x + s->c.x - 1;
+        buffer->cursor.y = e_mouse.y - window->a.y + s->c.y - 1;
+        buffer->cursor.x = e_mouse.x - window->a.x + s->c.x - 1;
     }
     return (0);
 }
@@ -3150,23 +3150,23 @@ e_p_mess_win (char *header, int argc, char **argv, we_view_t ** view, we_window_
     return (ret);
 }
 
-/* After this function b has exactly 1 line allocated (b->mxlines==1).
+/* After this function buffer has exactly 1 line allocated (buffer->mxlines==1).
    This line is initialized to the string WPE_WR,0 */
 int
-e_p_red_buffer (we_buffer_t * b)
+e_p_red_buffer (we_buffer_t * buffer)
 {
     int i;
 
-    for (i = 1; i < b->mxlines; i++)
-        if (b->buflines[i].s != NULL)
-            free (b->buflines[i].s);
-    if (b->mxlines == 0)
-        e_new_line (0, b);
-    b->buflines[0].s[0] = WPE_WR;
-    b->buflines[0].s[1] = '\0';
-    b->buflines[0].len = 0;
-    b->buflines[0].nrc = 1;
-    b->mxlines = 1;
+    for (i = 1; i < buffer->mxlines; i++)
+        if (buffer->buflines[i].s != NULL)
+            free (buffer->buflines[i].s);
+    if (buffer->mxlines == 0)
+        e_new_line (0, buffer);
+    buffer->buflines[0].s[0] = WPE_WR;
+    buffer->buflines[0].s[1] = '\0';
+    buffer->buflines[0].len = 0;
+    buffer->buflines[0].nrc = 1;
+    buffer->mxlines = 1;
     return (0);
 }
 
@@ -3206,10 +3206,10 @@ e_p_show_messages (we_window_t * window)
         return (-1);
     }
     window = window->ed->window[window->ed->mxedt];
-    if (window->b->mxlines == 0)
+    if (window->buffer->mxlines == 0)
     {
-        e_new_line (0, window->b);
-        e_ins_nchar (window->b, window->s, (unsigned char *) "No Messages", 0, 0, 11);
+        e_new_line (0, window->buffer);
+        e_ins_nchar (window->buffer, window->s, (unsigned char *) "No Messages", 0, 0, 11);
         e_schirm (window, 1);
     }
     return (0);
@@ -3289,22 +3289,22 @@ e_p_konv_mess (char *var, char *str, char *txt, char *file, char *cmp,
 }
 
 int
-e_p_comp_mess (char *a, char *b, char *c, char *txt, char *file, char *cmp,
+e_p_comp_mess (char *a, char *buffer, char *c, char *txt, char *file, char *cmp,
                int *y, int *x)
 {
     int i, n, k = 0, bsl = 0;
     char *ctmp, *cp, *var = NULL, *str = NULL;
 
-    if (c > b)
+    if (c > buffer)
         return (0);
     if (a[0] == '*' && !a[1])
         return (2);
-    if (!a[0] && !b[0])
+    if (!a[0] && !buffer[0])
         return (2);
-    if (!a[0] || !b[0])
+    if (!a[0] || !buffer[0])
         return (0);
     if (a[0] == '*' && (a[1] == '*' || a[1] == '$'))
-        return (e_p_comp_mess (++a, b, c, txt, file, cmp, y, x));
+        return (e_p_comp_mess (++a, buffer, c, txt, file, cmp, y, x));
     if (a[0] == '$' && a[1] == '{')
     {
         for (k = 2; a[k] && a[k] != '}'; k++);
@@ -3315,7 +3315,7 @@ e_p_comp_mess (char *a, char *b, char *c, char *txt, char *file, char *cmp,
         if (a[k])
             k++;
         if (!a[k])
-            return (!e_p_konv_mess (var, b, txt, file, cmp, y, x));
+            return (!e_p_konv_mess (var, buffer, txt, file, cmp, y, x));
         n = a[k] == '\\' ? k : k + 1;
     }
     else if (a[0] == '*' && a[1] != '\\')
@@ -3336,24 +3336,24 @@ e_p_comp_mess (char *a, char *b, char *c, char *txt, char *file, char *cmp,
             for (i = 0; i < k && (cp[i] = a[i]); i++);
             for (i++; (cp[i - 1] = a[i]) != '\0'; i++);
             free (var);
-            n = e_p_comp_mess (cp, ++b, ++c, txt, file, cmp, y, x);
+            n = e_p_comp_mess (cp, ++buffer, ++c, txt, file, cmp, y, x);
             free (cp);
             return (n);
         }
         if (a[k] == '[')
         {
-            for (i = 0; b[i] &&
+            for (i = 0; buffer[i] &&
                     !(n =
-                          e_p_comp_mess (a + k, b + i, c + i, txt, file, cmp, y, x));
+                          e_p_comp_mess (a + k, buffer + i, c + i, txt, file, cmp, y, x));
                     i++)
                 ;
-            if (!b[i])
+            if (!buffer[i])
                 return (0);
             if (a[0] == '$')
             {
                 str = malloc ((i + 1) * sizeof (char));
                 for (k = 0; k < i; k++)
-                    str[k] = b[k];
+                    str[k] = buffer[k];
                 str[i] = '\0';
                 e_p_konv_mess (var, str, txt, file, cmp, y, x);
                 free (var);
@@ -3366,7 +3366,7 @@ e_p_comp_mess (char *a, char *b, char *c, char *txt, char *file, char *cmp,
         for (i = 0; i < n; i++)
             ctmp[i] = a[i + k];
         ctmp[n] = '\0';
-        cp = strstr (b, ctmp);
+        cp = strstr (buffer, ctmp);
         free (ctmp);
         if (cp == NULL)
             return (0);
@@ -3399,43 +3399,43 @@ e_p_comp_mess (char *a, char *b, char *c, char *txt, char *file, char *cmp,
     {
         n--;
         a++;
-        b++;
+        buffer++;
     }
     else if (a[0] == '[')
     {
         if (a[1] == '!')
         {
-            for (k = 2; a[k] && (a[k] != ']' || k == 2) && a[k] != b[0]; k++)
-                if (a[k + 1] == '-' && b[0] >= a[k] && b[0] <= a[k + 2])
-                    return (-b[0]);
+            for (k = 2; a[k] && (a[k] != ']' || k == 2) && a[k] != buffer[0]; k++)
+                if (a[k + 1] == '-' && buffer[0] >= a[k] && buffer[0] <= a[k + 2])
+                    return (-buffer[0]);
             if (a[k] != ']')
-                return (-b[0]);
+                return (-buffer[0]);
             n -= (k + 1);
             a += (k + 1);
-            b++;
+            buffer++;
         }
         else
         {
-            for (k = 1; a[k] && (a[k] != ']' || k == 1) && a[k] != b[0]; k++)
-                if (a[k + 1] == '-' && b[0] >= a[k] && b[0] <= a[k + 2])
+            for (k = 1; a[k] && (a[k] != ']' || k == 1) && a[k] != buffer[0]; k++)
+                if (a[k + 1] == '-' && buffer[0] >= a[k] && buffer[0] <= a[k + 2])
                     break;
             if (a[k] == ']' || a[k] == '\0')
                 return (0);
             for (; a[k] && (a[k] != ']'); k++);
             n -= (k + 1);
             a += (k + 1);
-            b++;
+            buffer++;
         }
     }
     if (n <= 0)
-        return (e_p_comp_mess (a, b, c, txt, file, cmp, y, x));
-    if ((k = strncmp (a, b, n)) != 0)
+        return (e_p_comp_mess (a, buffer, c, txt, file, cmp, y, x));
+    if ((k = strncmp (a, buffer, n)) != 0)
         return (0);
-    return (e_p_comp_mess (a + n, b + n, c + n, txt, file, cmp, y, x));
+    return (e_p_comp_mess (a + n, buffer + n, c + n, txt, file, cmp, y, x));
 }
 
 int
-e_p_cmp_mess (char *srch, we_buffer_t * b, int *ii, int *kk, int ret)
+e_p_cmp_mess (char *srch, we_buffer_t * buffer, int *ii, int *kk, int ret)
 {
     char *cp, cmp[128], file[128], search[80], tmp[4][128], **wtxt = NULL;
     int j, l, m, n, iy, iorig, i = *ii, k = *kk, x = 0, y = -1, wnum = 0;
@@ -3486,37 +3486,37 @@ e_p_cmp_mess (char *srch, we_buffer_t * b, int *ii, int *kk, int ret)
             }
         }
     }
-    e_p_comp_mess (tmp[0], (char *) b->buflines[i].s, (char *) b->buflines[i].s, search,
+    e_p_comp_mess (tmp[0], (char *) buffer->buflines[i].s, (char *) buffer->buflines[i].s, search,
                    file, cmp, &y, &x);
     iy = i;
     iorig = i;
     do
     {
-        if (n > 1 && file[0] && i < b->mxlines - 1)
+        if (n > 1 && file[0] && i < buffer->mxlines - 1)
         {
             y = -1;
-            while (b->buflines[i].s[b->buflines[i].len - 1] == '\\')
+            while (buffer->buflines[i].s[buffer->buflines[i].len - 1] == '\\')
                 i++;
             i++;
-            e_p_comp_mess (tmp[1], (char *) b->buflines[i].s, (char *) b->buflines[i].s,
+            e_p_comp_mess (tmp[1], (char *) buffer->buflines[i].s, (char *) buffer->buflines[i].s,
                            search, file, cmp, &y, &x);
             iy = i;
         }
         do
         {
-            if (n > 2 && file[0] && y >= 0 && i < b->mxlines - 1)
+            if (n > 2 && file[0] && y >= 0 && i < buffer->mxlines - 1)
             {
-                while (b->buflines[i].s[b->buflines[i].len - 1] == '\\')
+                while (buffer->buflines[i].s[buffer->buflines[i].len - 1] == '\\')
                     i++;
                 i++;
                 l =
-                    e_p_comp_mess (tmp[2], (char *) b->buflines[i].s,
-                                   (char *) b->buflines[i].s, search, file, cmp, &y,
+                    e_p_comp_mess (tmp[2], (char *) buffer->buflines[i].s,
+                                   (char *) buffer->buflines[i].s, search, file, cmp, &y,
                                    &x);
                 if (!l && n > 3)
                     l =
-                        e_p_comp_mess (tmp[3], (char *) b->buflines[i].s,
-                                       (char *) b->buflines[i].s, search, file, cmp, &y,
+                        e_p_comp_mess (tmp[3], (char *) buffer->buflines[i].s,
+                                       (char *) buffer->buflines[i].s, search, file, cmp, &y,
                                        &x);
             }
             else
@@ -3528,12 +3528,12 @@ e_p_cmp_mess (char *srch, we_buffer_t * b, int *ii, int *kk, int ret)
                 err_li[k].line = y;
                 if (search[0] == 'P')
                 {
-                    cp = strstr ((const char *) b->buflines[iy].s, cmp);
+                    cp = strstr ((const char *) buffer->buflines[iy].s, cmp);
                     if (!cp)
                         x = 0;
                     else
                     {
-                        for (m = 0; b->buflines[iy].s + m < (unsigned char *) cp;
+                        for (m = 0; buffer->buflines[iy].s + m < (unsigned char *) cp;
                                 m++);
                         x -= m;
                     }
@@ -3552,36 +3552,36 @@ e_p_cmp_mess (char *srch, we_buffer_t * b, int *ii, int *kk, int ret)
                     err_li[k].srch = NULL;
                 err_li[k].x = x;
                 err_li[k].y = iorig;
-                err_li[k].text = malloc (strlen ((char *) b->buflines[i].s) + 1);
-                strcpy (err_li[k].text, (char *) b->buflines[i].s);
-                err_li[k].text[b->buflines[i].len] = '\0';
+                err_li[k].text = malloc (strlen ((char *) buffer->buflines[i].s) + 1);
+                strcpy (err_li[k].text, (char *) buffer->buflines[i].s);
+                err_li[k].text[buffer->buflines[i].len] = '\0';
                 k++;
                 err_num++;
                 if (!ret)
                 {
                     for (ret = -1, m = 0; ret && m < wnum; m++)
                     {
-                        if (wn[m] == -1 && !(b->control->edopt & ED_MESSAGES_STOP_AT)
-                                && strstr ((const char *) b->buflines[i].s, wtxt[m]))
+                        if (wn[m] == -1 && !(buffer->control->edopt & ED_MESSAGES_STOP_AT)
+                                && strstr ((const char *) buffer->buflines[i].s, wtxt[m]))
                             ret = 0;
                         else if (wn[m] > -1
-                                 && !(b->control->edopt & ED_MESSAGES_STOP_AT)
-                                 && !strncmp ((const char *) b->buflines[i].s + wn[m],
+                                 && !(buffer->control->edopt & ED_MESSAGES_STOP_AT)
+                                 && !strncmp ((const char *) buffer->buflines[i].s + wn[m],
                                               wtxt[m], strlen (wtxt[m])))
                             ret = 0;
                     }
                 }
                 if (!ret && wnum <= 0)
                     ret = -1;
-                while (b->buflines[i].s[b->buflines[i].len - 1] == '\\')
+                while (buffer->buflines[i].s[buffer->buflines[i].len - 1] == '\\')
                     i++;
             }
         }
-        while (n > 2 && file[0] && y >= 0 && l != 0 && i < b->mxlines - 1);
+        while (n > 2 && file[0] && y >= 0 && l != 0 && i < buffer->mxlines - 1);
         if (n > 2 && file[0] && y >= 0 && l == 0)
             i--;
     }
-    while (n > 1 && file[0] && y >= 0 && i < b->mxlines - 1);
+    while (n > 1 && file[0] && y >= 0 && i < buffer->mxlines - 1);
     if (n > 1 && file[0] && y < 0)
         i--;
     *ii = i;

@@ -57,13 +57,13 @@ inline int num_cols_off_screen_left(we_window_t* window)
 inline int num_cols_on_screen_safe(we_window_t* window)
 {
     int result;
-    if (window->e.x - window->a.x < window->b->mx.x + 1)
+    if (window->e.x - window->a.x < window->buffer->mx.x + 1)
     {
         result = window->e.x - window->a.x;
     }
     else
     {
-        result = window->b->mx.x + 1;
+        result = window->buffer->mx.x + 1;
     }
     return result;
 }
@@ -104,7 +104,7 @@ int e_schr_lst_wsv(char* str, int xa, int ya, int n, int strlen, int ft,
                    int fz, struct dirfile** df, we_window_t* window);
 int e_rep_win_tree(we_control_t* control);
 int e_opt_sec_box(int xa, int ya, int num, OPTK* opt, we_window_t* window, int sw);
-int e_close_buffer(we_buffer_t* b);
+int e_close_buffer(we_buffer_t* buffer);
 int e_list_all_win(we_window_t* window);
 
 #endif

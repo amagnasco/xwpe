@@ -458,7 +458,7 @@ e_sc_all (we_window_t * window, int sw)
             {
                 if (window->ed->window[i]->c_sw)
                     free (window->ed->window[i]->c_sw);
-                window->ed->window[i]->c_sw = e_sc_txt (NULL, window->ed->window[i]->b);
+                window->ed->window[i]->c_sw = e_sc_txt (NULL, window->ed->window[i]->buffer);
             }
         }
     }
@@ -516,60 +516,60 @@ e_program_opt (we_window_t * window)
 }
 
 int
-e_sc_nw_txt (int y, we_buffer_t * b, int sw)
+e_sc_nw_txt (int y, we_buffer_t * buffer, int sw)
 {
     int i, out;
 
     if (sw < 0)
     {
-        out = b->window->c_sw[y + 1];
-        for (i = y + 1; i < b->mxlines; i++)
-            b->window->c_sw[i] = b->window->c_sw[i + 1];
-        if (out == b->window->c_sw[y])
+        out = buffer->window->c_sw[y + 1];
+        for (i = y + 1; i < buffer->mxlines; i++)
+            buffer->window->c_sw[i] = buffer->window->c_sw[i + 1];
+        if (out == buffer->window->c_sw[y])
             return (0);
     }
     else if (sw > 0)
-        for (i = b->mxlines - 1; i > y; i--)
-            b->window->c_sw[i] = b->window->c_sw[i - 1];
+        for (i = buffer->mxlines - 1; i > y; i--)
+            buffer->window->c_sw[i] = buffer->window->c_sw[i - 1];
 
-    if (b->window->c_st->continue_column < 0)
+    if (buffer->window->c_st->continue_column < 0)
     {
-        for (i = y; i < b->mxlines - 1; i++)
+        for (i = y; i < buffer->mxlines - 1; i++)
         {
             if ((out =
-                        e_scfbol (b->buflines[i].len, b->window->c_sw[i], b->buflines[i].s,
-                                  b->window->c_st)) == b->window->c_sw[i + 1])
+                        e_scfbol (buffer->buflines[i].len, buffer->window->c_sw[i], buffer->buflines[i].s,
+                                  buffer->window->c_st)) == buffer->window->c_sw[i + 1])
                 break;
             else
-                b->window->c_sw[i + 1] = out;
+                buffer->window->c_sw[i + 1] = out;
         }
     }
     else
     {
         if (y != 0)		/* Quick fix to continue line check - Dennis */
         {
-            b->window->c_sw[y] =
-                isspace (b->buflines[y].
-                         s[b->window->c_st->continue_column]) ? 0 : e_scfbol (b->buflines[y -
+            buffer->window->c_sw[y] =
+                isspace (buffer->buflines[y].
+                         s[buffer->window->c_st->continue_column]) ? 0 : e_scfbol (buffer->buflines[y -
                                  1].
                                  len,
-                                 b->window->
+                                 buffer->window->
                                  c_sw[y -
                                         1],
-                                 b->buflines[y -
+                                 buffer->buflines[y -
                                                1].
                                  s,
-                                 b->window->
+                                 buffer->window->
                                  c_st);
-            for (i = y; i < b->mxlines - 1; i++)
+            for (i = y; i < buffer->mxlines - 1; i++)
             {
                 out =
-                    isspace (b->buflines[i + 1].s[b->window->c_st->continue_column]) ?  0
-                    : e_scfbol (b->buflines[i].len, b-> window-> c_sw [i], b->buflines[i].s, b->window->c_st);
-                if (out == b->window->c_sw[i + 1])
+                    isspace (buffer->buflines[i + 1].s[buffer->window->c_st->continue_column]) ?  0
+                    : e_scfbol (buffer->buflines[i].len, buffer-> window-> c_sw [i], buffer->buflines[i].s, buffer->window->c_st);
+                if (out == buffer->window->c_sw[i + 1])
                     break;
                 else
-                    b->window->c_sw[i + 1] = out;
+                    buffer->window->c_sw[i + 1] = out;
             }
         }
     }
@@ -577,27 +577,27 @@ e_sc_nw_txt (int y, we_buffer_t * b, int sw)
 }
 
 int *
-e_sc_txt (int *c_sw, we_buffer_t * b)
+e_sc_txt (int *c_sw, we_buffer_t * buffer)
 {
     int i;
 
     if (!c_sw)
-        c_sw = malloc (b->mx.y * sizeof (int));
+        c_sw = malloc (buffer->mx.y * sizeof (int));
     c_sw[0] = 0;
-    if (b->window->c_st->continue_column < 0)
+    if (buffer->window->c_st->continue_column < 0)
     {
-        for (i = 0; i < b->mxlines - 1; i++)
+        for (i = 0; i < buffer->mxlines - 1; i++)
             c_sw[i + 1] =
-                e_scfbol (b->buflines[i].len, c_sw[i], b->buflines[i].s, b->window->c_st);
+                e_scfbol (buffer->buflines[i].len, c_sw[i], buffer->buflines[i].s, buffer->window->c_st);
     }
     else
     {
-        for (i = 0; i < b->mxlines - 1; i++)
+        for (i = 0; i < buffer->mxlines - 1; i++)
         {
             c_sw[i + 1] =
-                isspace (b->buflines[i + 1].
-                         s[b->window->c_st->continue_column]) ? 0 : e_scfbol (b->buflines[i].len,
-                                 c_sw[i], b->buflines[i].s, b->window->c_st);
+                isspace (buffer->buflines[i + 1].
+                         s[buffer->window->c_st->continue_column]) ? 0 : e_scfbol (buffer->buflines[i].len,
+                                 c_sw[i], buffer->buflines[i].s, buffer->window->c_st);
         }
     }
     return (c_sw);
@@ -608,11 +608,11 @@ void e_sc_txt_2 (we_window_t *window)
     if(window->c_sw)
     {
         if(window->s->mark_begin.y == window->s->mark_end.y)
-            e_sc_nw_txt(window->s->mark_end.y, window->b, 0);
+            e_sc_nw_txt(window->s->mark_end.y, window->buffer, 0);
         else
         {
-            window->c_sw = realloc(window->c_sw, window->b->mx.y * sizeof(int));
-            window->c_sw = e_sc_txt(window->c_sw, window->b);
+            window->c_sw = realloc(window->c_sw, window->buffer->mx.y * sizeof(int));
+            window->c_sw = e_sc_txt(window->c_sw, window->buffer);
         }
     }
 }
@@ -621,7 +621,7 @@ void e_sc_txt_2 (we_window_t *window)
 void
 e_pr_c_line (int y, we_window_t * window)
 {
-    we_buffer_t *b = window->b;
+    we_buffer_t *buffer = window->buffer;
     we_screen_t *s = window->s;
     int i, j, k, frb = 0;
     int mcsw = window->c_sw[y], svmsw = window->c_sw[y] == 5 ? 5 : 0, bssw = 0;
@@ -632,23 +632,23 @@ e_pr_c_line (int y, we_window_t * window)
 
     for (i = j = 0; j < s->c.x; j++, i++)
     {
-        if (*(b->buflines[y].s + i) == WPE_TAB)
+        if (*(buffer->buflines[y].s + i) == WPE_TAB)
             j += (window->ed->tabn - j % window->ed->tabn - 1);
 #ifdef UNIX
-        else if (((unsigned char) *(b->buflines[y].s + i)) > 126)
+        else if (((unsigned char) *(buffer->buflines[y].s + i)) > 126)
         {
             j++;
-            if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' ')
+            if (((unsigned char) *(buffer->buflines[y].s + i)) < 128 + ' ')
                 j++;
         }
-        else if (*(b->buflines[y].s + i) < ' ')
+        else if (*(buffer->buflines[y].s + i) < ' ')
             j++;
 #endif
     }
     if (j > s->c.x)
         i--;
     for (k = 0; k < i; k++)
-        e_mk_col (b->buflines[y].s, b->buflines[y].len, k, &frb, window->c_st, n_nd, &n_bg, &mcsw,
+        e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, k, &frb, window->c_st, n_nd, &n_bg, &mcsw,
                   &bssw, &svmsw, s);
 #ifdef DEBUGGER
     for (j = 1; j <= s->brp[0]; j++)
@@ -658,9 +658,9 @@ e_pr_c_line (int y, we_window_t * window)
             break;
         }
     for (j = s->c.x;
-            i < b->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
+            i < buffer->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
     {
-        e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
+        e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->da.y && i >= s->da.x && i < s->de.x)
             frb = s->colorset->dy.fg_bg_color;
@@ -670,9 +670,9 @@ e_pr_c_line (int y, we_window_t * window)
             frb = s->colorset->ek.fg_bg_color;
 #else
     for (j = s->c.x;
-            i < b->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
+            i < buffer->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
     {
-        e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
+        e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
         if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
             frb = s->colorset->ek.fg_bg_color;
@@ -684,19 +684,19 @@ e_pr_c_line (int y, we_window_t * window)
                      && (y > s->mark_begin.y
                          || (y == s->mark_begin.y && i >= s->mark_begin.x))))
             frb = s->colorset->ez.fg_bg_color;
-        if (*(b->buflines[y].s + i) == WPE_TAB)
+        if (*(buffer->buflines[y].s + i) == WPE_TAB)
             for (k = window->ed->tabn - j % window->ed->tabn;
                     k > 1 && j < num_cols_on_screen(window) + s->c.x - 2; k--, j++)
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ',
                            frb);
 #ifdef UNIX
-        else if (!WpeIsXwin () && ((unsigned char) *(b->buflines[y].s + i)) > 126)
+        else if (!WpeIsXwin () && ((unsigned char) *(buffer->buflines[y].s + i)) > 126)
         {
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, '@',
                        frb);
             if (++j >= num_cols_on_screen(window) + s->c.x - 1)
                 return;
-            if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' '
+            if (((unsigned char) *(buffer->buflines[y].s + i)) < 128 + ' '
                     && j < num_cols_on_screen(window) + s->c.x - 1)
             {
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
@@ -705,7 +705,7 @@ e_pr_c_line (int y, we_window_t * window)
                     return;
             }
         }
-        else if (*(b->buflines[y].s + i) < ' ')
+        else if (*(buffer->buflines[y].s + i) < ' ')
         {
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, '^',
                        frb);
@@ -713,33 +713,33 @@ e_pr_c_line (int y, we_window_t * window)
                 return;
         }
 #endif
-        if (*(b->buflines[y].s + i) == WPE_TAB)
+        if (*(buffer->buflines[y].s + i) == WPE_TAB)
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ',
                        frb);
 #ifdef UNIX
-        else if (!WpeIsXwin () && ((unsigned char) *(b->buflines[y].s + i)) > 126 &&
+        else if (!WpeIsXwin () && ((unsigned char) *(buffer->buflines[y].s + i)) > 126 &&
                  j < num_cols_on_screen(window) + s->c.x - 1)
         {
-            if (((unsigned char) *(b->buflines[y].s + i)) < 128 + ' ')
+            if (((unsigned char) *(buffer->buflines[y].s + i)) < 128 + ' ')
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
-                           ((unsigned char) *(b->buflines[y].s + i)) + 'A' - 129, frb);
+                           ((unsigned char) *(buffer->buflines[y].s + i)) + 'A' - 129, frb);
             else
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
-                           ((unsigned char) *(b->buflines[y].s + i)) - 128, frb);
+                           ((unsigned char) *(buffer->buflines[y].s + i)) - 128, frb);
         }
-        else if (*(b->buflines[y].s + i) < ' ' && j < num_cols_on_screen(window) + s->c.x - 1)
+        else if (*(buffer->buflines[y].s + i) < ' ' && j < num_cols_on_screen(window) + s->c.x - 1)
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
-                       *(b->buflines[y].s + i) + 'A' - 1, frb);
+                       *(buffer->buflines[y].s + i) + 'A' - 1, frb);
 #endif
         else
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
-                       *(b->buflines[y].s + i), frb);
+                       *(buffer->buflines[y].s + i), frb);
     }
 
-    e_mk_col (b->buflines[y].s, b->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg, &mcsw,
+    e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg, &mcsw,
               &bssw, &svmsw, s);
 
-    if ((i == b->buflines[y].len) && (window->ed->edopt & ED_SHOW_ENDMARKS) &&
+    if ((i == buffer->buflines[y].len) && (window->ed->edopt & ED_SHOW_ENDMARKS) &&
             (DTMD_ISMARKABLE (window->dtmd))
             && (j < num_cols_on_screen_safe(window) + s->c.x - 1))
     {
@@ -750,7 +750,7 @@ e_pr_c_line (int y, we_window_t * window)
                     && (y > s->mark_begin.y
                         || (y == s->mark_begin.y && i >= s->mark_begin.x))))
         {
-            if (*(b->buflines[y].s + i) == WPE_WR)
+            if (*(buffer->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PWR, s->colorset->ez.fg_bg_color);
             else
@@ -759,7 +759,7 @@ e_pr_c_line (int y, we_window_t * window)
         }
         else
         {
-            if (*(b->buflines[y].s + i) == WPE_WR)
+            if (*(buffer->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PWR, frb);
             else
@@ -792,7 +792,7 @@ e_add_synt_tl (char *filename, we_window_t * window)
             {
                 window->c_st = WpeSyntaxDef[i]->syntax_rule;
                 if (window->ed->edopt & ED_SYNTAX_HIGHLIGHT)
-                    window->c_sw = malloc (window->b->mx.y * sizeof (int));
+                    window->c_sw = malloc (window->buffer->mx.y * sizeof (int));
             }
         }
     }
@@ -808,7 +808,7 @@ e_aopen (char *name, char *path, int mode)
     char str[256];
     int i, j;
 
-    ep->b = NULL;
+    ep->buffer = NULL;
     ep->fp = NULL;
     if (mode & 1)
     {
@@ -816,13 +816,13 @@ e_aopen (char *name, char *path, int mode)
             ;
         if (i <= control->mxedt)
         {
-            ep->b = control->window[i]->b;
+            ep->buffer = control->window[i]->buffer;
             ep->p.x = ep->p.y = 0;
         }
     }
-    if ((mode & 2) && !ep->b && !access (name, R_OK))
+    if ((mode & 2) && !ep->buffer && !access (name, R_OK))
         ep->fp = fopen (name, "r");
-    if ((mode & 4) && !ep->b && !ep->fp)
+    if ((mode & 4) && !ep->buffer && !ep->fp)
     {
         for (i = 0; path[i] && !ep->fp; i++)
         {
@@ -839,7 +839,7 @@ e_aopen (char *name, char *path, int mode)
                 strcpy (name, str);
         }
     }
-    if (!ep->b && !ep->fp)
+    if (!ep->buffer && !ep->fp)
     {
         free (ep);
         return NULL;
@@ -865,13 +865,13 @@ e_agets (char *str, int n, E_AFILE * ep)
 
     if (ep->fp)
         return (fgets (str, n, ep->fp));
-    if (ep->p.y >= ep->b->mxlines ||
-            (ep->p.y == ep->b->mxlines - 1 && ep->p.x > ep->b->buflines[ep->p.y].len))
+    if (ep->p.y >= ep->buffer->mxlines ||
+            (ep->p.y == ep->buffer->mxlines - 1 && ep->p.x > ep->buffer->buflines[ep->p.y].len))
         return (NULL);
-    for (i = 0; ep->p.y < ep->b->mxlines; (ep->p.y)++)
+    for (i = 0; ep->p.y < ep->buffer->mxlines; (ep->p.y)++)
     {
-        for (j = ep->p.x; i < n - 1 && j <= ep->b->buflines[ep->p.y].len; i++, j++)
-            str[i] = ep->b->buflines[ep->p.y].s[j];
+        for (j = ep->p.x; i < n - 1 && j <= ep->buffer->buflines[ep->p.y].len; i++, j++)
+            str[i] = ep->buffer->buflines[ep->p.y].s[j];
 
         if (str[i - 1] == '\n')
         {
@@ -1749,13 +1749,13 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     for (i = num, j = x + 1 - (len = strlen (name)); i >= 0;)
     {
         for (len = strlen (name);
-                j >= 0 && strncmp (name, (const char *) window->b->buflines[i].s + j, len);
+                j >= 0 && strncmp (name, (const char *) window->buffer->buflines[i].s + j, len);
                 j--)
             ;
         if (j < 0 && i >= 0)
         {
             i--;
-            j = window->b->buflines[i].len - len + 1;
+            j = window->buffer->buflines[i].len - len + 1;
         }
         else
             break;
@@ -1767,8 +1767,8 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     }
     else
         len = 0;
-    window->s->fa.y = window->s->fe.y = window->b->cursor.y = num;
-    window->s->fe.x = window->b->cursor.x = x + len;
+    window->s->fa.y = window->s->fe.y = window->buffer->cursor.y = num;
+    window->s->fe.x = window->buffer->cursor.x = x + len;
     window->s->fa.x = x;
     e_cursor (window, 1);
     window->s->fa.y = num;
@@ -1825,7 +1825,7 @@ e_sh_nxt_def (we_window_t * window)
 int
 e_nxt_brk (we_window_t * window)
 {
-    int c = window->b->buflines[window->b->cursor.y].s[window->b->cursor.x];
+    int c = window->buffer->buflines[window->buffer->cursor.y].s[window->buffer->cursor.x];
     int i, j, ob, cb, bsp, brk, nif;
 
     if (c == '{' || c == '(' || c == '[')
@@ -1845,21 +1845,21 @@ e_nxt_brk (we_window_t * window)
             ob = '[';
             cb = ']';
         }
-        for (brk = 1, i = window->b->cursor.y; i < window->b->mxlines; i++)
-            for (j = i == window->b->cursor.y ? window->b->cursor.x + 1 : 0; j < window->b->buflines[i].len; j++)
+        for (brk = 1, i = window->buffer->cursor.y; i < window->buffer->mxlines; i++)
+            for (j = i == window->buffer->cursor.y ? window->buffer->cursor.x + 1 : 0; j < window->buffer->buflines[i].len; j++)
             {
-                if (window->b->buflines[i].s[j] == '\"')
+                if (window->buffer->buflines[i].s[j] == '\"')
                 {
                     for (bsp = 0, j++;
-                            j < window->b->buflines[i].len && (window->b->buflines[i].s[j] != '\"' || bsp);
+                            j < window->buffer->buflines[i].len && (window->buffer->buflines[i].s[j] != '\"' || bsp);
                             j++)
                     {
-                        if (window->b->buflines[i].s[j] == '\\')
+                        if (window->buffer->buflines[i].s[j] == '\\')
                             bsp = !bsp;
                         else
                             bsp = 0;
-                        if (j == window->b->buflines[i].len - 1 && bsp
-                                && i < window->b->mxlines - 1)
+                        if (j == window->buffer->buflines[i].len - 1 && bsp
+                                && i < window->buffer->mxlines - 1)
                         {
                             i++;
                             j = -1;
@@ -1867,18 +1867,18 @@ e_nxt_brk (we_window_t * window)
                         }
                     }
                 }
-                else if (window->b->buflines[i].s[j] == '\'')
+                else if (window->buffer->buflines[i].s[j] == '\'')
                 {
                     for (bsp = 0, j++;
-                            j < window->b->buflines[i].len && (window->b->buflines[i].s[j] != '\'' || bsp);
+                            j < window->buffer->buflines[i].len && (window->buffer->buflines[i].s[j] != '\'' || bsp);
                             j++)
                     {
-                        if (window->b->buflines[i].s[j] == '\\')
+                        if (window->buffer->buflines[i].s[j] == '\\')
                             bsp = !bsp;
                         else
                             bsp = 0;
-                        if (j == window->b->buflines[i].len - 1 && bsp
-                                && i < window->b->mxlines - 1)
+                        if (j == window->buffer->buflines[i].len - 1 && bsp
+                                && i < window->buffer->mxlines - 1)
                         {
                             i++;
                             j = -1;
@@ -1886,15 +1886,15 @@ e_nxt_brk (we_window_t * window)
                         }
                     }
                 }
-                else if (window->b->buflines[i].s[j] == '/' && window->b->buflines[i].s[j + 1] == '*')
+                else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j + 1] == '*')
                 {
                     for (j += 2;
-                            window->b->buflines[i].s[j] != '*' || window->b->buflines[i].s[j + 1] != '/';
+                            window->buffer->buflines[i].s[j] != '*' || window->buffer->buflines[i].s[j + 1] != '/';
                             j++)
                     {
-                        if (j >= window->b->buflines[i].len - 1)
+                        if (j >= window->buffer->buflines[i].len - 1)
                         {
-                            if (i < window->b->mxlines - 1)
+                            if (i < window->buffer->mxlines - 1)
                             {
                                 i++;
                                 j = -1;
@@ -1904,37 +1904,37 @@ e_nxt_brk (we_window_t * window)
                         }
                     }
                 }
-                else if (window->b->buflines[i].s[j] == '/' && window->b->buflines[i].s[j + 1] == '/')
+                else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j + 1] == '/')
                     break;
-                else if (window->b->buflines[i].s[j] == '#'
-                         && (!strncmp ((const char *) window->b->buflines[i].s, "#else", 5)
-                             || !strncmp ((const char *) window->b->buflines[i].s, "#elif",
+                else if (window->buffer->buflines[i].s[j] == '#'
+                         && (!strncmp ((const char *) window->buffer->buflines[i].s, "#else", 5)
+                             || !strncmp ((const char *) window->buffer->buflines[i].s, "#elif",
                                           5)))
                 {
-                    for (nif = 1, i++; i < window->b->mxlines - 1; i++)
+                    for (nif = 1, i++; i < window->buffer->mxlines - 1; i++)
                     {
-                        for (j = 0; isspace (window->b->buflines[i].s[j]); j++)
+                        for (j = 0; isspace (window->buffer->buflines[i].s[j]); j++)
                             ;
                         if (!strncmp
-                                ((const char *) window->b->buflines[i].s + j, "#endif", 6))
+                                ((const char *) window->buffer->buflines[i].s + j, "#endif", 6))
                             nif--;
                         else if (!strncmp
-                                 ((const char *) window->b->buflines[i].s + j, "#if", 3))
+                                 ((const char *) window->buffer->buflines[i].s + j, "#if", 3))
                             nif++;
                         if (!nif)
                             break;
                     }
                     continue;
                 }
-                else if (window->b->buflines[i].s[j] == ob)
+                else if (window->buffer->buflines[i].s[j] == ob)
                     brk++;
-                else if (window->b->buflines[i].s[j] == cb)
+                else if (window->buffer->buflines[i].s[j] == cb)
                 {
                     brk--;
                     if (!brk)
                     {
-                        window->b->cursor.y = i;
-                        window->b->cursor.x = j;
+                        window->buffer->cursor.y = i;
+                        window->buffer->cursor.x = j;
                         return (0);
                     }
                 }
@@ -1962,66 +1962,66 @@ e_nxt_brk (we_window_t * window)
             ob = 0;
             cb = 0;
         }
-        for (brk = -1, i = window->b->cursor.y; i >= 0; i--)
+        for (brk = -1, i = window->buffer->cursor.y; i >= 0; i--)
         {
-            if (i == window->b->cursor.y)
+            if (i == window->buffer->cursor.y)
                 for (j = 0;
-                        j < window->b->cursor.x && (window->b->buflines[i].s[j] != '/'
-                                                    || window->b->buflines[i].s[j + 1] != '/'); j++)
+                        j < window->buffer->cursor.x && (window->buffer->buflines[i].s[j] != '/'
+                                                    || window->buffer->buflines[i].s[j + 1] != '/'); j++)
                     ;
             else
                 for (j = 0;
-                        j < window->b->buflines[i].len && (window->b->buflines[i].s[j] != '/'
-                                || window->b->buflines[i].s[j + 1] != '/'); j++)
+                        j < window->buffer->buflines[i].len && (window->buffer->buflines[i].s[j] != '/'
+                                || window->buffer->buflines[i].s[j + 1] != '/'); j++)
                     ;
             for (j--; j >= 0; j--)
             {
-                if (window->b->buflines[i].s[j] == '\"')
+                if (window->buffer->buflines[i].s[j] == '\"')
                 {
                     for (j--; j >= 0; j--)
                     {
-                        if (window->b->buflines[i].s[j] == '\"')
+                        if (window->buffer->buflines[i].s[j] == '\"')
                         {
                             for (bsp = 0, j--;
-                                    j >= 0 && window->b->buflines[i].s[j] == '\\'; j--)
+                                    j >= 0 && window->buffer->buflines[i].s[j] == '\\'; j--)
                                 bsp = !bsp;
                             j++;
                             if (!bsp)
                                 break;
                         }
                         if (j == 0 && i > 0
-                                && window->b->buflines[i - 1].s[window->b->buflines[i - 1].len] == '\\')
+                                && window->buffer->buflines[i - 1].s[window->buffer->buflines[i - 1].len] == '\\')
                         {
                             i--;
-                            j = window->b->buflines[i].len;
+                            j = window->buffer->buflines[i].len;
                         }
                     }
                 }
-                else if (window->b->buflines[i].s[j] == '\'')
+                else if (window->buffer->buflines[i].s[j] == '\'')
                 {
                     for (j--; j >= 0; j--)
                     {
-                        if (window->b->buflines[i].s[j] == '\'')
+                        if (window->buffer->buflines[i].s[j] == '\'')
                         {
                             for (bsp = 0, j--;
-                                    j >= 0 && window->b->buflines[i].s[j] == '\\'; j--)
+                                    j >= 0 && window->buffer->buflines[i].s[j] == '\\'; j--)
                                 bsp = !bsp;
                             j++;
                             if (!bsp)
                                 break;
                         }
                         if (j == 0 && i > 0
-                                && window->b->buflines[i - 1].s[window->b->buflines[i - 1].len] == '\\')
+                                && window->buffer->buflines[i - 1].s[window->buffer->buflines[i - 1].len] == '\\')
                         {
                             i--;
-                            j = window->b->buflines[i].len;
+                            j = window->buffer->buflines[i].len;
                         }
                     }
                 }
-                else if (window->b->buflines[i].s[j] == '/' && window->b->buflines[i].s[j - 1] == '*')
+                else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j - 1] == '*')
                 {
                     for (j -= 2;
-                            window->b->buflines[i].s[j] != '*' || window->b->buflines[i].s[j - 1] != '/';
+                            window->buffer->buflines[i].s[j] != '*' || window->buffer->buflines[i].s[j - 1] != '/';
                             j--)
                     {
                         if (j <= 0)
@@ -2029,27 +2029,27 @@ e_nxt_brk (we_window_t * window)
                             if (i > 0)
                             {
                                 i--;
-                                j = window->b->buflines[i].len;
+                                j = window->buffer->buflines[i].len;
                             }
                             else
                                 break;
                         }
                     }
                 }
-                else if (window->b->buflines[i].s[j] == '#'
-                         && (!strncmp ((const char *) window->b->buflines[i].s, "#else", 5)
-                             || !strncmp ((const char *) window->b->buflines[i].s, "#elif",
+                else if (window->buffer->buflines[i].s[j] == '#'
+                         && (!strncmp ((const char *) window->buffer->buflines[i].s, "#else", 5)
+                             || !strncmp ((const char *) window->buffer->buflines[i].s, "#elif",
                                           5)))
                 {
                     for (nif = 1, i--; i > 0; i--)
                     {
-                        for (j = 0; isspace (window->b->buflines[i].s[j]); j++)
+                        for (j = 0; isspace (window->buffer->buflines[i].s[j]); j++)
                             ;
                         if (!strncmp
-                                ((const char *) window->b->buflines[i].s + j, "#endif", 6))
+                                ((const char *) window->buffer->buflines[i].s + j, "#endif", 6))
                             nif++;
                         else if (!strncmp
-                                 ((const char *) window->b->buflines[i].s + j, "#if", 3))
+                                 ((const char *) window->buffer->buflines[i].s + j, "#if", 3))
                             nif--;
                         if (!nif)
                             break;
@@ -2058,40 +2058,40 @@ e_nxt_brk (we_window_t * window)
                 }
                 else if (!ob)
                 {
-                    if (window->b->buflines[i].s[j] == '{' || window->b->buflines[i].s[j] == '('
-                            || window->b->buflines[i].s[j] == '[')
+                    if (window->buffer->buflines[i].s[j] == '{' || window->buffer->buflines[i].s[j] == '('
+                            || window->buffer->buflines[i].s[j] == '[')
                     {
                         brk++;
                         if (!brk)
                         {
-                            window->b->cursor.y = i;
-                            window->b->cursor.x = j;
+                            window->buffer->cursor.y = i;
+                            window->buffer->cursor.x = j;
                             return (0);
                         }
                     }
-                    else if (window->b->buflines[i].s[j] == '}' || window->b->buflines[i].s[j] == ')'
-                             || window->b->buflines[i].s[j] == ']')
+                    else if (window->buffer->buflines[i].s[j] == '}' || window->buffer->buflines[i].s[j] == ')'
+                             || window->buffer->buflines[i].s[j] == ']')
                         brk--;
                     else if (i == 0 && j == 0)
                     {
-                        window->b->cursor.y = i;
-                        window->b->cursor.x = j;
+                        window->buffer->cursor.y = i;
+                        window->buffer->cursor.x = j;
                         return (0);
                     }
                 }
                 else
                 {
-                    if (window->b->buflines[i].s[j] == ob)
+                    if (window->buffer->buflines[i].s[j] == ob)
                     {
                         brk++;
                         if (!brk)
                         {
-                            window->b->cursor.y = i;
-                            window->b->cursor.x = j;
+                            window->buffer->cursor.y = i;
+                            window->buffer->cursor.x = j;
                             return (0);
                         }
                     }
-                    else if (window->b->buflines[i].s[j] == cb)
+                    else if (window->buffer->buflines[i].s[j] == cb)
                         brk--;
                 }
             }
@@ -2122,34 +2122,34 @@ e_mbt_mk_sp (char *str, int n, int sw, int *m)
 }
 
 int
-e_mbt_str (we_buffer_t * b, int *ii, int *jj, unsigned char c, int n, int sw,
+e_mbt_str (we_buffer_t * buffer, int *ii, int *jj, unsigned char c, int n, int sw,
            int *cmnd)
 {
     int i = *ii, j = *jj + 1, bsp;
 
     if (*cmnd != 2)
         *cmnd = 0;
-    for (bsp = 0; j < b->buflines[i].len && (b->buflines[i].s[j] != c || bsp); j++)
+    for (bsp = 0; j < buffer->buflines[i].len && (buffer->buflines[i].s[j] != c || bsp); j++)
     {
-        if (b->buflines[i].s[j] == '\\')
+        if (buffer->buflines[i].s[j] == '\\')
             bsp = !bsp;
         else
             bsp = 0;
-        if (j == b->buflines[i].len - 1 && bsp && i < b->mxlines - 1)
+        if (j == buffer->buflines[i].len - 1 && bsp && i < buffer->mxlines - 1)
         {
             char *str = malloc (1);
             int m;
 
             i++;
             bsp = 0;
-            for (j = 0, m = b->buflines[i].len; j < m && isspace (b->buflines[i].s[j]); j++)
+            for (j = 0, m = buffer->buflines[i].len; j < m && isspace (buffer->buflines[i].s[j]); j++)
                 ;
             if (j > 0)
-                e_del_nchar (b, b->window->s, 0, i, j);
+                e_del_nchar (buffer, buffer->window->s, 0, i, j);
             if (j < m)
             {
-                str = e_mbt_mk_sp (str, n + b->control->autoindent, sw, &m);
-                e_ins_nchar (b, b->window->s, (unsigned char *) str, 0, i, m);
+                str = e_mbt_mk_sp (str, n + buffer->control->autoindent, sw, &m);
+                e_ins_nchar (buffer, buffer->window->s, (unsigned char *) str, 0, i, m);
             }
             j = -1;
             free (str);
@@ -2161,29 +2161,29 @@ e_mbt_str (we_buffer_t * b, int *ii, int *jj, unsigned char c, int n, int sw,
 }
 
 int
-e_mbt_cnd (we_buffer_t * b, int *ii, int *jj, int n, int sw, int *cmnd)
+e_mbt_cnd (we_buffer_t * buffer, int *ii, int *jj, int n, int sw, int *cmnd)
 {
     int i = *ii, j = *jj + 2;
 
-    for (; b->buflines[i].s[j] != '*' || b->buflines[i].s[j + 1] != '/'; j++)
+    for (; buffer->buflines[i].s[j] != '*' || buffer->buflines[i].s[j + 1] != '/'; j++)
     {
-        if (j >= b->buflines[i].len - 1)
+        if (j >= buffer->buflines[i].len - 1)
         {
-            if (i < b->mxlines - 1)
+            if (i < buffer->mxlines - 1)
             {
                 char *str = malloc (1);
                 int m;
 
                 i++;
-                for (j = 0, m = b->buflines[i].len; j < m && isspace (b->buflines[i].s[j]);
+                for (j = 0, m = buffer->buflines[i].len; j < m && isspace (buffer->buflines[i].s[j]);
                         j++)
                     ;
                 if (j > 0)
-                    e_del_nchar (b, b->window->s, 0, i, j);
-                if (j < m && (b->buflines[i].s[0] != '*' || b->buflines[i].s[1] != '/'))
+                    e_del_nchar (buffer, buffer->window->s, 0, i, j);
+                if (j < m && (buffer->buflines[i].s[0] != '*' || buffer->buflines[i].s[1] != '/'))
                 {
-                    str = e_mbt_mk_sp (str, n + b->control->autoindent, sw, &m);
-                    e_ins_nchar (b, b->window->s, (unsigned char *) str, 0, i, m);
+                    str = e_mbt_mk_sp (str, n + buffer->control->autoindent, sw, &m);
+                    e_ins_nchar (buffer, buffer->window->s, (unsigned char *) str, 0, i, m);
                 }
                 j = -1;
                 free (str);
@@ -2202,7 +2202,7 @@ e_mbt_cnd (we_buffer_t * b, int *ii, int *jj, int n, int sw, int *cmnd)
 int
 e_mk_beauty (int sw, int ndif, we_window_t * window)
 {
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     we_screen_t *s;
     int bg, nd, m, n, i, j, k, brk, cbrk = 0, nif = 0, nic = 0;
     int nstrct = 0, cmnd, cm_sv;
@@ -2235,38 +2235,38 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     e_switch_window (window->ed->edt[i], window);
     WpeMouseChangeShape (WpeWorkingShape);
     window = window->ed->window[window->ed->mxedt];
-    b = window->b;
+    buffer = window->buffer;
     s = window->s;
     sa = s->mark_begin;
     se = s->mark_end;
-    sb = b->cursor;
+    sb = buffer->cursor;
     if (sw & 1)
     {
         if (sw & 2)
-            bg = i = b->cursor.x == 0 ? b->cursor.y : b->cursor.y + 1;
+            bg = i = buffer->cursor.x == 0 ? buffer->cursor.y : buffer->cursor.y + 1;
         else
             bg = i = s->mark_begin.x == 0 ? s->mark_begin.y : s->mark_begin.y + 1;
         nd = s->mark_end.x == 0 ? s->mark_end.y : s->mark_end.y + 1;
-        if (nd > b->mxlines)
-            nd = b->mxlines;
+        if (nd > buffer->mxlines)
+            nd = buffer->mxlines;
     }
     else
     {
         if (sw & 2)
-            bg = i = b->cursor.x == 0 ? b->cursor.y : b->cursor.y + 1;
+            bg = i = buffer->cursor.x == 0 ? buffer->cursor.y : buffer->cursor.y + 1;
         else
             bg = i = 0;
-        nd = b->mxlines;
+        nd = buffer->mxlines;
     }
     if (s->mark_begin.y < 0 || (s->mark_begin.y == 0 && s->mark_begin.x <= 0))
         n = 0;
     else
     {
-        for (n = j = 0; j < b->buflines[i].len && isspace (b->buflines[i].s[j]); j++)
+        for (n = j = 0; j < buffer->buflines[i].len && isspace (buffer->buflines[i].s[j]); j++)
         {
-            if (b->buflines[i].s[j] == ' ')
+            if (buffer->buflines[i].s[j] == ' ')
                 n++;
-            else if (b->buflines[i].s[j] == '\t')
+            else if (buffer->buflines[i].s[j] == '\t')
                 n += window->ed->tabn - (n % window->ed->tabn);
         }
     }
@@ -2277,34 +2277,34 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     nvek[0] = n;
     for (cm_sv = 1, cmnd = 1, brk = 0; i < nd; i++)
     {
-        for (j = 0; j < b->buflines[i].len && isspace (b->buflines[i].s[j]); j++)
+        for (j = 0; j < buffer->buflines[i].len && isspace (buffer->buflines[i].s[j]); j++)
             ;
         if (i > bg)
         {
-            for (k = b->buflines[i - 1].len - 1;
-                    k >= 0 && isspace (b->buflines[i - 1].s[k]); k--);
+            for (k = buffer->buflines[i - 1].len - 1;
+                    k >= 0 && isspace (buffer->buflines[i - 1].s[k]); k--);
             if (k >= 0)
-                e_del_nchar (b, s, k + 1, i - 1, b->buflines[i - 1].len - 1 - k);
-            e_del_nchar (b, s, 0, i, j);
-            if (b->buflines[i].len > 0 && b->buflines[i].s[0] != '#' &&
-                    (b->buflines[i].s[0] != '/' || b->buflines[i].s[1] != '*'))
+                e_del_nchar (buffer, s, k + 1, i - 1, buffer->buflines[i - 1].len - 1 - k);
+            e_del_nchar (buffer, s, 0, i, j);
+            if (buffer->buflines[i].len > 0 && buffer->buflines[i].s[0] != '#' &&
+                    (buffer->buflines[i].s[0] != '/' || buffer->buflines[i].s[1] != '*'))
             {
-                if ((cmnd == 0 && (!cm_sv || b->buflines[i].s[0] != '{')) ||
-                        (cmnd == 2 && b->buflines[i - 1].s[k] == '\\'))
+                if ((cmnd == 0 && (!cm_sv || buffer->buflines[i].s[0] != '{')) ||
+                        (cmnd == 2 && buffer->buflines[i - 1].s[k] == '\\'))
                 {
                     tstr =
                         e_mbt_mk_sp (tstr,
                                      !cmnd ? n +
-                                     b->control->autoindent : b->control->autoindent,
+                                     buffer->control->autoindent : buffer->control->autoindent,
                                      (sw & 4) ? 0 : window->ed->tabn, &m);
-                    e_ins_nchar (b, s, (unsigned char *) tstr, 0, i, m);
+                    e_ins_nchar (buffer, s, (unsigned char *) tstr, 0, i, m);
                     j = m;
                     tstr =
                         e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                 }
                 else
                 {
-                    e_ins_nchar (b, s, (unsigned char *) tstr, 0, i, m);
+                    e_ins_nchar (buffer, s, (unsigned char *) tstr, 0, i, m);
                     j = m;
                     if (cmnd == 0)
                         cmnd = 1;
@@ -2315,24 +2315,24 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
             cm_sv = cbrk ? 1 : 0;
         else
             cm_sv = cmnd;
-        for (cmnd = 1; j < b->buflines[i].len; j++)
+        for (cmnd = 1; j < buffer->buflines[i].len; j++)
         {
-            if (b->buflines[i].s[j] == '\"')
-                e_mbt_str (b, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
-            else if (window->b->buflines[i].s[j] == '\'')
-                e_mbt_str (b, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
-            else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '*')
-                e_mbt_cnd (b, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
-            else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '/')
+            if (buffer->buflines[i].s[j] == '\"')
+                e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
+            else if (window->buffer->buflines[i].s[j] == '\'')
+                e_mbt_str (buffer, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
+            else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '*')
+                e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
+            else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
                 break;
-            else if (b->buflines[i].s[j] == ';')
+            else if (buffer->buflines[i].s[j] == ';')
             {
                 cmnd = cbrk ? 0 : 1;
                 nstrct = 0;
             }
-            else if (b->buflines[i].s[j] == '#' &&
-                     (!strncmp ((const char *) b->buflines[i].s, "#if", 3)
-                      || !strncmp ((const char *) b->buflines[i].s, "#ifdef", 6)))
+            else if (buffer->buflines[i].s[j] == '#' &&
+                     (!strncmp ((const char *) buffer->buflines[i].s, "#if", 3)
+                      || !strncmp ((const char *) buffer->buflines[i].s, "#ifdef", 6)))
             {
                 nif++;
                 ifvekb = realloc (ifvekb, (nif + 1) * sizeof (int));
@@ -2341,9 +2341,9 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 ifvekr[nif] = cbrk;
                 cmnd = 2;
             }
-            else if (b->buflines[i].s[j] == '#' && nif > 0
-                     && (!strncmp ((const char *) b->buflines[i].s, "#else", 5)
-                         || !strncmp ((const char *) b->buflines[i].s, "#elif", 5)))
+            else if (buffer->buflines[i].s[j] == '#' && nif > 0
+                     && (!strncmp ((const char *) buffer->buflines[i].s, "#else", 5)
+                         || !strncmp ((const char *) buffer->buflines[i].s, "#elif", 5)))
             {
                 brk = ifvekb[nif];
                 cbrk = ifvekr[nif];
@@ -2351,72 +2351,72 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
                 cmnd = 2;
             }
-            else if (b->buflines[i].s[j] == '#'
-                     && (!strncmp ((const char *) b->buflines[i].s, "#endif", 6)))
+            else if (buffer->buflines[i].s[j] == '#'
+                     && (!strncmp ((const char *) buffer->buflines[i].s, "#endif", 6)))
             {
                 nif--;
                 cmnd = 2;
             }
-            else if (b->buflines[i].s[j] == '#')
+            else if (buffer->buflines[i].s[j] == '#')
             {
                 cmnd = 2;
-                for (j++; j < b->buflines[i].len; j++)
+                for (j++; j < buffer->buflines[i].len; j++)
                 {
-                    if (j == b->buflines[i].len - 1 && i < b->mxlines - 1
-                            && b->buflines[i].s[j] == '\\')
+                    if (j == buffer->buflines[i].len - 1 && i < buffer->mxlines - 1
+                            && buffer->buflines[i].s[j] == '\\')
                     {
                         i++;
                         j = 0;
                     }
-                    else if (b->buflines[i].s[j] == '\"')
-                        e_mbt_str (b, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn,
+                    else if (buffer->buflines[i].s[j] == '\"')
+                        e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn,
                                    &cmnd);
-                    else if (window->b->buflines[i].s[j] == '\'')
-                        e_mbt_str (b, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn,
+                    else if (window->buffer->buflines[i].s[j] == '\'')
+                        e_mbt_str (buffer, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn,
                                    &cmnd);
-                    else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '*')
-                        e_mbt_cnd (b, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn,
+                    else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '*')
+                        e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn,
                                    &cmnd);
-                    else if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '/')
+                    else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
                         break;
                 }
-                if (b->buflines[i].s[j] == '/' && b->buflines[i].s[j + 1] == '/')
+                if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
                     break;
             }
-            else if (b->buflines[i].s[j] == '(')
+            else if (buffer->buflines[i].s[j] == '(')
             {
                 nstrct = 0;
                 cmnd = 0;
                 cbrk++;
             }
-            else if (b->buflines[i].s[j] == ')')
+            else if (buffer->buflines[i].s[j] == ')')
             {
                 nstrct = 0;
                 cmnd = 0;
                 cbrk--;
             }
-            else if (b->buflines[i].s[j] == '{')
+            else if (buffer->buflines[i].s[j] == '{')
             {
                 brk++;
                 cmnd = 1;
-                for (k = j + 1; k < b->buflines[i].len && isspace (b->buflines[i].s[k]);
+                for (k = j + 1; k < buffer->buflines[i].len && isspace (buffer->buflines[i].s[k]);
                         k++);
-                if (k < b->buflines[i].len
-                        && (b->buflines[i].s[k] != '/'
-                            || (b->buflines[i].s[k + 1] != '*'
-                                && b->buflines[i].s[k + 1] != '/')))
+                if (k < buffer->buflines[i].len
+                        && (buffer->buflines[i].s[k] != '/'
+                            || (buffer->buflines[i].s[k + 1] != '*'
+                                && buffer->buflines[i].s[k + 1] != '/')))
                 {
-                    e_del_nchar (b, s, j + 1, i, k - j - 1);
-                    e_ins_nchar (b, s, (unsigned char *) bstr, j + 1, i,
+                    e_del_nchar (buffer, s, j + 1, i, k - j - 1);
+                    e_ins_nchar (buffer, s, (unsigned char *) bstr, j + 1, i,
                                  ndif - 1);
                 }
                 if (nstrct == 1)
                 {
-                    if (k >= b->buflines[i].len)
+                    if (k >= buffer->buflines[i].len)
                         n = nvek[brk - 1];
                     else
                     {
-                        for (k = j - 1; k >= 0 && isspace (b->buflines[i].s[k]); k--);
+                        for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
                         if (k >= 0)
                             nstrct++;
                     }
@@ -2431,7 +2431,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 {
                     for (n = k = 0; k < j; k++)
                     {
-                        if (b->buflines[i].s[k] == '\t')
+                        if (buffer->buflines[i].s[k] == '\t')
                             n += window->ed->tabn - (n % window->ed->tabn);
                         else
                             n++;
@@ -2442,7 +2442,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 nvek = realloc (nvek, (brk + 1) * sizeof (int));
                 nvek[brk] = n;
             }
-            else if (window->b->buflines[i].s[j] == '}')
+            else if (window->buffer->buflines[i].s[j] == '}')
             {
                 brk--;
                 cmnd = 1;
@@ -2462,7 +2462,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     free (ifvekr);
                     free (vkcs);
                     free (vkcb);
-                    b->cursor = sb;
+                    buffer->cursor = sb;
                     s->mark_begin = sa;
                     s->mark_end = se;
                     e_schirm (window, 1);
@@ -2471,43 +2471,43 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 }
                 n -= ndif;
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
-                for (k = j - 1; k >= 0 && isspace (b->buflines[i].s[k]); k--);
-                e_del_nchar (b, s, k + 1, i, j - 1 - k);
+                for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
+                e_del_nchar (buffer, s, k + 1, i, j - 1 - k);
                 if (k > 0)
                 {
-                    e_ins_nchar (b, s, (unsigned char *) bstr, k + 1, i,
+                    e_ins_nchar (buffer, s, (unsigned char *) bstr, k + 1, i,
                                  ndif - 1);
                     j = k + ndif + 1;
                 }
                 else
                 {
-                    e_ins_nchar (b, s, (unsigned char *) tstr, k + 1, i, m);
+                    e_ins_nchar (buffer, s, (unsigned char *) tstr, k + 1, i, m);
                     j = k + m + 2;
                 }
                 n = nvek[brk];
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
             }
-            else if (((j == 0 || !isalnum1 (b->buflines[i].s[j - 1])) &&
-                      (iscase ((const char *) b->buflines[i].s + j)
-                       || isstatus ((const char *) b->buflines[i].s + j)))
-                     || (nstrct > 1 && isalnum1 (b->buflines[i].s[j])))
+            else if (((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
+                      (iscase ((const char *) buffer->buflines[i].s + j)
+                       || isstatus ((const char *) buffer->buflines[i].s + j)))
+                     || (nstrct > 1 && isalnum1 (buffer->buflines[i].s[j])))
             {
                 if (vkcs[nic])
                 {
                     n = nvek[vkcb[nic] + 1];
                     tstr =
                         e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
-                    for (k = j - 1; k >= 0 && isspace (b->buflines[i].s[k]); k--);
-                    e_del_nchar (b, s, k + 1, i, j - 1 - k);
+                    for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
+                    e_del_nchar (buffer, s, k + 1, i, j - 1 - k);
                     if (k > 0)
                     {
-                        e_ins_nchar (b, s, (unsigned char *) bstr, k + 1, i,
+                        e_ins_nchar (buffer, s, (unsigned char *) bstr, k + 1, i,
                                      ndif - 1);
                         j = k + ndif + 1;
                     }
                     else
                     {
-                        e_ins_nchar (b, s, (unsigned char *) tstr, k + 1, i, m);
+                        e_ins_nchar (buffer, s, (unsigned char *) tstr, k + 1, i, m);
                         j = k + m + 2;
                     }
                 }
@@ -2516,22 +2516,22 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     brk++;
                     vkcs[nic] = 1;
                 }
-                if (nstrct < 2 || isstatus ((const char *) b->buflines[i].s + j))
+                if (nstrct < 2 || isstatus ((const char *) buffer->buflines[i].s + j))
                 {
-                    for (j++; j < b->buflines[i].len && b->buflines[i].s[j] != ':'; j++);
-                    for (k = j + 1; k < b->buflines[i].len && isspace (b->buflines[i].s[k]);
+                    for (j++; j < buffer->buflines[i].len && buffer->buflines[i].s[j] != ':'; j++);
+                    for (k = j + 1; k < buffer->buflines[i].len && isspace (buffer->buflines[i].s[k]);
                             k++);
-                    if (k < b->buflines[i].len
-                            && (b->buflines[i].s[k] != '/'
-                                || (b->buflines[i].s[k + 1] != '*'
-                                    && b->buflines[i].s[k + 1] != '/')))
+                    if (k < buffer->buflines[i].len
+                            && (buffer->buflines[i].s[k] != '/'
+                                || (buffer->buflines[i].s[k + 1] != '*'
+                                    && buffer->buflines[i].s[k + 1] != '/')))
                     {
-                        e_del_nchar (b, s, j + 1, i, k - j - 1);
-                        e_ins_nchar (b, s, (unsigned char *) bstr, j + 1, i,
+                        e_del_nchar (buffer, s, j + 1, i, k - j - 1);
+                        e_ins_nchar (buffer, s, (unsigned char *) bstr, j + 1, i,
                                      ndif - 1);
                         for (n = k = 0; k < j; k++)
                         {
-                            if (b->buflines[i].s[k] == '\t')
+                            if (buffer->buflines[i].s[k] == '\t')
                                 n += window->ed->tabn - (n % window->ed->tabn);
                             else
                                 n++;
@@ -2539,7 +2539,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     }
                 }
                 else if (nstrct == 2)
-                    e_ins_nchar (b, s, (unsigned char *) bstr, j, i, ndif);
+                    e_ins_nchar (buffer, s, (unsigned char *) bstr, j, i, ndif);
                 else
                     j--;
                 n += ndif;
@@ -2549,9 +2549,9 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 cmnd = 3;
                 nstrct = 0;
             }
-            else if ((j == 0 || !isalnum1 (b->buflines[i].s[j - 1])) &&
-                     (!strncmp ((const char *) b->buflines[i].s + j, "switch", 6)
-                      && !isalnum1 (b->buflines[i].s[j + 6])))
+            else if ((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
+                     (!strncmp ((const char *) buffer->buflines[i].s + j, "switch", 6)
+                      && !isalnum1 (buffer->buflines[i].s[j + 6])))
             {
                 nic++;
                 vkcb = realloc (vkcb, (nic + 1) * sizeof (int));
@@ -2559,15 +2559,15 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 vkcs[nic] = 0;
                 vkcb[nic] = brk;
             }
-            else if ((j == 0 || !isalnum1 (b->buflines[i].s[j - 1])) &&
-                     ((!strncmp ((const char *) b->buflines[i].s + j, "class", 5)
-                       && !isalnum1 (b->buflines[i].s[j + 5]))
-                      || (!strncmp ((const char *) b->buflines[i].s + j, "struct", 6)
-                          && !isalnum1 (b->buflines[i].s[j + 6]))))
+            else if ((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
+                     ((!strncmp ((const char *) buffer->buflines[i].s + j, "class", 5)
+                       && !isalnum1 (buffer->buflines[i].s[j + 5]))
+                      || (!strncmp ((const char *) buffer->buflines[i].s + j, "struct", 6)
+                          && !isalnum1 (buffer->buflines[i].s[j + 6]))))
                 nstrct = 1;
-            else if (cmnd == 1 && !isspace (window->b->buflines[i].s[j]))
+            else if (cmnd == 1 && !isspace (window->buffer->buflines[i].s[j]))
                 cmnd = 0;
-            else if (cmnd == 3 && window->b->buflines[i].s[j] == ':')
+            else if (cmnd == 3 && window->buffer->buflines[i].s[j] == ':')
                 cmnd = 1;
         }
     }
@@ -2580,7 +2580,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     free (vkcb);
     s->mark_begin = sa;
     s->mark_end = se;
-    b->cursor = sb;
+    buffer->cursor = sb;
     e_schirm (window, 1);
     WpeMouseRestoreShape ();
     return (0);

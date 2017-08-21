@@ -442,7 +442,7 @@ e_err_save ()
     int i;
     unsigned long maxname;
     we_window_t *window;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
 
     /* Quick fix to multiple emergency save problems */
     if (e_bool_exit)
@@ -453,8 +453,8 @@ e_err_save ()
         if (DTMD_ISTEXT (control->window[i]->dtmd))
         {
             window = control->window[i];
-            b = control->window[i]->b;
-            if (b->mxlines > 1 || b->buflines[0].len > 0)
+            buffer = control->window[i]->buffer;
+            if (buffer->mxlines > 1 || buffer->buflines[0].len > 0)
             {
                 /* Check if file system could have an autosave or emergency save file
                    >12 check is to eliminate dos file systems */
@@ -820,7 +820,7 @@ e_recover (we_control_t * control)
 {
     struct dirfile *files;
     we_window_t *window = NULL;
-    we_buffer_t *b;
+    we_buffer_t *buffer;
     we_screen_t *s;
     int i;
 
@@ -833,9 +833,9 @@ e_recover (we_control_t * control)
         if (!strcmp (window->datnam, BUFFER_NAME))
         {
             s = control->window[control->mxedt]->s;
-            b = control->window[control->mxedt]->b;
-            s->mark_end.y = b->mxlines - 1;
-            s->mark_end.x = b->buflines[b->mxlines - 1].len;
+            buffer = control->window[control->mxedt]->buffer;
+            s->mark_end.y = buffer->mxlines - 1;
+            s->mark_end.x = buffer->buflines[buffer->mxlines - 1].len;
             e_edt_copy (window);
             e_close_window (window);
         }

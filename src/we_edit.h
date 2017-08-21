@@ -25,12 +25,12 @@ int e_ctrl_o(we_window_t* window);
 int e_tst_dfkt(we_window_t* window, int c);
 int e_blk(int anz, int xa, int ya, int col);
 void e_cursor(we_window_t* window, int sw);
-int e_del_line(int yd, we_buffer_t* b, we_screen_t* s);
-int e_del_nchar(we_buffer_t* b, we_screen_t* s, int x, int y, int n);
-int e_ins_nchar(we_buffer_t* b, we_screen_t* sch, unsigned char* s, int xa, int ya,
+int e_del_line(int yd, we_buffer_t* buffer, we_screen_t* s);
+int e_del_nchar(we_buffer_t* buffer, we_screen_t* s, int x, int y, int n);
+int e_ins_nchar(we_buffer_t* buffer, we_screen_t* sch, unsigned char* s, int xa, int ya,
                 int n);
-int e_new_line(int yd, we_buffer_t* b);
-int e_put_char(int c, we_buffer_t* b, we_screen_t* s);
+int e_new_line(int yd, we_buffer_t* buffer);
+int e_put_char(int c, we_buffer_t* buffer, we_screen_t* s);
 int e_su_lblk(int xa, unsigned char* s);
 int e_su_rblk(int xa, unsigned char* s);
 void e_zlsplt(we_window_t* window);
@@ -38,9 +38,9 @@ void WpeFilenameToPathFile(char* filename, char** path, char** file);
 int e_lst_zeichen(int x, int y, int n, int sw, int frb, int max, int iold,
                   int new);
 void e_mouse_bar(int x, int y, int n, int sw, int frb);
-int e_chr_sp(int x, we_buffer_t* b, we_window_t* window);
+int e_chr_sp(int x, we_buffer_t* buffer, we_window_t* window);
 we_undo_t* e_remove_undo(we_undo_t* undo, int sw);
-int e_add_undo(int undo_type, we_buffer_t* b, int x, int y, int n);
+int e_add_undo(int undo_type, we_buffer_t* buffer, int x, int y, int n);
 int e_make_undo(we_window_t* window);
 int e_make_redo(we_window_t* window);
 int e_autosave(we_window_t* window);

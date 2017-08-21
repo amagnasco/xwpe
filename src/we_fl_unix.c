@@ -223,7 +223,7 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
     window->find.sn = 0;
     window->find.rn = 0;
 
-    window->b = (we_buffer_t *) file_buffer;
+    window->buffer = (we_buffer_t *) file_buffer;
     /* the find pattern can only be 79 see FIND structure */
     if ((file_buffer->rdfile = malloc (80)) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
@@ -311,7 +311,7 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
 int
 WpeDrawFileManager (we_window_t * window)
 {
-    FLBFFR *file_buffer = (FLBFFR *) window->b;
+    FLBFFR *file_buffer = (FLBFFR *) window->buffer;
     int i, j;
     int bx1 = 1, bx2 = 1, bx3 = 1, by = 4;
 
@@ -452,7 +452,7 @@ WpeCallFileManager (int sw, we_window_t * window)
     for (i = window->ed->mxedt; i > 0; i--)
         if (window->ed->window[i]->dtmd == DTMD_FILEMANAGER)	/* check only file manager windows */
         {
-            file_buffer = (FLBFFR *) window->ed->window[i]->b;
+            file_buffer = (FLBFFR *) window->ed->window[i]->buffer;
             /* open/new file manager and it is not in save mode */
             if (sw == 0 && file_buffer->sw == sw && window->ed->window[i]->save != 1)
                 break;
@@ -525,7 +525,7 @@ int
 WpeHandleFileManager (we_control_t * control)
 {
     we_window_t *window = control->window[control->mxedt], *fe = NULL;
-    FLBFFR *file_buffer = (FLBFFR *) window->b;
+    FLBFFR *file_buffer = (FLBFFR *) window->buffer;
     we_buffer_t *be = NULL;
     we_screen_t *se = NULL;
     int c = AltC, i, j, t;
@@ -574,7 +574,7 @@ WpeHandleFileManager (we_control_t * control)
         if (DTMD_ISTEXT (control->window[i]->dtmd))
         {
             fe = control->window[i];
-            be = fe->b;
+            be = fe->buffer;
             se = fe->s;
             winnum = control->edt[i];
             break;
@@ -1172,7 +1172,7 @@ WpeHandleFileManager (we_control_t * control)
                     e_close_window (window);
                     e_switch_window (winnum, fe);
                     fe = control->window[control->mxedt];
-                    be = fe->b;
+                    be = fe->buffer;
                     se = fe->s;
                     window = control->window[control->mxedt];
                     if (be->cursor.x != 0)
@@ -1309,7 +1309,7 @@ WpeHandleFileManager (we_control_t * control)
                 {
                     if (fe->c_sw)
                         free (fe->c_sw);
-                    fe->c_sw = e_sc_txt (NULL, fe->b);
+                    fe->c_sw = e_sc_txt (NULL, fe->buffer);
                 }
                 e_rep_win_tree (window->ed);
             }
@@ -1437,7 +1437,7 @@ WpeHandleFileManager (we_control_t * control)
             }
             else if (file_buffer->sw == 5)	/* it is in project management */
             {
-                FLWND *fw = (FLWND *) control->window[control->mxedt - 1]->b;
+                FLWND *fw = (FLWND *) control->window[control->mxedt - 1]->buffer;
                 if (cold != AltN)
                     strcpy (filen, *(file_buffer->df->name + file_buffer->fw->nf));
                 dirtmp = control->window[control->mxedt - 1]->dirct;
@@ -3507,7 +3507,7 @@ e_ed_man (unsigned char *str, we_window_t * window)
     char command[256], tstr[_POSIX_PATH_MAX];
     char cc, hstr[80], nstr[10];
     int mdsv = window->ed->dtmd, bg, i, j = 0;
-    we_buffer_t *b = 0;
+    we_buffer_t *buffer = 0;
 
     if (!str)
         return (0);
@@ -3577,76 +3577,76 @@ e_ed_man (unsigned char *str, we_window_t * window)
         e_edit (window->ed, tstr);
         window->ed->dtmd = mdsv;
         window = window->ed->window[window->ed->mxedt];
-        b = window->b;
-        if (b->mxlines > 1 || !nstr[1])
+        buffer = window->buffer;
+        if (buffer->mxlines > 1 || !nstr[1])
             break;
         nstr[1] = '\0';
         chmod (tstr, 0600);
         remove (tstr);
         e_close_window (window);
     }
-    if (b->mxlines == 1 && b->buflines[0].len == 0)
+    if (buffer->mxlines == 1 && buffer->buflines[0].len == 0)
     {
-        e_ins_nchar (window->b, window->s, (unsigned char *) "No manual entry for ", 0, 0,
+        e_ins_nchar (window->buffer, window->s, (unsigned char *) "No manual entry for ", 0, 0,
                      20);
-        e_ins_nchar (window->b, window->s, (unsigned char *) hstr, b->cursor.x, b->cursor.y,
+        e_ins_nchar (window->buffer, window->s, (unsigned char *) hstr, buffer->cursor.x, buffer->cursor.y,
                      strlen (hstr));
-        e_ins_nchar (window->b, window->s, (unsigned char *) ".", b->cursor.x, b->cursor.y, 1);
+        e_ins_nchar (window->buffer, window->s, (unsigned char *) ".", buffer->cursor.x, buffer->cursor.y, 1);
     }
-    for (i = 0; i < b->mxlines; i++)
-        if (b->buflines[i].len == 0 && (i == 0 || b->buflines[i - 1].len == 0))
+    for (i = 0; i < buffer->mxlines; i++)
+        if (buffer->buflines[i].len == 0 && (i == 0 || buffer->buflines[i - 1].len == 0))
         {
-            e_del_line (i, b, window->s);
+            e_del_line (i, buffer, window->s);
             i--;
         }
-    for (bg = 0; bg < b->buflines[0].len && isspace (b->buflines[0].s[bg]); bg++);
-    if (bg == b->buflines[0].len)
+    for (bg = 0; bg < buffer->buflines[0].len && isspace (buffer->buflines[0].s[bg]); bg++);
+    if (bg == buffer->buflines[0].len)
         bg = 0;
     for (i = 0;
-            i < b->mxlines &&
-            WpeStrnccmp ((const char *) b->buflines[i].s + bg,
+            i < buffer->mxlines &&
+            WpeStrnccmp ((const char *) buffer->buflines[i].s + bg,
                          (const char *) "\017SEE\005 \017ALSO\005", 12)
-            && WpeStrnccmp ((const char *) b->buflines[i].s + bg,
+            && WpeStrnccmp ((const char *) buffer->buflines[i].s + bg,
                             (const char *) "SEE ALSO", 8); i++);
-    if (i < b->mxlines)
-        for (bg = 0, i++; i < b->mxlines && b->buflines[i].len > 0 && bg >= 0; i++)
+    if (i < buffer->mxlines)
+        for (bg = 0, i++; i < buffer->mxlines && buffer->buflines[i].len > 0 && bg >= 0; i++)
         {
             bg = 0;
-            while (b->buflines[i].s[bg])
+            while (buffer->buflines[i].s[bg])
             {
-                for (; isspace (b->buflines[i].s[bg]); bg++);
-                if (!b->buflines[i].s[bg])
+                for (; isspace (buffer->buflines[i].s[bg]); bg++);
+                if (!buffer->buflines[i].s[bg])
                     continue;
                 for (j = bg + 1;
-                        b->buflines[i].s[j] && b->buflines[i].s[j] != ',' && b->buflines[i].s[j] != '.'
-                        && b->buflines[i].s[j] != ' ' && b->buflines[i].s[j] != '('; j++);
-                if (b->buflines[i].s[j] != '(')
+                        buffer->buflines[i].s[j] && buffer->buflines[i].s[j] != ',' && buffer->buflines[i].s[j] != '.'
+                        && buffer->buflines[i].s[j] != ' ' && buffer->buflines[i].s[j] != '('; j++);
+                if (buffer->buflines[i].s[j] != '(')
                 {
                     bg = -1;
                     break;
                 }
-                if (b->buflines[i].s[j - 1] == 5)
-                    e_del_nchar (b, window->s, j - 1, i, 1);
+                if (buffer->buflines[i].s[j - 1] == 5)
+                    e_del_nchar (buffer, window->s, j - 1, i, 1);
                 for (j++;
-                        b->buflines[i].s[j] && b->buflines[i].s[j] != ','
-                        && b->buflines[i].s[j] != '.'; j++);
-                if (b->buflines[i].s[bg] == 15)
-                    b->buflines[i].s[bg] = HFB;
+                        buffer->buflines[i].s[j] && buffer->buflines[i].s[j] != ','
+                        && buffer->buflines[i].s[j] != '.'; j++);
+                if (buffer->buflines[i].s[bg] == 15)
+                    buffer->buflines[i].s[bg] = HFB;
                 else
                 {
                     cc = HFB;
-                    e_ins_nchar (b, window->s, (unsigned char *) &cc, bg, i, 1);
+                    e_ins_nchar (buffer, window->s, (unsigned char *) &cc, bg, i, 1);
                     j++;
                 }
                 cc = HED;
-                e_ins_nchar (b, window->s, (unsigned char *) &cc, j, i, 1);
+                e_ins_nchar (buffer, window->s, (unsigned char *) &cc, j, i, 1);
                 j++;
-                if (b->buflines[i].s[j])
+                if (buffer->buflines[i].s[j])
                     j++;
                 bg = j;
             }
         }
-    b->cursor.x = b->cursor.y = 0;
+    buffer->cursor.x = buffer->cursor.y = 0;
     chmod (tstr, 0600);
     remove (tstr);
     WpeMouseRestoreShape ();
@@ -3884,7 +3884,7 @@ e_data_first (int sw, we_control_t * control, char *nstr)
         window->nblst = 4;
     }
     WpeMouseRestoreShape ();
-    window->b = (we_buffer_t *) fw;
+    window->buffer = (we_buffer_t *) fw;
     fw->df = df;
 
     fw->mxa = window->a.x;
@@ -3910,7 +3910,7 @@ int
 e_data_schirm (we_window_t * window)
 {
     int i, j;
-    FLWND *fw = (FLWND *) window->b;
+    FLWND *fw = (FLWND *) window->buffer;
 
     for (j = window->a.y + 1; j < window->e.y; j++)
         for (i = window->a.x + 1; i < window->e.x; i++)
@@ -3976,7 +3976,7 @@ int
 e_data_eingabe (we_control_t * control)
 {
     we_window_t *window = control->window[control->mxedt];
-    FLWND *fw = (FLWND *) window->b;
+    FLWND *fw = (FLWND *) window->buffer;
     int c = AltF;
 
     fk_cursor (0);
@@ -4072,7 +4072,7 @@ e_data_eingabe (we_control_t * control)
             if (window->ins == 4 && ((!(window->ed->edopt & ED_CUA_STYLE) && c == AF3)
                                      || ((window->ed->edopt & ED_CUA_STYLE) && c == CF4)))
             {
-                FLWND *fw = (FLWND *) window->ed->window[window->ed->mxedt]->b;
+                FLWND *fw = (FLWND *) window->ed->window[window->ed->mxedt]->buffer;
                 fw->df = NULL;
                 e_close_window (window->ed->window[window->ed->mxedt]);
                 return (0);
