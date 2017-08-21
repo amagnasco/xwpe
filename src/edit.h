@@ -338,7 +338,7 @@ typedef struct we_window_struct
     int filemode, flg;
     int* c_sw;
     struct wpeSyntaxRule* c_st;
-    struct CNT* ed;		     /**< edit control structure */
+    struct CNT* edit_control;		     /**< edit control structure */
     we_buffer_t *buffer;     /**< Buffer */
     we_screen_t *screen;	 /**< screen */
     FIND find;

@@ -215,7 +215,7 @@ e_edit (we_control_t * control, char *filename)
     window->ins = 1;
     window->save = 0;
     window->zoom = 0;
-    window->ed = control;
+    window->edit_control = control;
     window->view = NULL;
     window->hlp_str = e_hlp_str[0];
     window->blst = eblst;
@@ -237,8 +237,8 @@ e_edit (we_control_t * control, char *filename)
         window->c_st = NULL;
         window->c_sw = NULL;
     }
-    if ((window->ed->edopt & ED_ALWAYS_AUTO_INDENT) ||
-            ((window->ed->edopt & ED_SOURCE_AUTO_INDENT) && window->c_st))
+    if ((window->edit_control->edopt & ED_ALWAYS_AUTO_INDENT) ||
+            ((window->edit_control->edopt & ED_SOURCE_AUTO_INDENT) && window->c_st))
     {
         window->flg = 1;
     }
@@ -443,7 +443,7 @@ e_eingabe (we_control_t * e)
             return (0);
         else
         {
-            if (window->save > window->ed->maxchg)
+            if (window->save > window->edit_control->maxchg)
                 e_autosave (window);
 #if  MOUSE
             if ((c = e_getch ()) < 0)
@@ -554,11 +554,11 @@ e_eingabe (we_control_t * e)
                   else if(c == WPE_TAB)
                   {    if(window->ins == 8) continue;
                        if (window->ins == 0 || window->ins == 2)
-                         for(c = window->ed->tabn - buffer->cursor.x % window->ed->tabn; c > 0
+                         for(c = window->edit_control->tabn - buffer->cursor.x % window->edit_control->tabn; c > 0
                                                       && buffer->cursor.x < buffer->mx.x; c--)
                       		{   e_put_char(' ', buffer, s);  buffer->cursor.x++;  }
-                       else  e_ins_nchar(buffer, s, window->ed->tabs, buffer->cursor.x, buffer->cursor.y,
-                                               window->ed->tabn - buffer->cursor.x % window->ed->tabn);
+                       else  e_ins_nchar(buffer, s, window->edit_control->tabs, buffer->cursor.x, buffer->cursor.y,
+                                               window->edit_control->tabn - buffer->cursor.x % window->edit_control->tabn);
                        e_schirm(buffer, s, window, 1);
                   }
         */
@@ -912,7 +912,7 @@ e_tst_fkt (int c, we_control_t * e)
         e_edt_copy (window);
         break;
     default:
-        if (window->ed->edopt & ED_CUA_STYLE)
+        if (window->edit_control->edopt & ED_CUA_STYLE)
         {
             switch (c)
             {
@@ -964,8 +964,8 @@ e_tst_fkt (int c, we_control_t * e)
 int
 e_ctrl_k (we_window_t * window)
 {
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *screen = window->ed->window[window->ed->mxedt]->screen;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
+    we_screen_t *screen = window->edit_control->window[window->edit_control->mxedt]->screen;
     int c;
 
     c = toupper (e_getch ());
@@ -1066,8 +1066,8 @@ e_ctrl_k (we_window_t * window)
 int
 e_ctrl_o (we_window_t * window)
 {
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
+    we_screen_t *s = window->edit_control->window[window->edit_control->mxedt]->screen;
     int i, c;
     unsigned char cc;
 
@@ -1239,7 +1239,7 @@ e_tst_dfkt (we_window_t * window, int c)
         e_deb_out (window);
         break;
     default:
-        if (window->ed->edopt & ED_CUA_STYLE)
+        if (window->edit_control->edopt & ED_CUA_STYLE)
         {
             switch (c)
             {
@@ -1327,7 +1327,7 @@ e_chr_sp (int x, we_buffer_t * buffer, we_window_t * window)
     for (i = j = 0; i + j < x && i < buffer->buflines[buffer->cursor.y].len; i++)
     {
         if (*(buffer->buflines[buffer->cursor.y].s + i) == WPE_TAB)
-            j += (window->ed->tabn - ((j + i) % window->ed->tabn) - 1);
+            j += (window->edit_control->tabn - ((j + i) % window->edit_control->tabn) - 1);
 #ifdef UNIX
         else if (!WpeIsXwin ()
                  && ((unsigned char) *(buffer->buflines[buffer->cursor.y].s + i)) > 126)
@@ -1703,7 +1703,7 @@ e_cursor (we_window_t * window, int sw)
     for (i = j = 0; i < buffer->cursor.x; i++)
     {
         if (*(buffer->buflines[buffer->cursor.y].s + i) == WPE_TAB)
-            j += (window->ed->tabn - ((j + i) % window->ed->tabn) - 1);
+            j += (window->edit_control->tabn - ((j + i) % window->edit_control->tabn) - 1);
         else if (!WpeIsXwin ()
                  && ((unsigned char) *(buffer->buflines[buffer->cursor.y].s + i)) > 126)
         {
@@ -2280,7 +2280,7 @@ e_autosave (we_window_t * window)
     unsigned long maxname;
 
     window->save = 1;
-    if (!(window->ed->autosv & 2))
+    if (!(window->edit_control->autosv & 2))
         return (0);
     /* Check if file system could have an autosave or emergency save file
        >12 check is to eliminate dos file systems */
@@ -2436,7 +2436,7 @@ e_add_undo (int undo_type, we_buffer_t * buffer, int x, int y, int n)
         fn->buffer = bn;
         fn->c_sw = NULL;
         fn->c_st = NULL;
-        fn->ed = NULL;		/* Quick fix so that breakpoints aren't recalculated */
+        fn->edit_control = NULL;		/* Quick fix so that breakpoints aren't recalculated */
         fn->find.dirct = NULL;
         bn->window = fn;
         bn->window->screen = sn;
@@ -2523,11 +2523,11 @@ e_make_rudo (we_window_t * window, int doing_redo)
     we_undo_t *undo;
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     s = window->screen;
     undo = doing_redo ? buffer->redo : buffer->undo;
@@ -2536,7 +2536,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), 0, buffer->colorset);
         return (-1);
     }
-    window = window->ed->window[window->ed->mxedt];
+    window = window->edit_control->window[window->edit_control->mxedt];
     e_phase = doing_redo ? REDO_PHASE : UNDO_PHASE;
     buffer->cursor = undo->cursor_start;
     if (undo->type == 'r' || undo->type == 's')

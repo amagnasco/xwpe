@@ -124,7 +124,7 @@ extern char *e_p_msg[];
 int
 e_deb_inp (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int c = 0;
 
     window = control->window[control->mxedt];
@@ -227,7 +227,7 @@ e_debug_switch (we_window_t * window, int c)
         e_d_q_quit (window);
         break;
     default:
-        if (window->ed->edopt & ED_CUA_STYLE)
+        if (window->edit_control->edopt & ED_CUA_STYLE)
         {
             switch (c)
             {
@@ -450,7 +450,7 @@ e_d_dum_read ()
 int
 e_d_p_exec (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer;
     int ret, i, is, j;
     char str[512];
@@ -637,7 +637,7 @@ e_d_quit_basic (we_window_t * window)
 int
 e_d_quit (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
     e_d_quit_basic (window);
     e_d_p_message (e_d_msg[ERR_ENDDEBUG], window, 1);
@@ -660,10 +660,10 @@ e_d_add_watch (char *str, we_window_t * window)
 {
     int ret;
 
-    ret = e_add_arguments (str, "Add Watch", window, 0, AltA, &window->ed->wdf);
+    ret = e_add_arguments (str, "Add Watch", window, 0, AltA, &window->edit_control->wdf);
     if (ret != WPE_ESC)
     {
-        window->ed->wdf = e_add_df (str, window->ed->wdf);
+        window->edit_control->wdf = e_add_df (str, window->edit_control->wdf);
     }
     fk_cursor (1);
     return (ret);
@@ -672,7 +672,7 @@ e_d_add_watch (char *str, we_window_t * window)
 int
 e_remove_all_watches (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i, n;
 
     if (e_d_nwtchs < 1)
@@ -699,7 +699,7 @@ e_remove_all_watches (we_window_t * window)
 int
 e_delete_watches (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int n;
 
@@ -724,7 +724,7 @@ e_make_watches (we_window_t * window)
     char str[128];
     int i, y;
 
-    if ((window->ed->mxedt > 0) && (strcmp (window->datnam, "Watches") == 0))
+    if ((window->edit_control->mxedt > 0) && (strcmp (window->datnam, "Watches") == 0))
     {
         /* sets y=number of watch we're inserting */
         for (y = 0; y < e_d_nwtchs && e_d_nrwtchs[y] < window->buffer->cursor.y; y++)
@@ -732,8 +732,8 @@ e_make_watches (we_window_t * window)
     }
     else
         y = e_d_nwtchs;
-    if (window->ed->wdf && window->ed->wdf->nr_files > 0)
-        strcpy (str, window->ed->wdf->name[0]);
+    if (window->edit_control->wdf && window->edit_control->wdf->nr_files > 0)
+        strcpy (str, window->edit_control->wdf->name[0]);
     else
         str[0] = '\0';
     if (e_d_add_watch (str, window))
@@ -774,7 +774,7 @@ e_make_watches (we_window_t * window)
 int
 e_edit_watches (we_window_t * window)
 {
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
     char str[128];
     int l;
 
@@ -802,7 +802,7 @@ e_edit_watches (we_window_t * window)
 int
 e_d_p_watches (we_window_t * window, int sw)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer;
     int iw, k = 0, l, ret;
     char str1[256], *str;		/* is 256 always large enough? */
@@ -955,13 +955,13 @@ e_p_show_watches (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0; i--)
-        if (!strcmp (window->ed->window[i]->datnam, "Watches"))
+    for (i = window->edit_control->mxedt; i > 0; i--)
+        if (!strcmp (window->edit_control->window[i]->datnam, "Watches"))
         {
-            e_switch_window (window->ed->edt[i], window->ed->window[window->ed->mxedt]);
+            e_switch_window (window->edit_control->edt[i], window->edit_control->window[window->edit_control->mxedt]);
             break;
         }
-    if (i <= 0 && e_edit (window->ed, "Watches"))
+    if (i <= 0 && e_edit (window->edit_control, "Watches"))
     {
         return (-1);
     }
@@ -976,11 +976,11 @@ e_d_reinit_watches (we_window_t * window, char *prj)
     int i, e, g, q, r;
     char *prj2;
 
-    for (i = window->ed->mxedt; i > 0; i--)
+    for (i = window->edit_control->mxedt; i > 0; i--)
     {
-        if (!strcmp (window->ed->window[i]->datnam, "Watches"))
+        if (!strcmp (window->edit_control->window[i]->datnam, "Watches"))
         {
-            e_remove_all_watches (window->ed->window[window->ed->edt[i]]);
+            e_remove_all_watches (window->edit_control->window[window->edit_control->edt[i]]);
             break;
         }
     }
@@ -1026,7 +1026,7 @@ e_deb_stack (we_window_t * window)
 int
 e_d_p_stack (we_window_t * window, int sw)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer;
     we_screen_t *s;
     int is, i, j, k, l, ret;
@@ -1153,7 +1153,7 @@ e_make_stack (we_window_t * window)
 {
     char file[128], str[128], *tmpstr = malloc (1);
     int i, ret, line = 0, dif;
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
     e_d_switch_out (0);
     if (e_deb_type != 1)
     {
@@ -1338,10 +1338,10 @@ e_d_reinit_brks (we_window_t * window, char *prj)
 
                     /**** needed to keep schirm in sync ****/
 
-                    for (g = window->ed->mxedt; g > 0; g--)
-                        if (!strcmp (window->ed->window[g]->datnam, name))
+                    for (g = window->edit_control->mxedt; g > 0; g--)
+                        if (!strcmp (window->edit_control->window[g]->datnam, name))
                         {
-                            e_brk_schirm (window->ed->window[g]);
+                            e_brk_schirm (window->edit_control->window[g]);
                         }
                 }
             }
@@ -1358,7 +1358,7 @@ e_d_reinit_brks (we_window_t * window, char *prj)
 int
 e_brk_recalc (we_window_t * window, int start, int len)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer;
     int n, rend, count, yline;
     int *br_lines;
@@ -1425,7 +1425,7 @@ e_breakpoint (we_window_t * window)
 int
 e_remove_breakpoints (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 
     if (e_d_swtch)
@@ -1656,7 +1656,7 @@ e_mk_brk_main (we_window_t * window, int sw)
 int
 e_make_breakpoint (we_window_t * window, int sw)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_screen_t *s = control->window[control->mxedt]->screen;
     we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int ret, i;
@@ -2131,7 +2131,7 @@ e_exec_deb (we_window_t * window, char *prog)
 int
 e_start_debug (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i, file;
     char estr[128];
 
@@ -2221,7 +2221,7 @@ e_start_debug (we_window_t * window)
 int
 e_run_debug (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int kbdflgs, ret;
 
     if (e_d_swtch < 1 && (ret = e_start_debug (window)) < 0)
@@ -2258,7 +2258,7 @@ e_run_debug (we_window_t * window)
 int
 e_deb_run (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     char eing[256];
     int ret, len, prsw = 0;
 
@@ -2413,7 +2413,7 @@ e_d_step_next (we_window_t * window, int sw)
 int
 e_d_goto_func (we_window_t * window, int flag)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int ret = 0, main_brk = 0;
     char str[128];
@@ -2986,7 +2986,7 @@ e_make_line_num2 (char *str, char *file)
 int
 e_d_goto_break (char *file, int line, we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer;
     we_screen_t *s;
     we_window_t ftmp;
@@ -2995,7 +2995,7 @@ e_d_goto_break (char *file, int line, we_window_t * window)
 
     /*   if(schirm != e_d_save_schirm) e_d_switch_out(0);  */
     e_d_switch_out (0);
-    ftmp.ed = control;
+    ftmp.edit_control = control;
     ftmp.colorset = window->colorset;
     WpeFilenameToPathFile (file, &ftmp.dirct, &ftmp.datnam);
     for (i = 0; i < SVLINES; i++)
@@ -3041,7 +3041,7 @@ e_d_goto_break (char *file, int line, we_window_t * window)
 int
 e_d_delbreak (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 
     for (i = control->mxedt; i >= 0; i--)

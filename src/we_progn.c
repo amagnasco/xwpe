@@ -440,36 +440,36 @@ e_sc_all (we_window_t * window, int sw)
         return (0);
     if (!sw)
     {
-        for (i = 0; i <= window->ed->mxedt; i++)
-            if (window->ed->window[i]->c_sw)
+        for (i = 0; i <= window->edit_control->mxedt; i++)
+            if (window->edit_control->window[i]->c_sw)
             {
-                free (window->ed->window[i]->c_sw);
-                window->ed->window[i]->c_sw = NULL;
+                free (window->edit_control->window[i]->c_sw);
+                window->edit_control->window[i]->c_sw = NULL;
             }
     }
     else
     {
-        for (i = 0; i <= window->ed->mxedt; i++)
+        for (i = 0; i <= window->edit_control->mxedt; i++)
         {
-            if (window->ed->window[i]->c_sw)
-                free (window->ed->window[i]->c_sw);
-            e_add_synt_tl (window->ed->window[i]->datnam, window->ed->window[i]);
-            if (window->ed->window[i]->c_st)
+            if (window->edit_control->window[i]->c_sw)
+                free (window->edit_control->window[i]->c_sw);
+            e_add_synt_tl (window->edit_control->window[i]->datnam, window->edit_control->window[i]);
+            if (window->edit_control->window[i]->c_st)
             {
-                if (window->ed->window[i]->c_sw)
-                    free (window->ed->window[i]->c_sw);
-                window->ed->window[i]->c_sw = e_sc_txt (NULL, window->ed->window[i]->buffer);
+                if (window->edit_control->window[i]->c_sw)
+                    free (window->edit_control->window[i]->c_sw);
+                window->edit_control->window[i]->c_sw = e_sc_txt (NULL, window->edit_control->window[i]->buffer);
             }
         }
     }
-    e_rep_win_tree (window->ed);
+    e_rep_win_tree (window->edit_control);
     return (0);
 }
 
 int
 e_program_opt (we_window_t * window)
 {
-    int ret, sw = window->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0;
+    int ret, sw = window->edit_control->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0;
     W_OPTSTR *o = e_init_opt_kst (window);
 
     if (!o)
@@ -483,11 +483,11 @@ e_program_opt (we_window_t * window)
     o->crsw = AltO;
     e_add_txtstr (21, 2, "Screen:", o);
     e_add_txtstr (4, 2, "Stop at", o);
-    e_add_sswstr (5, 3, 0, AltE, window->ed->edopt & ED_ERRORS_STOP_AT ? 1 : 0,
+    e_add_sswstr (5, 3, 0, AltE, window->edit_control->edopt & ED_ERRORS_STOP_AT ? 1 : 0,
                   "Errors  ", o);
-    e_add_sswstr (5, 4, 0, AltM, window->ed->edopt & ED_MESSAGES_STOP_AT ? 1 : 0,
+    e_add_sswstr (5, 4, 0, AltM, window->edit_control->edopt & ED_MESSAGES_STOP_AT ? 1 : 0,
                   "Messages", o);
-    e_add_sswstr (22, 3, 0, AltD, window->ed->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0,
+    e_add_sswstr (22, 3, 0, AltD, window->edit_control->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0,
                   "Diff. Colors", o);
     e_add_wrstr (4, 6, 4, 7, 35, 128, 1, AltX, "EXecution-Directory:",
                  e_prog.exedir, NULL, o);
@@ -504,7 +504,7 @@ e_program_opt (we_window_t * window)
         if (e_prog.sys_include)
             free (e_prog.sys_include);
         e_prog.sys_include = WpeStrdup (o->wstr[1]->txt);
-        window->ed->edopt = (window->ed->edopt & ~ED_PROGRAMMING_OPTIONS) +
+        window->edit_control->edopt = (window->edit_control->edopt & ~ED_PROGRAMMING_OPTIONS) +
                             (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
                             (o->sstr[1]->num ? ED_MESSAGES_STOP_AT : 0) +
                             (o->sstr[2]->num ? ED_SYNTAX_HIGHLIGHT : 0);
@@ -633,7 +633,7 @@ e_pr_c_line (int y, we_window_t * window)
     for (i = j = 0; j < s->c.x; j++, i++)
     {
         if (*(buffer->buflines[y].s + i) == WPE_TAB)
-            j += (window->ed->tabn - j % window->ed->tabn - 1);
+            j += (window->edit_control->tabn - j % window->edit_control->tabn - 1);
 #ifdef UNIX
         else if (((unsigned char) *(buffer->buflines[y].s + i)) > 126)
         {
@@ -685,7 +685,7 @@ e_pr_c_line (int y, we_window_t * window)
                          || (y == s->mark_begin.y && i >= s->mark_begin.x))))
             frb = s->colorset->ez.fg_bg_color;
         if (*(buffer->buflines[y].s + i) == WPE_TAB)
-            for (k = window->ed->tabn - j % window->ed->tabn;
+            for (k = window->edit_control->tabn - j % window->edit_control->tabn;
                     k > 1 && j < num_cols_on_screen(window) + s->c.x - 2; k--, j++)
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ',
                            frb);
@@ -739,7 +739,7 @@ e_pr_c_line (int y, we_window_t * window)
     e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg, &mcsw,
               &bssw, &svmsw, s);
 
-    if ((i == buffer->buflines[y].len) && (window->ed->edopt & ED_SHOW_ENDMARKS) &&
+    if ((i == buffer->buflines[y].len) && (window->edit_control->edopt & ED_SHOW_ENDMARKS) &&
             (DTMD_ISMARKABLE (window->dtmd))
             && (j < num_cols_on_screen_safe(window) + s->c.x - 1))
     {
@@ -791,7 +791,7 @@ e_add_synt_tl (char *filename, we_window_t * window)
             if (!strcmp (filename, WpeSyntaxDef[i]->extension[k]))
             {
                 window->c_st = WpeSyntaxDef[i]->syntax_rule;
-                if (window->ed->edopt & ED_SYNTAX_HIGHLIGHT)
+                if (window->edit_control->edopt & ED_SYNTAX_HIGHLIGHT)
                     window->c_sw = malloc (window->buffer->mx.y * sizeof (int));
             }
         }
@@ -1732,20 +1732,20 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     strcpy (*oldname, file);
     for (i = strlen (file) - 1; i >= 0 && file[i] != '/'; i--)
         ;
-    for (j = window->ed->mxedt; j > 0; j--)
+    for (j = window->edit_control->mxedt; j > 0; j--)
     {
         if (i < 0)
-            filename = window->ed->window[j]->datnam;
+            filename = window->edit_control->window[j]->datnam;
         else
-            filename = e_mkfilename (window->ed->window[j]->dirct, window->ed->window[j]->datnam);
+            filename = e_mkfilename (window->edit_control->window[j]->dirct, window->edit_control->window[j]->datnam);
         if (!strcmp (filename, file))
             break;
     }
     if (j > 0)
-        e_switch_window (window->ed->edt[j], window->ed->window[window->ed->mxedt]);
+        e_switch_window (window->edit_control->edt[j], window->edit_control->window[window->edit_control->mxedt]);
     else
-        e_edit (window->ed, file);
-    window = window->ed->window[window->ed->mxedt];
+        e_edit (window->edit_control, file);
+    window = window->edit_control->window[window->edit_control->mxedt];
     for (i = num, j = x + 1 - (len = strlen (name)); i >= 0;)
     {
         for (len = strlen (name);
@@ -1791,11 +1791,11 @@ e_sh_def (we_window_t * window)
 {
     char str[80];
 
-    if (window->ed->shdf && window->ed->shdf->nr_files > 0)
-        strcpy (str, window->ed->shdf->name[0]);
+    if (window->edit_control->shdf && window->edit_control->shdf->nr_files > 0)
+        strcpy (str, window->edit_control->shdf->name[0]);
     else
         str[0] = '\0';
-    if (e_add_arguments (str, "Show Definition", window, 0, AltB, &window->ed->shdf))
+    if (e_add_arguments (str, "Show Definition", window, 0, AltB, &window->edit_control->shdf))
     {
         if (sh_df.str)
             free (sh_df.str);
@@ -1806,7 +1806,7 @@ e_sh_def (we_window_t * window)
             free (sh_df.file);
             sh_df.file = NULL;
         }
-        window->ed->shdf = e_add_df (str, window->ed->shdf);
+        window->edit_control->shdf = e_add_df (str, window->edit_control->shdf);
         sh_df.num = e_show_nm_f (str, window, -1, &sh_df.file);
     }
     return (0);
@@ -2097,7 +2097,7 @@ e_nxt_brk (we_window_t * window)
             }
         }
     }
-    return (e_error ("No Matching Bracket!", 0, window->ed->colorset));
+    return (e_error ("No Matching Bracket!", 0, window->edit_control->colorset));
 }
 
 char *
@@ -2215,7 +2215,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     int *vkcb = malloc (sizeof (int));
     we_point_t sa, se, sb;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--)
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--)
         ;
     if (i <= 0)
     {
@@ -2232,9 +2232,9 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     *ifvekr = 0;
     *vkcs = 0;
     *vkcb = 0;
-    e_switch_window (window->ed->edt[i], window);
+    e_switch_window (window->edit_control->edt[i], window);
     WpeMouseChangeShape (WpeWorkingShape);
-    window = window->ed->window[window->ed->mxedt];
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     s = window->screen;
     sa = s->mark_begin;
@@ -2267,10 +2267,10 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
             if (buffer->buflines[i].s[j] == ' ')
                 n++;
             else if (buffer->buflines[i].s[j] == '\t')
-                n += window->ed->tabn - (n % window->ed->tabn);
+                n += window->edit_control->tabn - (n % window->edit_control->tabn);
         }
     }
-    tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+    tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
     for (k = 0; k < ndif; k++)
         bstr[k] = ' ';
     bstr[ndif] = '\0';
@@ -2296,11 +2296,11 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                         e_mbt_mk_sp (tstr,
                                      !cmnd ? n +
                                      buffer->control->autoindent : buffer->control->autoindent,
-                                     (sw & 4) ? 0 : window->ed->tabn, &m);
+                                     (sw & 4) ? 0 : window->edit_control->tabn, &m);
                     e_ins_nchar (buffer, s, (unsigned char *) tstr, 0, i, m);
                     j = m;
                     tstr =
-                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 }
                 else
                 {
@@ -2318,11 +2318,11 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
         for (cmnd = 1; j < buffer->buflines[i].len; j++)
         {
             if (buffer->buflines[i].s[j] == '\"')
-                e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
+                e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->edit_control->tabn, &cmnd);
             else if (window->buffer->buflines[i].s[j] == '\'')
-                e_mbt_str (buffer, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
+                e_mbt_str (buffer, &i, &j, '\'', n, (sw & 4) ? 0 : window->edit_control->tabn, &cmnd);
             else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '*')
-                e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn, &cmnd);
+                e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->edit_control->tabn, &cmnd);
             else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
                 break;
             else if (buffer->buflines[i].s[j] == ';')
@@ -2348,7 +2348,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 brk = ifvekb[nif];
                 cbrk = ifvekr[nif];
                 n = nvek[brk];
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 cmnd = 2;
             }
             else if (buffer->buflines[i].s[j] == '#'
@@ -2369,13 +2369,13 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                         j = 0;
                     }
                     else if (buffer->buflines[i].s[j] == '\"')
-                        e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->ed->tabn,
+                        e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->edit_control->tabn,
                                    &cmnd);
                     else if (window->buffer->buflines[i].s[j] == '\'')
-                        e_mbt_str (buffer, &i, &j, '\'', n, (sw & 4) ? 0 : window->ed->tabn,
+                        e_mbt_str (buffer, &i, &j, '\'', n, (sw & 4) ? 0 : window->edit_control->tabn,
                                    &cmnd);
                     else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '*')
-                        e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->ed->tabn,
+                        e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->edit_control->tabn,
                                    &cmnd);
                     else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
                         break;
@@ -2432,13 +2432,13 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     for (n = k = 0; k < j; k++)
                     {
                         if (buffer->buflines[i].s[k] == '\t')
-                            n += window->ed->tabn - (n % window->ed->tabn);
+                            n += window->edit_control->tabn - (n % window->edit_control->tabn);
                         else
                             n++;
                     }
                 }
                 n += ndif;
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 nvek = realloc (nvek, (brk + 1) * sizeof (int));
                 nvek[brk] = n;
             }
@@ -2470,7 +2470,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     return (0);
                 }
                 n -= ndif;
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
                 e_del_nchar (buffer, s, k + 1, i, j - 1 - k);
                 if (k > 0)
@@ -2485,7 +2485,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     j = k + m + 2;
                 }
                 n = nvek[brk];
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
             }
             else if (((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
                       (iscase ((const char *) buffer->buflines[i].s + j)
@@ -2496,7 +2496,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 {
                     n = nvek[vkcb[nic] + 1];
                     tstr =
-                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+                        e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                     for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
                     e_del_nchar (buffer, s, k + 1, i, j - 1 - k);
                     if (k > 0)
@@ -2532,7 +2532,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                         for (n = k = 0; k < j; k++)
                         {
                             if (buffer->buflines[i].s[k] == '\t')
-                                n += window->ed->tabn - (n % window->ed->tabn);
+                                n += window->edit_control->tabn - (n % window->edit_control->tabn);
                             else
                                 n++;
                         }
@@ -2543,7 +2543,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 else
                     j--;
                 n += ndif;
-                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->ed->tabn, &m);
+                tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 nvek = realloc (nvek, (brk + 1) * sizeof (int));
                 nvek[brk] = n;
                 cmnd = 3;
@@ -2605,7 +2605,7 @@ e_p_beautify (we_window_t * window)
     e_add_txtstr (4, 2, "Begin:", o);
     e_add_txtstr (4, 6, "Scope:", o);
     e_add_numstr (4, 12, 26, 12, 2, 100, 0, AltN, "Number of Columns:",
-                  window->ed->autoindent, o);
+                  window->edit_control->autoindent, o);
     e_add_sswstr (5, 10, 3, AltT, (b_sw & 4) ? 1 : 0, "No Tabulators     ", o);
     e_add_pswstr (0, 5, 3, 0, AltG, 0, "Global            ", o);
     e_add_pswstr (0, 5, 4, 0, AltS, b_sw & 1, "Selected Text     ", o);
@@ -2619,8 +2619,8 @@ e_p_beautify (we_window_t * window)
     {
         b_sw =
             o->pstr[0]->num + (o->pstr[1]->num << 1) + (o->sstr[0]->num << 2);
-        window->ed->autoindent = o->nstr[0]->num;
-        e_mk_beauty (b_sw, window->ed->autoindent, window);
+        window->edit_control->autoindent = o->nstr[0]->num;
+        e_mk_beauty (b_sw, window->edit_control->autoindent, window);
     }
     freeostr (o);
     return (0);

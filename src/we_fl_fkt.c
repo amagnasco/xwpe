@@ -182,7 +182,7 @@ e_readin (int i, int j, FILE * fp, we_buffer_t * buffer, char *type)
 int
 e_new (we_window_t * window)
 {
-    e_edit (window->ed, "");
+    e_edit (window->edit_control, "");
     return (0);
 }
 
@@ -204,12 +204,12 @@ e_save (we_window_t * window)
 
     if (!DTMD_ISTEXT (window->dtmd))
         return (0);
-    for (ret = window->ed->mxedt; ret > 0 && window->ed->window[ret] != window; ret--)
+    for (ret = window->edit_control->mxedt; ret > 0 && window->edit_control->window[ret] != window; ret--)
         ;
     if (!ret)
         return (0);
     WpeMouseChangeShape (WpeWorkingShape);
-    buffer = window->ed->window[ret]->buffer;
+    buffer = window->edit_control->window[ret]->buffer;
     ret = e_write (0, 0, buffer->mx.x, buffer->mxlines - 1, window, WPE_BACKUP);
     if (ret != WPE_ESC)
         window->save = 0;
@@ -222,7 +222,7 @@ int
 e_saveall (we_window_t * window)
 {
     int i, ret = 0;
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
 
     for (i = control->mxedt; i > 0; i--)
     {
@@ -244,7 +244,7 @@ e_quit (we_window_t * window)
 #if  MOUSE
     int g[4];
 #endif
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
 #ifdef DEBUGGER
     e_d_quit_basic (window);
 #endif
@@ -300,9 +300,9 @@ e_write (int xa, int ya, int xe, int ye, we_window_t * window, int backup)
     char *tmp, *ptmp;
     FILE *fp;
 
-    for (j = window->ed->mxedt; j > 0 && window->ed->window[j] != window; j--)
+    for (j = window->edit_control->mxedt; j > 0 && window->edit_control->window[j] != window; j--)
         ;
-    buffer = window->ed->window[j]->buffer;
+    buffer = window->edit_control->window[j]->buffer;
     if (window->ins == 8)
         return (WPE_ESC);
     ptmp = e_mkfilename (window->dirct, window->datnam);
@@ -885,10 +885,10 @@ e_read_help (char *str, we_window_t * window, int sw)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     window->buffer->window = window;
     window->buffer->cursor = e_set_pnt (0, 0);
-    window->buffer->mx = e_set_pnt (window->ed->maxcol, MAXLINES);
+    window->buffer->mx = e_set_pnt (window->edit_control->maxcol, MAXLINES);
     window->buffer->mxlines = 0;
     window->buffer->colorset = window->colorset;
-    window->buffer->control = window->ed;
+    window->buffer->control = window->edit_control;
     window->buffer->undo = NULL;
     e_new_line (0, window->buffer);
     if (str && str[0])
@@ -1534,10 +1534,10 @@ e_read_info (char *str, we_window_t * window, char *file)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     window->buffer->window = window;
     window->buffer->cursor = e_set_pnt (0, 0);
-    window->buffer->mx = e_set_pnt (window->ed->maxcol, MAXLINES);
+    window->buffer->mx = e_set_pnt (window->edit_control->maxcol, MAXLINES);
     window->buffer->mxlines = 0;
     window->buffer->colorset = window->colorset;
-    window->buffer->control = window->ed;
+    window->buffer->control = window->edit_control;
     window->buffer->undo = NULL;
     e_new_line (0, window->buffer);
     while ((ptmp = e_i_fgets (tstr, 256, fp)) != NULL)
@@ -1624,21 +1624,21 @@ e_help_loc (we_window_t * window, int sw)
 
     if (!sw)
         tmp = e_hlp;
-    for (i = window->ed->mxedt; i >= 0; i--)
+    for (i = window->edit_control->mxedt; i >= 0; i--)
     {
-        if (!strcmp (window->ed->window[i]->datnam, "Help"))
+        if (!strcmp (window->edit_control->window[i]->datnam, "Help"))
         {
-            e_switch_window (window->ed->edt[i], window);
+            e_switch_window (window->edit_control->edt[i], window);
             if (ud_help && sw != ud_help->sw)
             {
-                e_close_window (window->ed->window[window->ed->mxedt]);
+                e_close_window (window->edit_control->window[window->edit_control->mxedt]);
                 i = -1;
             }
             break;
         }
     }
     if (i < 0)
-        e_edit (window->ed, "Help");
+        e_edit (window->edit_control, "Help");
     if ((tmp || sw) && (next = malloc (sizeof (struct help_ud))))
     {
         if (tmp)
@@ -1657,10 +1657,10 @@ e_help_loc (we_window_t * window, int sw)
         ud_help = next;
     }
     if (sw)
-        e_read_info (NULL, window->ed->window[window->ed->mxedt], NULL);
+        e_read_info (NULL, window->edit_control->window[window->edit_control->mxedt], NULL);
     else
-        e_read_help (tmp, window->ed->window[window->ed->mxedt], 0);
-    e_schirm (window->ed->window[window->ed->mxedt], 1);
+        e_read_help (tmp, window->edit_control->window[window->edit_control->mxedt], 0);
+    e_schirm (window->edit_control->window[window->edit_control->mxedt], 1);
     return (0);
 }
 
@@ -1688,12 +1688,12 @@ e_hp_next (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i >= 0; i--)
+    for (i = window->edit_control->mxedt; i >= 0; i--)
     {
-        if (!strcmp (window->ed->window[i]->datnam, "Help"))
+        if (!strcmp (window->edit_control->window[i]->datnam, "Help"))
         {
-            e_switch_window (window->ed->edt[i], window);
-            window = window->ed->window[window->ed->mxedt];
+            e_switch_window (window->edit_control->edt[i], window);
+            window = window->edit_control->window[window->edit_control->mxedt];
             break;
         }
     }
@@ -1708,12 +1708,12 @@ e_hp_prev (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i >= 0; i--)
+    for (i = window->edit_control->mxedt; i >= 0; i--)
     {
-        if (!strcmp (window->ed->window[i]->datnam, "Help"))
+        if (!strcmp (window->edit_control->window[i]->datnam, "Help"))
         {
-            e_switch_window (window->ed->edt[i], window);
-            window = window->ed->window[window->ed->mxedt];
+            e_switch_window (window->edit_control->edt[i], window);
+            window = window->edit_control->window[window->edit_control->mxedt];
             break;
         }
     }
@@ -1728,12 +1728,12 @@ e_hp_back (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i >= 0; i--)
+    for (i = window->edit_control->mxedt; i >= 0; i--)
     {
-        if (!strcmp (window->ed->window[i]->datnam, "Help"))
+        if (!strcmp (window->edit_control->window[i]->datnam, "Help"))
         {
-            e_switch_window (window->ed->edt[i], window);
-            window = window->ed->window[window->ed->mxedt];
+            e_switch_window (window->edit_control->edt[i], window);
+            window = window->edit_control->window[window->edit_control->mxedt];
             break;
         }
     }
@@ -1748,12 +1748,12 @@ e_hp_ret (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i >= 0; i--)
+    for (i = window->edit_control->mxedt; i >= 0; i--)
     {
-        if (!strcmp (window->ed->window[i]->datnam, "Help"))
+        if (!strcmp (window->edit_control->window[i]->datnam, "Help"))
         {
-            e_switch_window (window->ed->edt[i], window);
-            window = window->ed->window[window->ed->mxedt];
+            e_switch_window (window->edit_control->edt[i], window);
+            window = window->edit_control->window[window->edit_control->mxedt];
             break;
         }
     }
@@ -1772,9 +1772,9 @@ e_topic_search (we_window_t * window)
     we_buffer_t *buffer;
     unsigned char item[100], *ptr = item;
 
-    if (!DTMD_ISTEXT (window->ed->window[window->ed->mxedt]->dtmd))
+    if (!DTMD_ISTEXT (window->edit_control->window[window->edit_control->mxedt]->dtmd))
         return (0);
-    buffer = window->ed->window[window->ed->mxedt]->buffer;
+    buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
     y = buffer->cursor.y;
     x = buffer->cursor.x;
     s = buffer->buflines[y].s;

@@ -845,8 +845,8 @@ e_recover (we_control_t * control)
         if (WpeIsProg ())
             e_add_synt_tl (window->datnam, window);
 #endif
-        if ((window->ed->edopt & ED_ALWAYS_AUTO_INDENT) ||
-                ((window->ed->edopt & ED_SOURCE_AUTO_INDENT) && window->c_st))
+        if ((window->edit_control->edopt & ED_ALWAYS_AUTO_INDENT) ||
+                ((window->edit_control->edopt & ED_SOURCE_AUTO_INDENT) && window->c_st))
             window->flg = 1;
     }
     freedf (files);

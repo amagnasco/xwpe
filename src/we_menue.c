@@ -43,7 +43,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     int i, c = 255, nold = n <= 0 ? 1 : n - 1;
     extern OPT opt[];
     extern char *e_hlp, *e_hlp_str[];
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     MENU *mainmenu = malloc (MENOPT * sizeof (MENU));
 
     for (i = 0; i < MENOPT; i++)
@@ -91,7 +91,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     if ((mainmenu[1].menuitems =
                 malloc (mainmenu[1].no_of_items * sizeof (OPTK))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
-    if (window->ed->edopt & ED_CUA_STYLE)
+    if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[1].menuitems[0] =
             WpeFillSubmenuItem ("File-Manager     F2", 0, 'M', WpeManager);
@@ -166,7 +166,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     if ((mainmenu[3].menuitems =
                 malloc (mainmenu[3].no_of_items * sizeof (OPTK))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
-    if (window->ed->edopt & ED_CUA_STYLE)
+    if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[3].menuitems[0] =
             WpeFillSubmenuItem ("Find      Alt F3 / ^O F", 0, 'F', e_find);
@@ -295,7 +295,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
                     malloc (mainmenu[MENOPT - 5].no_of_items * sizeof (OPTK))) == NULL)
             e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
 
-        if (window->ed->edopt & ED_CUA_STYLE)
+        if (window->edit_control->edopt & ED_CUA_STYLE)
         {
             mainmenu[MENOPT - 5].menuitems[0] =
                 WpeFillSubmenuItem ("Toggle Breakpoint  F5 / ^G B", 7, 'B',
@@ -412,7 +412,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     if ((mainmenu[MENOPT - 2].menuitems =
                 malloc (mainmenu[MENOPT - 2].no_of_items * sizeof (OPTK))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
-    if (window->ed->edopt & ED_CUA_STYLE)
+    if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[MENOPT - 2].menuitems[0] =
             WpeFillSubmenuItem ("Size/Move            ^L", 0, 'S', e_size_move);

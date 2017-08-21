@@ -35,11 +35,11 @@ e_blck_del (we_window_t * window)
     we_screen_t *screen;
     int i, y, len;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     screen = window->screen;
     if ((screen->mark_end.y < screen->mark_begin.y) ||
@@ -86,11 +86,11 @@ e_blck_dup (char *dup, we_window_t * window)
     we_screen_t *screen;
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     if (window->ins == 8)
         return (0);
     buffer = window->buffer;
@@ -141,7 +141,7 @@ e_blck_clear (we_buffer_t * buffer, we_screen_t * s)
 int
 e_show_clipboard (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_window_t *fo;
     int i, j;
 
@@ -228,14 +228,14 @@ int
 e_edt_copy (we_window_t * window)
 {
     we_buffer_t *buffer;
-    we_buffer_t *b0 = window->ed->window[0]->buffer;
+    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
     int i, save;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     save = window->save;
     if ((window->screen->mark_end.y < window->screen->mark_begin.y) ||
@@ -260,14 +260,14 @@ int
 e_edt_einf (we_window_t * window)
 {
     we_buffer_t *buffer;
-    we_buffer_t *b0 = window->ed->window[0]->buffer;
+    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
     int i, y, len;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     if (window->ins == 8)
         return (0);
@@ -301,22 +301,22 @@ e_blck_move (we_window_t * window)
     int i;
     we_point_t ka;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
-    ka.x = window->ed->window[window->ed->mxedt]->screen->mark_begin.x;
-    if (buffer->cursor.y > window->ed->window[window->ed->mxedt]->screen->mark_begin.y)
-        ka.y = window->ed->window[window->ed->mxedt]->screen->mark_begin.y;
+    ka.x = window->edit_control->window[window->edit_control->mxedt]->screen->mark_begin.x;
+    if (buffer->cursor.y > window->edit_control->window[window->edit_control->mxedt]->screen->mark_begin.y)
+        ka.y = window->edit_control->window[window->edit_control->mxedt]->screen->mark_begin.y;
     else
     {
-        ka.y = window->ed->window[window->ed->mxedt]->screen->mark_end.y;
-        if (buffer->cursor.y == window->ed->window[window->ed->mxedt]->screen->mark_begin.y &&
-                buffer->cursor.x < window->ed->window[window->ed->mxedt]->screen->mark_begin.x)
-            ka.x = window->ed->window[window->ed->mxedt]->screen->mark_end.x +
-                   window->ed->window[window->ed->mxedt]->screen->mark_begin.x - buffer->cursor.x;
+        ka.y = window->edit_control->window[window->edit_control->mxedt]->screen->mark_end.y;
+        if (buffer->cursor.y == window->edit_control->window[window->edit_control->mxedt]->screen->mark_begin.y &&
+                buffer->cursor.x < window->edit_control->window[window->edit_control->mxedt]->screen->mark_begin.x)
+            ka.x = window->edit_control->window[window->edit_control->mxedt]->screen->mark_end.x +
+                   window->edit_control->window[window->edit_control->mxedt]->screen->mark_begin.x - buffer->cursor.x;
     }
     global_disable_add_undo = 1;
     e_move_block (buffer->cursor.x, buffer->cursor.y, buffer, buffer, window);
@@ -330,7 +330,7 @@ e_blck_move (we_window_t * window)
 void
 e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * window)
 {
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
+    we_screen_t *s = window->edit_control->window[window->edit_control->mxedt]->screen;
     we_screen_t *sv = bv->window->screen;
     we_screen_t *sz = bz->window->screen;
     int sw = (y < s->mark_begin.y) ? 0 : 1;
@@ -356,7 +356,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         n = kex - kax;
         bz->cursor.x = x;
         bz->cursor.y = y;
-        if ((cstr = malloc (window->ed->maxcol * sizeof (char))) == NULL)
+        if ((cstr = malloc (window->edit_control->maxcol * sizeof (char))) == NULL)
         {
             e_error (e_msg[ERR_LOWMEM], 0, bz->colorset);
             return;
@@ -383,7 +383,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         n = kax - x;
         bv->cursor.x = x;
         bv->cursor.y = y;
-        if ((cstr = malloc (window->ed->maxcol * sizeof (char))) == NULL)
+        if ((cstr = malloc (window->edit_control->maxcol * sizeof (char))) == NULL)
         {
             e_error (e_msg[ERR_LOWMEM], 0, bz->colorset);
             return;
@@ -409,7 +409,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         n = x - kex;
         bv->cursor.x = kex;
         bv->cursor.y = y;
-        if ((cstr = malloc (window->ed->maxcol * sizeof (char))) == NULL)
+        if ((cstr = malloc (window->edit_control->maxcol * sizeof (char))) == NULL)
         {
             e_error (e_msg[ERR_LOWMEM], 0, bz->colorset);
             return;
@@ -494,7 +494,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
     bz->cursor.x = sz->mark_end.x = kex;
     bz->cursor.y = sz->mark_end.y = key - kay + y;
 
-    window->save = window->ed->maxchg + 1;
+    window->save = window->edit_control->maxchg + 1;
     if (bv->window->c_sw)
     {
         bv->window->c_sw = e_sc_txt (bv->window->c_sw, bv->window->buffer);
@@ -515,11 +515,11 @@ e_blck_copy (we_window_t * window)
     we_buffer_t *buffer;
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     if (window->ins == 8)
         return (0);
@@ -538,7 +538,7 @@ void
 e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
               we_window_t * window)
 {
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
     we_screen_t *s_src = buffer_src->window->screen;
     we_screen_t *s_dst = buffer_dst->window->screen;
     int i, j, n = s_src->mark_end.y - s_src->mark_begin.y - 1;
@@ -663,11 +663,11 @@ e_blck_hide (we_window_t * window)
     we_screen_t *screen;
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     screen = window->screen;
     screen->mark_begin = e_set_pnt (0, 0);
     screen->mark_end = e_set_pnt (0, 0);
@@ -681,11 +681,11 @@ e_blck_begin (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     window->screen->mark_begin = window->buffer->cursor;
     e_schirm (window, 1);
     return (0);
@@ -697,11 +697,11 @@ e_blck_end (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     window->screen->mark_end = window->buffer->cursor;
     e_schirm (window, 1);
     return (0);
@@ -713,11 +713,11 @@ e_blck_gt_beg (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     window->buffer->cursor = window->screen->mark_begin;
     e_schirm (window, 1);
     return (0);
@@ -729,11 +729,11 @@ e_blck_gt_end (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     window->buffer->cursor = window->screen->mark_end;
     e_schirm (window, 1);
     return (0);
@@ -745,11 +745,11 @@ e_blck_mrk_all (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     window->screen->mark_begin.x = 0;
     window->screen->mark_begin.y = 0;
     window->screen->mark_end.y = window->buffer->mxlines - 1;
@@ -764,11 +764,11 @@ e_blck_mrk_line (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     window->screen->mark_begin.x = 0;
     window->screen->mark_begin.y = window->buffer->cursor.y;
     if (window->buffer->cursor.y < window->buffer->mxlines - 1)
@@ -797,11 +797,11 @@ e_blck_changecase (we_window_t * window, int mode)
     we_screen_t *screen;
     int i, x, y, x_begin, x_end;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     screen = window->screen;
 
@@ -871,14 +871,14 @@ e_blck_to_left (we_window_t * window)
 {
     we_buffer_t *buffer;
     we_screen_t *s;
-    int n = window->ed->tabn / 2, i, j, k, l, m, nn;
+    int n = window->edit_control->tabn / 2, i, j, k, l, m, nn;
     unsigned char *tstr = malloc ((n + 2) * sizeof (char));
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     s = window->screen;
     for (i = 0; i <= n; i++)
@@ -899,9 +899,9 @@ e_blck_to_left (we_window_t * window)
                     if (buffer->buflines[i].s[m] == ' ')
                         nn++;
                     else if (buffer->buflines[i].s[m] == '\t')
-                        nn += window->ed->tabn - (nn % window->ed->tabn);
+                        nn += window->edit_control->tabn - (nn % window->edit_control->tabn);
                 }
-                k += window->ed->tabn - (nn % window->ed->tabn);
+                k += window->edit_control->tabn - (nn % window->edit_control->tabn);
             }
         }
         l = j - l - 1;
@@ -925,14 +925,14 @@ e_blck_to_right (we_window_t * window)
 {
     we_buffer_t *buffer;
     we_screen_t *s;
-    int n = window->ed->tabn / 2, i, j;
+    int n = window->edit_control->tabn / 2, i, j;
     unsigned char *tstr = malloc ((n + 1) * sizeof (char));
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     s = window->screen;
     for (i = 0; i < n; i++)
@@ -957,8 +957,8 @@ e_blck_read (we_window_t * window)
 {
     if (window->ins == 8)
         return (WPE_ESC);
-    WpeCreateFileManager (1, window->ed, "");
-    window->save = window->ed->maxchg + 1;
+    WpeCreateFileManager (1, window->edit_control, "");
+    window->save = window->edit_control->maxchg + 1;
     return (0);
 }
 
@@ -966,7 +966,7 @@ e_blck_read (we_window_t * window)
 int
 e_blck_write (we_window_t * window)
 {
-    WpeCreateFileManager (2, window->ed, "");
+    WpeCreateFileManager (2, window->edit_control, "");
     return (0);
 }
 
@@ -990,16 +990,16 @@ e_repeat_search (we_window_t * window)
 {
     we_screen_t *screen;
     we_buffer_t *buffer;
-    FIND *find = &(window->ed->find);
+    FIND *find = &(window->edit_control->find);
     int i, j, iend, jend;
     int start_offset;
     size_t end_offset;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     screen = window->screen;
     if (find_global_scope(find->sw))
@@ -1112,11 +1112,11 @@ e_goto_line (we_window_t * window)
     int i, num;
     we_buffer_t *buffer;
 
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     if ((num =
                 e_num_kst ("Goto Line Number", buffer->cursor.y + 1, buffer->mxlines, window, 0,
@@ -1133,19 +1133,19 @@ e_find (we_window_t * window)
 {
     we_screen_t *wind_screen;
     we_buffer_t *buffer;
-    FIND *find = &(window->ed->find);
+    FIND *find = &(window->edit_control->find);
     int i, ret;
     char strTemp[80];
     W_OPTSTR *find_dialog = e_init_opt_kst (window);
 
     if (!find_dialog)
         return (-1);
-    for (i = window->ed->mxedt;
-            i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt;
+            i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     wind_screen = window->screen;
     if (e_blck_dup (strTemp, window))
@@ -1165,7 +1165,7 @@ e_find (we_window_t * window)
     e_add_txtstr (4, 9, "Scope:", find_dialog);
     e_add_txtstr (32, 9, "Begin:", find_dialog);
     e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
-                 &window->ed->sdf, find_dialog);
+                 &window->edit_control->sdf, find_dialog);
     e_add_sswstr (5, 5, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", find_dialog);
     e_add_sswstr (5, 6, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", find_dialog);
     e_add_sswstr (5, 7, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", find_dialog);
@@ -1223,18 +1223,18 @@ e_replace (we_window_t *window)
 {
     we_screen_t *screen;
     we_buffer_t *buffer;
-    FIND *find = &(window->ed->find);
+    FIND *find = &(window->edit_control->find);
     int i, ret, c, rep = 0, found = 0;
     char strTemp[80];
     W_OPTSTR *replace_options = e_init_opt_kst (window);
 
     if (!replace_options)
         return (-1);
-    for (i = window->ed->mxedt; i > 0 && !DTMD_ISTEXT (window->ed->window[i]->dtmd); i--);
+    for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--);
     if (i <= 0)
         return (0);
-    e_switch_window (window->ed->edt[i], window);
-    window = window->ed->window[window->ed->mxedt];
+    e_switch_window (window->edit_control->edt[i], window);
+    window = window->edit_control->window[window->edit_control->mxedt];
     buffer = window->buffer;
     screen = window->screen;
     if (e_blck_dup (strTemp, window))
@@ -1252,9 +1252,9 @@ e_replace (we_window_t *window)
     e_add_txtstr (4, 6, "Options:", replace_options);
     e_add_txtstr (32, 6, "Scope:", replace_options);
     e_add_wrstr (4, 2, 18, 2, 35, 128, 0, AltT, "Text to Find:", find->search,
-                 &window->ed->sdf, replace_options);
+                 &window->edit_control->sdf, replace_options);
     e_add_wrstr (4, 4, 18, 4, 35, 128, 0, AltN, "New Text:", find->replace,
-                 &window->ed->rdf, replace_options);
+                 &window->edit_control->rdf, replace_options);
     e_add_sswstr (5, 7, 0, AltC, find->sw & 128 ? 1 : 0, "Case sensitive    ", replace_options);
     e_add_sswstr (5, 8, 0, AltW, find->sw & 64 ? 1 : 0, "Whole words only  ", replace_options);
     e_add_sswstr (5, 9, 0, AltR, find->sw & 32 ? 1 : 0, "Regular expression", replace_options);

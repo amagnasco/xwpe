@@ -163,7 +163,7 @@ e_compile (we_window_t * window)
 int
 e_p_make (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     char ostr[128], estr[128], mstr[80];
     int len, i, file = -1;
     struct stat cbuf[1], obuf[1];
@@ -252,7 +252,7 @@ e_p_make (we_window_t * window)
 int
 e_run (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer;
     char estr[256];
     int len, ret;
@@ -319,7 +319,7 @@ e_run (we_window_t * window)
 int
 e_comp (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_view_t *view = NULL;
     char **arg = NULL, fstr[128], ostr[128];
     int i, file = -1, len, argc;
@@ -370,7 +370,7 @@ e_comp (we_window_t * window)
     arg[1] = malloc (3);
     strcpy (arg[1], "-c");
     len = strlen (window->dirct) - 1;
-    if (!strcmp (window->ed->dirct, window->dirct))
+    if (!strcmp (window->edit_control->dirct, window->dirct))
         strcpy (fstr, window->datnam);
     if (window->dirct[len] == DIRC)
         sprintf (fstr, "%s%s", window->dirct, window->datnam);
@@ -494,7 +494,7 @@ int
 e_p_exec (int file, we_window_t * window, we_view_t * view)
 {
     UNUSED (file);
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int ret = 0, i = 0, is, fd, stat_loc;
     char str[128];
@@ -565,7 +565,7 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
 int
 e_show_error (int n, we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int i, j, bg = 0;
     char *filename;
@@ -622,7 +622,7 @@ e_show_error (int n, we_window_t * window)
         for (i = j = 0; i + j < err_li[n].x && i < buffer->buflines[buffer->cursor.y].len; i++)
         {
             if (*(buffer->buflines[buffer->cursor.y].s + i) == WPE_TAB)
-                j += (window->ed->tabn - ((j + i) % window->ed->tabn) - 1);
+                j += (window->edit_control->tabn - ((j + i) % window->edit_control->tabn) - 1);
 #ifdef UNIX
             else if (((unsigned char) *(buffer->buflines[buffer->cursor.y].s + i)) > 126)
             {
@@ -688,7 +688,7 @@ int
 e_make_error_list (we_window_t * window)
 {
     char file[256];
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer = control->window[control->mxedt]->buffer;
     int i, j, k = 0, ret = 0;
     char *spt;
@@ -773,7 +773,7 @@ e_make_error_list (we_window_t * window)
             }
         }
     }
-    if (!(window->ed->edopt & (ED_ERRORS_STOP_AT | ED_MESSAGES_STOP_AT)) &&
+    if (!(window->edit_control->edopt & (ED_ERRORS_STOP_AT | ED_MESSAGES_STOP_AT)) &&
             ret == -1)
         ret = 0;
     return (ret);
@@ -815,7 +815,7 @@ int
 e_d_car_ret (we_window_t * window)
 {
     if (!strcmp (window->datnam, "Messages"))
-        return (e_cur_error (window->ed->window[window->ed->mxedt]->buffer->cursor.y, window));
+        return (e_cur_error (window->edit_control->window[window->edit_control->mxedt]->buffer->cursor.y, window));
 #ifdef DEBUGGER
     if (!strcmp (window->datnam, "Watches"))
         return (e_edit_watches (window));
@@ -1140,18 +1140,18 @@ e_prj_ob_btt (we_window_t * window, int sw)
 {
     FLWND *fw;
 
-    e_data_first (sw + 4, window->ed, window->ed->dirct);
+    e_data_first (sw + 4, window->edit_control, window->edit_control->dirct);
     if (sw > 0)
     {
-        if (!(window->ed->edopt & ED_CUA_STYLE))
-            while (e_data_eingabe (window->ed) != AF3)
+        if (!(window->edit_control->edopt & ED_CUA_STYLE))
+            while (e_data_eingabe (window->edit_control) != AF3)
                 ;
         else
-            while (e_data_eingabe (window->ed) != CF4)
+            while (e_data_eingabe (window->edit_control) != CF4)
                 ;
-        fw = (FLWND *) window->ed->window[window->ed->mxedt]->buffer;
+        fw = (FLWND *) window->edit_control->window[window->edit_control->mxedt]->buffer;
         fw->df = NULL;
-        e_close_window (window->ed->window[window->ed->mxedt]);
+        e_close_window (window->edit_control->window[window->edit_control->mxedt]);
     }
     return (0);
 }
@@ -1246,7 +1246,7 @@ e_project_options (we_window_t * window)
         e_wrt_prj_fl (window);
     }
     freeostr (o);
-    if (window->ed->mxedt > 0)
+    if (window->edit_control->mxedt > 0)
         e_ed_rahmen (window, 1);
     return (0);
 }
@@ -1457,7 +1457,7 @@ e_project_name (we_window_t * window)
 int
 e_project (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
     if (!e_project_name (window))
     {
@@ -1481,7 +1481,7 @@ e_project (we_window_t * window)
 int
 e_show_project (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 
     for (i = control->mxedt;
@@ -1500,7 +1500,7 @@ e_show_project (we_window_t * window)
 int
 e_cl_project (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 
     if (!e_prog.project)
@@ -1522,7 +1522,7 @@ e_cl_project (we_window_t * window)
 int
 e_p_add_item (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 
     for (i = control->mxedt;
@@ -1548,7 +1548,7 @@ e_p_add_item (we_window_t * window)
 int
 e_p_del_item (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 
     for (i = control->mxedt;
@@ -1707,7 +1707,7 @@ print_to_end_of_buffer (we_buffer_t * buffer, char *str, int wrap_limit)
 int
 e_d_p_message (char *str, we_window_t * window, int sw)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_buffer_t *buffer;
     int i;
 
@@ -1752,8 +1752,8 @@ int
 e_d_car_mouse (we_window_t * window)
 {
     extern struct mouse e_mouse;
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
+    we_screen_t *s = window->edit_control->window[window->edit_control->mxedt]->screen;
 
     if (e_mouse.y - window->a.y + s->c.y - 1 == buffer->cursor.y)
         return (WPE_CR);
@@ -1769,7 +1769,7 @@ e_d_car_mouse (we_window_t * window)
 int
 e_exec_make (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     char **arg = NULL;
     int i, file, argc;
 
@@ -1839,7 +1839,7 @@ e_run_sh (we_window_t * window)
     }
     else
 #endif
-        ret = e_system (estr, window->ed);
+        ret = e_system (estr, window->edit_control);
     UNUSED (ret);			// FIXME: can we use the return code from executing the program?
     WpeMouseRestoreShape ();
     return (0);
@@ -2291,7 +2291,7 @@ e_p_get_var (char *string)
 int
 e_c_project (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     struct dirfile *df = NULL;
     char **arg;
     int i, j, k, file = -1, len, elen, argc, libsw = 0, exlib = 0, sccs = 0;
@@ -2316,9 +2316,9 @@ e_c_project (we_window_t * window)
     e_s_prog.comp_sw &= ~1;
     e_argc = 1;
     argc = 1;
-    for (i = window->ed->mxedt; i > 0 && (window->ed->window[i]->dtmd != DTMD_DATA ||
-                                          window->ed->window[i]->ins != 4
-                                          || !window->ed->window[i]->save); i--)
+    for (i = window->edit_control->mxedt; i > 0 && (window->edit_control->window[i]->dtmd != DTMD_DATA ||
+                                          window->edit_control->window[i]->ins != 4
+                                          || !window->edit_control->window[i]->save); i--)
         ;
     if (i > 0)
         e_p_update_prj_fl (window);
@@ -2664,9 +2664,9 @@ e_make_prj_opt (we_window_t * window)
     FILE *fp;
     struct dirfile *save_df = NULL;
 
-    for (i = window->ed->mxedt; i > 0
-            && (window->ed->window[i]->dtmd != DTMD_DATA || window->ed->window[i]->ins != 4
-                || !window->ed->window[i]->save); i--);
+    for (i = window->edit_control->mxedt; i > 0
+            && (window->edit_control->window[i]->dtmd != DTMD_DATA || window->edit_control->window[i]->ins != 4
+                || !window->edit_control->window[i]->save); i--);
     if (i > 0)
     {
         save_df = e_p_df[0];
@@ -2952,14 +2952,14 @@ e_wrt_prj_fl (we_window_t * window)
     FILE *fp;
     char text[256];
 
-    for (i = window->ed->mxedt;
-            i > 0 && (window->ed->window[i]->dtmd != DTMD_DATA || window->ed->window[i]->ins != 4);
+    for (i = window->edit_control->mxedt;
+            i > 0 && (window->edit_control->window[i]->dtmd != DTMD_DATA || window->edit_control->window[i]->ins != 4);
             i--)
         ;
     if (i == 0 || e_prog.project[0] == DIRC)
         strcpy (text, e_prog.project);
     else
-        sprintf (text, "%s/%s", window->ed->window[i]->dirct, e_prog.project);
+        sprintf (text, "%s/%s", window->edit_control->window[i]->dirct, e_prog.project);
     if ((fp = fopen (text, "w")) == NULL)
     {
         sprintf (text, e_msg[ERR_FOPEN], e_prog.project);
@@ -3177,15 +3177,15 @@ e_new_message (we_window_t * window)
 
     if (e_p_m_buffer)
         e_p_red_buffer (e_p_m_buffer);
-    for (i = window->ed->mxedt; i > 0; i--)
-        if (!strcmp (window->ed->window[i]->datnam, "Messages"))
+    for (i = window->edit_control->mxedt; i > 0; i--)
+        if (!strcmp (window->edit_control->window[i]->datnam, "Messages"))
         {
-            e_switch_window (window->ed->edt[i], window->ed->window[window->ed->mxedt]);
-            e_close_window (window->ed->window[window->ed->mxedt]);
+            e_switch_window (window->edit_control->edt[i], window->edit_control->window[window->edit_control->mxedt]);
+            e_close_window (window->edit_control->window[window->edit_control->mxedt]);
         }
     if (access ("Messages", F_OK) == 0)
         remove ("Messages");
-    if (e_edit (window->ed, "Messages"))
+    if (e_edit (window->edit_control, "Messages"))
         return (WPE_ESC);
     return (0);
 }
@@ -3195,17 +3195,17 @@ e_p_show_messages (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0; i--)
-        if (!strcmp (window->ed->window[i]->datnam, "Messages"))
+    for (i = window->edit_control->mxedt; i > 0; i--)
+        if (!strcmp (window->edit_control->window[i]->datnam, "Messages"))
         {
-            e_switch_window (window->ed->edt[i], window->ed->window[window->ed->mxedt]);
+            e_switch_window (window->edit_control->edt[i], window->edit_control->window[window->edit_control->mxedt]);
             break;
         }
-    if (i <= 0 && e_edit (window->ed, "Messages"))
+    if (i <= 0 && e_edit (window->edit_control, "Messages"))
     {
         return (-1);
     }
-    window = window->ed->window[window->ed->mxedt];
+    window = window->edit_control->window[window->edit_control->mxedt];
     if (window->buffer->mxlines == 0)
     {
         e_new_line (0, window->buffer);

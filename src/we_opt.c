@@ -130,7 +130,7 @@ int
 e_clear_desk (we_window_t * window)
 {
     int i;
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
 #if  MOUSE
     int g[4];			/*  = { 2, 0, 0, 0, };  */
 
@@ -160,7 +160,7 @@ int
 e_repaint_desk (we_window_t * window)
 {
     /* int j; */
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 #if MOUSE
     int g[4];
@@ -183,7 +183,7 @@ e_repaint_desk (we_window_t * window)
     if (control->mxedt < 1)
     {
         e_cls (window->colorset->df.fg_bg_color, window->colorset->dc);
-        e_ini_desk (window->ed);
+        e_ini_desk (window->edit_control);
 #ifndef NO_XWINDOWS
         if ((WpeIsXwin ()) && nw_pic)
         {
@@ -247,7 +247,7 @@ e_sys_info (we_window_t * window)
     e_pr_str (xa + 3, ya + 6, " Number of Files: ", window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
     if (strcmp (window->datnam, "Clipboard") != 0)
     {
-        if (strcmp (window->dirct, window->ed->dirct) == 0)
+        if (strcmp (window->dirct, window->edit_control->dirct) == 0)
             e_pr_str (xa + 23, ya + 2, window->datnam, window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
         else
         {
@@ -257,9 +257,9 @@ e_sys_info (we_window_t * window)
             e_pr_str (xa + 23, ya + 2, tmp, window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
         }
     }
-    e_pr_str (xa + 23, ya + 4, window->ed->dirct, window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
+    e_pr_str (xa + 23, ya + 4, window->edit_control->dirct, window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
     e_pr_str (xa + 23, ya + 6,
-              WpeNumberToString (window->ed->mxedt, WpeNumberOfPlaces (window->ed->mxedt),
+              WpeNumberToString (window->edit_control->mxedt, WpeNumberOfPlaces (window->edit_control->mxedt),
                                  tmp), window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
 #if  MOUSE
     while (e_mshit () != 0);
@@ -666,13 +666,13 @@ e_opt_save (we_window_t * window)
     int ret;
     char tmp[256];
 
-    strcpy (tmp, window->ed->optfile);
+    strcpy (tmp, window->edit_control->optfile);
     ret = e_add_arguments (tmp, "Save Option File", window, 0, AltS, NULL);
     if (ret)
     {
-        window->ed->optfile =
-            realloc (window->ed->optfile, (strlen (tmp) + 1) * sizeof (char));
-        strcpy (window->ed->optfile, tmp);
+        window->edit_control->optfile =
+            realloc (window->edit_control->optfile, (strlen (tmp) + 1) * sizeof (char));
+        strcpy (window->edit_control->optfile, tmp);
         e_save_opt (window);
     }
     return (ret);
@@ -1157,7 +1157,7 @@ WpeWriteLanguage (we_control_t * control, char *section, FILE * opt_file)
 int
 e_save_opt (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     FILE *fp;
     int i;
     char *str_line;
@@ -1886,8 +1886,8 @@ e_opt_kst (W_OPTSTR * o)
                                    o->ya + o->pstr[i]->ps[j]->y, ' ', o->fst);
                 }
         }
-        if ((c == AF2 && !(o->window->ed->edopt & ED_CUA_STYLE))
-                || (o->window->ed->edopt & ED_CUA_STYLE && c == CtrlL))
+        if ((c == AF2 && !(o->window->edit_control->edopt & ED_CUA_STYLE))
+                || (o->window->edit_control->edopt & ED_CUA_STYLE && c == CtrlL))
         {
             e_opt_move (o);
             c = cold;
@@ -2180,7 +2180,7 @@ e_opt_kst (W_OPTSTR * o)
 int
 e_edt_options (we_window_t * window)
 {
-    int i, ret, edopt = window->ed->edopt;
+    int i, ret, edopt = window->edit_control->edopt;
     W_OPTSTR *o = e_init_opt_kst (window);
 
     if (!o)
@@ -2197,61 +2197,61 @@ e_edt_options (we_window_t * window)
     e_add_txtstr (25, 6, "Keys:", o);
     e_add_txtstr (25, 10, "Auto-Indent:", o);
     e_add_txtstr (3, 5, "Tile:", o);
-    e_add_numstr (3, 8, 19, 8, 3, 100, 0, AltM, "Max. Columns:", window->ed->maxcol,
+    e_add_numstr (3, 8, 19, 8, 3, 100, 0, AltM, "Max. Columns:", window->edit_control->maxcol,
                   o);
-    e_add_numstr (3, 9, 20, 9, 2, 100, 0, AltT, "Tabstops:", window->ed->tabn, o);
+    e_add_numstr (3, 9, 20, 9, 2, 100, 0, AltT, "Tabstops:", window->edit_control->tabn, o);
     e_add_numstr (3, 10, 19, 10, 3, 1000, 2, AltX, "MaX. Changes:",
-                  window->ed->maxchg, o);
-    e_add_numstr (3, 11, 20, 11, 2, 100, 0, AltN, "Num. Undo:", window->ed->numundo,
+                  window->edit_control->maxchg, o);
+    e_add_numstr (3, 11, 20, 11, 2, 100, 0, AltN, "Num. Undo:", window->edit_control->numundo,
                   o);
     e_add_numstr (3, 12, 20, 12, 2, 100, 5, AltI, "Auto Ind. Col.:",
-                  window->ed->autoindent, o);
-    e_add_sswstr (4, 3, 0, AltS, window->ed->edopt & ED_SHOW_ENDMARKS ? 1 : 0,
+                  window->edit_control->autoindent, o);
+    e_add_sswstr (4, 3, 0, AltS, window->edit_control->edopt & ED_SHOW_ENDMARKS ? 1 : 0,
                   "Show Endmark ", o);
-    e_add_sswstr (26, 3, 1, AltP, window->ed->autosv & 1, "OPtions         ", o);
-    e_add_sswstr (26, 4, 1, AltH, window->ed->autosv & 2 ? 1 : 0, "CHanges         ",
+    e_add_sswstr (26, 3, 1, AltP, window->edit_control->autosv & 1, "OPtions         ", o);
+    e_add_sswstr (26, 4, 1, AltH, window->edit_control->autosv & 2 ? 1 : 0, "CHanges         ",
                   o);
-    e_add_sswstr (4, 6, 2, AltD, window->ed->edopt & ED_OLD_TILE_METHOD ? 1 : 0,
+    e_add_sswstr (4, 6, 2, AltD, window->edit_control->edopt & ED_OLD_TILE_METHOD ? 1 : 0,
                   "OlD Style    ", o);
     e_add_pswstr (0, 26, 7, 1, AltL, 0, "OLd-Style       ", o);
-    e_add_pswstr (0, 26, 8, 0, AltC, window->ed->edopt & ED_CUA_STYLE,
+    e_add_pswstr (0, 26, 8, 0, AltC, window->edit_control->edopt & ED_CUA_STYLE,
                   "CUA-Style       ", o);
     e_add_pswstr (1, 26, 11, 3, AltY, 0, "OnlY Source-Text", o);
     e_add_pswstr (1, 26, 12, 2, AltW, 0, "AlWays          ", o);
     e_add_pswstr (1, 26, 13, 2, AltV,
-                  (window->ed->edopt & ED_ALWAYS_AUTO_INDENT ? 1 : window->ed->
+                  (window->edit_control->edopt & ED_ALWAYS_AUTO_INDENT ? 1 : window->edit_control->
                    edopt & ED_SOURCE_AUTO_INDENT ? 0 : 2), "NeVer           ",
                   o);
     e_add_wrstr (3, 14, 3, 15, 44, 128, 1, AltR, "PRint Command:",
-                 window->ed->print_cmd, NULL, o);
+                 window->edit_control->print_cmd, NULL, o);
     e_add_bttstr (12, 17, 1, AltO, " Ok ", NULL, o);
     e_add_bttstr (31, 17, -1, WPE_ESC, "Cancel", NULL, o);
     ret = e_opt_kst (o);
     if (ret != WPE_ESC)
     {
-        window->ed->autosv = o->sstr[1]->num + (o->sstr[2]->num << 1);
-        window->ed->maxcol = o->nstr[0]->num;
-        window->ed->tabn = o->nstr[1]->num;
-        window->ed->maxchg = o->nstr[2]->num;
-        window->ed->numundo = o->nstr[3]->num;
-        window->ed->autoindent = o->nstr[4]->num;
-        window->ed->edopt = ((window->ed->edopt & ~ED_EDITOR_OPTIONS) + o->pstr[0]->num) +
+        window->edit_control->autosv = o->sstr[1]->num + (o->sstr[2]->num << 1);
+        window->edit_control->maxcol = o->nstr[0]->num;
+        window->edit_control->tabn = o->nstr[1]->num;
+        window->edit_control->maxchg = o->nstr[2]->num;
+        window->edit_control->numundo = o->nstr[3]->num;
+        window->edit_control->autoindent = o->nstr[4]->num;
+        window->edit_control->edopt = ((window->edit_control->edopt & ~ED_EDITOR_OPTIONS) + o->pstr[0]->num) +
                             (o->pstr[1]->num == 0 ? ED_SOURCE_AUTO_INDENT : 0) +
                             (o->pstr[1]->num == 1 ? ED_ALWAYS_AUTO_INDENT : 0) +
                             (o->sstr[3]->num ? ED_OLD_TILE_METHOD : 0) +
                             (o->sstr[0]->num ? ED_SHOW_ENDMARKS : 0);
-        if (window->ed->print_cmd)
-            free (window->ed->print_cmd);
-        window->ed->print_cmd = WpeStrdup (o->wstr[0]->txt);
-        if (edopt != window->ed->edopt)
+        if (window->edit_control->print_cmd)
+            free (window->edit_control->print_cmd);
+        window->edit_control->print_cmd = WpeStrdup (o->wstr[0]->txt);
+        if (edopt != window->edit_control->edopt)
         {
-            e_switch_blst (window->ed);
-            for (i = 0; i <= window->ed->mxedt; i++)
-                if ((window->ed->edopt & ED_ALWAYS_AUTO_INDENT) ||
-                        ((window->ed->edopt & ED_SOURCE_AUTO_INDENT) && window->ed->window[i]->c_st))
-                    window->ed->window[i]->flg = 1;
+            e_switch_blst (window->edit_control);
+            for (i = 0; i <= window->edit_control->mxedt; i++)
+                if ((window->edit_control->edopt & ED_ALWAYS_AUTO_INDENT) ||
+                        ((window->edit_control->edopt & ED_SOURCE_AUTO_INDENT) && window->edit_control->window[i]->c_st))
+                    window->edit_control->window[i]->flg = 1;
                 else
-                    window->ed->window[i]->flg = 0;
+                    window->edit_control->window[i]->flg = 0;
             e_repaint_desk (window);
         }
     }

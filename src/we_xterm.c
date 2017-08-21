@@ -994,7 +994,7 @@ e_x_system (const char *exe)
 int
 e_x_repaint_desk (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i, g[4];
     extern we_view_t *e_X_l_pic;
     we_view_t *sv_pic = NULL, *nw_pic = NULL;
@@ -1009,7 +1009,7 @@ e_x_repaint_desk (we_window_t * window)
     if (control->mxedt < 1)
     {
         e_cls (window->colorset->df.fg_bg_color, window->colorset->dc);
-        e_ini_desk (window->ed);
+        e_ini_desk (window->edit_control);
         if (nw_pic)
         {
             e_close_view (nw_pic, 1);
@@ -1093,8 +1093,8 @@ fk_x_mouse (int *g)
 int
 e_x_cp_X_to_buffer (we_window_t * window)
 {
-    we_buffer_t *b0 = window->ed->window[0]->buffer;
-    we_screen_t *s0 = window->ed->window[0]->screen;
+    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
+    we_screen_t *s0 = window->edit_control->window[0]->screen;
     int i, j, k, n;
     unsigned char *str;
     XEvent report;
@@ -1191,8 +1191,8 @@ e_x_copy_X_buffer (we_window_t * window)
 int
 e_x_paste_X_buffer (we_window_t * window)
 {
-    we_buffer_t *b0 = window->ed->window[0]->buffer;
-    we_screen_t *s0 = window->ed->window[0]->screen;
+    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
+    we_screen_t *s0 = window->edit_control->window[0]->screen;
     int i, n;
     unsigned int j;
 

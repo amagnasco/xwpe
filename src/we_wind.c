@@ -399,7 +399,7 @@ e_ed_rahmen (we_window_t * window, int sw)
     }
     if (window->datnam[0])
     {
-        if (strcmp (window->dirct, window->ed->dirct) == 0 ||
+        if (strcmp (window->dirct, window->edit_control->dirct) == 0 ||
                 window->dtmd == DTMD_HELP || strcmp (window->datnam, BUFFER_NAME) == 0 ||
                 num_cols_on_screen(window) < 40)
         {
@@ -837,8 +837,8 @@ e_close_buffer (we_buffer_t * buffer)
 int
 e_close_window (we_window_t * window)
 {
-    we_control_t *control = window->ed;
-    we_window_t *f0 = window->ed->window[0];
+    we_control_t *control = window->edit_control;
+    we_window_t *f0 = window->edit_control->window[0];
     int c = 0;
     unsigned long maxname;
     char text[256];
@@ -902,7 +902,7 @@ e_close_window (we_window_t * window)
         }
         return (0);
     }
-    if (window == NULL || window->ed->mxedt <= 0)
+    if (window == NULL || window->edit_control->mxedt <= 0)
         return (0);
     if (window != f0)
     {
@@ -976,7 +976,7 @@ e_rep_win_tree (we_control_t * control)
 void
 e_switch_window (int num, we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_window_t *ft;
     int n, i, te;
 
@@ -1006,7 +1006,7 @@ e_switch_window (int num, we_window_t * window)
 int
 e_ed_zoom (we_window_t * window)
 {
-    if (window->ed->mxedt > 0)
+    if (window->edit_control->mxedt > 0)
     {
         if (window->zoom == 0)
         {
@@ -1035,7 +1035,7 @@ e_ed_zoom (we_window_t * window)
 int
 e_ed_cascade (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i;
 
     if (control->mxedt < 1)
@@ -1065,7 +1065,7 @@ e_ed_cascade (we_window_t * window)
 int
 e_ed_tile (we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     we_point_t atmp[MAXEDT + 1];
     we_point_t etmp[MAXEDT + 1];
     int i, j, ni, nj;
@@ -1204,8 +1204,8 @@ e_ed_tile (we_window_t * window)
 int
 e_ed_next (we_window_t * window)
 {
-    if (window->ed->mxedt > 0)
-        e_switch_window (window->ed->edt[1], window);
+    if (window->edit_control->mxedt > 0)
+        e_switch_window (window->edit_control->edt[1], window);
     return (0);
 }
 
@@ -1223,7 +1223,7 @@ e_pr_line (int y, we_window_t * window)
     for (i = j = 0; j < num_cols_off_screen_left(window); j++, i++)
     {
         if (*(buffer->buflines[y].s + i) == WPE_TAB)
-            j += (window->ed->tabn - j % window->ed->tabn - 1);
+            j += (window->edit_control->tabn - j % window->edit_control->tabn - 1);
         else if (((unsigned char) *(buffer->buflines[y].s + i)) > 126)
         {
             j++;
@@ -1357,7 +1357,7 @@ e_pr_line (int y, we_window_t * window)
             }
         }
         if (*(buffer->buflines[y].s + i) == WPE_TAB)
-            for (k = window->ed->tabn - j % window->ed->tabn; k > 1 &&
+            for (k = window->edit_control->tabn - j % window->edit_control->tabn; k > 1 &&
                     j < num_cols_on_screen(window) + num_cols_off_screen_left(window) - 2; k--, j++)
                 e_pr_char (window->a.x - num_cols_off_screen_left(window) + j + 1,
                            y - num_lines_off_screen_top(window) + window->a.y + 1, ' ', frb);
@@ -1408,7 +1408,7 @@ e_pr_line (int y, we_window_t * window)
                        *(buffer->buflines[y].s + i), frb);
     }
 
-    if ((i == buffer->buflines[y].len) && (window->ed->edopt & ED_SHOW_ENDMARKS) &&
+    if ((i == buffer->buflines[y].len) && (window->edit_control->edopt & ED_SHOW_ENDMARKS) &&
             (DTMD_ISMARKABLE (window->dtmd)) && (j < col_num_on_screen_right(window)))
     {
         if ((y < s->mark_end.y && (y > s->mark_begin.y ||
@@ -1567,7 +1567,7 @@ e_add_df (char *str, struct dirfile *df)
 int
 e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int ret, ye = ya + 6;
     int xe = xa + 21;
     FLWND *fw = malloc (sizeof (FLWND));
@@ -1589,7 +1589,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
     window->e = e_set_pnt (xe, ye);
     window->dtmd = DTMD_FILEDROPDOWN;
     window->zoom = 0;
-    window->ed = control;
+    window->edit_control = control;
     window->c_sw = NULL;
     window->c_st = NULL;
     window->find.dirct = NULL;
@@ -1620,8 +1620,8 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
         if (ret < 0)
             ret = e_rahmen_mouse (window);
 #endif
-        if ((ret == AF2 && !(window->ed->edopt & ED_CUA_STYLE)) ||
-                (window->ed->edopt & ED_CUA_STYLE && ret == CtrlL))
+        if ((ret == AF2 && !(window->edit_control->edopt & ED_CUA_STYLE)) ||
+                (window->edit_control->edopt & ED_CUA_STYLE && ret == CtrlL))
             e_size_move (window);
     }
     while (ret != WPE_CR && ret != WPE_ESC);
@@ -1692,7 +1692,7 @@ e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col, int csw)
 int
 e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * window)
 {
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     extern int (*e_u_kbhit) (void);
 #if MOUSE
     extern struct mouse e_mouse;
@@ -1836,7 +1836,7 @@ e_make_win_list (we_window_t * window)
 
     if (!(df = malloc (sizeof (struct dirfile))))
         return (NULL);
-    df->nr_files = window->ed->mxedt;
+    df->nr_files = window->edit_control->mxedt;
     if (!(df->name = malloc (df->nr_files * sizeof (char *))))
     {
         free (df);
@@ -1844,10 +1844,10 @@ e_make_win_list (we_window_t * window)
     }
     for (i = 0; i < df->nr_files; i++)
     {
-        if (window->ed->window[df->nr_files - i]->datnam)
+        if (window->edit_control->window[df->nr_files - i]->datnam)
         {
             if (!(df->name[i] =
-                        malloc ((strlen (window->ed->window[df->nr_files - i]->datnam) +
+                        malloc ((strlen (window->edit_control->window[df->nr_files - i]->datnam) +
                                  1) * sizeof (char))))
             {
                 df->nr_files = i;
@@ -1855,7 +1855,7 @@ e_make_win_list (we_window_t * window)
                 return (NULL);
             }
             else
-                strcpy (df->name[i], window->ed->window[df->nr_files - i]->datnam);
+                strcpy (df->name[i], window->edit_control->window[df->nr_files - i]->datnam);
         }
         else
         {
@@ -1877,13 +1877,13 @@ e_list_all_win (we_window_t * window)
 {
     int i;
 
-    for (i = window->ed->mxedt; i > 0; i--)
-        if (window->ed->window[i]->dtmd == DTMD_DATA && window->ed->window[i]->ins == 7)
+    for (i = window->edit_control->mxedt; i > 0; i--)
+        if (window->edit_control->window[i]->dtmd == DTMD_DATA && window->edit_control->window[i]->ins == 7)
         {
-            e_switch_window (window->ed->edt[i], window);
+            e_switch_window (window->edit_control->edt[i], window);
             return (0);
         }
-    return (e_data_first (7, window->ed, NULL));
+    return (e_data_first (7, window->edit_control, NULL));
 }
 
 #ifdef NEWSTYLE

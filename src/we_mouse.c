@@ -166,7 +166,7 @@ int
 WpeMngMouseInFileManager (we_window_t * window)
 {
     extern struct mouse e_mouse;
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     FLBFFR *file_buffer = (FLBFFR *) window->buffer;
     int i, c = 0, by = 4;
 
@@ -290,7 +290,7 @@ int
 WpeMouseInFileDirList (int k, int sw, we_window_t * window)
 {
     extern struct mouse e_mouse;
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     FLBFFR *file_buffer = (FLBFFR *) window->buffer;
     int i;
     char tmp[256];
@@ -323,7 +323,7 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * window)
         freedf (file_buffer->cd);
         freedf (file_buffer->dw->df);
         freedf (file_buffer->dd);
-        file_buffer->dd = e_find_dir (SUDIR, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
+        file_buffer->dd = e_find_dir (SUDIR, window->edit_control->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
         file_buffer->cd = WpeCreateWorkingDirTree (window->save, control);	/* ??? control */
         file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
         file_buffer->dw->nf = file_buffer->cd->nr_files - 1;
@@ -346,8 +346,8 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * window)
         freedf (file_buffer->df);
         freedf (file_buffer->fw->df);
         file_buffer->df =
-            e_find_files (file_buffer->rdfile, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-        file_buffer->fw->df = WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
+            e_find_files (file_buffer->rdfile, window->edit_control->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
+        file_buffer->fw->df = WpeGraphicalFileList (file_buffer->df, window->edit_control->flopt >> 9, control);
         file_buffer->fw->ia = file_buffer->fw->nf = 0;
         file_buffer->fw->ja = file_buffer->fw->srcha;
         e_pr_file_window (file_buffer->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
@@ -771,7 +771,7 @@ e_edt_mouse (int c, we_window_t * window)
 {
     int i, ret = 0;
     extern struct mouse e_mouse;
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
 
     if (e_mouse.y == 0)
         return (e_m1_mouse ());
@@ -781,7 +781,7 @@ e_edt_mouse (int c, we_window_t * window)
              e_mouse.y >= window->a.y && e_mouse.y <= window->e.y)
     {
         if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
-            ret = window->ed->edopt & ED_CUA_STYLE ? CF4 : AF3;
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? CF4 : AF3;
         else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
             e_ed_zoom (window);
         else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
@@ -795,13 +795,13 @@ e_edt_mouse (int c, we_window_t * window)
         else if (e_mouse.y == window->a.y)
             e_eck_mouse (window, 0);
         else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 2)
-            ret = window->ed->edopt & ED_CUA_STYLE ? AF3 : F4;
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? AF3 : F4;
         else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 4)
-            ret = window->ed->edopt & ED_CUA_STYLE ? CF3 : AF4;
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? CF3 : AF4;
         else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 6)
-            ret = window->ed->edopt & ED_CUA_STYLE ? F3 : CF4;
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? F3 : CF4;
         else if (window->ins != 8 && e_mouse.x == window->a.x && e_mouse.y == window->a.y + 8)
-            ret = window->ed->edopt & ED_CUA_STYLE ? AF2 : F2;
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? AF2 : F2;
         else if (e_mouse.y == window->e.y && e_mouse.x > window->a.x + 4 &&
                  e_mouse.x < window->a.x + 14)
             ret = AltG;
@@ -952,8 +952,8 @@ e_mouse_cursor (we_buffer_t * buffer, we_screen_t * s, we_window_t * window)
 int
 e_ccp_mouse (int c, we_window_t * window)
 {
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
+    we_screen_t *s = window->edit_control->window[window->edit_control->mxedt]->screen;
 
     while (e_mshit () != 0)
         ;
@@ -976,8 +976,8 @@ void
 e_cur_mouse (window)
 we_window_t *window;
 {
-    we_buffer_t *buffer = window->ed->window[window->ed->mxedt]->buffer;
-    we_screen_t *s = window->ed->window[window->ed->mxedt]->screen;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
+    we_screen_t *s = window->edit_control->window[window->edit_control->mxedt]->screen;
     we_point_t bs;
     bs.x = buffer->cursor.x;
     bs.y = buffer->cursor.y;
@@ -1264,7 +1264,7 @@ we_window_t *window;
 {
     extern struct mouse e_mouse;
     FLWND *fw = (FLWND *) window->buffer;
-    we_control_t *control = window->ed;
+    we_control_t *control = window->edit_control;
     int i, c = 0;
     if (e_mouse.y == 0)
         return (AltBl);
