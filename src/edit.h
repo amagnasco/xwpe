@@ -319,28 +319,28 @@ typedef struct
 
 typedef struct we_window_struct
 {
-    we_point_t a;            /**< start corner of the box */
-    we_point_t e;            /**< other corner of the box */
+    we_point_t a;              /**< start corner of the box */
+    we_point_t e;              /**< other corner of the box */
     we_point_t sa;
     we_point_t se;
     char zoom;
-    we_colorset_t* colorset; /**< color scheme */
+    we_colorset_t* colorset;   /**< color scheme */
     we_view_t* view;
-    char* dirct;             /**< working/actual directory */
-    char* datnam;            /**< window header text */
+    char* dirct;               /**< working/actual directory */
+    char* datnam;              /**< window header text */
     int winnum;
     char ins;
-    char dtmd;			     /**< (See DTMD_* defines) */
+    char dtmd;			       /**< (See DTMD_* defines) */
     int save;
     char* hlp_str;
-    WOPT* blst;			     /**< status line text */
-    int nblst;			     /**< no of options in the status line */
+    WOPT* blst;			       /**< status line text */
+    int nblst;			       /**< no of options in the status line */
     int filemode, flg;
     int* c_sw;
     struct wpeSyntaxRule* c_st;
-    struct CNT* edit_control;		     /**< edit control structure */
-    we_buffer_t *buffer;     /**< Buffer */
-    we_screen_t *screen;	 /**< screen */
+    struct CNT* edit_control;  /**< edit control structure */
+    we_buffer_t *buffer;       /**< Buffer */
+    we_screen_t *screen;	   /**< screen */
     FIND find;
 } we_window_t;
 
