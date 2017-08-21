@@ -102,7 +102,7 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
     extern WOPT *fblst, *rblst, *wblst, *xblst, *sblst, *ablst;
     we_window_t *window;
     int i, j;
-    FLBFFR *b;
+    FLBFFR *file_buffer;
     int allocate_size;		/* inital memory size for allocation */
     char *sfile;
 
@@ -137,7 +137,7 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* allocate buffer related to the window (NOT proper type, later casted) */
-    if ((b = (FLBFFR *) malloc (sizeof (FLBFFR))) == NULL)
+    if ((file_buffer = (FLBFFR *) malloc (sizeof (FLBFFR))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     window->colorset = control->colorset;
@@ -223,75 +223,75 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
     window->find.sn = 0;
     window->find.rn = 0;
 
-    window->b = (we_buffer_t *) b;
+    window->b = (we_buffer_t *) file_buffer;
     /* the find pattern can only be 79 see FIND structure */
-    if ((b->rdfile = malloc (80)) == NULL)
+    if ((file_buffer->rdfile = malloc (80)) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
-    strcpy (b->rdfile, window->find.file);	/* find file pattern */
+    strcpy (file_buffer->rdfile, window->find.file);	/* find file pattern */
 
-    b->sw = sw;
+    file_buffer->sw = sw;
 
     /* window for files */
-    if ((b->fw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
+    if ((file_buffer->fw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* window for directory */
-    if ((b->dw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
+    if ((file_buffer->dw = (FLWND *) malloc (sizeof (FLWND))) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
 
-    if ((sfile = malloc (strlen (window->dirct) + strlen (b->rdfile) + 2)) == NULL)
+    if ((sfile = malloc (strlen (window->dirct) + strlen (file_buffer->rdfile) + 2)) == NULL)
         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
     /* determine current directory */
-    b->cd = WpeCreateWorkingDirTree (window->save, control);
+    file_buffer->cd = WpeCreateWorkingDirTree (window->save, control);
     /* it is necessary to do this, because the file manager may not be
        in the appropriate directory here */
     sprintf (sfile, "%s/%s", window->dirct, SUDIR);
     /* find all other directories in the current */
-    b->dd = e_find_dir (sfile, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
+    file_buffer->dd = e_find_dir (sfile, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
     /* setup the drawing in the dir tree window */
-    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
+    file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
 
     i = window->ed->flopt & FM_SHOW_HIDDEN_FILES ? 1 : 0;
     if (sw == 3)
         i |= 2;
 
     /* finds all files matching the pattern */
-    sprintf (sfile, "%s/%s", window->dirct, b->rdfile);
-    b->df = e_find_files (sfile, i);
+    sprintf (sfile, "%s/%s", window->dirct, file_buffer->rdfile);
+    file_buffer->df = e_find_files (sfile, i);
 
     free (sfile);
 
     /* setup the drawing in the file list window */
-    b->fw->df = WpeGraphicalFileList (b->df, window->ed->flopt >> 9, control);
+    file_buffer->fw->df = WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
 
     /* file box - geometry and vertical slider settings */
-    b->fw->mxa = window->a.x;
-    b->fw->mxe = window->e.x;
-    b->fw->mya = window->a.y;
-    b->fw->mye = window->e.y;
-    b->fw->xa = window->e.x - 33;
-    b->fw->xe = window->e.x - 17;
-    b->fw->ya = window->a.y + 6;
-    b->fw->ye = window->a.y + 17;
-    b->fw->window = window;
-    b->fw->ia = b->fw->nf = b->fw->nxfo = b->fw->nyfo = 0;
-    b->fw->srcha = b->fw->ja = 12;
+    file_buffer->fw->mxa = window->a.x;
+    file_buffer->fw->mxe = window->e.x;
+    file_buffer->fw->mya = window->a.y;
+    file_buffer->fw->mye = window->e.y;
+    file_buffer->fw->xa = window->e.x - 33;
+    file_buffer->fw->xe = window->e.x - 17;
+    file_buffer->fw->ya = window->a.y + 6;
+    file_buffer->fw->ye = window->a.y + 17;
+    file_buffer->fw->window = window;
+    file_buffer->fw->ia = file_buffer->fw->nf = file_buffer->fw->nxfo = file_buffer->fw->nyfo = 0;
+    file_buffer->fw->srcha = file_buffer->fw->ja = 12;
 
     /* directory box - geometry and vertical slider settings */
-    b->dw->mxa = window->a.x;
-    b->dw->mxe = window->e.x;
-    b->dw->mya = window->a.y;
-    b->dw->mye = window->e.y;
-    b->dw->xa = window->a.x + 3;
-    b->dw->xe = window->a.x + 28;
-    b->dw->ya = window->a.y + 6;
-    b->dw->ye = window->a.y + 17;
-    b->dw->window = window;
-    b->dw->ia = b->dw->ja = b->dw->nxfo = 0;
-    b->dw->srcha = -1;
-    b->dw->nf = b->dw->nyfo = b->cd->nr_files - 1;
+    file_buffer->dw->mxa = window->a.x;
+    file_buffer->dw->mxe = window->e.x;
+    file_buffer->dw->mya = window->a.y;
+    file_buffer->dw->mye = window->e.y;
+    file_buffer->dw->xa = window->a.x + 3;
+    file_buffer->dw->xe = window->a.x + 28;
+    file_buffer->dw->ya = window->a.y + 6;
+    file_buffer->dw->ye = window->a.y + 17;
+    file_buffer->dw->window = window;
+    file_buffer->dw->ia = file_buffer->dw->ja = file_buffer->dw->nxfo = 0;
+    file_buffer->dw->srcha = -1;
+    file_buffer->dw->nf = file_buffer->dw->nyfo = file_buffer->cd->nr_files - 1;
 
     if (control->mxedt > 1)
         e_ed_rahmen (control->window[control->mxedt - 1], 0);
@@ -311,7 +311,7 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
 int
 WpeDrawFileManager (we_window_t * window)
 {
-    FLBFFR *b = (FLBFFR *) window->b;
+    FLBFFR *file_buffer = (FLBFFR *) window->b;
     int i, j;
     int bx1 = 1, bx2 = 1, bx3 = 1, by = 4;
 
@@ -321,7 +321,7 @@ WpeDrawFileManager (we_window_t * window)
 
     if (num_lines_on_screen(window) <= 17)
         by = -1;
-    else if (b->sw != 0 || num_lines_on_screen(window) <= 19)
+    else if (file_buffer->sw != 0 || num_lines_on_screen(window) <= 19)
         by = 2;
 
     if (num_lines_on_screen(window) > 17)
@@ -330,25 +330,25 @@ WpeDrawFileManager (we_window_t * window)
                   window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
         e_pr_str ((window->a.x + 14), window->e.y - by, "Change Dir", window->colorset->nz.fg_bg_color, 0, -1,
                   window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
-        if (b->sw == 1 && num_cols_on_screen(window) >= 34)
+        if (file_buffer->sw == 1 && num_cols_on_screen(window) >= 34)
             e_pr_str ((window->a.x + 28), window->e.y - by, "Read", window->colorset->nz.fg_bg_color, 0, -1,
                       window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
-        else if (b->sw == 2 && num_cols_on_screen(window) >= 35)
+        else if (file_buffer->sw == 2 && num_cols_on_screen(window) >= 35)
             e_pr_str ((window->a.x + 28), window->e.y - by, "Write", window->colorset->nz.fg_bg_color, 0, -1,
                       window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
-        else if (b->sw == 4)
+        else if (file_buffer->sw == 4)
         {
             if (num_cols_on_screen(window) >= 34)
                 e_pr_str ((window->a.x + 28), window->e.y - by, "Save", window->colorset->nz.fg_bg_color, 0, -1,
                           window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
         }
-        else if (b->sw == 3 && num_cols_on_screen(window) >= 37)
+        else if (file_buffer->sw == 3 && num_cols_on_screen(window) >= 37)
             e_pr_str ((window->a.x + 28), window->e.y - by, "Execute", window->colorset->nz.fg_bg_color, 0, -1,
                       window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
-        else if (b->sw == 5 && num_cols_on_screen(window) >= 33)
+        else if (file_buffer->sw == 5 && num_cols_on_screen(window) >= 33)
             e_pr_str ((window->a.x + 28), window->e.y - by, "Add", window->colorset->nz.fg_bg_color, 0, -1,
                       window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
-        else if (b->sw == 0)
+        else if (file_buffer->sw == 0)
         {
             if (num_cols_on_screen(window) >= 35)
                 e_pr_str ((window->a.x + 28), window->e.y - by, "MKdir", window->colorset->nz.fg_bg_color, 1,
@@ -358,7 +358,7 @@ WpeDrawFileManager (we_window_t * window)
                           0, -1, window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
         }
     }
-    if (b->sw == 0 && num_lines_on_screen(window) > 19)
+    if (file_buffer->sw == 0 && num_lines_on_screen(window) > 19)
     {
         e_pr_str ((window->a.x + 4), window->e.y - 2, "Move", window->colorset->nz.fg_bg_color, 0, -1,
                   window->colorset->ns.fg_bg_color, window->colorset->nt.fg_bg_color);
@@ -386,59 +386,59 @@ WpeDrawFileManager (we_window_t * window)
         bx2 = 0;
     if (num_cols_on_screen(window) < 43)
         bx1 = 0;
-    b->xfd = (num_cols_on_screen(window) - bx1 - bx2 - bx3 - 6) / 2;
-    b->xdd = num_cols_on_screen(window) - bx1 - bx2 - bx3 - b->xfd - 6;
-    b->xda = 2 + bx1;
-    b->xfa = 4 + bx1 + bx2 + b->xdd;
+    file_buffer->xfd = (num_cols_on_screen(window) - bx1 - bx2 - bx3 - 6) / 2;
+    file_buffer->xdd = num_cols_on_screen(window) - bx1 - bx2 - bx3 - file_buffer->xfd - 6;
+    file_buffer->xda = 2 + bx1;
+    file_buffer->xfa = 4 + bx1 + bx2 + file_buffer->xdd;
 
-    e_pr_str ((window->a.x + b->xfa), window->a.y + 2, "Name:", window->colorset->nt.fg_bg_color, 0, 1,
+    e_pr_str ((window->a.x + file_buffer->xfa), window->a.y + 2, "Name:", window->colorset->nt.fg_bg_color, 0, 1,
               window->colorset->nsnt.fg_bg_color, window->colorset->nt.fg_bg_color);
-    /*    e_schr_nchar(b->rdfile, window->a.x+b->xfa, window->a.y+3, 0, b->xfd+1, window->colorset->fr.fg_bg_color);   */
-    e_schr_nchar_wsv (b->rdfile, window->a.x + b->xfa, window->a.y + 3, 0, b->xfd + 1,
+    /*    e_schr_nchar(file_buffer->rdfile, window->a.x+file_buffer->xfa, window->a.y+3, 0, file_buffer->xfd+1, window->colorset->fr.fg_bg_color);   */
+    e_schr_nchar_wsv (file_buffer->rdfile, window->a.x + file_buffer->xfa, window->a.y + 3, 0, file_buffer->xfd + 1,
                       window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
-    e_pr_str ((window->a.x + b->xfa), window->a.y + 5, "Files:", window->colorset->nt.fg_bg_color, 0, 1,
+    e_pr_str ((window->a.x + file_buffer->xfa), window->a.y + 5, "Files:", window->colorset->nt.fg_bg_color, 0, 1,
               window->colorset->nsnt.fg_bg_color, window->colorset->nt.fg_bg_color);
 
-    e_pr_str ((window->a.x + b->xda), window->a.y + 2, "Directory:", window->colorset->nt.fg_bg_color, 0, 1,
+    e_pr_str ((window->a.x + file_buffer->xda), window->a.y + 2, "Directory:", window->colorset->nt.fg_bg_color, 0, 1,
               window->colorset->nsnt.fg_bg_color, window->colorset->nt.fg_bg_color);
-    /*    e_schr_nchar(window->dirct, window->a.x+b->xda, window->a.y+3, 0, b->xdd+1, window->colorset->fr.fg_bg_color);   */
-    e_schr_nchar_wsv (window->dirct, window->a.x + b->xda, window->a.y + 3, 0, b->xdd + 1,
+    /*    e_schr_nchar(window->dirct, window->a.x+file_buffer->xda, window->a.y+3, 0, file_buffer->xdd+1, window->colorset->fr.fg_bg_color);   */
+    e_schr_nchar_wsv (window->dirct, window->a.x + file_buffer->xda, window->a.y + 3, 0, file_buffer->xdd + 1,
                       window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
-    e_pr_str ((window->a.x + b->xda), window->a.y + 5, "DirTree:", window->colorset->nt.fg_bg_color, 3, 1,
+    e_pr_str ((window->a.x + file_buffer->xda), window->a.y + 5, "DirTree:", window->colorset->nt.fg_bg_color, 3, 1,
               window->colorset->nsnt.fg_bg_color, window->colorset->nt.fg_bg_color);
 
-    b->fw->mxa = window->a.x;
-    b->fw->mxe = window->e.x;
-    b->fw->mya = window->a.y;
-    b->fw->mye = window->e.y;
-    b->fw->xa = window->a.x + b->xfa;
-    b->fw->xe = b->fw->xa + b->xfd;
-    b->fw->ya = window->a.y + 6;
-    b->fw->ye = window->e.y - 2 - by;
-    b->dw->mxa = window->a.x;
-    b->dw->mxe = window->e.x;
-    b->dw->mya = window->a.y;
-    b->dw->mye = window->e.y;
-    b->dw->xa = window->a.x + b->xda;
-    b->dw->xe = b->dw->xa + b->xdd;
-    b->dw->ya = window->a.y + 6;
-    b->dw->ye = window->e.y - 2 - by;
+    file_buffer->fw->mxa = window->a.x;
+    file_buffer->fw->mxe = window->e.x;
+    file_buffer->fw->mya = window->a.y;
+    file_buffer->fw->mye = window->e.y;
+    file_buffer->fw->xa = window->a.x + file_buffer->xfa;
+    file_buffer->fw->xe = file_buffer->fw->xa + file_buffer->xfd;
+    file_buffer->fw->ya = window->a.y + 6;
+    file_buffer->fw->ye = window->e.y - 2 - by;
+    file_buffer->dw->mxa = window->a.x;
+    file_buffer->dw->mxe = window->e.x;
+    file_buffer->dw->mya = window->a.y;
+    file_buffer->dw->mye = window->e.y;
+    file_buffer->dw->xa = window->a.x + file_buffer->xda;
+    file_buffer->dw->xe = file_buffer->dw->xa + file_buffer->xdd;
+    file_buffer->dw->ya = window->a.y + 6;
+    file_buffer->dw->ye = window->e.y - 2 - by;
 
     /* slider bars for file list */
-    e_mouse_bar (b->fw->xe, b->fw->ya, b->fw->ye - b->fw->ya, 0,
-                 b->fw->window->colorset->em.fg_bg_color);
-    e_mouse_bar (b->fw->xa, b->fw->ye, b->fw->xe - b->fw->xa, 1,
-                 b->fw->window->colorset->em.fg_bg_color);
+    e_mouse_bar (file_buffer->fw->xe, file_buffer->fw->ya, file_buffer->fw->ye - file_buffer->fw->ya, 0,
+                 file_buffer->fw->window->colorset->em.fg_bg_color);
+    e_mouse_bar (file_buffer->fw->xa, file_buffer->fw->ye, file_buffer->fw->xe - file_buffer->fw->xa, 1,
+                 file_buffer->fw->window->colorset->em.fg_bg_color);
     /* file list window */
-    e_pr_file_window (b->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color, window->colorset->frft.fg_bg_color);
+    e_pr_file_window (file_buffer->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color, window->colorset->frft.fg_bg_color);
 
     /* slide bars for directory window */
-    e_mouse_bar (b->dw->xe, b->dw->ya, b->dw->ye - b->dw->ya, 0,
-                 b->dw->window->colorset->em.fg_bg_color);
-    e_mouse_bar (b->dw->xa, b->dw->ye, b->dw->xe - b->dw->xa, 1,
-                 b->dw->window->colorset->em.fg_bg_color);
+    e_mouse_bar (file_buffer->dw->xe, file_buffer->dw->ya, file_buffer->dw->ye - file_buffer->dw->ya, 0,
+                 file_buffer->dw->window->colorset->em.fg_bg_color);
+    e_mouse_bar (file_buffer->dw->xa, file_buffer->dw->ye, file_buffer->dw->xe - file_buffer->dw->xa, 1,
+                 file_buffer->dw->window->colorset->em.fg_bg_color);
     /* directory window */
-    e_pr_file_window (b->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color, window->colorset->frft.fg_bg_color);
+    e_pr_file_window (file_buffer->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color, window->colorset->frft.fg_bg_color);
     return (0);
 }
 
@@ -447,21 +447,21 @@ int
 WpeCallFileManager (int sw, we_window_t * window)
 {
     int i, ret;
-    FLBFFR *b;
+    FLBFFR *file_buffer;
 
     for (i = window->ed->mxedt; i > 0; i--)
         if (window->ed->window[i]->dtmd == DTMD_FILEMANAGER)	/* check only file manager windows */
         {
-            b = (FLBFFR *) window->ed->window[i]->b;
+            file_buffer = (FLBFFR *) window->ed->window[i]->b;
             /* open/new file manager and it is not in save mode */
-            if (sw == 0 && b->sw == sw && window->ed->window[i]->save != 1)
+            if (sw == 0 && file_buffer->sw == sw && window->ed->window[i]->save != 1)
                 break;
             /* wastebasket mode required,
                the window is "open/new" file manager and save mode turned on */
-            else if (sw == 6 && b->sw == 0 && window->ed->window[i]->save == 1)
+            else if (sw == 6 && file_buffer->sw == 0 && window->ed->window[i]->save == 1)
                 break;
             /* not open/new or wastebasket filemanager and it is the required style */
-            else if (sw != 0 && sw != 6 && b->sw == sw)
+            else if (sw != 0 && sw != 6 && file_buffer->sw == sw)
                 break;
         }
 
@@ -525,7 +525,7 @@ int
 WpeHandleFileManager (we_control_t * control)
 {
     we_window_t *window = control->window[control->mxedt], *fe = NULL;
-    FLBFFR *b = (FLBFFR *) window->b;
+    FLBFFR *file_buffer = (FLBFFR *) window->b;
     we_buffer_t *be = NULL;
     we_screen_t *se = NULL;
     int c = AltC, i, j, t;
@@ -554,18 +554,18 @@ WpeHandleFileManager (we_control_t * control)
 
     /* if it is project management or saving mode
        save the current directory to return to it */
-    if (window->save == 1 || b->sw == 5)
+    if (window->save == 1 || file_buffer->sw == 5)
     {
         if ((svdir = malloc (strlen (window->ed->dirct) + 1)) == NULL)
             e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
         strcpy (svdir, window->ed->dirct);
     }
 
-    nco = b->cd->nr_files - 1;
+    nco = file_buffer->cd->nr_files - 1;
     /* when searching among files, search hidden ones as well */
     fmode = window->ed->flopt & FM_SHOW_HIDDEN_FILES ? 1 : 0;
     /* in execution mode show hidden dirs as well */
-    if (b->sw == 3)
+    if (file_buffer->sw == 3)
         fmode |= 2;
 
     /* searching for the last edited/touched file on the desktop */
@@ -580,15 +580,15 @@ WpeHandleFileManager (we_control_t * control)
             break;
         }
     }
-    strcpy (window->find.file, b->rdfile);
+    strcpy (window->find.file, file_buffer->rdfile);
 
     /* go until quit */
     while (c != WPE_ESC)
     {
         /* draw out dir tree and file list windows */
-        e_pr_file_window (b->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
+        e_pr_file_window (file_buffer->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
                           window->colorset->frft.fg_bg_color);
-        e_pr_file_window (b->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
+        e_pr_file_window (file_buffer->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
                           window->colorset->frft.fg_bg_color);
 
         switch (c)
@@ -598,31 +598,31 @@ WpeHandleFileManager (we_control_t * control)
             cold = c;
             fk_cursor (1);
             /* get some answer from the name entry box,
-               result file copied into b->rdfile, max 79 char + '\0' */
+               result file copied into file_buffer->rdfile, max 79 char + '\0' */
             c =
-                e_schr_lst_wsv (b->rdfile, window->a.x + b->xfa, window->a.y + 3,
-                                b->xfd + 1, 79, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color,
+                e_schr_lst_wsv (file_buffer->rdfile, window->a.x + file_buffer->xfa, window->a.y + 3,
+                                file_buffer->xfd + 1, 79, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color,
                                 &window->ed->fdf, window);
 
             /* determine the entered filename, going backward */
-            for (i = strlen (b->rdfile); i >= 0 && b->rdfile[i] != DIRC; i--)
+            for (i = strlen (file_buffer->rdfile); i >= 0 && file_buffer->rdfile[i] != DIRC; i--)
                 ;
-            strcpy (window->find.file, b->rdfile + 1 + i);
+            strcpy (window->find.file, file_buffer->rdfile + 1 + i);
 
             /* there is some directory structure in the filename */
             if (i >= 0)
             {
                 if (i == 0)
                     i++;
-                b->rdfile[i] = '\0';
+                file_buffer->rdfile[i] = '\0';
                 /* change the working directory */
                 free (window->dirct);
-                if ((window->dirct = malloc (strlen (b->rdfile) + 1)) == NULL)
+                if ((window->dirct = malloc (strlen (file_buffer->rdfile) + 1)) == NULL)
                     e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
-                strcpy (window->dirct, b->rdfile);
+                strcpy (window->dirct, file_buffer->rdfile);
 
                 /* restore original filename */
-                strcpy (b->rdfile, window->find.file);
+                strcpy (file_buffer->rdfile, window->find.file);
                 c = AltC;
             }
 #if  MOUSE
@@ -633,8 +633,8 @@ WpeHandleFileManager (we_control_t * control)
             if ((c >= Alt1 && c <= Alt9) || (c >= 1024 && c <= 1049))
             {
                 /* window changing, make the entry unhighlighted */
-                e_schr_nchar_wsv (b->rdfile, window->a.x + b->xfa, window->a.y + 3, 0,
-                                  b->xfd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
+                e_schr_nchar_wsv (file_buffer->rdfile, window->a.x + file_buffer->xfa, window->a.y + 3, 0,
+                                  file_buffer->xfd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
                 break;
             }
             if (c == CLE || c == CCLE)	/* goto dir name window */
@@ -644,41 +644,41 @@ WpeHandleFileManager (we_control_t * control)
             else if (c == WPE_BTAB)	/* goto dir tree window */
                 c = AltT;
             else if ((c == WPE_CR
-                      || (b->sw == 0 && c == AltE)
-                      || (b->sw == 1 && c == AltR)
-                      || (b->sw == 2 && c == AltW)
-                      || (b->sw == 3 && c == AltE)
-                      || (b->sw == 5 && c == AltA)
-                      || (b->sw == 4 && (c == AltS || c == AltY)))
-                     && (strstr (b->rdfile, "*")
-                         || strstr (b->rdfile, "?") || strstr (b->rdfile, "[")))
+                      || (file_buffer->sw == 0 && c == AltE)
+                      || (file_buffer->sw == 1 && c == AltR)
+                      || (file_buffer->sw == 2 && c == AltW)
+                      || (file_buffer->sw == 3 && c == AltE)
+                      || (file_buffer->sw == 5 && c == AltA)
+                      || (file_buffer->sw == 4 && (c == AltS || c == AltY)))
+                     && (strstr (file_buffer->rdfile, "*")
+                         || strstr (file_buffer->rdfile, "?") || strstr (file_buffer->rdfile, "[")))
             {
                 WpeMouseChangeShape (WpeWorkingShape);
                 /* free up existing structures */
-                freedf (b->df);
-                freedf (b->fw->df);
+                freedf (file_buffer->df);
+                freedf (file_buffer->fw->df);
                 /* find files according to the new pattern */
-                b->df = e_find_files (b->rdfile, fmode);
+                file_buffer->df = e_find_files (file_buffer->rdfile, fmode);
                 /* setup the drawing in the dir tree window */
-                b->fw->df = WpeGraphicalFileList (b->df, window->ed->flopt >> 9, control);
-                b->fw->ia = b->fw->nf = 0;
-                b->fw->ja = b->fw->srcha;
+                file_buffer->fw->df = WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
+                file_buffer->fw->ia = file_buffer->fw->nf = 0;
+                file_buffer->fw->ja = file_buffer->fw->srcha;
                 /* jump to file list window */
                 c = AltF;
                 WpeMouseRestoreShape ();
             }
             else
             {
-                strcpy (filen, b->rdfile);	/* !!! alloc for filen ??? */
+                strcpy (filen, file_buffer->rdfile);	/* !!! alloc for filen ??? */
                 if (c == WPE_CR)
                 {
-                    if (b->sw == 1)
+                    if (file_buffer->sw == 1)
                         c = AltR;
-                    else if (b->sw == 2)
+                    else if (file_buffer->sw == 2)
                         c = AltW;
-                    else if (b->sw == 4)
+                    else if (file_buffer->sw == 4)
                         c = AltS;
-                    else if (b->sw == 5)
+                    else if (file_buffer->sw == 5)
                         c = AltA;
                     else
                         c = AltE;
@@ -686,8 +686,8 @@ WpeHandleFileManager (we_control_t * control)
             }
             /* entry window is left, make the entry unhighlighted */
             if (c != AltN)
-                e_schr_nchar_wsv (b->rdfile, window->a.x + b->xfa, window->a.y + 3, 0,
-                                  b->xfd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
+                e_schr_nchar_wsv (file_buffer->rdfile, window->a.x + file_buffer->xfa, window->a.y + 3, 0,
+                                  file_buffer->xfd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
             fk_cursor (0);
             break;
 
@@ -709,7 +709,7 @@ WpeHandleFileManager (we_control_t * control)
                 strcpy (dirtmp, window->dirct);
 
             c =
-                e_schr_lst_wsv (dirtmp, window->a.x + b->xda, window->a.y + 3, b->xdd + 1,
+                e_schr_lst_wsv (dirtmp, window->a.x + file_buffer->xda, window->a.y + 3, file_buffer->xdd + 1,
                                 WPE_PATHMAX, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color,
                                 &window->ed->ddf, window);
             free (window->dirct);
@@ -730,15 +730,15 @@ WpeHandleFileManager (we_control_t * control)
                 c = AltC;
             /* window left, make the entry unhighlighted */
             if (c != AltD)
-                e_schr_nchar_wsv (window->dirct, window->a.x + b->xda, window->a.y + 3, 0,
-                                  b->xdd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
+                e_schr_nchar_wsv (window->dirct, window->a.x + file_buffer->xda, window->a.y + 3, 0,
+                                  file_buffer->xdd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
             fk_cursor (0);
             break;
 
         /* directory tree list window activation */
         case AltT:
             cold = c;
-            c = e_file_window (1, b->dw, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color);
+            c = e_file_window (1, file_buffer->dw, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color);
 #if  MOUSE
             if (c == MBKEY)	/* handle mouse actions in the window */
                 c = WpeMngMouseInFileManager (window);
@@ -753,15 +753,15 @@ WpeHandleFileManager (we_control_t * control)
                 c = AltN;
             else if (c == WPE_BTAB)
                 c = AltD;
-            else if (c == AltC || (c == WPE_CR && b->dw->nf != nco))
+            else if (c == AltC || (c == WPE_CR && file_buffer->dw->nf != nco))
             {
                 if ((dirtmp =
-                            WpeAssemblePath (window->dirct, b->cd, b->dd, b->dw->nf, window)))
+                            WpeAssemblePath (window->dirct, file_buffer->cd, file_buffer->dd, file_buffer->dw->nf, window)))
                 {
                     free (window->dirct);
                     window->dirct = dirtmp;
-                    e_schr_nchar_wsv (window->dirct, window->a.x + b->xda, window->a.y + 3, 0,
-                                      b->xdd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
+                    e_schr_nchar_wsv (window->dirct, window->a.x + file_buffer->xda, window->a.y + 3, 0,
+                                      file_buffer->xdd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
                     window->ed->ddf = e_add_df (window->dirct, window->ed->ddf);
                     c = AltC;
                 }
@@ -776,13 +776,13 @@ WpeHandleFileManager (we_control_t * control)
 
         /* file list window activation */
         case AltF:
-            if (b->df->nr_files < 1)
+            if (file_buffer->df->nr_files < 1)
             {
                 c = cold;
                 break;
             }
             cold = c;
-            c = e_file_window (1, b->fw, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color);
+            c = e_file_window (1, file_buffer->fw, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color);
 #if  MOUSE
             if (c == MBKEY)
                 c = WpeMngMouseInFileManager (window);
@@ -799,24 +799,24 @@ WpeHandleFileManager (we_control_t * control)
                 c = AltN;
             else if (c == WPE_CR)	/* action selected */
             {
-                if (b->sw == 1)
+                if (file_buffer->sw == 1)
                     c = AltR;
-                else if (b->sw == 2)
+                else if (file_buffer->sw == 2)
                     c = AltW;
-                else if (b->sw == 4)
+                else if (file_buffer->sw == 4)
                     c = AltS;
-                else if (b->sw == 5)
+                else if (file_buffer->sw == 5)
                     c = AltA;
                 else
                     c = AltE;
             }
-            if ((b->sw == 1 && c == AltR)	/* in case of action store the filename */
-                    || (b->sw == 2 && c == AltW)
-                    || (b->sw == 3 && c == AltE)
-                    || (b->sw == 0 && c == AltE)
-                    || (b->sw == 4 && (c == AltS || c == AltY)))
+            if ((file_buffer->sw == 1 && c == AltR)	/* in case of action store the filename */
+                    || (file_buffer->sw == 2 && c == AltW)
+                    || (file_buffer->sw == 3 && c == AltE)
+                    || (file_buffer->sw == 0 && c == AltE)
+                    || (file_buffer->sw == 4 && (c == AltS || c == AltY)))
             {
-                strcpy (filen, *(b->df->name + b->fw->nf));	/* !!! alloc for filen ??? */
+                strcpy (filen, *(file_buffer->df->name + file_buffer->fw->nf));	/* !!! alloc for filen ??? */
             }
             break;
 
@@ -829,7 +829,7 @@ WpeHandleFileManager (we_control_t * control)
 
             /* in wastebasket mode, we do not allow to go out of it through
                a soft link */
-            if ((b->sw == 0) && (window->save == 1))
+            if ((file_buffer->sw == 0) && (window->save == 1))
             {
                 if (lstat (window->dirct, &buf))
                 {
@@ -870,11 +870,11 @@ WpeHandleFileManager (we_control_t * control)
             window->dirct = dirtmp;
 
             /* free up all relevant structures */
-            freedf (b->df);
-            freedf (b->fw->df);
-            freedf (b->cd);
-            freedf (b->dw->df);
-            freedf (b->dd);
+            freedf (file_buffer->df);
+            freedf (file_buffer->fw->df);
+            freedf (file_buffer->cd);
+            freedf (file_buffer->dw->df);
+            freedf (file_buffer->dd);
 
             /* reset the current dir path in the control structure */
             if ((window->ed->dirct =
@@ -884,22 +884,22 @@ WpeHandleFileManager (we_control_t * control)
                 strcpy (window->ed->dirct, window->dirct);
 
             /* setup current directory structure */
-            b->cd = WpeCreateWorkingDirTree (window->save, control);
+            file_buffer->cd = WpeCreateWorkingDirTree (window->save, control);
             /* find all other directories in the current dir */
-            b->dd =
+            file_buffer->dd =
                 e_find_dir (SUDIR, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
             /* setup the drawing in the dir tree window */
-            b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
+            file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
 
-            nco = b->dw->nf = b->cd->nr_files - 1;
-            b->dw->ia = b->dw->ja = 0;
+            nco = file_buffer->dw->nf = file_buffer->cd->nr_files - 1;
+            file_buffer->dw->ia = file_buffer->dw->ja = 0;
 
             /* finds all files matching the pattern */
-            b->df = e_find_files (b->rdfile, fmode);
+            file_buffer->df = e_find_files (file_buffer->rdfile, fmode);
             /* setup the drawing in the file list window */
-            b->fw->df = WpeGraphicalFileList (b->df, window->ed->flopt >> 9, control);
-            b->fw->nf = b->fw->ia = 0;
-            b->fw->ja = 12;
+            file_buffer->fw->df = WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
+            file_buffer->fw->nf = file_buffer->fw->ia = 0;
+            file_buffer->fw->ja = 12;
 
             /* change the shape of the mouse back */
             WpeMouseRestoreShape ();
@@ -912,7 +912,7 @@ WpeHandleFileManager (we_control_t * control)
         /* move file activation */
         case AltM:
             /* moving/copying a file is valid only in mode 0 (open/new file) */
-            if (b->sw != 0)
+            if (file_buffer->sw != 0)
             {
                 c = cold;
                 break;
@@ -925,103 +925,103 @@ WpeHandleFileManager (we_control_t * control)
                 if ((ftmp = malloc (129)) == NULL)
                     e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
-                if (strlen (*(b->df->name + b->fw->nf)) > 128)
+                if (strlen (*(file_buffer->df->name + file_buffer->fw->nf)) > 128)
                 {
-                    strncpy (ftmp, *(b->df->name + b->fw->nf), 128);
+                    strncpy (ftmp, *(file_buffer->df->name + file_buffer->fw->nf), 128);
                     ftmp[128] = '\0';
                 }
                 else
-                    strcpy (ftmp, *(b->df->name + b->fw->nf));
+                    strcpy (ftmp, *(file_buffer->df->name + file_buffer->fw->nf));
 
                 /* make the file name editable */
                 c =
-                    e_schreib_leiste (ftmp, b->fw->xa,
-                                      b->fw->ya + b->fw->nf - b->fw->ia,
-                                      b->fw->xe - b->fw->xa, 128, window->colorset->fr.fg_bg_color,
+                    e_schreib_leiste (ftmp, file_buffer->fw->xa,
+                                      file_buffer->fw->ya + file_buffer->fw->nf - file_buffer->fw->ia,
+                                      file_buffer->fw->xe - file_buffer->fw->xa, 128, window->colorset->fr.fg_bg_color,
                                       window->colorset->fz.fg_bg_color);
                 if (c == WPE_CR)
                 {
                     if (j == AltM)
-                        e_rename (*(b->df->name + b->fw->nf), ftmp, window);	/* move */
+                        e_rename (*(file_buffer->df->name + file_buffer->fw->nf), ftmp, window);	/* move */
                     else if (j == AltL)
-                        WpeLinkFile (*(b->df->name + b->fw->nf), ftmp,	/* link */
+                        WpeLinkFile (*(file_buffer->df->name + file_buffer->fw->nf), ftmp,	/* link */
                                      window->ed->flopt & FM_TRY_HARDLINK, window);
                     else if (j == AltO)
-                        e_copy (*(b->df->name + b->fw->nf), ftmp, window);	/* copy */
+                        e_copy (*(file_buffer->df->name + file_buffer->fw->nf), ftmp, window);	/* copy */
 
                     /* after copying/moving/linking, free up the old structures */
-                    freedf (b->df);
-                    freedf (b->fw->df);
+                    freedf (file_buffer->df);
+                    freedf (file_buffer->fw->df);
 
                     /* generate the new file list */
-                    b->df = e_find_files (b->rdfile, fmode);
+                    file_buffer->df = e_find_files (file_buffer->rdfile, fmode);
                     /* setup the drawing of it */
-                    b->fw->df =
-                        WpeGraphicalFileList (b->df, window->ed->flopt >> 9, control);
-                    b->fw->ia = b->fw->nf = 0;
-                    b->fw->ja = b->fw->srcha;
+                    file_buffer->fw->df =
+                        WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
+                    file_buffer->fw->ia = file_buffer->fw->nf = 0;
+                    file_buffer->fw->ja = file_buffer->fw->srcha;
                 }
                 free (ftmp);
             }
             /* we are coming from dirs */
-            else if (cold == AltT && b->dw->nf >= b->cd->nr_files)
+            else if (cold == AltT && file_buffer->dw->nf >= file_buffer->cd->nr_files)
             {
                 if ((ftmp = malloc (129)) == NULL)
                     e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
                 /* selected dir */
-                t = b->dw->nf - b->cd->nr_files;
+                t = file_buffer->dw->nf - file_buffer->cd->nr_files;
 
-                if (strlen (*(b->dd->name + t)) > 128)
+                if (strlen (*(file_buffer->dd->name + t)) > 128)
                 {
-                    strncpy (ftmp, *(b->dd->name + t), 128);
+                    strncpy (ftmp, *(file_buffer->dd->name + t), 128);
                     ftmp[128] = '\0';
                 }
                 else
-                    strcpy (ftmp, *(b->dd->name + t));
+                    strcpy (ftmp, *(file_buffer->dd->name + t));
 
 
                 /* separate the dir name from other drawings in the line */
-                for (i = 0; *(b->dw->df->name[b->dw->nf] + i) &&
-                        (*(b->dw->df->name[b->dw->nf] + i) <= 32 ||
-                         *(b->dw->df->name[b->dw->nf] + i) >= 127); i++)
+                for (i = 0; *(file_buffer->dw->df->name[file_buffer->dw->nf] + i) &&
+                        (*(file_buffer->dw->df->name[file_buffer->dw->nf] + i) <= 32 ||
+                         *(file_buffer->dw->df->name[file_buffer->dw->nf] + i) >= 127); i++)
                     ;
 
                 if (!WpeIsXwin ())
                     i += 3;
-                b->dw->ja = i;
-                e_pr_file_window (b->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
+                file_buffer->dw->ja = i;
+                e_pr_file_window (file_buffer->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
                                   window->colorset->frft.fg_bg_color);
                 /* make the name editable */
                 c =
-                    e_schreib_leiste (ftmp, b->dw->xa,
-                                      b->dw->ya + b->dw->nf - b->dw->ia,
-                                      b->dw->xe - b->dw->xa, 128, window->colorset->fr.fg_bg_color,
+                    e_schreib_leiste (ftmp, file_buffer->dw->xa,
+                                      file_buffer->dw->ya + file_buffer->dw->nf - file_buffer->dw->ia,
+                                      file_buffer->dw->xe - file_buffer->dw->xa, 128, window->colorset->fr.fg_bg_color,
                                       window->colorset->fz.fg_bg_color);
                 if (c == WPE_CR)
                 {
                     if (j == AltM)
-                        e_rename (*(b->dd->name + t), ftmp, window);	/* move */
+                        e_rename (*(file_buffer->dd->name + t), ftmp, window);	/* move */
                     else if (j == AltL)
-                        e_link (*(b->dd->name + t), ftmp, window);	/* link */
+                        e_link (*(file_buffer->dd->name + t), ftmp, window);	/* link */
                     else if (j == AltO)
-                        e_copy (*(b->dd->name + t), ftmp, window);	/* copy */
+                        e_copy (*(file_buffer->dd->name + t), ftmp, window);	/* copy */
 
                     /* free up structures */
-                    freedf (b->cd);
-                    freedf (b->dw->df);
-                    freedf (b->dd);
+                    freedf (file_buffer->cd);
+                    freedf (file_buffer->dw->df);
+                    freedf (file_buffer->dd);
 
                     /* determine current directory */
-                    b->cd = WpeCreateWorkingDirTree (window->save, control);
+                    file_buffer->cd = WpeCreateWorkingDirTree (window->save, control);
                     /* find all other directories in the current */
-                    b->dd =
+                    file_buffer->dd =
                         e_find_dir (SUDIR,
                                     window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
                     /* setup drawing */
-                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
-                    nco = b->dw->nf = b->cd->nr_files - 1;
-                    b->dw->ia = b->dw->ja = 0;
+                    file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
+                    nco = file_buffer->dw->nf = file_buffer->cd->nr_files - 1;
+                    file_buffer->dw->ia = file_buffer->dw->ja = 0;
                 }
                 free (ftmp);
             }
@@ -1031,55 +1031,55 @@ WpeHandleFileManager (we_control_t * control)
 
         /* remove button activation */
         case ENTF:
-            if (b->sw != 0)
+            if (file_buffer->sw != 0)
             {
                 c = cold;
                 break;
             }
         /* remove button activation */
         case AltR:
-            if (b->sw == 0)
+            if (file_buffer->sw == 0)
             {
                 /* coming from file list */
                 if (cold == AltF)
                 {
-                    WpeRemove (*(b->df->name + b->fw->nf), window);	/* remove the file */
+                    WpeRemove (*(file_buffer->df->name + file_buffer->fw->nf), window);	/* remove the file */
 
                     /* free up structures */
-                    freedf (b->df);
-                    freedf (b->fw->df);
+                    freedf (file_buffer->df);
+                    freedf (file_buffer->fw->df);
 
                     /* find files according to the pattern */
-                    b->df = e_find_files (b->rdfile, fmode);
+                    file_buffer->df = e_find_files (file_buffer->rdfile, fmode);
 
                     /* setup drawing */
-                    b->fw->df =
-                        WpeGraphicalFileList (b->df, window->ed->flopt >> 9, control);
-                    b->fw->ia = b->fw->nf = 0;
-                    b->fw->ja = b->fw->srcha;
+                    file_buffer->fw->df =
+                        WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
+                    file_buffer->fw->ia = file_buffer->fw->nf = 0;
+                    file_buffer->fw->ja = file_buffer->fw->srcha;
                 }
                 /* coming from the dir tree list and the selected dir is a subdir of
                    the current directory */
-                else if (cold == AltT && b->dw->nf >= b->cd->nr_files)
+                else if (cold == AltT && file_buffer->dw->nf >= file_buffer->cd->nr_files)
                 {
-                    t = b->dw->nf - b->cd->nr_files;
-                    WpeRemove (*(b->dd->name + t), window);	/* remove the dir */
+                    t = file_buffer->dw->nf - file_buffer->cd->nr_files;
+                    WpeRemove (*(file_buffer->dd->name + t), window);	/* remove the dir */
 
                     /* free up structures */
-                    freedf (b->cd);
-                    freedf (b->dw->df);
-                    freedf (b->dd);
+                    freedf (file_buffer->cd);
+                    freedf (file_buffer->dw->df);
+                    freedf (file_buffer->dd);
 
                     /* determine current directory */
-                    b->cd = WpeCreateWorkingDirTree (window->save, control);
+                    file_buffer->cd = WpeCreateWorkingDirTree (window->save, control);
                     /* find all other directories in the current */
-                    b->dd =
+                    file_buffer->dd =
                         e_find_dir (SUDIR,
                                     window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
                     /* setup drawing */
-                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
-                    nco = b->dw->nf = b->cd->nr_files - 1;
-                    b->dw->ia = b->dw->ja = 0;
+                    file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
+                    nco = file_buffer->dw->nf = file_buffer->cd->nr_files - 1;
+                    file_buffer->dw->ia = file_buffer->dw->ja = 0;
                 }
                 c = cold;
                 cold = AltN;	/* go back to name entry */
@@ -1088,16 +1088,16 @@ WpeHandleFileManager (we_control_t * control)
 
         /* edit/execute button activation */
         case AltE:
-            if ((c == AltE && b->sw != 0 && b->sw != 3)
-                    || (c == AltR && b->sw != 1))
+            if ((c == AltE && file_buffer->sw != 0 && file_buffer->sw != 3)
+                    || (c == AltR && file_buffer->sw != 1))
             {
                 c = cold;
                 break;
             }
-            if (b->sw == 3)	/* file-manager in execution mode */
+            if (file_buffer->sw == 3)	/* file-manager in execution mode */
             {
                 if (cold == AltF)
-                    strcpy (filen, *(b->df->name + b->fw->nf));	/* !!! alloc filen ??? */
+                    strcpy (filen, *(file_buffer->df->name + file_buffer->fw->nf));	/* !!! alloc filen ??? */
                 if (!WpeIsXwin ())
                 {
                     outp =
@@ -1148,7 +1148,7 @@ WpeHandleFileManager (we_control_t * control)
                     break;
                 }
                 /* there is no open ??? file */
-                if (b->sw == 0 || !fe)
+                if (file_buffer->sw == 0 || !fe)
                 {
                     /* close on open request */
                     if (window->ed->flopt & FM_CLOSE_WINDOW)
@@ -1241,8 +1241,8 @@ WpeHandleFileManager (we_control_t * control)
 
         case AltW:		/* write activation */
         case AltS:		/* save activation */
-            if ((c == AltW && b->sw != 2)
-                    || (c == AltS && b->sw != 4) || !fe || fe->ins == 8)
+            if ((c == AltW && file_buffer->sw != 2)
+                    || (c == AltS && file_buffer->sw != 4) || !fe || fe->ins == 8)
             {
                 c = cold;
                 break;
@@ -1275,7 +1275,7 @@ WpeHandleFileManager (we_control_t * control)
                     break;
                 }
             }
-            if (b->sw != 4)
+            if (file_buffer->sw != 4)
             {
                 dtp = fe->dirct;
                 ftp = fe->datnam;
@@ -1287,7 +1287,7 @@ WpeHandleFileManager (we_control_t * control)
             }
 
             WpeFilenameToPathFile (filen, &fe->dirct, &fe->datnam);
-            if (b->sw == 4)	/* save as mode */
+            if (file_buffer->sw == 4)	/* save as mode */
                 e_save (fe);
             else
             {
@@ -1299,7 +1299,7 @@ WpeHandleFileManager (we_control_t * control)
                 fe->datnam = ftp;
             }
 
-            if (b->sw == 4 && (window->ed->edopt & ED_SYNTAX_HIGHLIGHT))
+            if (file_buffer->sw == 4 && (window->ed->edopt & ED_SYNTAX_HIGHLIGHT))
             {
                 if (fe->c_sw)
                     free (fe->c_sw);
@@ -1346,7 +1346,7 @@ WpeHandleFileManager (we_control_t * control)
         /* make dir button activation */
         case EINFG:
         case AltK:
-            if (b->sw != 0)
+            if (file_buffer->sw != 0)
             {
                 c = cold;
                 break;
@@ -1359,24 +1359,24 @@ WpeHandleFileManager (we_control_t * control)
             }
 
             /* free up old structures */
-            freedf (b->dd);
-            freedf (b->dw->df);
+            freedf (file_buffer->dd);
+            freedf (file_buffer->dw->df);
 
             /* create new directory structure */
-            b->dd =
+            file_buffer->dd =
                 e_find_dir (SUDIR, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-            b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
+            file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
             /* go to the line where the new dir is */
-            for (i = 0; i < b->dd->nr_files && strcmp (b->dd->name[i], "new.dir");
+            for (i = 0; i < file_buffer->dd->nr_files && strcmp (file_buffer->dd->name[i], "new.dir");
                     i++)
                 ;
             /* set the slidebar variables */
-            if ((b->dw->nf = b->cd->nr_files + i) >= b->dw->df->nr_files)
-                b->dw->nf = b->cd->nr_files - 1;
-            if (b->dw->nf - b->dw->ia >= b->dw->ye - b->dw->ya)
-                b->dw->ia = b->dw->nf + b->dw->ya - b->dw->ye + 1;
-            else if (b->dw->nf - b->dw->ia < 0)
-                b->dw->ia = b->dw->nf;
+            if ((file_buffer->dw->nf = file_buffer->cd->nr_files + i) >= file_buffer->dw->df->nr_files)
+                file_buffer->dw->nf = file_buffer->cd->nr_files - 1;
+            if (file_buffer->dw->nf - file_buffer->dw->ia >= file_buffer->dw->ye - file_buffer->dw->ya)
+                file_buffer->dw->ia = file_buffer->dw->nf + file_buffer->dw->ya - file_buffer->dw->ye + 1;
+            else if (file_buffer->dw->nf - file_buffer->dw->ia < 0)
+                file_buffer->dw->ia = file_buffer->dw->nf;
             cold = AltT;
             /* let the user modify the newly created dir */
             c = AltM;
@@ -1385,61 +1385,61 @@ WpeHandleFileManager (we_control_t * control)
         /* attribute/add file button activation */
         case AltA:
             /* not valid mode */
-            if (b->sw != 0 && b->sw != 5)
+            if (file_buffer->sw != 0 && file_buffer->sw != 5)
             {
                 c = cold;
                 break;
             }
             /* attribute button */
-            if (b->sw == 0)
+            if (file_buffer->sw == 0)
             {
                 if (cold == AltF)	/* coming from file list */
                 {
-                    strcpy (filen, *(b->df->name + b->fw->nf));	/* alloc for filen ??? */
+                    strcpy (filen, *(file_buffer->df->name + file_buffer->fw->nf));	/* alloc for filen ??? */
                     /* change the file attributes */
                     WpeFileDirAttributes (filen, window);
 
                     /* free up old file list structures */
-                    freedf (b->df);
-                    freedf (b->fw->df);
+                    freedf (file_buffer->df);
+                    freedf (file_buffer->fw->df);
 
                     /* create new file list */
-                    b->df = e_find_files (b->rdfile, fmode);
+                    file_buffer->df = e_find_files (file_buffer->rdfile, fmode);
                     /* setup drawing */
-                    b->fw->df =
-                        WpeGraphicalFileList (b->df, window->ed->flopt >> 9, control);
+                    file_buffer->fw->df =
+                        WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
                 }
-                else if (cold == AltT && b->dw->nf >= b->cd->nr_files)	/* coming from dir tree */
+                else if (cold == AltT && file_buffer->dw->nf >= file_buffer->cd->nr_files)	/* coming from dir tree */
                 {
-                    t = b->dw->nf - b->cd->nr_files;
+                    t = file_buffer->dw->nf - file_buffer->cd->nr_files;
 
                     if ((ftmp =
-                                malloc (strlen (*(b->dd->name + t)) + 1)) == NULL)
+                                malloc (strlen (*(file_buffer->dd->name + t)) + 1)) == NULL)
                         e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
 
-                    strcpy (ftmp, *(b->dd->name + t));
+                    strcpy (ftmp, *(file_buffer->dd->name + t));
                     /* change the dir attributes */
                     WpeFileDirAttributes (ftmp, window);
 
                     free (ftmp);
 
                     /* free up old file list structures */
-                    freedf (b->dd);
-                    freedf (b->dw->df);
+                    freedf (file_buffer->dd);
+                    freedf (file_buffer->dw->df);
                     /* create new dir list */
-                    b->dd =
+                    file_buffer->dd =
                         e_find_dir (SUDIR,
                                     window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
                     /* setup drawing */
-                    b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
+                    file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
                 }
                 c = cold;
             }
-            else if (b->sw == 5)	/* it is in project management */
+            else if (file_buffer->sw == 5)	/* it is in project management */
             {
                 FLWND *fw = (FLWND *) control->window[control->mxedt - 1]->b;
                 if (cold != AltN)
-                    strcpy (filen, *(b->df->name + b->fw->nf));
+                    strcpy (filen, *(file_buffer->df->name + file_buffer->fw->nf));
                 dirtmp = control->window[control->mxedt - 1]->dirct;
                 ftmp = malloc (strlen (window->dirct) + strlen (filen) + 2);
                 len = strlen (dirtmp);
@@ -1480,7 +1480,7 @@ WpeHandleFileManager (we_control_t * control)
 
         default:
             /* not project management */
-            if (b->sw != 5)
+            if (file_buffer->sw != 5)
             {
                 if (svmode >= 0)
                 {
@@ -1603,7 +1603,7 @@ WpeHandleFileManager (we_control_t * control)
         control->flopt = svmode;
 
     /* if in save mode or project management */
-    if (window->save == 1 || b->sw == 5)
+    if (window->save == 1 || file_buffer->sw == 5)
     {
         e_close_window (window);
         return (WPE_ESC);

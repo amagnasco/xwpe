@@ -167,7 +167,7 @@ WpeMngMouseInFileManager (we_window_t * window)
 {
     extern struct mouse e_mouse;
     we_control_t *control = window->ed;
-    FLBFFR *b = (FLBFFR *) window->b;
+    FLBFFR *file_buffer = (FLBFFR *) window->b;
     int i, c = 0, by = 4;
 
     if (e_mouse.y == 0)
@@ -206,7 +206,7 @@ WpeMngMouseInFileManager (we_window_t * window)
     {
         if (num_lines_on_screen(window) <= 17)
             by = -1;
-        else if (b->sw != 0 || num_lines_on_screen(window) <= 19)
+        else if (file_buffer->sw != 0 || num_lines_on_screen(window) <= 19)
             by = 2;
 
         if (num_lines_on_screen(window) > 17)
@@ -217,40 +217,40 @@ WpeMngMouseInFileManager (we_window_t * window)
             else if (e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 13
                      && e_mouse.x <= window->a.x + 24)
                 c = AltC;
-            else if (b->sw == 1 && num_cols_on_screen(window) >= 34
+            else if (file_buffer->sw == 1 && num_cols_on_screen(window) >= 34
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
                      && e_mouse.x <= window->a.x + 32)
                 c = AltR;
-            else if (b->sw == 2 && num_cols_on_screen(window) >= 35
+            else if (file_buffer->sw == 2 && num_cols_on_screen(window) >= 35
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
                      && e_mouse.x <= window->a.x + 33)
                 c = AltW;
-            else if (b->sw == 4 && num_cols_on_screen(window) >= 34
+            else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 34
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
                      && e_mouse.x <= window->a.x + 32)
                 c = AltS;
-            else if (b->sw == 4 && num_cols_on_screen(window) >= 48
+            else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 48
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 35
                      && e_mouse.x <= window->a.x + 46)
                 c = AltY;
-            else if (b->sw == 3 && num_cols_on_screen(window) >= 37
+            else if (file_buffer->sw == 3 && num_cols_on_screen(window) >= 37
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
                      && e_mouse.x <= window->a.x + 35)
                 c = AltE;
-            else if (b->sw == 5 && num_cols_on_screen(window) >= 33
+            else if (file_buffer->sw == 5 && num_cols_on_screen(window) >= 33
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
                      && e_mouse.x <= window->a.x + 31)
                 c = AltA;
-            else if (b->sw == 0 && num_cols_on_screen(window) >= 35
+            else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 35
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
                      && e_mouse.x <= window->a.x + 33)
                 c = AltK;
-            else if (b->sw == 0 && num_cols_on_screen(window) >= 49
+            else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 49
                      && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 36
                      && e_mouse.x <= window->a.x + 47)
                 c = AltA;
         }
-        if (b->sw == 0 && num_lines_on_screen(window) > 19)
+        if (file_buffer->sw == 0 && num_lines_on_screen(window) > 19)
         {
             if (e_mouse.y == window->e.y - 2 && e_mouse.x >= window->a.x + 3
                     && e_mouse.x <= window->a.x + 8)
@@ -269,17 +269,17 @@ WpeMngMouseInFileManager (we_window_t * window)
                 c = AltE;
         }
 
-        if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + b->xfa
-                && e_mouse.x <= window->a.x + b->xfa + b->xfd)
+        if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + file_buffer->xfa
+                && e_mouse.x <= window->a.x + file_buffer->xfa + file_buffer->xfd)
             c = AltN;
-        else if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + b->xda
-                 && e_mouse.x <= window->a.x + b->xda + b->xdd)
+        else if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + file_buffer->xda
+                 && e_mouse.x <= window->a.x + file_buffer->xda + file_buffer->xdd)
             c = AltD;
-        else if (e_mouse.y >= b->fw->ya && e_mouse.y <= b->fw->ye
-                 && e_mouse.x >= b->fw->xa && e_mouse.x <= b->fw->xe)
+        else if (e_mouse.y >= file_buffer->fw->ya && e_mouse.y <= file_buffer->fw->ye
+                 && e_mouse.x >= file_buffer->fw->xa && e_mouse.x <= file_buffer->fw->xe)
             c = AltF;
-        else if (e_mouse.y >= b->dw->ya && e_mouse.y <= b->dw->ye
-                 && e_mouse.x >= b->dw->xa && e_mouse.x <= b->dw->xe)
+        else if (e_mouse.y >= file_buffer->dw->ya && e_mouse.y <= file_buffer->dw->ye
+                 && e_mouse.x >= file_buffer->dw->xa && e_mouse.x <= file_buffer->dw->xe)
             c = AltT;
     }
     while (e_mshit () != 0);
@@ -291,7 +291,7 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * window)
 {
     extern struct mouse e_mouse;
     we_control_t *control = window->ed;
-    FLBFFR *b = (FLBFFR *) window->b;
+    FLBFFR *file_buffer = (FLBFFR *) window->b;
     int i;
     char tmp[256];
 
@@ -310,47 +310,47 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * window)
     {
         if (control->window[i]->dirct[strlen (control->window[i]->dirct) - 1] == DIRC)
             sprintf (tmp, "%s%s", control->window[i]->dirct,
-                     b->dd->name[b->dw->nf - b->cd->nr_files]);
+                     file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files]);
         else
             sprintf (tmp, "%s/%s", control->window[i]->dirct,
-                     b->dd->name[b->dw->nf - b->cd->nr_files]);
+                     file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files]);
         if (k == -2)
-            e_copy (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, window);
+            e_copy (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
         else if (k == -4)
-            e_link (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, window);
+            e_link (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
         else
-            e_rename (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, window);
-        freedf (b->cd);
-        freedf (b->dw->df);
-        freedf (b->dd);
-        b->dd = e_find_dir (SUDIR, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-        b->cd = WpeCreateWorkingDirTree (window->save, control);	/* ??? control */
-        b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, control);
-        b->dw->nf = b->cd->nr_files - 1;
-        b->dw->ia = b->dw->ja = 0;
-        e_pr_file_window (b->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
+            e_rename (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
+        freedf (file_buffer->cd);
+        freedf (file_buffer->dw->df);
+        freedf (file_buffer->dd);
+        file_buffer->dd = e_find_dir (SUDIR, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
+        file_buffer->cd = WpeCreateWorkingDirTree (window->save, control);	/* ??? control */
+        file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
+        file_buffer->dw->nf = file_buffer->cd->nr_files - 1;
+        file_buffer->dw->ia = file_buffer->dw->ja = 0;
+        e_pr_file_window (file_buffer->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
                           window->colorset->frft.fg_bg_color);
     }
     else
     {
         if (control->window[i]->dirct[strlen (control->window[i]->dirct) - 1] == DIRC)
-            sprintf (tmp, "%s%s", control->window[i]->dirct, b->df->name[b->fw->nf]);
+            sprintf (tmp, "%s%s", control->window[i]->dirct, file_buffer->df->name[file_buffer->fw->nf]);
         else
-            sprintf (tmp, "%s/%s", control->window[i]->dirct, b->df->name[b->fw->nf]);
+            sprintf (tmp, "%s/%s", control->window[i]->dirct, file_buffer->df->name[file_buffer->fw->nf]);
         if (k == -2)
-            e_copy (b->df->name[b->fw->nf], tmp, window);
+            e_copy (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
         else if (k == -4)
-            e_link (b->df->name[b->fw->nf], tmp, window);
+            e_link (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
         else
-            e_rename (b->df->name[b->fw->nf], tmp, window);
-        freedf (b->df);
-        freedf (b->fw->df);
-        b->df =
-            e_find_files (b->rdfile, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-        b->fw->df = WpeGraphicalFileList (b->df, window->ed->flopt >> 9, control);
-        b->fw->ia = b->fw->nf = 0;
-        b->fw->ja = b->fw->srcha;
-        e_pr_file_window (b->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
+            e_rename (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
+        freedf (file_buffer->df);
+        freedf (file_buffer->fw->df);
+        file_buffer->df =
+            e_find_files (file_buffer->rdfile, window->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
+        file_buffer->fw->df = WpeGraphicalFileList (file_buffer->df, window->ed->flopt >> 9, control);
+        file_buffer->fw->ia = file_buffer->fw->nf = 0;
+        file_buffer->fw->ja = file_buffer->fw->srcha;
+        e_pr_file_window (file_buffer->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
                           window->colorset->frft.fg_bg_color);
     }
     return (control->edt[i] < 10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
@@ -437,8 +437,8 @@ FLWND *fw;
                         yn = e_mouse.y;
                         if (fw->srcha < 0)
                         {
-                            FLBFFR *b = (FLBFFR *) fw->window->b;
-                            if (b->cd->nr_files > fw->nf)
+                            FLBFFR *file_buffer = (FLBFFR *) fw->window->b;
+                            if (file_buffer->cd->nr_files > fw->nf)
                             {
                                 while (e_mshit () != 0)
                                 {

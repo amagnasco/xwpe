@@ -104,8 +104,8 @@ char *tgoto ();
 #include <term.h>
 
 /* AIX requires that tparm has 10 arguments. */
-#define tparm1(a,b) tparm((a), (b), 0, 0, 0, 0, 0, 0, 0, 0)
-#define tparm2(a,b,c) tparm((a), (b), (c), 0, 0, 0, 0, 0, 0, 0)
+#define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
+#define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
 
 //#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)

@@ -82,14 +82,11 @@ struct dirfile
 /**
  * \brief The x and y coordinates in a window or on a screen.
  *
- * The x coordinate represents the offset of the column (starts at zero).
- * The y coordinate represents the offset of the row (starts at zero).
- *
  */
 typedef struct we_point_struct
 {
-    int x;
-    int y;
+    int x; /**< The offset of the column on the window or screen starting from zero. */
+    int y; /**< The offset of the row on the window or screen starting from zero. */
 } we_point_t;
 
 
@@ -172,8 +169,8 @@ typedef struct we_colorset_struct
  *  \struct undo
  *
  *  \brief The undo struct functions for redo as well.
- *	Contains points b, a and e. plus either a char c
- *  or a pointer to void.
+ *	Contains points `cursor_start`, `begin_block` and `end_block`.
+ *	plus either character `c` or a pointer to void `pt`.
  *
  *  The types that undo/redo struct exist as are:
  *
@@ -186,7 +183,7 @@ typedef struct we_colorset_struct
  *  'p'      | character overwrite ('put').
  *  'r'      | character deletion.
  *  's'      | search / replace.
- *  'v'      | block paste.
+ *  'v'      | block paste
  *  'y'      | line undelete
  *
  *
@@ -258,7 +255,8 @@ typedef struct BFF
     we_point_t cursor;        /**< cursor coordinates in window (at least in some contexts) */
     we_point_t mx;            /**< maximum column and line */
     int mxlines;              /**< number of lines */
-    int cl, clsv;
+    int cl;					  /**< cursor column within the current line */
+    int clsv;				  /**< previous cursor column within the current line */
     we_undo_t *undo;          /**< pointer to (a list of) undo structs for undo */
     we_undo_t *redo;	      /**< pointer to (a list of) undo structs for redo */
     struct CNT* control;      /**< pointer to a control struct */
@@ -321,28 +319,28 @@ typedef struct
 
 typedef struct we_window_struct
 {
-    we_point_t a; /**< start corner of the box */
-    we_point_t e; /**< other corner of the box */
+    we_point_t a;            /**< start corner of the box */
+    we_point_t e;            /**< other corner of the box */
     we_point_t sa;
     we_point_t se;
     char zoom;
     we_colorset_t* colorset; /**< color scheme */
     we_view_t* view;
-    char* dirct;       /**< working/actual directory */
-    char* datnam;      /**< window header text */
+    char* dirct;             /**< working/actual directory */
+    char* datnam;            /**< window header text */
     int winnum;
     char ins;
-    char dtmd;			/**< (See DTMD_* defines) */
+    char dtmd;			     /**< (See DTMD_* defines) */
     int save;
     char* hlp_str;
-    WOPT* blst;			/**< status line text */
-    int nblst;			/**< no of options in the status line */
+    WOPT* blst;			     /**< status line text */
+    int nblst;			     /**< no of options in the status line */
     int filemode, flg;
     int* c_sw;
     struct wpeSyntaxRule* c_st;
-    struct CNT* ed;		/**< edit control structure */
-    struct BFF* b;		/**< Buffer */
-    struct SCHRM* s;	/**< screen */
+    struct CNT* ed;		     /**< edit control structure */
+    we_buffer_t *b;		     /**< Buffer */
+    we_screen_t *s;	         /**< screen */
     FIND find;
 } we_window_t;
 

@@ -846,18 +846,18 @@ e_close_window (we_window_t * window)
     window = control->window[control->mxedt];
     if (window->dtmd == DTMD_FILEMANAGER)
     {
-        FLBFFR *b = (FLBFFR *) window->b;
+        FLBFFR *file_buffer = (FLBFFR *) window->b;
 
         free (window->dirct);
-        free (b->rdfile);
-        freedf (b->df);
-        freedf (b->fw->df);
-        freedf (b->dd);
-        freedf (b->cd);
-        freedf (b->dw->df);
-        free (b->fw);
-        free (b->dw);
-        free (b);
+        free (file_buffer->rdfile);
+        freedf (file_buffer->df);
+        freedf (file_buffer->fw->df);
+        freedf (file_buffer->dd);
+        freedf (file_buffer->cd);
+        freedf (file_buffer->dw->df);
+        free (file_buffer->fw);
+        free (file_buffer->dw);
+        free (file_buffer);
         (control->mxedt)--;
         control->curedt = control->edt[control->mxedt];
         e_close_view (window->view, 1);
