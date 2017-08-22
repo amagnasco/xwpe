@@ -46,14 +46,19 @@ int e_make_rudo(we_window_t* window, int sw);
 int e_del_a_ind (we_buffer_t * buffer, we_screen_t * s);
 int e_tab_a_ind (we_buffer_t * buffer, we_screen_t * s);
 int e_car_ret(we_buffer_t* buffer, we_screen_t* s);
-int e_add_undo_a (int undo_type, we_buffer_t * buffer, int x, int y, int n);
-int e_add_undo_p (int undo_type, we_buffer_t * buffer, int x, int y, int n);
-int e_add_undo_r (int undo_type, we_buffer_t * buffer, int x, int y, int n);
-int e_add_undo_s (int undo_type, we_buffer_t * buffer, int x, int y, int n);
-int e_add_undo_l (int undo_type, we_buffer_t * buffer, int x, int y, int n);
-int e_add_undo_c (int undo_type, we_buffer_t * buffer, int x, int y, int n);
-int e_add_undo_v (int undo_type, we_buffer_t * buffer, int x, int y, int n);
-int e_add_undo_d (int undo_type, we_buffer_t * buffer, int x, int y, int n);
+_Bool e_undo_is_active();
+void e_prepare_buffer_for_undo(we_buffer_t *buffer);
+we_undo_t * e_create_undo(int undo_type, we_buffer_t *buffer, int x, int y, int n);
+void e_add_new_undo(we_buffer_t *buffer, we_undo_t *next);
+int e_process_undo_unknown (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_a (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_p (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_r (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_s (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_l (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_c (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_v (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_d (we_buffer_t * buffer, we_undo_t *next);
 
 #ifdef PROG
 we_buffer_t *e_p_m_buffer = NULL;
@@ -1348,10 +1353,13 @@ e_chr_sp (int x, we_buffer_t * buffer, we_window_t * window)
             j++;
         if (window->dtmd == DTMD_HELP)
         {
-            if (buffer->buflines[buffer->cursor.y].s[i] == HBG || buffer->buflines[buffer->cursor.y].s[i] == HFB ||
-                    buffer->buflines[buffer->cursor.y].s[i] == HED || buffer->buflines[buffer->cursor.y].s[i] == HHD ||
-                    buffer->buflines[buffer->cursor.y].s[i] == HFE || buffer->buflines[buffer->cursor.y].s[i] == HBB ||
-                    buffer->buflines[buffer->cursor.y].s[i] == HNF)
+            if (buffer->buflines[buffer->cursor.y].s[i] == HBG
+                    || buffer->buflines[buffer->cursor.y].s[i] == HFB
+                    || buffer->buflines[buffer->cursor.y].s[i] == HED
+                    || buffer->buflines[buffer->cursor.y].s[i] == HHD
+                    || buffer->buflines[buffer->cursor.y].s[i] == HFE
+                    || buffer->buflines[buffer->cursor.y].s[i] == HBB
+                    || buffer->buflines[buffer->cursor.y].s[i] == HNF)
                 j -= 2;
         }
 #endif
@@ -2375,65 +2383,74 @@ e_remove_undo (we_undo_t * undo, int sw)
  *  @param x int the x coordinate (column)
  *  @param y int the y coordinate (row)
  *  @param n the length of the undo/redo concerned
- *  @return int 0 if the undo was constructed correctly, -1 if an error occurred. The error
- *          is accompanied by an error message on stdout.
+ *  @return int 0 if the undo was constructed correctly or the undo was disabled,
+ *				-1 if an error occurred. The error is accompanied by an error message on stdout.
  */
 int
 e_add_undo (int undo_type, we_buffer_t * buffer, int x, int y, int n)
 {
-    int result;
-    switch(undo_type)
+    int result = 0;
+
+    int (*process_undo)(we_buffer_t * buffer, we_undo_t *next);
+
+    process_undo =
+        undo_type == 'a' ? e_process_undo_a :
+        undo_type == 'p' ? e_process_undo_p :
+        undo_type == 'r' ? e_process_undo_r :
+        undo_type == 's' ? e_process_undo_s :
+        undo_type == 'l' ? e_process_undo_l :
+        undo_type == 'c' ? e_process_undo_c :
+        undo_type == 'v' ? e_process_undo_v :
+        undo_type == 'd' ? e_process_undo_d : e_process_undo_unknown;
+
+    if (e_undo_is_active())
     {
-    case 'a':
-        result = e_add_undo_a(undo_type, buffer, x, y, n);
-        break;
-    case 'p':
-        result = e_add_undo_p(undo_type, buffer, x, y, n);
-        break;
-    case 'r':
-        result = e_add_undo_r(undo_type, buffer, x, y, n);
-        break;
-    case 's':
-        result = e_add_undo_s(undo_type, buffer, x, y, n);
-        break;
-    case 'l':
-        result = e_add_undo_l(undo_type, buffer, x, y, n);
-        break;
-    case 'c':
-        result = e_add_undo_c(undo_type, buffer, x, y, n);
-        break;
-    case 'v':
-        result = e_add_undo_v(undo_type, buffer, x, y, n);
-        break;
-    case 'd':
-        result = e_add_undo_d(undo_type, buffer, x, y, n);
-        break;
-    default:
-        result = -1;
-        break;
+        e_prepare_buffer_for_undo(buffer);
+        we_undo_t *next = e_create_undo(undo_type, buffer, x, y, n);
+        if (next == NULL)
+            return -1;
+        result = process_undo(buffer, next);
+        e_add_new_undo(buffer, next);
     }
     return result;
 }
 
-int
-e_add_undo_a (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+_Bool
+e_undo_is_active()
 {
-    we_undo_t *next;
+    return global_disable_add_undo == 0;
+}
 
-    if (global_disable_add_undo)
-        return (0);
+void
+e_prepare_buffer_for_undo(we_buffer_t *buffer)
+{
     if (e_phase == EDIT_PHASE && buffer->redo)
         buffer->redo = e_remove_undo (buffer->redo, global_editor_control->numundo + 1);
-    if ((next = malloc (sizeof (we_undo_t))) == NULL)
+    return;
+}
+
+we_undo_t *
+e_create_undo(int undo_type, we_buffer_t *buffer, int x, int y, int n)
+{
+    we_undo_t *undo = NULL;
+    undo = malloc(sizeof(we_undo_t));
+    if (undo == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
-        return (-1);
+        return undo;
     }
-    next->type = undo_type;
-    next->cursor_start.x = x;
-    next->cursor_start.y = y;
-    next->begin_block.x = n;
-    next->next = e_phase == UNDO_PHASE ? buffer->redo : buffer->undo;
+    undo->type = undo_type;
+    undo->cursor_start.x = x;
+    undo->cursor_start.y = y;
+    undo->begin_block.x = n;
+    undo->next = e_phase == UNDO_PHASE ? buffer->redo : buffer->undo;
+
+    return undo;
+}
+
+void
+e_add_new_undo(we_buffer_t *buffer, we_undo_t *next)
+{
     if (e_phase == UNDO_PHASE)
         buffer->redo = next;
     else
@@ -2441,66 +2458,48 @@ e_add_undo_a (int undo_type, we_buffer_t * buffer, int x, int y, int n)
         next->next = e_remove_undo (buffer->undo, 1);
         buffer->undo = next;
     }
-    return (0);
+    return;
 }
 
 int
-e_add_undo_p (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+e_process_undo_unknown(we_buffer_t *buffer, we_undo_t *next)
 {
-    we_undo_t *next;
+    UNUSED(buffer);
+    UNUSED(next);
 
-    if (global_disable_add_undo)
-        return (0);
-    if (e_phase == EDIT_PHASE && buffer->redo)
-        buffer->redo = e_remove_undo (buffer->redo, global_editor_control->numundo + 1);
-    if ((next = malloc (sizeof (we_undo_t))) == NULL)
-    {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
-        return (-1);
-    }
-    next->type = undo_type;
-    next->cursor_start.x = x;
-    next->cursor_start.y = y;
-    next->begin_block.x = n;
-    next->next = e_phase == UNDO_PHASE ? buffer->redo : buffer->undo;
+    return -1;
+}
+
+int
+e_process_undo_a (we_buffer_t * buffer, we_undo_t *next)
+{
+    UNUSED(buffer);
+    UNUSED(next);
+
+    return 0;
+}
+
+int
+e_process_undo_p (we_buffer_t * buffer, we_undo_t *next)
+{
+    int x = next->cursor_start.x;
+    int y = next->cursor_start.y;
     next->u.c = buffer->buflines[y].s[x];
 
-    if (e_phase == UNDO_PHASE)
-        buffer->redo = next;
-    else
-    {
-        next->next = e_remove_undo (buffer->undo, 1);
-        buffer->undo = next;
-    }
-    return (0);
+    return 0;
 }
 
 
 int
-e_add_undo_r (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+e_process_undo_r (we_buffer_t * buffer, we_undo_t *next)
 {
-    return e_add_undo_s(undo_type, buffer, x, y, n);
+    return e_process_undo_s(buffer, next);
 }
 
 int
-e_add_undo_s (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+e_process_undo_s (we_buffer_t * buffer, we_undo_t *next)
 {
-    we_undo_t *next;
-
-    if (global_disable_add_undo)
-        return (0);
-    if (e_phase == EDIT_PHASE && buffer->redo)
-        buffer->redo = e_remove_undo (buffer->redo, global_editor_control->numundo + 1);
-    if ((next = malloc (sizeof (we_undo_t))) == NULL)
-    {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
-        return (-1);
-    }
-    next->type = undo_type;
-    next->cursor_start.x = x;
-    next->cursor_start.y = y;
-    next->begin_block.x = n;
-    next->next = e_phase == UNDO_PHASE ? buffer->redo : buffer->undo;
+    int n = next->begin_block.x;
     char *str = malloc (n+1);
     int i;
 
@@ -2510,6 +2509,8 @@ e_add_undo_s (int undo_type, we_buffer_t * buffer, int x, int y, int n)
         free (next);
         return (-1);
     }
+    int x = next->cursor_start.x;
+    int y = next->cursor_start.y;
     for (i = 0; i < n; i++)
         str[i] = buffer->buflines[y].s[x + i];
     str[n] = '\0';
@@ -2518,105 +2519,38 @@ e_add_undo_s (int undo_type, we_buffer_t * buffer, int x, int y, int n)
     next->begin_block.y =
         e_phase == UNDO_PHASE ? buffer->control->find.sn : buffer->control->find.rn;
 
-    if (e_phase == UNDO_PHASE)
-        buffer->redo = next;
-    else
-    {
-        next->next = e_remove_undo (buffer->undo, 1);
-        buffer->undo = next;
-    }
     return (0);
 }
 
 int
-e_add_undo_l (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+e_process_undo_l (we_buffer_t * buffer, we_undo_t *next)
 {
-    we_undo_t *next;
-
-    if (global_disable_add_undo)
-        return (0);
-    if (e_phase == EDIT_PHASE && buffer->redo)
-        buffer->redo = e_remove_undo (buffer->redo, global_editor_control->numundo + 1);
-    if ((next = malloc (sizeof (we_undo_t))) == NULL)
-    {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
-        return (-1);
-    }
-    next->type = undo_type;
-    next->cursor_start.x = x;
-    next->cursor_start.y = y;
-    next->begin_block.x = n;
-    next->next = e_phase == UNDO_PHASE ? buffer->redo : buffer->undo;
+    int y = next->cursor_start.y;
     next->u.pt = buffer->buflines[y].s;
 
-    if (e_phase == UNDO_PHASE)
-        buffer->redo = next;
-    else
-    {
-        next->next = e_remove_undo (buffer->undo, 1);
-        buffer->undo = next;
-    }
     return (0);
 }
 
 int
-e_add_undo_c (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+e_process_undo_c (we_buffer_t * buffer, we_undo_t *next)
 {
-    we_undo_t *next;
-
-    if (global_disable_add_undo)
-        return (0);
-    if (e_phase == EDIT_PHASE && buffer->redo)
-        buffer->redo = e_remove_undo (buffer->redo, global_editor_control->numundo + 1);
-    if ((next = malloc (sizeof (we_undo_t))) == NULL)
-    {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
-        return (-1);
-    }
-    next->type = undo_type;
-    next->cursor_start.x = x;
-    next->cursor_start.y = y;
-    next->begin_block.x = n;
-    next->next = e_phase == UNDO_PHASE ? buffer->redo : buffer->undo;
     we_screen_t *screen = buffer->control->window[buffer->control->mxedt]->screen;
 
     next->begin_block = screen->mark_begin;
     next->end_block = screen->mark_end;
-    if (e_phase == UNDO_PHASE)
-        buffer->redo = next;
-    else
-    {
-        next->next = e_remove_undo (buffer->undo, 1);
-        buffer->undo = next;
-    }
+
     return (0);
 }
 
 int
-e_add_undo_v (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+e_process_undo_v (we_buffer_t * buffer, we_undo_t *next)
 {
-    return e_add_undo_c(undo_type, buffer, x, y, n);
+    return e_process_undo_s(buffer, next);
 }
 
 int
-e_add_undo_d (int undo_type, we_buffer_t * buffer, int x, int y, int n)
+e_process_undo_d (we_buffer_t * buffer, we_undo_t *next)
 {
-    we_undo_t *next;
-
-    if (global_disable_add_undo)
-        return (0);
-    if (e_phase == EDIT_PHASE && buffer->redo)
-        buffer->redo = e_remove_undo (buffer->redo, global_editor_control->numundo + 1);
-    if ((next = malloc (sizeof (we_undo_t))) == NULL)
-    {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
-        return (-1);
-    }
-    next->type = undo_type;
-    next->cursor_start.x = x;
-    next->cursor_start.y = y;
-    next->begin_block.x = n;
-    next->next = e_phase == UNDO_PHASE ? buffer->redo : buffer->undo;
 
     we_buffer_t *bn = malloc (sizeof (we_buffer_t));
     we_screen_t *sn = malloc (sizeof (we_screen_t));
@@ -2657,13 +2591,6 @@ e_add_undo_d (int undo_type, we_buffer_t * buffer, int x, int y, int n)
     e_move_block (0, 0, buffer, bn, window);
     global_disable_add_undo = 0;
 
-    if (e_phase == UNDO_PHASE)
-        buffer->redo = next;
-    else
-    {
-        next->next = e_remove_undo (buffer->undo, 1);
-        buffer->undo = next;
-    }
     return (0);
 }
 
