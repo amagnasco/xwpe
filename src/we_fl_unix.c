@@ -1201,7 +1201,7 @@ WpeHandleFileManager (we_control_t * control)
                     len = se->mark_end.y - start;
                     e_brk_recalc (window, start, len);
 
-                    e_schirm (fe, 1);
+                    e_write_screen (fe, 1);
                 }
 
                 /* if there was no error */
@@ -3650,7 +3650,7 @@ e_ed_man (unsigned char *str, we_window_t * window)
     chmod (tstr, 0600);
     remove (tstr);
     WpeMouseRestoreShape ();
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 

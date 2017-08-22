@@ -753,7 +753,7 @@ e_eck_mouse (we_window_t * window, int sw)
             g[0] = 1;
             fk_mouse (g);
             e_cursor (window, 0);
-            e_schirm (window, 0);
+            e_write_screen (window, 0);
             e_refresh ();
         }
         g[0] = 3;
@@ -1003,7 +1003,7 @@ we_window_t *window;
                         && isalnum1 (buffer->buflines[buffer->cursor.y].s[s->mark_end.x]);
                         s->mark_end.x++);
             }
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         s->ks.x = buffer->cursor.x;
         s->ks.y = buffer->cursor.y;
@@ -1070,7 +1070,7 @@ we_window_t *window;
             }
         }
         e_cursor (window, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         e_refresh ();
     }
     s->ks.x = buffer->cursor.x;

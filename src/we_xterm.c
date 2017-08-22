@@ -1041,10 +1041,10 @@ e_x_repaint_desk (we_window_t * window)
     for (i = 1; i < control->mxedt; i++)
     {
         e_firstl (control->window[i], 0);
-        e_schirm (control->window[i], 0);
+        e_write_screen (control->window[i], 0);
     }
     e_firstl (control->window[i], 1);
-    e_schirm (control->window[i], 1);
+    e_write_screen (control->window[i], 1);
     if (nw_pic)
     {
         e_close_view (nw_pic, 1);

@@ -1946,7 +1946,7 @@ e_make_breakpoint (we_window_t * window, int sw)
             }
         }
     }
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (1);
 }
 
@@ -3033,7 +3033,7 @@ e_d_goto_break (char *file, int line, we_window_t * window)
     s->da.y = buffer->cursor.y = line - 1;
     s->da.x = buffer->cursor.x = 0;
     s->de.x = MAXSCOL;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     e_cursor (window, 1);
     return (0);
 }

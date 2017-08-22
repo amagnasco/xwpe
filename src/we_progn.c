@@ -1772,7 +1772,7 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     window->screen->fa.x = x;
     e_cursor (window, 1);
     window->screen->fa.y = num;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     WpeMouseRestoreShape ();
     return (num);
 }
@@ -2465,7 +2465,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     buffer->cursor = sb;
                     s->mark_begin = sa;
                     s->mark_end = se;
-                    e_schirm (window, 1);
+                    e_write_screen (window, 1);
                     WpeMouseRestoreShape ();
                     return (0);
                 }
@@ -2581,7 +2581,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     s->mark_begin = sa;
     s->mark_end = se;
     buffer->cursor = sb;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     WpeMouseRestoreShape ();
     return (0);
 }

@@ -74,7 +74,7 @@ e_blck_del (we_window_t * window)
         window->c_sw = e_sc_txt (window->c_sw, window->buffer);
     }
     e_cursor (window, 1);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -209,7 +209,7 @@ e_show_clipboard (we_window_t * window)
     }
     e_firstl (window, 1);
     e_zlsplt (window);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     e_cursor (window, 1);
     return (0);
 }
@@ -373,7 +373,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         sz->mark_end.x = bz->cursor.x = x + n;
         sz->mark_begin.y = sz->mark_end.y = bz->cursor.y = y;
         e_cursor (window, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         free (cstr);
         return;
     }
@@ -399,7 +399,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         sv->mark_end.x = kex;
         sv->mark_end.y = key;
         e_cursor (window, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         free (cstr);
         return;
     }
@@ -424,7 +424,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         bv->cursor.x = sv->mark_end.x;
         bv->cursor.y = sv->mark_end.y;
         e_cursor (window, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         free (cstr);
         return;
     }
@@ -504,7 +504,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         bz->window->c_sw = e_sc_txt (bz->window->c_sw, bz->window->buffer);
     }
     e_cursor (window, 1);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     free (str);
 }
 
@@ -573,7 +573,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
         s_dst->mark_begin.y = s_dst->mark_end.y = buffer_dst->cursor.y = y;
         free (cstr);
         e_cursor (window, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         return;
     }
 
@@ -651,7 +651,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
     buffer_dst->cursor.y = s_dst->mark_end.y = key - kay + y;
 
     e_cursor (window, 1);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     free (cstr);
     free (str);
 }
@@ -671,7 +671,7 @@ e_blck_hide (we_window_t * window)
     screen = window->screen;
     screen->mark_begin = e_set_pnt (0, 0);
     screen->mark_end = e_set_pnt (0, 0);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -687,7 +687,7 @@ e_blck_begin (we_window_t * window)
     e_switch_window (window->edit_control->edt[i], window);
     window = window->edit_control->window[window->edit_control->mxedt];
     window->screen->mark_begin = window->buffer->cursor;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -703,7 +703,7 @@ e_blck_end (we_window_t * window)
     e_switch_window (window->edit_control->edt[i], window);
     window = window->edit_control->window[window->edit_control->mxedt];
     window->screen->mark_end = window->buffer->cursor;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -719,7 +719,7 @@ e_blck_gt_beg (we_window_t * window)
     e_switch_window (window->edit_control->edt[i], window);
     window = window->edit_control->window[window->edit_control->mxedt];
     window->buffer->cursor = window->screen->mark_begin;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -735,7 +735,7 @@ e_blck_gt_end (we_window_t * window)
     e_switch_window (window->edit_control->edt[i], window);
     window = window->edit_control->window[window->edit_control->mxedt];
     window->buffer->cursor = window->screen->mark_end;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -754,7 +754,7 @@ e_blck_mrk_all (we_window_t * window)
     window->screen->mark_begin.y = 0;
     window->screen->mark_end.y = window->buffer->mxlines - 1;
     window->screen->mark_end.x = window->buffer->buflines[window->buffer->mxlines - 1].len;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -781,7 +781,7 @@ e_blck_mrk_line (we_window_t * window)
         window->screen->mark_end.x = window->buffer->buflines[window->buffer->cursor.y].len;
         window->screen->mark_end.y = window->buffer->cursor.y;
     }
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -828,7 +828,7 @@ e_blck_changecase (we_window_t * window, int mode)
                 buffer->buflines[y].s[x] = toupper (buffer->buflines[y].s[x]);
     }
     window->save++;
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return 0;
 }
 
@@ -915,7 +915,7 @@ e_blck_to_left (we_window_t * window)
         }
     }
     free (tstr);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -947,7 +947,7 @@ e_blck_to_right (we_window_t * window)
             s->mark_begin.x = 0;
     }
     free (tstr);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     return (0);
 }
 
@@ -1085,7 +1085,7 @@ e_repeat_search (we_window_t * window)
                 {
                     e_cursor (window, 1);
                     screen->fa.y = j;
-                    e_schirm (window, 1);
+                    e_write_screen (window, 1);
                 }
                 return (1);
             }
@@ -1308,7 +1308,7 @@ e_replace (we_window_t *window)
             {
                 screen->c.y = buffer->cursor.y - 1;
             }
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
             c = 'Y';
             if (find->sw & 16)
                 c = e_message (1, "String found:\nReplace this occurrence ?", window);
@@ -1325,7 +1325,7 @@ e_replace (we_window_t *window)
                 global_disable_add_undo = 0;
                 screen->fe.x = screen->fa.x + find->rn;
                 buffer->cursor.x = !(find->sw & 4) ? screen->fe.x : screen->fa.x;
-                e_schirm (window, 1);
+                e_write_screen (window, 1);
             }
         }
         if (found)

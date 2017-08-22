@@ -310,7 +310,7 @@ e_run (we_window_t * window)
 
     buffer->cursor.y = buffer->mxlines - 1;
     e_cursor (window, 1);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     e_refresh ();
     WpeMouseRestoreShape ();
     return (0);
@@ -556,7 +556,7 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
     print_to_end_of_buffer (buffer, "Success", buffer->mx.x);
 
     e_cursor (window, 1);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     e_refresh ();
     return (0);
 }
@@ -1740,7 +1740,7 @@ e_d_p_message (char *str, we_window_t * window, int sw)
         e_rep_win_tree (control);
     else if (WpeIsXwin ())
     {
-        e_schirm (window, 0);
+        e_write_screen (window, 0);
         e_cursor (window, 0);
         e_refresh ();
     }
@@ -3210,7 +3210,7 @@ e_p_show_messages (we_window_t * window)
     {
         e_new_line (0, window->buffer);
         e_ins_nchar (window->buffer, window->screen, (unsigned char *) "No Messages", 0, 0, 11);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
     }
     return (0);
 }

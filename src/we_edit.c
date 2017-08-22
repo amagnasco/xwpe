@@ -432,7 +432,7 @@ e_edit (we_control_t * control, char *filename)
     e_firstl (window, 1);
     e_zlsplt (window);
     e_brk_schirm (window);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     e_cursor (window, 1);
     return (0);
 }
@@ -476,7 +476,7 @@ e_eingabe (we_control_t * e)
                 e_put_char (c, buffer, s);
             else
                 e_ins_nchar (buffer, s, &cc, buffer->cursor.x, buffer->cursor.y, 1);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         else if (c == WPE_DC)
         {
@@ -512,7 +512,7 @@ e_eingabe (we_control_t * e)
                     else
                         e_del_nchar (buffer, s, buffer->cursor.x, buffer->cursor.y, 1);
                 }
-                e_schirm (window, 1);
+                e_write_screen (window, 1);
             }
         }
         else if (c == ENTF || c == 4)
@@ -530,7 +530,7 @@ e_eingabe (we_control_t * e)
                      || *(buffer->buflines[buffer->cursor.y].s + buffer->cursor.x) != WPE_WR))
             {
                 e_del_nchar (buffer, s, buffer->cursor.x, buffer->cursor.y, 1);
-                e_schirm (window, 1);
+                e_write_screen (window, 1);
             }
         }
         else if (c == WPE_CR)
@@ -556,12 +556,12 @@ e_eingabe (we_control_t * e)
                 continue;
 #endif
             e_car_ret (buffer, s);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         else if (c == WPE_TAB)
         {
             e_tab_a_ind (buffer, s);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         /*
                   else if(c == WPE_TAB)
@@ -572,7 +572,7 @@ e_eingabe (we_control_t * e)
                       		{   e_put_char(' ', buffer, s);  buffer->cursor.x++;  }
                        else  e_ins_nchar(buffer, s, window->edit_control->tabs, buffer->cursor.x, buffer->cursor.y,
                                                window->edit_control->tabn - buffer->cursor.x % window->edit_control->tabn);
-                       e_schirm(buffer, s, window, 1);
+                       e_write_screen(buffer, s, window, 1);
                   }
         */
         else
@@ -683,7 +683,7 @@ e_tst_cur (int c, we_control_t * e)
         buffer->cursor.y = buffer->cursor.y + num_lines_on_screen(window) - 2;
         if (buffer->cursor.y > buffer->mxlines - 1)
             buffer->cursor.y = buffer->mxlines - 1;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         e_cursor (window, 1);
         break;
     case BUP:
@@ -691,14 +691,14 @@ e_tst_cur (int c, we_control_t * e)
         buffer->cursor.y = buffer->cursor.y - window->e.y + window->a.y + 2;
         if (buffer->cursor.y < 0)
             buffer->cursor.y = 0;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         e_cursor (window, 1);
         break;
     case CBDO:
     case CBDO + 512:
         buffer->cursor.y = buffer->mxlines - 1;
         buffer->cursor.x = buffer->buflines[buffer->mxlines - 1].len;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case CBUP:
     case CBUP + 512:
@@ -706,7 +706,7 @@ e_tst_cur (int c, we_control_t * e)
         {
             buffer->cursor.x = 0;
             buffer->cursor.y = 0;
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         break;
     case CEND:
@@ -780,13 +780,13 @@ e_tst_cur (int c, we_control_t * e)
             buffer->cursor.x = 0;
             (buffer->cursor.y)++;
         }
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case CtrlZ:
         if (window->ins == 8)
             break;
         e_del_nchar (buffer, s, buffer->cursor.x, buffer->cursor.y, buffer->buflines[buffer->cursor.y].len - buffer->cursor.x);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case DGZ:
         if (window->ins == 8)
@@ -794,7 +794,7 @@ e_tst_cur (int c, we_control_t * e)
         e_del_line (buffer->cursor.y, buffer, s);
         if (buffer->cursor.y > buffer->mxlines - 1)
             (buffer->cursor.y)--;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case AF7:
     case AltV:
@@ -841,7 +841,7 @@ e_tst_cur (int c, we_control_t * e)
             s->mark_begin.x = buffer->cursor.x;
             s->mark_begin.y = buffer->cursor.y;
         }
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
     }
     return (0);
 }
@@ -988,11 +988,11 @@ e_ctrl_k (we_window_t * window)
     {
     case 'A':
         buffer->cursor = screen->mark_begin;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'B':
         screen->mark_begin = e_set_pnt (buffer->cursor.x, buffer->cursor.y);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'C':
         e_blck_copy (window);
@@ -1011,7 +1011,7 @@ e_ctrl_k (we_window_t * window)
         break;
     case 'K':
         screen->mark_end = e_set_pnt (buffer->cursor.x, buffer->cursor.y);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'L':
         window->screen->mark_begin.x = 0;
@@ -1026,7 +1026,7 @@ e_ctrl_k (we_window_t * window)
             window->screen->mark_end.x = window->buffer->buflines[window->buffer->cursor.y].len;
             window->screen->mark_end.y = window->buffer->cursor.y;
         }
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'R':
         e_blck_read (window);
@@ -1045,14 +1045,14 @@ e_ctrl_k (we_window_t * window)
         screen->mark_begin.y = 0;
         screen->mark_end.y = buffer->mxlines - 1;
         screen->mark_end.x = buffer->buflines[buffer->mxlines - 1].len;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'Y':
         e_blck_del (window);
         break;
     case 'Z':
         buffer->cursor = screen->mark_end;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case '0':
     case '1':
@@ -1069,7 +1069,7 @@ e_ctrl_k (we_window_t * window)
         screen->fa.y = buffer->cursor.y;
         screen->fa.x = buffer->cursor.x;
         screen->fe.x = buffer->cursor.x + 1;
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     }
     return 0;
@@ -1093,7 +1093,7 @@ e_ctrl_o (we_window_t * window)
         if (window->ins == 8)
             break;
         e_del_nchar (buffer, s, buffer->cursor.x, buffer->cursor.y, buffer->buflines[buffer->cursor.y].len - buffer->cursor.x);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         e_cursor (window, 1);
         break;
     case 'T':			/*  delete up to beginning of next word    */
@@ -1110,7 +1110,7 @@ e_ctrl_o (we_window_t * window)
             buffer->cursor.x = e_su_rblk (buffer->cursor.x - 1, buffer->buflines[buffer->cursor.y].s);
             e_del_nchar (buffer, s, buffer->cursor.x, buffer->cursor.y, c - buffer->cursor.x);
         }
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'F':			/*  find string    */
         e_find (window);
@@ -1140,7 +1140,7 @@ e_ctrl_o (we_window_t * window)
             e_ins_nchar (buffer, s, &cc, s->mark_end.x, s->mark_end.y, 1);
             cc = HBG;
             e_ins_nchar (buffer, s, &cc, s->mark_begin.x, s->mark_end.y, 1);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         break;
     case 'M':			/*   for help file: Mark-Line  */
@@ -1151,7 +1151,7 @@ e_ctrl_o (we_window_t * window)
             e_ins_nchar (buffer, s, &cc, s->mark_end.x, s->mark_end.y, 1);
             cc = HBB;
             e_ins_nchar (buffer, s, &cc, s->mark_begin.x, s->mark_end.y, 1);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         break;
     case 'H':			/*   for help file: create Header  */
@@ -1162,14 +1162,14 @@ e_ctrl_o (we_window_t * window)
             e_ins_nchar (buffer, s, &cc, s->mark_end.x, s->mark_end.y, 1);
             cc = HHD;
             e_ins_nchar (buffer, s, &cc, s->mark_begin.x, s->mark_end.y, 1);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
         }
         break;
     case 'E':			/*   for help file: create end mark  */
         e_new_line (buffer->cursor.y, buffer);
         cc = HFE;
         e_ins_nchar (buffer, s, &cc, 0, buffer->cursor.y, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'L':			/*   for help file: delete "help" special chars  */
         for (i = 0; i < buffer->buflines[buffer->cursor.y].len; i++)
@@ -1181,7 +1181,7 @@ e_ctrl_o (we_window_t * window)
                 e_del_nchar (buffer, s, i, buffer->cursor.y, 1);
                 i--;
             }
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         break;
     case 'C':			/*   for help file: check help file   */
         e_help_comp (window);
@@ -1782,11 +1782,11 @@ e_cursor (we_window_t * window, int sw)
             s->c.x = 0;
         else if (s->c.x >= buffer->buflines[buffer->cursor.y].len + j)
             s->c.x = buffer->buflines[buffer->cursor.y].len + j;
-        e_schirm (window, sw);
+        e_write_screen (window, sw);
     }
     if (s->fa.y == -1)
     {
-        e_schirm (window, sw);
+        e_write_screen (window, sw);
         s->fa.y--;
     }
     else if (s->fa.y > -1)
@@ -2743,7 +2743,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
         buffer->undo = undo->next;
     e_phase = EDIT_PHASE;
     free (undo);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     e_cursor (window, 1);
     return (0);
 }

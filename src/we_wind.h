@@ -83,7 +83,7 @@ void e_pr_line(int y, we_window_t* window);
 void e_std_rahmen(int xa, int ya, int xe, int ye, char* name, int sw,
                   int frb, int fes);
 void e_ed_rahmen(we_window_t* window, int sw);
-int e_schirm(we_window_t* window, int sw);
+int e_write_screen(we_window_t* window, int sw);
 int e_size_move(we_window_t* window);
 we_view_t* e_std_kst(int xa, int ya, int xe, int ye, char* name, int sw, int fr,
                      int ft, int fes);

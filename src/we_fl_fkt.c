@@ -1001,7 +1001,7 @@ e_help_ret (we_window_t * window)
             buffer = window->buffer;
             buffer->cursor.x = buffer->cursor.y = 0;
             e_cursor (window, 1);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
             return (0);
         }
         else if (buffer->buflines[buffer->cursor.y].s[i] == HNF)
@@ -1033,7 +1033,7 @@ e_help_ret (we_window_t * window)
             buffer = window->buffer;
             buffer->cursor.x = buffer->cursor.y = 0;
             e_cursor (window, 1);
-            e_schirm (window, 1);
+            e_write_screen (window, 1);
             return (0);
         }
         else if (buffer->buflines[buffer->cursor.y].s[i] == HFB)
@@ -1076,7 +1076,7 @@ e_help_last (we_window_t * window)
     window->buffer->cursor.x = last->x;
     window->buffer->cursor.y = last->y;
     e_cursor (window, 1);
-    e_schirm (window, 1);
+    e_write_screen (window, 1);
     ud_help = last->next;
     free (last->str);
     free (last);
@@ -1112,7 +1112,7 @@ e_help_next (we_window_t * window, int sw)
         e_read_info (last->str, window, last->file);
         window->buffer->cursor.x = window->buffer->cursor.y = 0;
         e_cursor (window, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
         return (0);
     }
     else
@@ -1131,7 +1131,7 @@ e_help_next (we_window_t * window, int sw)
                 e_read_help (ud_help->next ? ud_help->next->str : NULL, window, 1);
                 window->buffer->cursor.x = window->buffer->cursor.y = 0;
                 e_cursor (window, 1);
-                e_schirm (window, 1);
+                e_write_screen (window, 1);
                 return (0);
             }
         }
@@ -1660,7 +1660,7 @@ e_help_loc (we_window_t * window, int sw)
         e_read_info (NULL, window->edit_control->window[window->edit_control->mxedt], NULL);
     else
         e_read_help (tmp, window->edit_control->window[window->edit_control->mxedt], 0);
-    e_schirm (window->edit_control->window[window->edit_control->mxedt], 1);
+    e_write_screen (window->edit_control->window[window->edit_control->mxedt], 1);
     return (0);
 }
 

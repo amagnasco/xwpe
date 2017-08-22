@@ -494,7 +494,7 @@ e_ed_rahmen (we_window_t * window, int sw)
  *
  */
 int
-e_schirm (we_window_t * window, int sw)
+e_write_screen (we_window_t * window, int sw)
 {
     int j;
 
@@ -610,7 +610,7 @@ e_size_move (we_window_t * window)
                 fw->ye = window->e.y;
             }
             e_cursor (window, 0);
-            e_schirm (window, 0);
+            e_write_screen (window, 0);
         }
     }
     e_ed_rahmen (window, 1);
@@ -964,10 +964,10 @@ e_rep_win_tree (we_control_t * control)
     for (i = 1; i < control->mxedt; i++)
     {
         e_firstl (control->window[i], 0);
-        e_schirm (control->window[i], 0);
+        e_write_screen (control->window[i], 0);
     }
     e_firstl (control->window[i], 1);
-    e_schirm (control->window[i], 1);
+    e_write_screen (control->window[i], 1);
     e_cursor (control->window[i], 1);
     end_repaint ();
     return (0);
@@ -1026,7 +1026,7 @@ e_ed_zoom (we_window_t * window)
         if (window->view == NULL)
             e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
         e_cursor (window, 1);
-        e_schirm (window, 1);
+        e_write_screen (window, 1);
     }
     return (WPE_ESC);
 }
@@ -1052,10 +1052,10 @@ e_ed_cascade (we_window_t * window)
     for (i = 1; i < control->mxedt; i++)
     {
         e_firstl (control->window[i], 0);
-        e_schirm (control->window[i], 0);
+        e_write_screen (control->window[i], 0);
     }
     e_firstl (control->window[i], 1);
-    e_schirm (control->window[i], 1);
+    e_write_screen (control->window[i], 1);
     e_cursor (control->window[i], 1);
     end_repaint ();
     return (0);
@@ -1191,10 +1191,10 @@ e_ed_tile (we_window_t * window)
     for (i = 1; i < control->mxedt; i++)
     {
         e_firstl (control->window[i], 0);
-        e_schirm (control->window[i], 0);
+        e_write_screen (control->window[i], 0);
     }
     e_firstl (control->window[i], 1);
-    e_schirm (control->window[i], 1);
+    e_write_screen (control->window[i], 1);
     e_cursor (control->window[i], 1);
     end_repaint ();
     return (0);
