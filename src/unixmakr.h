@@ -44,16 +44,6 @@ extern char *user_shell;
 
 extern char *ctree[5];
 
-#ifdef NEWSTYLE
-#define e_pr_char(x, y, c, frb)   \
-(  *(global_screen + 2*MAXSCOL*(y) + 2*(x)) = (c),  \
-   *(global_screen + 2*MAXSCOL*(y) + 2*(x) + 1) = (frb), \
-   *(extbyte + MAXSCOL*(y) + (x)) = 0  )
-#else
-#define e_pr_char(x, y, c, frb)   \
-(  *(global_screen + 2*MAXSCOL*(y) + 2*(x)) = (c),  \
-   *(global_screen + 2*MAXSCOL*(y) + 2*(x) + 1) = (frb)  )
-#endif
 #define e_pt_col(x, y, c)  ( *(global_screen + 2*MAXSCOL*(y) + 2*(x) + 1) = (c) )
 #define e_gt_char(x, y)  (*(global_screen + 2*MAXSCOL*(y) + 2*(x)))
 

@@ -72,7 +72,7 @@ inline int col_num_on_screen_right(we_window_t* window)
     return num_cols_on_screen(window) + num_cols_off_screen_left(window) - 1;
 }
 
-/*   we_wind.c   */
+void e_pr_char(int x, int y, int c, int color);
 int e_error(char* text, int sw, we_colorset_t* colorset);
 int e_message(int sw, char* str, we_window_t* window);
 void e_firstl(we_window_t* window, int sw);
@@ -86,7 +86,7 @@ void e_ed_rahmen(we_window_t* window, int sw);
 int e_write_screen(we_window_t* window, int sw);
 int e_size_move(we_window_t* window);
 we_view_t* e_std_view(int xa, int ya, int xe, int ye, char* name, int sw, int fr,
-                     int ft, int fes);
+                      int ft, int fes);
 we_view_t* e_ed_kst(we_window_t* window, we_view_t* view, int sw);
 int e_close_window(we_window_t* window);
 void e_switch_window(int num, we_window_t* window);

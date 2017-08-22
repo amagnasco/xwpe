@@ -32,6 +32,16 @@ extern int num_cols_off_screen_left(we_window_t *window);
 extern int num_cols_on_screen_safe(we_window_t *window);
 extern int col_num_on_screen_right(we_window_t *window);
 
+void e_pr_char(int x, int y, int c, int color)
+{
+    *(global_screen + 2*MAXSCOL*y + 2 * x) = c;
+    *(global_screen + 2*MAXSCOL*y + 2 * x + 1) = color;
+#ifdef NEWSTYLE
+    *(extbyte + MAXSCOL * y + x) = 0;
+#endif
+
+}
+
 /* break string into multiple line to fit into windows
 
    REM: Caller has to free returned vector!!!
