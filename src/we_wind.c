@@ -23,7 +23,7 @@
 
 #define MAXSVSTR 20
 
-int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
+int e_make_xr_window (int xa, int ya, int xe, int ye, int sw);
 extern int num_lines_off_screen_top(we_window_t *window);
 extern int num_lines_on_screen(we_window_t *window);
 extern int line_num_on_screen_bottom(we_window_t *window);
@@ -107,9 +107,9 @@ e_error (char *text, int sw, we_colorset_t * colorset)
 
     if (sw < 2)
         view = e_std_view (xa, ya, xe, ye, header, 1,
-                          colorset->nr.fg_bg_color,
-                          colorset->nt.fg_bg_color,
-                          colorset->ne.fg_bg_color);
+                           colorset->nr.fg_bg_color,
+                           colorset->nt.fg_bg_color,
+                           colorset->ne.fg_bg_color);
     if (sw == 2 || view == NULL)
     {
         view = e_open_view (xa, ya, xe, ye, 0, 0);
@@ -393,7 +393,7 @@ e_ed_rahmen (we_window_t * window, int sw)
         }
 #ifdef NEWSTYLE
         if (WpeIsXwin ())
-            e_make_xr_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, sw);
+            e_make_xr_window (window->a.x, window->a.y, window->e.x, window->e.y, sw);
 #endif
         return;
     }
@@ -479,7 +479,7 @@ e_ed_rahmen (we_window_t * window, int sw)
         e_pr_char (window->e.x - 6, window->a.y, 'A' - 10 + window->winnum, window->colorset->er.fg_bg_color);
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
-        e_make_xr_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, sw);
+        e_make_xr_window (window->a.x, window->a.y, window->e.x, window->e.y, sw);
 #endif
 }
 
@@ -622,7 +622,7 @@ e_size_move (we_window_t * window)
  */
 we_view_t *
 e_std_view (int xa, int ya, int xe, int ye, char *name, int sw, int fr,
-           int ft, int fes)
+            int ft, int fes)
 {
     we_view_t *view = e_open_view (xa, ya, xe, ye, ft, 1);
     if (view == NULL)
@@ -1511,7 +1511,7 @@ e_std_window (int xa, int ya, int xe, int ye, char *name, int sw, int frb,
             e_make_xrect (xa + 2, ya, xa + 4, ya, 0);
     }
     if (WpeIsXwin ())
-        e_make_xr_rahmen (xa, ya, xe, ye, sw);
+        e_make_xr_window (xa, ya, xe, ye, sw);
 #else
     }
     /*
@@ -1777,7 +1777,7 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * window, int sw
     xe = xa + max + 3;
     view =
         e_std_view (xa, ya, xe, ye, NULL, sw, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
-                   window->colorset->ne.fg_bg_color);
+                    window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
@@ -1929,9 +1929,12 @@ e_make_xrect_abs (int xa, int ya, int xe, int ye, int sw)
 }
 
 /**
- * \fn e_make_xrect
+ * \fn e_make_xrect.
  *
- * \todo TODO: what does this function do?
+ * This function makes a rectangle withing the functionality of XWindows.
+ *
+ * \todo TODO: what does this function do? why use the extbyte in stead of global_screen?
+ * \todo what is the meaing of sw in this function?
  *
  *
  */
@@ -1972,7 +1975,7 @@ e_make_xrect (int xa, int ya, int xe, int ye, int sw)
 }
 
 int
-e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw)
+e_make_xr_window (int xa, int ya, int xe, int ye, int sw)
 {
     if (!sw)
     {

@@ -47,7 +47,6 @@ int e_x_paste_X_buffer (we_window_t * window);
 int e_x_change (we_view_t * view);
 int e_x_repaint_desk (we_window_t * window);
 void e_setlastpic (we_view_t * view);
-int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
 int e_x_kbhit (void);
 
 #include <X11/Xlib.h>
