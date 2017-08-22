@@ -50,15 +50,15 @@ _Bool e_undo_is_active();
 void e_prepare_buffer_for_undo(we_buffer_t *buffer);
 we_undo_t * e_create_undo(int undo_type, we_buffer_t *buffer, int x, int y, int n);
 void e_add_new_undo(we_buffer_t *buffer, we_undo_t *next);
-int e_process_undo_unknown (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_a (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_p (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_r (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_s (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_l (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_c (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_v (we_buffer_t * buffer, we_undo_t *next);
-int e_process_undo_d (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_default (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_a_char_delete (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_p_char_put (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_r_search_replace (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_s_search_replace (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_l_line_delete (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_c_copy_paste (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_v_copy_paste (we_buffer_t * buffer, we_undo_t *next);
+int e_process_undo_d_block_delete (we_buffer_t * buffer, we_undo_t *next);
 
 #ifdef PROG
 we_buffer_t *e_p_m_buffer = NULL;
@@ -2394,14 +2394,14 @@ e_add_undo (int undo_type, we_buffer_t * buffer, int x, int y, int n)
     int (*process_undo)(we_buffer_t * buffer, we_undo_t *next);
 
     process_undo =
-        undo_type == 'a' ? e_process_undo_a :
-        undo_type == 'p' ? e_process_undo_p :
-        undo_type == 'r' ? e_process_undo_r :
-        undo_type == 's' ? e_process_undo_s :
-        undo_type == 'l' ? e_process_undo_l :
-        undo_type == 'c' ? e_process_undo_c :
-        undo_type == 'v' ? e_process_undo_v :
-        undo_type == 'd' ? e_process_undo_d : e_process_undo_unknown;
+        undo_type == 'a' ? e_process_undo_a_char_delete :
+        undo_type == 'p' ? e_process_undo_p_char_put :
+        undo_type == 'r' ? e_process_undo_r_search_replace :
+        undo_type == 's' ? e_process_undo_s_search_replace :
+        undo_type == 'l' ? e_process_undo_l_line_delete :
+        undo_type == 'c' ? e_process_undo_c_copy_paste :
+        undo_type == 'v' ? e_process_undo_v_copy_paste :
+        undo_type == 'd' ? e_process_undo_d_block_delete : e_process_undo_default;
 
     if (e_undo_is_active())
     {
@@ -2462,7 +2462,7 @@ e_add_new_undo(we_buffer_t *buffer, we_undo_t *next)
 }
 
 int
-e_process_undo_unknown(we_buffer_t *buffer, we_undo_t *next)
+e_process_undo_default(we_buffer_t *buffer, we_undo_t *next)
 {
     UNUSED(buffer);
     UNUSED(next);
@@ -2471,7 +2471,7 @@ e_process_undo_unknown(we_buffer_t *buffer, we_undo_t *next)
 }
 
 int
-e_process_undo_a (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_a_char_delete (we_buffer_t * buffer, we_undo_t *next)
 {
     UNUSED(buffer);
     UNUSED(next);
@@ -2480,7 +2480,7 @@ e_process_undo_a (we_buffer_t * buffer, we_undo_t *next)
 }
 
 int
-e_process_undo_p (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_p_char_put (we_buffer_t * buffer, we_undo_t *next)
 {
     int x = next->cursor_start.x;
     int y = next->cursor_start.y;
@@ -2491,13 +2491,13 @@ e_process_undo_p (we_buffer_t * buffer, we_undo_t *next)
 
 
 int
-e_process_undo_r (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_r_search_replace (we_buffer_t * buffer, we_undo_t *next)
 {
-    return e_process_undo_s(buffer, next);
+    return e_process_undo_s_search_replace(buffer, next);
 }
 
 int
-e_process_undo_s (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_s_search_replace (we_buffer_t * buffer, we_undo_t *next)
 {
     int n = next->begin_block.x;
     char *str = malloc (n+1);
@@ -2523,7 +2523,7 @@ e_process_undo_s (we_buffer_t * buffer, we_undo_t *next)
 }
 
 int
-e_process_undo_l (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_l_line_delete (we_buffer_t * buffer, we_undo_t *next)
 {
     int y = next->cursor_start.y;
     next->u.pt = buffer->buflines[y].s;
@@ -2532,7 +2532,7 @@ e_process_undo_l (we_buffer_t * buffer, we_undo_t *next)
 }
 
 int
-e_process_undo_c (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_c_copy_paste (we_buffer_t * buffer, we_undo_t *next)
 {
     we_screen_t *screen = buffer->control->window[buffer->control->mxedt]->screen;
 
@@ -2543,13 +2543,13 @@ e_process_undo_c (we_buffer_t * buffer, we_undo_t *next)
 }
 
 int
-e_process_undo_v (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_v_copy_paste (we_buffer_t * buffer, we_undo_t *next)
 {
-    return e_process_undo_s(buffer, next);
+    return e_process_undo_c_copy_paste(buffer, next);
 }
 
 int
-e_process_undo_d (we_buffer_t * buffer, we_undo_t *next)
+e_process_undo_d_block_delete (we_buffer_t * buffer, we_undo_t *next)
 {
 
     we_buffer_t *bn = malloc (sizeof (we_buffer_t));
