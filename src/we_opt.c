@@ -63,7 +63,7 @@ e_about_WE (we_window_t * window)
     fk_cursor (0);
     view =
         e_std_view (xa, ya, xe, ye, NULL, 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
-                   window->colorset->ne.fg_bg_color);
+                    window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
@@ -236,7 +236,7 @@ e_sys_info (we_window_t * window)
     fk_cursor (0);
     view =
         e_std_view (xa, ya, xe, ye, " Information ", 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
-                   window->colorset->ne.fg_bg_color);
+                    window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
@@ -308,7 +308,7 @@ e_ad_colors_md (we_window_t * window, int md)
     we_view_t *view;
 
     view = e_std_view (xa, ya, xe, ye, "Adjust Colors", 1, window->colorset->er.fg_bg_color,
-                      window->colorset->et.fg_bg_color, window->colorset->es.fg_bg_color);
+                       window->colorset->et.fg_bg_color, window->colorset->es.fg_bg_color);
     if (view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
@@ -1758,7 +1758,7 @@ e_opt_kst (W_OPTSTR * o)
     fk_cursor (0);
     o->view =
         e_std_view (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->ftt,
-                   o->frs);
+                    o->frs);
     if (o->view == NULL)
     {
         e_error (e_msg[ERR_LOWMEM], 0, o->window->colorset);
@@ -2236,10 +2236,10 @@ e_edt_options (we_window_t * window)
         window->edit_control->numundo = o->nstr[3]->num;
         window->edit_control->autoindent = o->nstr[4]->num;
         window->edit_control->edopt = ((window->edit_control->edopt & ~ED_EDITOR_OPTIONS) + o->pstr[0]->num) +
-                            (o->pstr[1]->num == 0 ? ED_SOURCE_AUTO_INDENT : 0) +
-                            (o->pstr[1]->num == 1 ? ED_ALWAYS_AUTO_INDENT : 0) +
-                            (o->sstr[3]->num ? ED_OLD_TILE_METHOD : 0) +
-                            (o->sstr[0]->num ? ED_SHOW_ENDMARKS : 0);
+                                      (o->pstr[1]->num == 0 ? ED_SOURCE_AUTO_INDENT : 0) +
+                                      (o->pstr[1]->num == 1 ? ED_ALWAYS_AUTO_INDENT : 0) +
+                                      (o->sstr[3]->num ? ED_OLD_TILE_METHOD : 0) +
+                                      (o->sstr[0]->num ? ED_SHOW_ENDMARKS : 0);
         if (window->edit_control->print_cmd)
             free (window->edit_control->print_cmd);
         window->edit_control->print_cmd = WpeStrdup (o->wstr[0]->txt);

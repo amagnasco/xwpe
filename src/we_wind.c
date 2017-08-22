@@ -23,7 +23,11 @@
 
 #define MAXSVSTR 20
 
-int e_make_xr_window (int xa, int ya, int xe, int ye, int sw);
+#if !defined NEWSTYLE
+static void e_pt_col(int x, int y, int c);
+#endif
+static int e_make_xr_window (int xa, int ya, int xe, int ye, int sw);
+
 extern int num_lines_off_screen_top(we_window_t *window);
 extern int num_lines_on_screen(we_window_t *window);
 extern int line_num_on_screen_bottom(we_window_t *window);
@@ -39,8 +43,35 @@ void e_pr_char(int x, int y, int c, int color)
 #ifdef NEWSTYLE
     *(extbyte + MAXSCOL * y + x) = 0;
 #endif
-
 }
+
+#if !defined NEWSTYLE
+static void e_pt_col(int x, int y, int c)
+{
+    *(global_screen + 2*MAXSCOL*y + 2 * x + 1) = c;
+}
+#endif
+
+char e_gt_char(int x, int y)
+{
+    return *(global_screen + 2 * MAXSCOL * y + 2 * x);
+}
+
+char e_gt_col(int x, int y)
+{
+    return *(global_screen + 2 * MAXSCOL * y + 2 * x + 1);
+}
+
+char e_gt_byte(int x, int y)
+{
+    return *(global_screen + 2 * MAXSCOL * y + x);
+}
+
+void e_pt_byte(int x, int y, int c)
+{
+    *(global_screen + 2*MAXSCOL*y + x) = c;
+}
+
 
 /* break string into multiple line to fit into windows
 
@@ -1984,7 +2015,7 @@ e_make_xrect (int xa, int ya, int xe, int ye, int sw)
     return (j);
 }
 
-int
+static int
 e_make_xr_window (int xa, int ya, int xe, int ye, int sw)
 {
     if (!sw)

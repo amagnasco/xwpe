@@ -44,15 +44,6 @@ extern char *user_shell;
 
 extern char *ctree[5];
 
-#define e_pt_col(x, y, c)  ( *(global_screen + 2*MAXSCOL*(y) + 2*(x) + 1) = (c) )
-#define e_gt_char(x, y)  (*(global_screen + 2*MAXSCOL*(y) + 2*(x)))
-
-#define e_gt_col(x, y)  (*(global_screen + 2*MAXSCOL*(y) + 2*(x)+1))
-
-#define e_gt_byte(x, y)  (*(global_screen + 2*MAXSCOL*(y) + (x)))
-
-#define e_pt_byte(x, y, c)  ( *(global_screen + 2*MAXSCOL*(y) + (x)) = (c) )
-
 /*  Pointer to functions for function calls  */
 
 #define fk_locate(x, y) (*fk_u_locate)(x, y)

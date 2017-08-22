@@ -2317,8 +2317,8 @@ e_c_project (we_window_t * window)
     e_argc = 1;
     argc = 1;
     for (i = window->edit_control->mxedt; i > 0 && (window->edit_control->window[i]->dtmd != DTMD_DATA ||
-                                          window->edit_control->window[i]->ins != 4
-                                          || !window->edit_control->window[i]->save); i--)
+            window->edit_control->window[i]->ins != 4
+            || !window->edit_control->window[i]->save); i--)
         ;
     if (i > 0)
         e_p_update_prj_fl (window);

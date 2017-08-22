@@ -73,6 +73,10 @@ inline int col_num_on_screen_right(we_window_t* window)
 }
 
 void e_pr_char(int x, int y, int c, int color);
+char e_gt_char(int x, int y);
+char e_gt_col(int x, int y);
+char e_gt_byte(int x, int y);
+void e_pt_byte(int x, int y, int c);
 int e_error(char* text, int sw, we_colorset_t* colorset);
 int e_message(int sw, char* str, we_window_t* window);
 void e_firstl(we_window_t* window, int sw);

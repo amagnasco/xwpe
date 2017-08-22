@@ -549,7 +549,7 @@ WpeHandleFileManager (we_control_t * control)
     {
         svmode = window->edit_control->flopt;
         window->edit_control->flopt = FM_SHOW_HIDDEN_FILES | FM_SHOW_HIDDEN_DIRS |
-                            FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
+                                      FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
     }
 
     /* if it is project management or saving mode
@@ -1529,7 +1529,7 @@ WpeHandleFileManager (we_control_t * control)
                 /* file manager is still active */
                 if (svmode >= 0)
                     window->edit_control->flopt = FM_SHOW_HIDDEN_FILES | FM_SHOW_HIDDEN_DIRS |
-                                        FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
+                                                  FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
             }
             else if (c == WPE_ESC
                      || (!(window->edit_control->edopt & ED_CUA_STYLE) && c == AF3)
@@ -2234,7 +2234,7 @@ WpeDelWastebasket (we_window_t * window)
 
     WpeMouseChangeShape (WpeWorkingShape);
     window->edit_control->flopt = FM_SHOW_HIDDEN_FILES | FM_SHOW_HIDDEN_DIRS |
-                        FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
+                                  FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
     if ((tmp = WpeGetWastefile ("")))
     {
         ret = WpeRemoveDir (tmp, "*", window, 0);
@@ -2278,10 +2278,10 @@ WpeQuitWastebasket (we_window_t * window)
 
     if (mode & FM_PROMPT_DELETE)
         window->edit_control->flopt = FM_SHOW_HIDDEN_FILES | FM_SHOW_HIDDEN_DIRS |
-                            FM_REMOVE_PROMPT | FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
+                                      FM_REMOVE_PROMPT | FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
     else if (mode & FM_DELETE_AT_EXIT)
         window->edit_control->flopt = FM_SHOW_HIDDEN_FILES | FM_SHOW_HIDDEN_DIRS |
-                            FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
+                                      FM_MOVE_OVERWRITE | FM_REKURSIVE_ACTIONS;
 
     if ((mode & FM_PROMPT_DELETE) || (mode & FM_DELETE_AT_EXIT))
     {
@@ -3109,15 +3109,15 @@ WpeFileManagerOptions (we_window_t * window)
     if (ret != WPE_ESC)
     {
         window->edit_control->flopt = o->sstr[0]->num +
-                            (o->sstr[1]->num << 1) +
-                            (o->sstr[2]->num ? FM_REKURSIVE_ACTIONS : 0) +
-                            (o->sstr[3]->num ? FM_CLOSE_WINDOW : 0) +
-                            (o->sstr[4]->num ? FM_REVERSE_ORDER : 0) +
-                            (o->pstr[0]->num ? (o->pstr[0]->num == 1 ? 4 : 0) : 8) +
-                            (o->pstr[2]->num ? (o->pstr[2]->num == 1 ? 16 : 0) : 32) +
-                            (o->pstr[4]->num ? (o->pstr[4]->num == 1 ? 128 : 0) : 64) +
-                            (o->pstr[1]->num ? (o->pstr[1]->num == 1 ? 01000 : 02000) : 0) +
-                            (o->pstr[3]->num ? FM_TRY_HARDLINK : 0);
+                                      (o->sstr[1]->num << 1) +
+                                      (o->sstr[2]->num ? FM_REKURSIVE_ACTIONS : 0) +
+                                      (o->sstr[3]->num ? FM_CLOSE_WINDOW : 0) +
+                                      (o->sstr[4]->num ? FM_REVERSE_ORDER : 0) +
+                                      (o->pstr[0]->num ? (o->pstr[0]->num == 1 ? 4 : 0) : 8) +
+                                      (o->pstr[2]->num ? (o->pstr[2]->num == 1 ? 16 : 0) : 32) +
+                                      (o->pstr[4]->num ? (o->pstr[4]->num == 1 ? 128 : 0) : 64) +
+                                      (o->pstr[1]->num ? (o->pstr[1]->num == 1 ? 01000 : 02000) : 0) +
+                                      (o->pstr[3]->num ? FM_TRY_HARDLINK : 0);
     }
 
     freeostr (o);

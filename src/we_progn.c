@@ -505,9 +505,9 @@ e_program_opt (we_window_t * window)
             free (e_prog.sys_include);
         e_prog.sys_include = WpeStrdup (o->wstr[1]->txt);
         window->edit_control->edopt = (window->edit_control->edopt & ~ED_PROGRAMMING_OPTIONS) +
-                            (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
-                            (o->sstr[1]->num ? ED_MESSAGES_STOP_AT : 0) +
-                            (o->sstr[2]->num ? ED_SYNTAX_HIGHLIGHT : 0);
+                                      (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
+                                      (o->sstr[1]->num ? ED_MESSAGES_STOP_AT : 0) +
+                                      (o->sstr[2]->num ? ED_SYNTAX_HIGHLIGHT : 0);
         if (sw != o->sstr[2]->num)
             e_sc_all (window, o->sstr[2]->num);
     }
