@@ -16,7 +16,7 @@
 #include <unistd.h>
 #endif
 
-// TODO: checkout when and if we need XWPE_DLL
+// \todo TODO: checkout when and if we need XWPE_DLL
 #ifdef XWPE_DLL
 #include <dlfcn.h>
 #else
@@ -154,8 +154,8 @@ e_ini_unix (int *argc, char **argv)
     if (!strncmp ("wpe", (argv[0] + i + e_we_sw + 1), 3))
         e_we_sw |= 2;
 #endif
-// TODO: Checkout whether we need XWPE_DLL
-// FIXME: adjusted code to read only libxwpe (common library), needs testing
+// \todo TODO: Checkout whether we need XWPE_DLL
+// \todo FIXME: adjusted code to read only libxwpe (common library), needs testing
 #ifdef XWPE_DLL
     libxwpe = dlopen (LIBRARY_DIR "/libxwpe.so", RTLD_NOW);
     if (!libxwpe)

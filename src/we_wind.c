@@ -1929,7 +1929,7 @@ e_make_xrect_abs (int xa, int ya, int xe, int ye, int sw)
 /**
  * \fn e_make_xrect
  *
- * TODO: what does this function do?
+ * \todo TODO: what does this function do?
  *
  *
  */

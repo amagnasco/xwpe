@@ -271,8 +271,8 @@ e_debug_switch (we_window_t * window, int c)
  *
  * Reads one line until new line, end of string ('\0') or EOF.
  *
- * FIXME: find out when, why and from what source this line is read.
- * TODO: Must the string s really be signed char *? Replaced with char *. check & test.
+ * \todo FIXME: find out when, why and from what source this line is read.
+ * \todo Must the string s really be signed char *? Replaced with char *. check & test.
  *
  * Returns
  * 	-1 if the read is unsuccessful
@@ -282,7 +282,7 @@ e_debug_switch (we_window_t * window, int c)
  * 	   if e_deb_type == 0 && the last char read == space && (dbg) prefixes the string
  * 	2  otherwise
  *
- *  FIXME: find out what the returns mean exactly
+ *  \todo FIXME: find out what the returns mean exactly
  */
 int
 e_e_line_read (int n, char *s, int max)
@@ -314,8 +314,8 @@ e_e_line_read (int n, char *s, int max)
 /**
  * function e_d_line_read
  *
- * FIXME: what does this line read routine do exactly? What does it return?
- * TODO: Must the string s really be signed char *? Replaced with char *. check & test.
+ * \todo FIXME: what does this line read routine do exactly? What does it return?
+ * \todo TODO: Must the string s really be signed char *? Replaced with char *. check & test.
  *
 */
 int
