@@ -75,7 +75,7 @@ extern char *e_tmp_dir;
 
 /*  for TextSchirm (text screen)   */
 
-extern char *altschirm;
+extern char *global_alt_screen;
 #ifdef NEWSTYLE
 extern char *extbyte, *altextbyte;
 #endif
@@ -300,13 +300,13 @@ fk_show_cursor ()
     if (x > 0)
     {
         XSetForeground (WpeXInfo.display, WpeXInfo.gc,
-                        WpeXInfo.colors[schirm[x + 1] % 16]);
+                        WpeXInfo.colors[global_screen[x + 1] % 16]);
         XSetBackground (WpeXInfo.display, WpeXInfo.gc,
-                        WpeXInfo.colors[schirm[x + 1] / 16]);
+                        WpeXInfo.colors[global_screen[x + 1] / 16]);
         XDrawImageString (WpeXInfo.display, WpeXInfo.window, WpeXInfo.gc,
                           WpeXInfo.font_width * old_cursor_x,
                           WpeXInfo.font_height * (old_cursor_y + 1) -
-                          WpeXInfo.font->max_bounds.descent, schirm + x, 1);
+                          WpeXInfo.font->max_bounds.descent, global_screen + x, 1);
 #ifdef NEWSTYLE
         e_print_xrect (old_cursor_x, old_cursor_y, x / 2);
 #ifndef NOXCACHE
@@ -317,13 +317,13 @@ fk_show_cursor ()
     x = 2 * cur_x + 2 * MAXSCOL * cur_y;
 
     XSetForeground (WpeXInfo.display, WpeXInfo.gc,
-                    WpeXInfo.colors[schirm[x + 1] / 16]);
+                    WpeXInfo.colors[global_screen[x + 1] / 16]);
     XSetBackground (WpeXInfo.display, WpeXInfo.gc,
-                    WpeXInfo.colors[schirm[x + 1] % 16]);
+                    WpeXInfo.colors[global_screen[x + 1] % 16]);
     XDrawImageString (WpeXInfo.display, WpeXInfo.window, WpeXInfo.gc,
                       WpeXInfo.font_width * cur_x,
                       WpeXInfo.font_height * (cur_y + 1) -
-                      WpeXInfo.font->max_bounds.descent, schirm + x, 1);
+                      WpeXInfo.font->max_bounds.descent, global_screen + x, 1);
     old_cursor_x = cur_x;
     old_cursor_y = cur_y;
     return (cur_on);
@@ -335,12 +335,12 @@ e_ini_size ()
     old_cursor_x = cur_x;
     old_cursor_y = cur_y;
 
-    if (schirm)
-        free (schirm);
-    if (altschirm)
-        free (altschirm);
-    schirm = malloc (2 * MAXSCOL * MAXSLNS);
-    altschirm = malloc (2 * MAXSCOL * MAXSLNS);
+    if (global_screen)
+        free (global_screen);
+    if (global_alt_screen)
+        free (global_alt_screen);
+    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
+    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
 #ifdef NEWSTYLE
     if (extbyte)
         free (extbyte);
@@ -348,10 +348,10 @@ e_ini_size ()
         free (altextbyte);
     extbyte = malloc (MAXSCOL * MAXSLNS);
     altextbyte = malloc (MAXSCOL * MAXSLNS);
-    if (!schirm || !altschirm || !extbyte || !altextbyte)
+    if (!global_screen || !global_alt_screen || !extbyte || !altextbyte)
         return (-1);
 #else
-    if (!schirm || !altschirm)
+    if (!global_screen || !global_alt_screen)
         return (-1);
 #endif
     return (0);
@@ -412,32 +412,32 @@ e_x_refresh ()
             y = j + MAXSCOL * i;
             x = 2 * y;
 #ifdef NEWSTYLE
-            if (schirm[x] != altschirm[x] || schirm[x + 1] != altschirm[x + 1]
+            if (global_screen[x] != global_alt_screen[x] || global_screen[x + 1] != global_alt_screen[x + 1]
                     || extbyte[y] != altextbyte[y])
 #else
-            if (schirm[x] != altschirm[x] || schirm[x + 1] != altschirm[x + 1])
+            if (global_screen[x] != global_alt_screen[x] || global_screen[x + 1] != global_alt_screen[x + 1])
 #endif
             {
 #ifdef NOXCACHE
                 XSetForeground (WpeXInfo.display, WpeXInfo.gc,
-                                WpeXInfo.colors[schirm[x + 1] % 16]);
+                                WpeXInfo.colors[global_screen[x + 1] % 16]);
                 XSetBackground (WpeXInfo.display, WpeXInfo.gc,
-                                WpeXInfo.colors[schirm[x + 1] / 16]);
+                                WpeXInfo.colors[global_screen[x + 1] / 16]);
                 XDrawImageString (WpeXInfo.display, WpeXInfo.window, WpeXInfo.gc,
                                   WpeXInfo.font_width * j,
                                   WpeXInfo.font_height * (i + 1) -
-                                  WpeXInfo.font->max_bounds.descent, schirm + x,
+                                  WpeXInfo.font->max_bounds.descent, global_screen + x,
                                   1);
 #else
-                if (oldback != (unsigned) WpeXInfo.colors[schirm[x + 1] / 16]	/* a.r. */
-                        || oldfore != (unsigned) WpeXInfo.colors[schirm[x + 1] % 16] || i != oldI || j > oldJ + 1	/* is there a more elegant solution? */
+                if (oldback != (unsigned) WpeXInfo.colors[global_screen[x + 1] / 16]	/* a.r. */
+                        || oldfore != (unsigned) WpeXInfo.colors[global_screen[x + 1] % 16] || i != oldI || j > oldJ + 1	/* is there a more elegant solution? */
                         || stringcount >= STRBUFSIZE)
                 {
                     XDrawImageString (WpeXInfo.display, WpeXInfo.window,
                                       WpeXInfo.gc, oldX, oldY, stringbuf,
                                       stringcount);
-                    oldback = WpeXInfo.colors[schirm[x + 1] / 16];
-                    oldfore = WpeXInfo.colors[schirm[x + 1] % 16];
+                    oldback = WpeXInfo.colors[global_screen[x + 1] / 16];
+                    oldfore = WpeXInfo.colors[global_screen[x + 1] % 16];
                     XSetForeground (WpeXInfo.display, WpeXInfo.gc, oldfore);
                     XSetBackground (WpeXInfo.display, WpeXInfo.gc, oldback);
                     oldX = WpeXInfo.font_width * j;
@@ -446,13 +446,13 @@ e_x_refresh ()
                         WpeXInfo.font->max_bounds.descent;
                     oldI = i;
                     stringcount = 0;
-                    stringbuf[stringcount++] = schirm[x];
+                    stringbuf[stringcount++] = global_screen[x];
                 }
                 else
-                    stringbuf[stringcount++] = schirm[x];
+                    stringbuf[stringcount++] = global_screen[x];
 #endif
 #ifndef NEWSTYLE
-                if (schirm[x] == 16)
+                if (global_screen[x] == 16)
                 {
                     XFillRectangle (WpeXInfo.display, WpeXInfo.window,
                                     WpeXInfo.gc, WpeXInfo.font_width * j,
@@ -461,7 +461,7 @@ e_x_refresh ()
                                     (WpeXInfo.font_height +
                                      WpeXInfo.font->max_bounds.descent) / 2);
                 }
-                else if (schirm[x] == 20)
+                else if (global_screen[x] == 20)
                 {
                     XFillRectangle (WpeXInfo.display, WpeXInfo.window,
                                     WpeXInfo.gc, WpeXInfo.font_width * j,
@@ -471,8 +471,8 @@ e_x_refresh ()
                                      WpeXInfo.font->max_bounds.descent) / 2);
                 }
 #endif
-                altschirm[x] = schirm[x];
-                altschirm[x + 1] = schirm[x + 1];
+                global_alt_screen[x] = global_screen[x];
+                global_alt_screen[x + 1] = global_screen[x + 1];
 #ifdef NEWSTYLE
                 e_print_xrect (j, i, y);
                 altextbyte[y] = extbyte[y];

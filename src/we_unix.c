@@ -46,8 +46,7 @@ int WpeTermInit (int *argc, char **argv);
 #define S_ISLNK(x)  0
 #endif
 
-
-char *schirm = NULL;
+char *global_screen = NULL;
 char e_we_sw = 0;
 
 void WpeSignalUnknown (int sig);
@@ -107,7 +106,7 @@ void *libxwpe;
 #ifdef NEWSTYLE
 char *extbyte = NULL, *altextbyte = NULL;
 #endif
-char *altschirm = NULL;
+char *global_alt_screen = NULL;
 we_view_t *e_X_l_pic = NULL;
 
 void
@@ -280,18 +279,18 @@ e_ini_unix (int *argc, char **argv)
 int
 e_abs_refr ()
 {
-    extern char *altschirm;
+    extern char *global_alt_screen;
     int i;
 
     for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++)
-        altschirm[i] = 0;
+        global_alt_screen[i] = 0;
     return (0);
 }
 
 void
 e_refresh_area (int x, int y, int width, int height)
 {
-    extern char *altschirm;
+    extern char *global_alt_screen;
     char *curloc;
     int i, j;
 
@@ -303,7 +302,7 @@ e_refresh_area (int x, int y, int width, int height)
     {
         height = MAXSLNS - y;
     }
-    curloc = altschirm + ((x + (y * MAXSCOL)) * 2);
+    curloc = global_alt_screen + ((x + (y * MAXSCOL)) * 2);
     for (j = 0; j < height; j++, curloc += MAXSCOL * 2)
     {
         for (i = 0; i < width; i++)

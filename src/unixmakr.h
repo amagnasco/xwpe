@@ -37,7 +37,7 @@ extern int cur_on;
 
 #define WpeExit(n) e_exit((n))
 
-extern char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, *schirm;
+extern char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, *global_screen;
 extern char *att_no, *att_so, *att_ul, *att_rv, *att_bl, *att_dm, *att_bo;
 extern int cur_x, cur_y;
 extern char *user_shell;
@@ -46,22 +46,22 @@ extern char *ctree[5];
 
 #ifdef NEWSTYLE
 #define e_pr_char(x, y, c, frb)   \
-(  *(schirm + 2*MAXSCOL*(y) + 2*(x)) = (c),  \
-   *(schirm + 2*MAXSCOL*(y) + 2*(x) + 1) = (frb), \
+(  *(global_screen + 2*MAXSCOL*(y) + 2*(x)) = (c),  \
+   *(global_screen + 2*MAXSCOL*(y) + 2*(x) + 1) = (frb), \
    *(extbyte + MAXSCOL*(y) + (x)) = 0  )
 #else
 #define e_pr_char(x, y, c, frb)   \
-(  *(schirm + 2*MAXSCOL*(y) + 2*(x)) = (c),  \
-   *(schirm + 2*MAXSCOL*(y) + 2*(x) + 1) = (frb)  )
+(  *(global_screen + 2*MAXSCOL*(y) + 2*(x)) = (c),  \
+   *(global_screen + 2*MAXSCOL*(y) + 2*(x) + 1) = (frb)  )
 #endif
-#define e_pt_col(x, y, c)  ( *(schirm + 2*MAXSCOL*(y) + 2*(x) + 1) = (c) )
-#define e_gt_char(x, y)  (*(schirm + 2*MAXSCOL*(y) + 2*(x)))
+#define e_pt_col(x, y, c)  ( *(global_screen + 2*MAXSCOL*(y) + 2*(x) + 1) = (c) )
+#define e_gt_char(x, y)  (*(global_screen + 2*MAXSCOL*(y) + 2*(x)))
 
-#define e_gt_col(x, y)  (*(schirm + 2*MAXSCOL*(y) + 2*(x)+1))
+#define e_gt_col(x, y)  (*(global_screen + 2*MAXSCOL*(y) + 2*(x)+1))
 
-#define e_gt_byte(x, y)  (*(schirm + 2*MAXSCOL*(y) + (x)))
+#define e_gt_byte(x, y)  (*(global_screen + 2*MAXSCOL*(y) + (x)))
 
-#define e_pt_byte(x, y, c)  ( *(schirm + 2*MAXSCOL*(y) + (x)) = (c) )
+#define e_pt_byte(x, y, c)  ( *(global_screen + 2*MAXSCOL*(y) + (x)) = (c) )
 
 /*  Pointer to functions for function calls  */
 

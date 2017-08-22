@@ -72,7 +72,7 @@ char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, cur_attr;
 char *att_so, *att_ul, *att_rv, *att_bl, *att_dm, *att_bo;
 char *ratt_no, *ratt_so, *ratt_ul, *ratt_rv, *ratt_bl, *ratt_dm, *ratt_bo;
 char *beg_scr, *swt_scr, *sav_cur, *res_cur;
-extern char *altschirm;
+extern char *global_alt_screen;
 extern char *att_no;
 char *col_fg, *col_bg, *spc_st, *spc_in, *spc_bg, *spc_nd;
 
@@ -546,14 +546,11 @@ e_t_initscr ()
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     if ((stdscr = initscr ()) == (WINDOW *) ERR)
         exit (27);
-//#ifdef NCURSES
-//#if FALSE
     cbreak ();
     noecho ();
     nonl ();
     intrflush (stdscr, FALSE);
     keypad (stdscr, TRUE);
-//#endif // #if NCURSES i.e. FALSE
     if (has_colors ())
     {
         start_color ();
@@ -570,8 +567,8 @@ e_t_initscr ()
     }
 #endif // #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     e_begscr ();
-    schirm = malloc (2 * MAXSCOL * MAXSLNS);
-    altschirm = malloc (2 * MAXSCOL * MAXSLNS);
+    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
+    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
     extbyte = malloc (MAXSCOL * MAXSLNS);
 #endif
@@ -798,10 +795,10 @@ e_t_refresh ()
         {
             if (i == MAXSLNS - 1 && j == MAXSCOL - 1)
                 break;
-            if (*(schirm + 2 * MAXSCOL * i + 2 * j) !=
-                    *(altschirm + 2 * MAXSCOL * i + 2 * j)
-                    || *(schirm + 2 * MAXSCOL * i + 2 * j + 1) !=
-                    *(altschirm + 2 * MAXSCOL * i + 2 * j + 1))
+            if (*(global_screen + 2 * MAXSCOL * i + 2 * j) !=
+                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j)
+                    || *(global_screen + 2 * MAXSCOL * i + 2 * j + 1) !=
+                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1))
             {
                 if (cur_x != j || cur_y != i)
                     term_move (j, i);
@@ -832,10 +829,10 @@ e_t_refresh ()
                 else
                     fputc (c, stdout);
 #endif
-                *(altschirm + 2 * MAXSCOL * i + 2 * j) =
-                    *(schirm + 2 * MAXSCOL * i + 2 * j);
-                *(altschirm + 2 * MAXSCOL * i + 2 * j + 1) =
-                    *(schirm + 2 * MAXSCOL * i + 2 * j + 1);
+                *(global_alt_screen + 2 * MAXSCOL * i + 2 * j) =
+                    *(global_screen + 2 * MAXSCOL * i + 2 * j);
+                *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1) =
+                    *(global_screen + 2 * MAXSCOL * i + 2 * j + 1);
             }
         }
     fk_cursor (1);

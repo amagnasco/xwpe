@@ -1251,7 +1251,7 @@ e_make_stack (we_window_t * window)
 }
 
 /*******************************************************/
-/** resyncing schirm - screen output with breakpoints **/
+/** resyncing global_screen - screen output with breakpoints **/
 
 int
 e_brk_schirm (we_window_t * window)
@@ -1271,7 +1271,7 @@ e_brk_schirm (we_window_t * window)
                     break;
             if (n > s->brp[0])
             {
-                /****  New break, not in schirm  ****/
+                /****  New break, not in global_screen  ****/
                 (s->brp[0])++;
                 s->brp = realloc (s->brp, (s->brp[0] + 1) * sizeof (int));
                 s->brp[s->brp[0]] = e_d_ybrpts[i] - 1;
@@ -1336,7 +1336,7 @@ e_d_reinit_brks (we_window_t * window, char *prj)
                     strcpy (e_d_sbrpts[e_d_nbrpts], name);
                     e_d_nbrpts++;
 
-                    /**** needed to keep schirm in sync ****/
+                    /**** needed to keep global_screen in sync ****/
 
                     for (g = window->edit_control->mxedt; g > 0; g--)
                         if (!strcmp (window->edit_control->window[g]->datnam, name))
@@ -2993,7 +2993,7 @@ e_d_goto_break (char *file, int line, we_window_t * window)
     int i;
     char str[120];
 
-    /*   if(schirm != e_d_save_schirm) e_d_switch_out(0);  */
+    /*   if(global_screen != e_d_save_schirm) e_d_switch_out(0);  */
     e_d_switch_out (0);
     ftmp.edit_control = control;
     ftmp.colorset = window->colorset;
