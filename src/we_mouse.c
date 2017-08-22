@@ -1329,7 +1329,7 @@ W_OPTSTR *o;
     int g[4];
     int xold, yold, x, y, xa;
     we_view_t *view;
-    e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
+    e_std_window (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
     if (!WpeIsXwin ())
         view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
@@ -1393,7 +1393,7 @@ W_OPTSTR *o;
     view->e.x = o->xe;
     view->e.y = o->ye;
     e_close_view (view, 1);
-    e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
+    e_std_window (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
 }
 
 int

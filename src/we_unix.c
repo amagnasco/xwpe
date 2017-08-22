@@ -909,7 +909,7 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * window, int sw)
         for (rfrb = x, y = 1; rfrb > 1; y++)
             rfrb /= 2;
     rfrb = sw == 0 ? window->colorset->nt.fg_bg_color : window->colorset->fs.fg_bg_color;
-    e_std_rahmen (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
+    e_std_window (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya, "Colors", rfrb, 0, 1,
                                             window->colorset->ms.fg_color+16*(rfrb/16), 0);
     */

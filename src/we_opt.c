@@ -62,7 +62,7 @@ e_about_WE (we_window_t * window)
 
     fk_cursor (0);
     view =
-        e_std_kst (xa, ya, xe, ye, NULL, 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
+        e_std_view (xa, ya, xe, ye, NULL, 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
                    window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
@@ -235,7 +235,7 @@ e_sys_info (we_window_t * window)
 
     fk_cursor (0);
     view =
-        e_std_kst (xa, ya, xe, ye, " Information ", 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
+        e_std_view (xa, ya, xe, ye, " Information ", 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
                    window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
@@ -307,7 +307,7 @@ e_ad_colors_md (we_window_t * window, int md)
     int sw = 0, xa = 0, ya = 1, xe = xa + 79, ye = ya + 22;
     we_view_t *view;
 
-    view = e_std_kst (xa, ya, xe, ye, "Adjust Colors", 1, window->colorset->er.fg_bg_color,
+    view = e_std_view (xa, ya, xe, ye, "Adjust Colors", 1, window->colorset->er.fg_bg_color,
                       window->colorset->et.fg_bg_color, window->colorset->es.fg_bg_color);
     if (view == NULL)
     {
@@ -421,7 +421,7 @@ e_pr_dif_colors (int sw, int xa, int ya, we_window_t * window, int sw2, int md)
         header = "Editor";
     }
     rfrb = sw2 == 0 ? window->colorset->nt.fg_bg_color : window->colorset->fs.fg_bg_color;
-    e_std_rahmen (xa, ya, xe, ye, header, 0, rfrb, 0);
+    e_std_window (xa, ya, xe, ye, header, 0, rfrb, 0);
     for (i = 0; i < ye - ya - 1; i++)
     {
         cfrb = i == sw ? window->colorset->fz.fg_bg_color : window->colorset->ft.fg_bg_color;
@@ -484,7 +484,7 @@ e_pr_x_col_kasten (int xa, int ya, int x, int y, we_window_t * window, int sw)
 
     rfrb = sw == 0 ? window->colorset->nt.fg_bg_color : window->colorset->fs.fg_bg_color;
     ffrb = rfrb % 16;
-    e_std_rahmen (xa - 2, ya - 1, xe, ye, "Colors", 0, rfrb, 0);
+    e_std_window (xa - 2, ya - 1, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya-1, "Colors", rfrb, 0, 1,
                                             window->colorset->ms.fg_color+16*(rfrb/16), 0);
     */
@@ -557,7 +557,7 @@ e_pr_ed_beispiel (int xa, int ya, we_window_t * window, int sw, int md)
                 e_pr_char (j, i, fb->dc, fb->df.fg_bg_color);
                 e_pr_char (j, i, fb->dc, fb->df.fg_bg_color);
             }
-        e_std_rahmen (xa + 17, ya + 1, xa + 26, ya + 3, NULL, 0, fb->mr.fg_bg_color, 0);
+        e_std_window (xa + 17, ya + 1, xa + 26, ya + 3, NULL, 0, fb->mr.fg_bg_color, 0);
         e_pr_str (xa + 19, ya + 2, "Colors", fb->mt.fg_bg_color, 0, 1, fb->ms.fg_bg_color, 0);
         e_blk (xe - xa + 1, xa + 1, ye, fb->mt.fg_bg_color);
         e_pr_str_wsd (xa + 4, ye, "Alt-F3 Close Window",
@@ -565,7 +565,7 @@ e_pr_ed_beispiel (int xa, int ya, we_window_t * window, int sw, int md)
     }
     else if (md == 2)
     {
-        e_std_rahmen (xa, ya, xe, ye, "Message", 1, fb->nr.fg_bg_color, window->colorset->ne.fg_bg_color);
+        e_std_window (xa, ya, xe, ye, "Message", 1, fb->nr.fg_bg_color, window->colorset->ne.fg_bg_color);
         for (i = ya + 1; i < ye; i++)
             e_blk (xe - xa - 1, xa + 1, i, fb->nt.fg_bg_color);
         e_pr_str (xa + 4, ya + 2, "Name:", window->colorset->nt.fg_bg_color, 0, 1,
@@ -604,7 +604,7 @@ e_pr_ed_beispiel (int xa, int ya, we_window_t * window, int sw, int md)
     }
     else
     {
-        e_std_rahmen (xa, ya, xe, ye, "Filename", 1, fb->er.fg_bg_color, fb->es.fg_bg_color);
+        e_std_window (xa, ya, xe, ye, "Filename", 1, fb->er.fg_bg_color, fb->es.fg_bg_color);
         e_mouse_bar (xe, ya + 1, ye - ya - 1, 0, fb->em.fg_bg_color);
         e_mouse_bar (xa + 20, ye, 11, 1, fb->em.fg_bg_color);
         e_pr_char (xe - 3, ya, WZN, fb->es.fg_bg_color);
@@ -1596,7 +1596,7 @@ e_opt_move (W_OPTSTR * o)
     int c = 0;
     we_view_t *view;
 
-    e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
+    e_std_window (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
     if (!WpeIsXwin ())
         view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
@@ -1663,7 +1663,7 @@ e_opt_move (W_OPTSTR * o)
     view->e.x = o->xe;
     view->e.y = o->ye;
     e_close_view (view, 1);
-    e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
+    e_std_window (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
     return (c);
 }
 
@@ -1757,7 +1757,7 @@ e_opt_kst (W_OPTSTR * o)
     char *tmp;
     fk_cursor (0);
     o->view =
-        e_std_kst (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->ftt,
+        e_std_view (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->ftt,
                    o->frs);
     if (o->view == NULL)
     {

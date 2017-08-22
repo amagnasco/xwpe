@@ -649,7 +649,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
     }
 
     /* draw the frame and the background of the submenu */
-    e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, window->colorset->mr.fg_bg_color, 0);
+    e_std_window (xa + 1, ya, xe - 1, ye, NULL, 0, window->colorset->mr.fg_bg_color, 0);
 
     /* draw the submenu items (colors are default, none selected) */
     for (i = ya + 1; i < ye; i++)
@@ -791,7 +791,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
             view = e_open_view (xa, ya, xe, ye, window->colorset->mt.fg_bg_color, 1);
 #endif
             /* draw the frame for the submenu */
-            e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, window->colorset->mr.fg_bg_color, 0);
+            e_std_window (xa + 1, ya, xe - 1, ye, NULL, 0, window->colorset->mr.fg_bg_color, 0);
             /* draw every item in the submenu, unselected */
             for (i = ya + 1; i < ye; i++)
                 e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, window->colorset->mt.fg_bg_color,

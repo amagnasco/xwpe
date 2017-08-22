@@ -106,14 +106,14 @@ e_error (char *text, int sw, we_colorset_t * colorset)
         header = "Fatal Error";
 
     if (sw < 2)
-        view = e_std_kst (xa, ya, xe, ye, header, 1,
+        view = e_std_view (xa, ya, xe, ye, header, 1,
                           colorset->nr.fg_bg_color,
                           colorset->nt.fg_bg_color,
                           colorset->ne.fg_bg_color);
     if (sw == 2 || view == NULL)
     {
         view = e_open_view (xa, ya, xe, ye, 0, 0);
-        e_std_rahmen (xa, ya, xe, ye, header, 1, 0, 0);
+        e_std_window (xa, ya, xe, ye, header, 1, 0, 0);
     }
     if (sw < 2)
     {
@@ -360,10 +360,10 @@ e_ed_rahmen (we_window_t * window, int sw)
         if (window->datnam[0])
             header = window->datnam;
         if (window->dtmd == DTMD_FILEDROPDOWN)
-            e_std_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, header, sw,
+            e_std_window (window->a.x, window->a.y, window->e.x, window->e.y, header, sw,
                           window->colorset->er.fg_bg_color, window->colorset->es.fg_bg_color);
         else
-            e_std_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, header, sw,
+            e_std_window (window->a.x, window->a.y, window->e.x, window->e.y, header, sw,
                           window->colorset->nr.fg_bg_color, window->colorset->ne.fg_bg_color);
         if (window->winnum < 10 && window->winnum >= 0)
             e_pr_char (window->e.x - 6, window->a.y, '0' + window->winnum, window->colorset->nr.fg_bg_color);
@@ -414,7 +414,7 @@ e_ed_rahmen (we_window_t * window, int sw)
             strcat (header, window->datnam);
         }
     }
-    e_std_rahmen (window->a.x, window->a.y, window->e.x, window->e.y, header, sw, window->colorset->er.fg_bg_color,
+    e_std_window (window->a.x, window->a.y, window->e.x, window->e.y, header, sw, window->colorset->er.fg_bg_color,
                   window->colorset->es.fg_bg_color);
     if (header)
         free (header);
@@ -617,15 +617,17 @@ e_size_move (we_window_t * window)
     return (c);
 }
 
-/*       Standard Box                                  */
+/**
+ * Standard Box
+ */
 we_view_t *
-e_std_kst (int xa, int ya, int xe, int ye, char *name, int sw, int fr,
+e_std_view (int xa, int ya, int xe, int ye, char *name, int sw, int fr,
            int ft, int fes)
 {
     we_view_t *view = e_open_view (xa, ya, xe, ye, ft, 1);
     if (view == NULL)
         return (NULL);
-    e_std_rahmen (xa, ya, xe, ye, name, sw, fr, fes);
+    e_std_window (xa, ya, xe, ye, name, sw, fr, fes);
     return (view);
 }
 
@@ -1448,7 +1450,7 @@ e_pr_line (int y, we_window_t * window)
 
 /*   draw standard-box frame  */
 void
-e_std_rahmen (int xa, int ya, int xe, int ye, char *name, int sw, int frb,
+e_std_window (int xa, int ya, int xe, int ye, char *name, int sw, int frb,
               int fes)
 {
     int i;
@@ -1728,7 +1730,7 @@ e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * window)
         e_pr_str ((xe + xa - 6) / 2, ye - 2, "Ctrl C", control->colorset->nz.fg_bg_color, -1, -1,
                   control->colorset->ns.fg_bg_color, control->colorset->nt.fg_bg_color);
     }
-    e_std_rahmen (xa, ya, xe, ye, header, 1, control->colorset->nr.fg_bg_color, control->colorset->ne.fg_bg_color);
+    e_std_window (xa, ya, xe, ye, header, 1, control->colorset->nr.fg_bg_color, control->colorset->ne.fg_bg_color);
     for (i = xa + 1; i < xe; i++)
         e_pr_char (i, ya + 1, ' ', control->colorset->nr.fg_bg_color);
     for (j = 0; j < num; j++)
@@ -1774,7 +1776,7 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * window, int sw
             max = n;
     xe = xa + max + 3;
     view =
-        e_std_kst (xa, ya, xe, ye, NULL, sw, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
+        e_std_view (xa, ya, xe, ye, NULL, sw, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
                    window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
