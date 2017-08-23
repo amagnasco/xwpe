@@ -128,12 +128,12 @@ e_deb_inp (we_window_t * window)
     int c = 0;
 
     window = control->window[control->mxedt];
-    c = e_getch ();
+    c = e_u_getch ();
     switch (c)
     {
     case 'p':
     case ('p' - 'a' + 1):
-        e_deb_out (window);
+        e_u_deb_out (window);
         break;
     case 'o':
     case ('o' - 'a' + 1):
@@ -517,7 +517,7 @@ e_d_getchar ()
         {
             /*	 if (WpeIsXwin() || e_deb_mode)    */
             fcntl (fd, F_SETFL, kbdflgs & ~O_NONBLOCK);
-            e_d_switch_out (0);
+            e_u_d_switch_out (0);
             i =
                 e_message (1, e_d_msg[ERR_CTRLCPRESS],
                            global_editor_control->window[global_editor_control->mxedt]);
@@ -623,13 +623,13 @@ e_d_quit_basic (we_window_t * window)
             e_g_sys_end ();
         else
         {
-            e_d_switch_out (1);
-            fk_locate (MAXSCOL, MAXSLNS);
+            e_u_d_switch_out (1);
+            fk_u_locate (MAXSCOL, MAXSLNS);
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
             e_putp ("\r\n");
             e_putp (att_no);
 #endif
-            e_d_switch_out (0);
+            e_u_d_switch_out (0);
         }
     }
 }
@@ -665,7 +665,7 @@ e_d_add_watch (char *str, we_window_t * window)
     {
         window->edit_control->wdf = e_add_df (str, window->edit_control->wdf);
     }
-    fk_cursor (1);
+    fk_u_cursor (1);
     return (ret);
 }
 
@@ -808,7 +808,7 @@ e_d_p_watches (we_window_t * window, int sw)
     char str1[256], *str;		/* is 256 always large enough? */
     char *str2;
 
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     if ((e_d_swtch > 2) && (e_d_p_stack (window, 0) == -1))
         return (-1);
     /* Find the watch window */
@@ -942,7 +942,7 @@ e_d_p_watches (we_window_t * window, int sw)
     }
 
     e_new_line (buffer->mxlines, buffer);
-    fk_cursor (1);
+    fk_u_cursor (1);
     if (sw && iw != control->mxedt)
         e_switch_window (control->edt[iw], control->window[control->mxedt]);
     else
@@ -1019,7 +1019,7 @@ e_d_reinit_watches (we_window_t * window, char *prj)
 int
 e_deb_stack (we_window_t * window)
 {
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     return (e_d_p_stack (window, 1));
 }
 
@@ -1154,7 +1154,7 @@ e_make_stack (we_window_t * window)
     char file[128], str[128], *tmpstr = malloc (1);
     int i, ret, line = 0, dif;
     we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     if (e_deb_type != 1)
     {
         tmpstr[0] = '\0';
@@ -2313,7 +2313,7 @@ e_deb_run (we_window_t * window)
     window = control->window[control->mxedt];
     e_d_nstack = 0;
     e_d_delbreak (window);
-    e_d_switch_out (1);
+    e_u_d_switch_out (1);
     int n = strlen (eing);
     if (n != write (rfildes[1], eing, n))
     {
@@ -2385,7 +2385,7 @@ e_d_step_next (we_window_t * window, int sw)
         return (ret);
     }
     e_d_delbreak (window);
-    e_d_switch_out (1);
+    e_u_d_switch_out (1);
     char *cstr = 0;
     if (sw && e_deb_type == 0)
         cstr = "n\n";
@@ -2439,7 +2439,7 @@ e_d_goto_func (we_window_t * window, int flag)
         return (ret);
     }
     e_d_delbreak (window);
-    e_d_switch_out (1);
+    e_u_d_switch_out (1);
     switch (flag)
     {
     case 'U':
@@ -2483,7 +2483,7 @@ e_d_fst_check (we_window_t * window)
 {
     int i, j, k = 0, l, ret = 0;
 
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     for (i = 0; i < SVLINES - 1; i++)
     {
         if ((e_deb_type != 2 && !strncmp (e_d_sp[i], e_d_msg[ERR_PROGEXIT], 14))
@@ -2621,7 +2621,7 @@ e_d_snd_check (we_window_t * window)
 {
     int i, j, k, ret;
 
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     for (i = SVLINES - 2; i >= 0; i--)
     {
         if (!e_deb_type && (ret = atoi (e_d_sp[i])) > 0)
@@ -2744,7 +2744,7 @@ e_d_trd_check (we_window_t * window)
     char str[256];
 
     str[0] = '\0';
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     if ((ret = e_d_pr_sig (str, window)) == -1)
         return (-1);
     else if (ret == -2)
@@ -2768,7 +2768,7 @@ e_read_output (we_window_t * window)
         e_d_error (e_d_sp[SVLINES - 1]);
     if (ret < 0)
         return (-1);
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     while (ret != 1)
     {
         spt = e_d_sp[0];
@@ -2794,7 +2794,7 @@ e_read_output (we_window_t * window)
         return (-1);
     if (i < 0)
     {
-        e_d_switch_out (0);
+        e_u_d_switch_out (0);
         i = e_message (1, e_d_msg[ERR_UNKNOWNBRK], window);
         if (i == 'Y')
             return (e_d_quit (window));
@@ -2993,8 +2993,8 @@ e_d_goto_break (char *file, int line, we_window_t * window)
     int i;
     char str[120];
 
-    /*   if(global_screen != e_d_save_schirm) e_d_switch_out(0);  */
-    e_d_switch_out (0);
+    /*   if(global_screen != e_d_save_schirm) e_u_d_switch_out(0);  */
+    e_u_d_switch_out (0);
     ftmp.edit_control = control;
     ftmp.colorset = window->colorset;
     WpeFilenameToPathFile (file, &ftmp.dirct, &ftmp.datnam);
@@ -3048,7 +3048,7 @@ e_d_delbreak (we_window_t * window)
         if (DTMD_ISTEXT (control->window[i]->dtmd))
             control->window[i]->screen->da.y = -1;
     e_rep_win_tree (control);
-    e_refresh ();
+    e_u_refresh ();
     return (0);
 }
 
@@ -3057,7 +3057,7 @@ e_d_error (char *s)
 {
     int len;
 
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     if (s[(len = strlen (s) - 1)] == '\n')
         s[len] = '\0';
     return (e_error (s, 0, global_editor_control->colorset));
@@ -3067,7 +3067,7 @@ int
 e_d_putchar (int c)
 {
     if (!WpeIsXwin ())
-        c = fk_putchar (c);
+        c = fk_u_putchar (c);
     else
     {
         char cc = c;

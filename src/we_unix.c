@@ -57,7 +57,6 @@ void (*WpeMouseRestoreShape) (void);
 void (*WpeDisplayEnd) (void);
 int (*fk_u_locate) (int x, int y);
 int (*fk_u_cursor) (int x);
-int (*e_u_initscr) (int argc, char *argv[]);
 int (*fk_u_putchar) (int c);
 int (*u_bioskey) (void);
 int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * window, int md);
@@ -811,7 +810,7 @@ ini_repaint (we_control_t * control)
 void
 end_repaint ()
 {
-    e_refresh ();
+    e_u_refresh ();
 }
 
 int
@@ -881,19 +880,19 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * window, int md)
         else
             for (i = 1, fb = 1; i < y; i++)
                 fb *= 2;
-        frb[sw] = e_n_clr (fb);
+        frb[sw] = e_n_u_clr (fb);
         e_pr_t_col_kasten (xa, ya, fb, fb, window, 1);
         e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
-        if ((c = e_getch ()) == -1)
+        if ((c = e_u_getch ()) == -1)
             c = e_opt_ck_mouse (xa, ya, md);
 #else
-        c = e_getch ();
+        c = e_u_getch ();
 #endif
     }
     while (c != WPE_ESC && c != WPE_CR && c > -2);
     if (c == WPE_ESC || c < -1)
-        frb[sw] = e_n_clr (fsv);
+        frb[sw] = e_n_u_clr (fsv);
     return (frb[sw].fg_bg_color);
 }
 
@@ -924,5 +923,5 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * window, int sw)
     e_pr_nstr (xa + 2, ya + 6, xe - xa - 1, "A_DIM      ", A_DIM, A_DIM);
     e_pr_nstr (xa + 2, ya + 7, xe - xa - 1, "A_BOLD     ", A_BOLD, A_BOLD);
 
-    fk_locate (xa + 4, ya + y + 1);
+    fk_u_locate (xa + 4, ya + y + 1);
 }

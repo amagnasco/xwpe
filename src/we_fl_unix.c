@@ -596,7 +596,7 @@ WpeHandleFileManager (we_control_t * control)
         /* filename entry box activation */
         case AltN:
             cold = c;
-            fk_cursor (1);
+            fk_u_cursor (1);
             /* get some answer from the name entry box,
                result file copied into file_buffer->rdfile, max 79 char + '\0' */
             c =
@@ -688,13 +688,13 @@ WpeHandleFileManager (we_control_t * control)
             if (c != AltN)
                 e_schr_nchar_wsv (file_buffer->rdfile, window->a.x + file_buffer->xfa, window->a.y + 3, 0,
                                   file_buffer->xfd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
-            fk_cursor (0);
+            fk_u_cursor (0);
             break;
 
         /* directory name entry box activation */
         case AltD:
             cold = c;
-            fk_cursor (1);
+            fk_u_cursor (1);
 
             /* get the directory name */
             if ((dirtmp = malloc (WPE_PATHMAX)) == NULL)	/* dirct mat not have enough memory */
@@ -732,7 +732,7 @@ WpeHandleFileManager (we_control_t * control)
             if (c != AltD)
                 e_schr_nchar_wsv (window->dirct, window->a.x + file_buffer->xda, window->a.y + 3, 0,
                                   file_buffer->xdd + 1, window->colorset->fr.fg_bg_color, window->colorset->fz.fg_bg_color);
-            fk_cursor (0);
+            fk_u_cursor (0);
             break;
 
         /* directory tree list window activation */
@@ -1103,8 +1103,8 @@ WpeHandleFileManager (we_control_t * control)
                     outp =
                         e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, window->colorset->ws,
                                      1);
-                    fk_locate (0, 0);
-                    fk_cursor (1);
+                    fk_u_locate (0, 0);
+                    fk_u_cursor (1);
 #if  MOUSE
                     g[0] = 2;
                     fk_mouse (g);
@@ -1130,7 +1130,7 @@ WpeHandleFileManager (we_control_t * control)
                 {
                     (*e_u_sys_end) ();
                     e_close_view (outp, 1);
-                    fk_cursor (0);
+                    fk_u_cursor (0);
 #if MOUSE
                     g[0] = 1;
                     fk_mouse (g);
@@ -3163,8 +3163,8 @@ WpeShell (we_window_t * window)
     if (!WpeIsXwin ())
     {
         outp = e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, window->colorset->ws, 1);
-        fk_locate (0, 0);
-        fk_cursor (1);
+        fk_u_locate (0, 0);
+        fk_u_cursor (1);
 #if  MOUSE
         g[0] = 2;
         fk_mouse (g);
@@ -3176,7 +3176,7 @@ WpeShell (we_window_t * window)
     {
         (*e_u_s_sys_end) ();
         e_close_view (outp, 1);
-        fk_cursor (0);
+        fk_u_cursor (0);
 #if  MOUSE
         g[0] = 1;
         fk_mouse (g);
@@ -3979,7 +3979,7 @@ e_data_eingabe (we_control_t * control)
     FLWND *fw = (FLWND *) window->buffer;
     int c = AltF;
 
-    fk_cursor (0);
+    fk_u_cursor (0);
     if (window->ins == 7)
     {
         freedf (fw->df);

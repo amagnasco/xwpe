@@ -447,7 +447,7 @@ e_eingabe (we_control_t * e)
     int ret, c = 0;
     unsigned char cc;
 
-    fk_cursor (1);
+    fk_u_cursor (1);
     while (c != WPE_ESC)
     {
         if (e->mxedt < 1)
@@ -459,12 +459,12 @@ e_eingabe (we_control_t * e)
             if (window->save > window->edit_control->maxchg)
                 e_autosave (window);
 #if  MOUSE
-            if ((c = e_getch ()) < 0)
+            if ((c = e_u_getch ()) < 0)
                 cc = c = e_edt_mouse (c, window);
             else
                 cc = c;
 #else
-            cc = c = e_getch ();
+            cc = c = e_u_getch ();
 #endif
         }
         if ((c > 31 || (c == WPE_TAB && !(window->flg & 1)) ||
@@ -861,7 +861,7 @@ e_tst_fkt (int c, we_control_t * e)
 #endif
     {
         window = e->window[e->mxedt];
-        fk_cursor (1);
+        fk_u_cursor (1);
         if (e->mxedt > 0)
             e_cursor (window, 1);
         return (0);
@@ -912,10 +912,10 @@ e_tst_fkt (int c, we_control_t * e)
         break;
 #if !defined(NO_XWINDOWS)
     case AltEin:
-        e_copy_X_buffer (window);
+        e_u_copy_X_buffer (window);
         break;
     case AltDel:
-        e_paste_X_buffer (window);
+        e_u_paste_X_buffer (window);
         break;
 #endif
     case COPY:
@@ -970,7 +970,7 @@ e_tst_fkt (int c, we_control_t * e)
         }
         break;
     }
-    fk_cursor (1);
+    fk_u_cursor (1);
     return (0);
 }
 
@@ -981,7 +981,7 @@ e_ctrl_k (we_window_t * window)
     we_screen_t *screen = window->edit_control->window[window->edit_control->mxedt]->screen;
     int c;
 
-    c = toupper (e_getch ());
+    c = toupper (e_u_getch ());
     if (c < 32)
         c = c + 'A' - 1;
     switch (c)
@@ -1084,7 +1084,7 @@ e_ctrl_o (we_window_t * window)
     int i, c;
     unsigned char cc;
 
-    c = toupper (e_getch ());
+    c = toupper (e_u_getch ());
     if (c < 32)
         c = c + 'A' - 1;
     switch (c)
@@ -1249,7 +1249,7 @@ e_tst_dfkt (we_window_t * window, int c)
         e_list_all_win (window);
         break;
     case AF5:
-        e_deb_out (window);
+        e_u_deb_out (window);
         break;
     default:
         if (window->edit_control->edopt & ED_CUA_STYLE)
@@ -1799,7 +1799,7 @@ e_cursor (we_window_t * window, int sw)
                               window->colorset->em.fg_bg_color, buffer->mx.x, jold, buffer->cursor.x);
     }
     buffer->cl = buffer->cursor.x + j;
-    fk_locate (window->a.x + buffer->cursor.x - s->c.x + j + 1, window->a.y + buffer->cursor.y - s->c.y + 1);
+    fk_u_locate (window->a.x + buffer->cursor.x - s->c.x + j + 1, window->a.y + buffer->cursor.y - s->c.y + 1);
 }
 
 /*   delete one line */

@@ -540,7 +540,7 @@ e_t_initscr ()
          otermio.c_lflag, otermio.c_line, otermio.c_cc[0], otermio.c_cc[1],
          otermio.c_cc[2], otermio.c_cc[3], otermio.c_cc[4], otermio.c_cc[5],
          otermio.c_cc[6], otermio.c_cc[7]);
-        WpeExit (1);
+        e_exit (1);
     }
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
@@ -633,7 +633,7 @@ e_endwin ()
 #else
     fk_putp (ratt_bo);
 #endif
-    tcsetattr (0, TCSADRAIN, &otermio);
+    tcsetattr (STDIN_FILENO, TCSADRAIN, &otermio);
 }
 
 int
@@ -789,7 +789,7 @@ int
 e_t_refresh ()
 {
     int x = cur_x, y = cur_y, i, j, c;
-    fk_cursor (0);
+    fk_u_cursor (0);
     for (i = 0; i < MAXSLNS; i++)
         for (j = 0; j < MAXSCOL; j++)
         {
@@ -835,8 +835,8 @@ e_t_refresh ()
                     *(global_screen + 2 * MAXSCOL * i + 2 * j + 1);
             }
         }
-    fk_cursor (1);
-    fk_locate (x, y);
+    fk_u_cursor (1);
+    fk_u_locate (x, y);
     term_refresh ();
     return (0);
 }
@@ -844,7 +844,7 @@ e_t_refresh ()
 int
 e_t_sys_ini ()
 {
-    e_refresh ();
+    e_u_refresh ();
     tcgetattr (0, &ttermio);
     svflgs = fcntl (0, F_GETFL, 0);
     e_endwin ();
@@ -857,7 +857,7 @@ e_t_sys_end ()
     tcsetattr (0, TCSADRAIN, &ttermio);
     fcntl (0, F_SETFL, svflgs);
     e_abs_refr ();
-    fk_locate (0, 0);
+    fk_u_locate (0, 0);
     return (0);
 }
 
@@ -867,7 +867,7 @@ e_t_kbhit ()
     int ret;
     char kbdflgs, c;
 
-    e_refresh ();
+    e_u_refresh ();
     kbdflgs = fcntl (0, F_GETFL, 0);
     fcntl (0, F_SETFL, kbdflgs | O_NONBLOCK);
     ret = read (0, &c, 1);
@@ -882,7 +882,7 @@ e_t_getch ()
 {
     int c, bk;
 
-    e_refresh ();
+    e_u_refresh ();
     c = fk_getch ();
     if (c > KEY_CODE_YES)
     {
@@ -1000,7 +1000,7 @@ e_t_getch ()
             c = 0;
             break;
         }
-        bk = bioskey ();
+        bk = u_bioskey ();
         if (bk & 3)
             c += 512;
         else if (bk & 4)
@@ -1008,7 +1008,7 @@ e_t_getch ()
     }
     else if (c == WPE_TAB)
     {
-        bk = bioskey ();
+        bk = u_bioskey ();
         if (bk & 3)
             c = WPE_BTAB;
         else
@@ -1103,7 +1103,7 @@ e_t_getch ()
                 c = 0;
                 break;
             }
-            bk = bioskey ();
+            bk = u_bioskey ();
             if (bk & 3)
                 c += 512;
             else if (bk & 4)
@@ -1122,7 +1122,7 @@ e_t_getch ()
     int c, c2, pshift, bk;
 
     pshift = 0;
-    e_refresh ();
+    e_u_refresh ();
     if ((c = fk_getch ()) != WPE_ESC)
     {
         if (key_f[20] && c == *key_f[20])
@@ -1131,7 +1131,7 @@ e_t_getch ()
             return (ENTF);
         else if (c == WPE_TAB)
         {
-            bk = bioskey ();
+            bk = u_bioskey ();
             if (bk & 3)
                 return (WPE_BTAB);
             else
@@ -1142,7 +1142,7 @@ e_t_getch ()
     }
     else if ((c = fk_getch ()) == WPE_CR)
         return (WPE_ESC);
-    bk = bioskey ();
+    bk = u_bioskey ();
     if (bk & 3)
         pshift = 512;
     else if (bk & 4)
@@ -1412,9 +1412,9 @@ e_t_deb_out (we_window_t * window)
     if (!swt_scr || !beg_scr)
 #endif
         return (e_error ("Your terminal don\'t use begin/end cup", 0, window->colorset));
-    e_d_switch_out (1);
+    e_u_d_switch_out (1);
     getchar ();
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     return (0);
 }
 
@@ -1455,7 +1455,7 @@ e_t_d_switch_out (int sw)
     {
         e_d_switch_screen (1);
         e_abs_refr ();
-        e_refresh ();
+        e_u_refresh ();
     }
     return (sw);
 }

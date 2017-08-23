@@ -284,10 +284,10 @@ e_quit (we_window_t * window)
     fk_mouse (g);
 #endif
     e_cls (control->colorset->ws, ' ');
-    fk_locate (0, 0);
-    fk_cursor (1);
-    e_refresh ();
-    WpeExit (0);
+    fk_u_locate (0, 0);
+    fk_u_cursor (1);
+    e_u_refresh ();
+    e_exit (0);
     return (0);
 }
 
@@ -459,11 +459,11 @@ e_file_window (int sw, FLWND * fw, int ft, int fz)
     {
         e_pr_file_window (fw, 1, 1, ft, fz, 0);
 #if  MOUSE
-        if ((c = e_getch ()) < 0)
+        if ((c = e_u_getch ()) < 0)
             c = fl_wnd_mouse (sw, c, fw);
 #else
         UNUSED(sw);
-        c = e_getch ();
+        c = e_u_getch ();
 #endif
         if (fw->df->nr_files <= 0)
             return (WPE_ESC);

@@ -183,6 +183,6 @@ main (int argc, char **argv)
             i = e_quit (control->window[control->mxedt]);
     }
     while (i != AltX);
-    WpeExit (0);
+    e_exit (0);
     return 0;
 }

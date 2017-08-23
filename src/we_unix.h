@@ -44,7 +44,6 @@ int e_ini_schirm(int argc, char** argv);
 
 extern int (*fk_u_locate)(int x, int y);
 extern int (*fk_u_cursor)(int x);
-extern int (*e_u_initscr)(int argc, char* argv[]);
 extern int (*fk_u_putchar)(int c);
 extern int (*u_bioskey)(void);
 extern int (*e_frb_u_menue)(int sw, int xa, int ya, we_window_t* window, int md);

@@ -366,30 +366,30 @@ int
 e_X_sw_color ()
 {
     we_colorset_t *fb = global_editor_control->colorset;
-    fb->er = e_n_clr (A_Normal);
-    fb->et = e_n_clr (A_Normal);
-    fb->ez = e_n_clr (A_Reverse);
-    fb->es = e_n_clr (A_Normal);
-    fb->em = e_n_clr (A_Standout);
-    fb->ek = e_n_clr (A_Underline);
-    fb->nr = e_n_clr (A_Standout);
-    fb->nt = e_n_clr (A_Reverse);
-    fb->nz = e_n_clr (A_Normal);
-    fb->ns = e_n_clr (A_Bold);
-    fb->mr = e_n_clr (A_Standout);
-    fb->mt = e_n_clr (A_Standout);
-    fb->mz = e_n_clr (A_Normal);
-    fb->ms = e_n_clr (A_Normal);
-    fb->fr = e_n_clr (A_Normal);
-    fb->ft = e_n_clr (A_Normal);
-    fb->fz = e_n_clr (A_Standout);
-    fb->fs = e_n_clr (A_Standout);
-    fb->of = e_n_clr (A_Standout);
-    fb->df = e_n_clr (A_Normal);
+    fb->er = e_n_u_clr (A_Normal);
+    fb->et = e_n_u_clr (A_Normal);
+    fb->ez = e_n_u_clr (A_Reverse);
+    fb->es = e_n_u_clr (A_Normal);
+    fb->em = e_n_u_clr (A_Standout);
+    fb->ek = e_n_u_clr (A_Underline);
+    fb->nr = e_n_u_clr (A_Standout);
+    fb->nt = e_n_u_clr (A_Reverse);
+    fb->nz = e_n_u_clr (A_Normal);
+    fb->ns = e_n_u_clr (A_Bold);
+    fb->mr = e_n_u_clr (A_Standout);
+    fb->mt = e_n_u_clr (A_Standout);
+    fb->mz = e_n_u_clr (A_Normal);
+    fb->ms = e_n_u_clr (A_Normal);
+    fb->fr = e_n_u_clr (A_Normal);
+    fb->ft = e_n_u_clr (A_Normal);
+    fb->fz = e_n_u_clr (A_Standout);
+    fb->fs = e_n_u_clr (A_Standout);
+    fb->of = e_n_u_clr (A_Standout);
+    fb->df = e_n_u_clr (A_Normal);
     fb->dc = 0x02;
 #ifdef DEBUGGER
-    fb->db = e_n_clr (A_Standout);
-    fb->dy = e_n_clr (A_Standout);
+    fb->db = e_n_u_clr (A_Standout);
+    fb->dy = e_n_u_clr (A_Standout);
 #endif
     return (0);
 }
@@ -404,7 +404,7 @@ e_x_refresh ()
     int stringcount = 0, oldI = 0, oldX = 0, oldY = 0, oldJ = 0;
 #endif
     int i, j, x, y, cur_tmp = cur_on;
-    fk_cursor (0);
+    fk_u_cursor (0);
     for (i = 0; i < MAXSLNS; i++)
         for (j = 0; j < MAXSCOL; j++)
         {
@@ -488,7 +488,7 @@ e_x_refresh ()
     e_flush_xrect ();
 #endif
 #endif
-    fk_cursor (cur_tmp);
+    fk_u_cursor (cur_tmp);
     fk_show_cursor ();
     XFlush (WpeXInfo.display);
     return (0);
@@ -519,7 +519,7 @@ e_x_change (we_view_t * view)
                             expose_report->width / WpeXInfo.font_width + 2,
                             expose_report->height / WpeXInfo.font_height + 2);
             /*	    e_abs_refr();*/
-            e_refresh ();
+            e_u_refresh ();
             break;
         case ConfigureNotify:
             size_hints.width =
@@ -576,7 +576,7 @@ e_x_getch ()
     unsigned int key_b;
     XSizeHints size_hints;
 
-    e_refresh ();
+    e_u_refresh ();
 
     XQueryPointer (WpeXInfo.display, WpeXInfo.window, &tmp_root, &tmp_win,
                    &root_x, &root_y, &x, &y, &key_b);
@@ -612,7 +612,7 @@ e_x_getch ()
             }
             while (XCheckMaskEvent (WpeXInfo.display, ExposureMask, &report) ==
                     True);
-            e_refresh ();
+            e_u_refresh ();
             break;
         case ConfigureNotify:
             size_hints.width =
@@ -882,7 +882,7 @@ e_x_kbhit ()
     int c;
     unsigned int key_b;
 
-    e_refresh ();
+    e_u_refresh ();
 
     if (XCheckMaskEvent
             (WpeXInfo.display, ButtonPressMask | KeyPressMask, &report) == False)
@@ -1182,7 +1182,7 @@ e_x_cp_X_to_buffer (we_window_t * window)
 int
 e_x_copy_X_buffer (we_window_t * window)
 {
-    e_cp_X_to_buffer (window);
+    e_u_cp_X_to_buffer (window);
     e_edt_einf (window);
     return (0);
 }

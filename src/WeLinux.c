@@ -11,17 +11,25 @@
 
 #include "config.h"
 #include <sys/ioctl.h>
+#include <unistd.h>
 #include "WeLinux.h"
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
+  bioskey - Get the status of shift, alt, and control keys.
 
+    Returns: A bit field of the following info
+      Bit  Information
+       3   Alt key
+       2   Control key
+       1   Left shift
+       0   Right shift
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 int
 WpeLinuxBioskey (void)
 {
-    char c;
-    int status;
+    char c = 6;
+    int status = 0;
 
-    c = 6;
-    status = 0;
-    if (ioctl (0, TIOCLINUX, &c) == 0)
+    if (ioctl (STDIN_FILENO, TIOCLINUX, &c) == 0)
     {
         if (c & 0x01)
         {

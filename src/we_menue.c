@@ -48,7 +48,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
 
     for (i = 0; i < MENOPT; i++)
         mainmenu[i].width = 0;
-    fk_cursor (0);
+    fk_u_cursor (0);
     if (n < 0)
         n = 0;
     else
@@ -577,10 +577,10 @@ WpeHandleMainmenu (int n, we_window_t * window)
         {
             e_hlp = e_hlp_str[24];
 #if MOUSE
-            if ((c = e_getch ()) == -1)
+            if ((c = e_u_getch ()) == -1)
                 c = e_m1_mouse ();
 #else
-            c = e_getch ();
+            c = e_u_getch ();
 #endif
             c = toupper (c);
         }
@@ -617,7 +617,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
             free (mainmenu[i].menuitems);
     free (mainmenu);
 
-    fk_cursor (1);
+    fk_u_cursor (1);
     return (c);
 }
 
@@ -658,7 +658,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
 
 #if MOUSE
     /* show the actual changes */
-    e_refresh ();
+    e_u_refresh ();
     /* until mouse button released */
     while (e_mshit () != 0)
     {
@@ -680,7 +680,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
                                fopt[n].x, 1, window->colorset->mz.fg_bg_color, xa + 2, xe - 2);
                 /* save the selection */
                 nold = n;
-                e_refresh ();
+                e_u_refresh ();
             }
         }
         /* mouse is in the main menu area */
@@ -723,13 +723,13 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
 #if MOUSE
         if (c != MBKEY)
         {
-            if ((c = toupper (e_getch ())) == -1)
+            if ((c = toupper (e_u_getch ())) == -1)
                 c = e_m2_mouse (xa, ya, xe, ye, fopt);
         }
         else
             c = WPE_CR;		/* mouse released at a proper place, submenu item accepted */
 #else
-        c = toupper (e_getch ());
+        c = toupper (e_u_getch ());
 #endif
 
         /* check main menu shortcut keys */

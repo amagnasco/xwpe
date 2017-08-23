@@ -60,7 +60,7 @@ e_about_WE (we_window_t * window)
     int xa = 10, ya = 4, xe = xa + 50, ye = ya + 13;
     char tmp[40];
 
-    fk_cursor (0);
+    fk_u_cursor (0);
     view =
         e_std_view (xa, ya, xe, ye, NULL, 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
                     window->colorset->ne.fg_bg_color);
@@ -115,11 +115,11 @@ e_about_WE (we_window_t * window)
 #if  MOUSE
     while (e_mshit () != 0)
         ;
-    e_getch ();
+    e_u_getch ();
     while (e_mshit () != 0)
         ;
 #else
-    e_getch ();
+    e_u_getch ();
 #endif
     e_close_view (view, 1);
     return (0);
@@ -136,7 +136,7 @@ e_clear_desk (we_window_t * window)
 
     g[0] = 2;
 #endif
-    fk_cursor (0);
+    fk_u_cursor (0);
     for (i = control->mxedt; i > 0; i--)
     {
         window = control->window[control->mxedt];
@@ -233,7 +233,7 @@ e_sys_info (we_window_t * window)
     char tmp[80];
     int xa = 10, ya = 5, xe = xa + 60, ye = ya + 8;
 
-    fk_cursor (0);
+    fk_u_cursor (0);
     view =
         e_std_view (xa, ya, xe, ye, " Information ", 1, window->colorset->nr.fg_bg_color, window->colorset->nt.fg_bg_color,
                     window->colorset->ne.fg_bg_color);
@@ -263,10 +263,10 @@ e_sys_info (we_window_t * window)
                                  tmp), window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
 #if  MOUSE
     while (e_mshit () != 0);
-    e_getch ();
+    e_u_getch ();
     while (e_mshit () != 0);
 #else
-    e_getch ();
+    e_u_getch ();
 #endif
     e_close_view (view, 1);
     return (0);
@@ -350,13 +350,13 @@ e_dif_colors (int sw, int xa, int ya, we_window_t * window, int md)
     while (c != WPE_ESC && c > -2)
     {
         e_pr_dif_colors (sw, xa, ya, window, 1, md);
-        e_pr_col_kasten (xa - 28, ya + 1, frb[sw + bg].fg_color, frb[sw + bg].bg_color, window, 0);
+        e_pr_u_col_kasten (xa - 28, ya + 1, frb[sw + bg].fg_color, frb[sw + bg].bg_color, window, 0);
         e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
-        if ((c = e_getch ()) == -1)
+        if ((c = e_u_getch ()) == -1)
             c = e_opt_cw_mouse (xa, ya, md);
 #else
-        c = e_getch ();
+        c = e_u_getch ();
 #endif
         if (c >= 375 && c <= 393)
             sw = c - 375;
@@ -372,7 +372,7 @@ e_dif_colors (int sw, int xa, int ya, we_window_t * window, int md)
         {
             e_pr_dif_colors (sw, xa, ya, window, 0, md);
             *(frb + sw + bg) =
-                e_n_clr (e_frb_menue (sw, xa - 28, ya + 1, window, md));
+                e_n_u_clr (e_frb_u_menue (sw, xa - 28, ya + 1, window, md));
         }
     }
     return (c);
@@ -461,18 +461,18 @@ e_frb_x_menue (int sw, int xa, int ya, we_window_t * window, int md)
             y = (c - 1000) % 16;
         }
         e_pr_x_col_kasten (xa, ya, x, y, window, 1);
-        frb[sw] = e_s_clr (x, y);
+        frb[sw] = e_s_u_clr (x, y);
         e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
-        if ((c = e_getch ()) == -1)
+        if ((c = e_u_getch ()) == -1)
             c = e_opt_ck_mouse (xa, ya, md);
 #else
-        c = e_getch ();
+        c = e_u_getch ();
 #endif
     }
     while (c != WPE_ESC && c != WPE_CR && c > -2);
     if (c == WPE_ESC || c < -1)
-        frb[sw] = e_n_clr (fsv);
+        frb[sw] = e_n_u_clr (fsv);
     return (frb[sw].fg_bg_color);
 }
 
@@ -543,7 +543,7 @@ e_pr_ed_beispiel (int xa, int ya, we_window_t * window, int sw, int md)
     we_colorset_t *fb = window->colorset;
     int i, j, xe = xa + 31, ye = ya + 19;
 
-    frb[sw] = e_s_clr (frb[sw].fg_color, frb[sw].bg_color);
+    frb[sw] = e_s_u_clr (frb[sw].fg_color, frb[sw].bg_color);
     if (md == 1)
     {
         e_blk (xe - xa + 1, xa + 1, ya, fb->mt.fg_bg_color);
@@ -656,7 +656,7 @@ e_pr_ed_beispiel (int xa, int ya, we_window_t * window, int sw, int md)
                       0);
         }
     }
-    frb[sw] = e_s_clr (frb[sw].fg_color, frb[sw].bg_color);
+    frb[sw] = e_s_u_clr (frb[sw].fg_color, frb[sw].bg_color);
 }
 
 /*   Save - Options - Menu   */
@@ -949,7 +949,7 @@ WpeReadColor (we_control_t * control, char *section, char *option, char *value)
                 break;
             }
         }
-        *c = e_s_clr (c->fg_color, c->bg_color);
+        *c = e_s_u_clr (c->fg_color, c->bg_color);
     }
     return 0;
 }
@@ -1608,7 +1608,7 @@ e_opt_move (W_OPTSTR * o)
 #else
     view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
 #endif
-    while ((c = e_getch ()) != WPE_ESC && c != WPE_CR)
+    while ((c = e_u_getch ()) != WPE_ESC && c != WPE_CR)
     {
         switch (c)
         {
@@ -1755,7 +1755,7 @@ e_opt_kst (W_OPTSTR * o)
 {
     int ret = 0, csv, sw = 1, i, j, num, cold, c = o->bgsw;
     char *tmp;
-    fk_cursor (0);
+    fk_u_cursor (0);
     o->view =
         e_std_view (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->ftt,
                     o->frs);
@@ -1958,7 +1958,7 @@ e_opt_kst (W_OPTSTR * o)
                 else if (c == WPE_ESC)
                     ret = WPE_ESC;
                 free (tmp);
-                fk_cursor (0);
+                fk_u_cursor (0);
                 break;
             }
         if (i < o->wn)
@@ -1996,7 +1996,7 @@ e_opt_kst (W_OPTSTR * o)
                     c = o->crsw;
                 else if (c == WPE_ESC)
                     ret = WPE_ESC;
-                fk_cursor (0);
+                fk_u_cursor (0);
                 break;
             }
         if (i < o->nn)
@@ -2018,10 +2018,10 @@ e_opt_kst (W_OPTSTR * o)
                           o->sstr[i]->header, o->fsa, o->sstr[i]->nc, 1, o->fsa,
                           0);
 #if MOUSE
-                if ((c = e_getch ()) < 0)
+                if ((c = e_u_getch ()) < 0)
                     c = e_opt_mouse (o);
 #else
-                c = e_getch ();
+                c = e_u_getch ();
 #endif
                 if (c == WPE_CR)
                 {
@@ -2073,10 +2073,10 @@ e_opt_kst (W_OPTSTR * o)
                               o->pstr[i]->ps[j]->header, o->fsa,
                               o->pstr[i]->ps[j]->nc, 1, o->fsa, 0);
 #if MOUSE
-                    if ((c = e_getch ()) < 0)
+                    if ((c = e_u_getch ()) < 0)
                         c = e_opt_mouse (o);
 #else
-                    c = e_getch ();
+                    c = e_u_getch ();
 #endif
                     if (c == WPE_CR)
                     {
@@ -2138,10 +2138,10 @@ e_opt_kst (W_OPTSTR * o)
                 }
                 cold = c;
 #if MOUSE
-                if ((c = e_getch ()) < 0)
+                if ((c = e_u_getch ()) < 0)
                     c = e_opt_mouse (o);
 #else
-                c = e_getch ();
+                c = e_u_getch ();
 #endif
                 if (c == WPE_CR)
                 {

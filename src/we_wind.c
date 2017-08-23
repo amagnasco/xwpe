@@ -131,7 +131,7 @@ e_error (char *text, int sw, we_colorset_t * colorset)
     int len, i, xa, xe, ya = 8, ye = 14;
     char *header = NULL;
 
-    fk_cursor (0);
+    fk_u_cursor (0);
     WpeMouseChangeShape (WpeErrorShape);
     if ((len = strlen ((char *) text)) < 20)
         len = 20;
@@ -174,10 +174,10 @@ e_error (char *text, int sw, we_colorset_t * colorset)
     do
     {
 #if  MOUSE
-        if ((i = toupper (e_getch ())) == -1)
+        if ((i = toupper (e_u_getch ())) == -1)
             i = e_er_mouse (xa + 3, ya, (xe + xa - 4) / 2, ya + 4);
 #else
-        i = toupper (e_getch ());
+        i = toupper (e_u_getch ());
 #endif
     }
     while (i != WPE_ESC && i != WPE_CR && i != 'O');
@@ -186,11 +186,11 @@ e_error (char *text, int sw, we_colorset_t * colorset)
         e_close_view (view, 1);
     else
         e_cls (0, ' ');
-    fk_cursor (1);
+    fk_u_cursor (1);
     if (sw == 1)
         e_quit (global_editor_control->window[global_editor_control->mxedt]);
     if (sw > 0)
-        WpeExit (sw);
+        e_exit (sw);
     return (sw);
 }
 
@@ -383,7 +383,7 @@ e_close_view (we_view_t * view, int sw)
             free (view->p);
         free (view);
     }
-    e_refresh ();
+    e_u_refresh ();
     return (sw);
 }
 
@@ -580,7 +580,7 @@ e_size_move (we_window_t * window)
         xmin = 15;
     else if (!DTMD_ISTEXT (window->dtmd))
         ymin = 9;
-    while ((c = e_getch ()) != WPE_ESC && c != WPE_CR)
+    while ((c = e_u_getch ()) != WPE_ESC && c != WPE_CR)
     {
         switch (c)
         {
@@ -1843,10 +1843,10 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * window, int sw
             nold = n;
         }
 #if  MOUSE
-        if ((c = toupper (e_getch ())) == -1)
+        if ((c = toupper (e_u_getch ())) == -1)
             c = e_m2_mouse (xa, ya, xe, ye, opt);
 #else
-        c = toupper (e_getch ());
+        c = toupper (e_u_getch ());
 #endif
         for (i = 0; i < ye - ya - 1; i++)
             if (c == opt[i].o)

@@ -22,7 +22,6 @@
  * Most of the code in this file was copied from we_main.c and later adapted
  * For that reason the copyright starts with Fred Kruse's original copyright
  * even though he never created this file.
- *
  */
 
 #include "config.h"

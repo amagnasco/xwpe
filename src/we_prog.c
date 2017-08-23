@@ -311,7 +311,7 @@ e_run (we_window_t * window)
     buffer->cursor.y = buffer->mxlines - 1;
     e_cursor (window, 1);
     e_write_screen (window, 1);
-    e_refresh ();
+    e_u_refresh ();
     WpeMouseRestoreShape ();
     return (0);
 }
@@ -557,7 +557,7 @@ e_p_exec (int file, we_window_t * window, we_view_t * view)
 
     e_cursor (window, 1);
     e_write_screen (window, 1);
-    e_refresh ();
+    e_u_refresh ();
     return (0);
 }
 
@@ -1617,8 +1617,8 @@ e_system (char *estr, we_control_t * control)
     fk_mouse (g);
 #endif
     outp = e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, control->colorset->ws, 1);
-    fk_locate (0, 0);
-    fk_cursor (1);
+    fk_u_locate (0, 0);
+    fk_u_cursor (1);
     (*e_u_s_sys_ini) ();
     ret = system (estr);
     if (!WpeIsXwin ())
@@ -1629,7 +1629,7 @@ e_system (char *estr, we_control_t * control)
     }
     (*e_u_s_sys_end) ();
     e_close_view (outp, 1);
-    fk_cursor (0);
+    fk_u_cursor (0);
 #if  MOUSE
     g[0] = 1;
     fk_mouse (g);
@@ -1742,7 +1742,7 @@ e_d_p_message (char *str, we_window_t * window, int sw)
     {
         e_write_screen (window, 0);
         e_cursor (window, 0);
-        e_refresh ();
+        e_u_refresh ();
     }
     return (0);
 }
@@ -3132,7 +3132,7 @@ e_p_mess_win (char *header, int argc, char **argv, we_view_t ** view, we_window_
     char *tmp = malloc (sizeof (char));
     int i, ret;
 
-    fk_cursor (0);
+    fk_u_cursor (0);
     tmp[0] = '\0';
     for (i = 0; i < argc && argv[i] != NULL; i++)
     {
@@ -3146,7 +3146,7 @@ e_p_mess_win (char *header, int argc, char **argv, we_view_t ** view, we_window_
     }
     ret = e_mess_win (header, tmp, view, window);
     free (tmp);
-    fk_cursor (1);
+    fk_u_cursor (1);
     return (ret);
 }
 

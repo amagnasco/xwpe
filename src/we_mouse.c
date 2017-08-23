@@ -468,7 +468,7 @@ FLWND *fw;
                             yn = e_mouse.y;
                             e_gt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, bgrd);
                             e_pt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, file);
-                            e_refresh ();
+                            e_u_refresh ();
                         }
                         e_pt_btstr (xn - xdif, yn, MLEN, bgrd);
                         free (file);
@@ -535,7 +535,7 @@ int nf;
                 iold = e_mouse.y;
 #ifdef NEWSTYLE
                 e_make_xrect_abs (x, iold, x, iold, 1);
-                e_refresh ();
+                e_u_refresh ();
 #endif
                 fk_mouse (g);
                 for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3)
@@ -554,7 +554,7 @@ int nf;
                         e_make_xrect (x, y + 1, x, y + n - 2, 0);
                         e_make_xrect_abs (x, inew, x, inew, 1);
 #endif
-                        e_refresh ();
+                        e_u_refresh ();
                         iold = inew;
                         g[0] = 1;
                         fk_mouse (g);
@@ -600,7 +600,7 @@ int nf;
                 iold = e_mouse.x;
 #ifdef NEWSTYLE
                 e_make_xrect_abs (iold, y, iold, y, 1);
-                e_refresh ();
+                e_u_refresh ();
 #endif
                 fk_mouse (g);
                 for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3)
@@ -619,7 +619,7 @@ int nf;
                         e_make_xrect (x + 1, y, x + n - 2, y, 0);
                         e_make_xrect_abs (inew, y, inew, y, 1);
 #endif
-                        e_refresh ();
+                        e_u_refresh ();
                         iold = inew;
                         g[0] = 1;
                         fk_mouse (g);
@@ -754,7 +754,7 @@ e_eck_mouse (we_window_t * window, int sw)
             fk_mouse (g);
             e_cursor (window, 0);
             e_write_screen (window, 0);
-            e_refresh ();
+            e_u_refresh ();
         }
         g[0] = 3;
         fk_mouse (g);
@@ -862,7 +862,7 @@ e_edt_mouse (int c, we_window_t * window)
                 window->buffer->cursor.y = window->buffer->cursor.y > 0 ? window->buffer->cursor.y - 1 : 0;
                 window->buffer->cursor.x = e_chr_sp (window->buffer->clsv, window->buffer, window);
                 e_cursor (window, 1);
-                e_refresh ();
+                e_u_refresh ();
             }
             while (e_mshit ());
         }
@@ -875,7 +875,7 @@ e_edt_mouse (int c, we_window_t * window)
                                            window->buffer->cursor.y + 1 : window->buffer->mxlines - 1;
                 window->buffer->cursor.x = e_chr_sp (window->buffer->clsv, window->buffer, window);
                 e_cursor (window, 1);
-                e_refresh ();
+                e_u_refresh ();
             }
             while (e_mshit ());
         }
@@ -885,7 +885,7 @@ e_edt_mouse (int c, we_window_t * window)
             window->buffer->cursor.y = e_lst_mouse (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
                                                     window->buffer->mxlines, window->buffer->cursor.y);
             e_cursor (window, 1);
-            e_refresh ();
+            e_u_refresh ();
         }
         else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 19)
         {
@@ -893,7 +893,7 @@ e_edt_mouse (int c, we_window_t * window)
             {
                 window->buffer->cursor.x = window->buffer->cursor.x > 0 ? window->buffer->cursor.x - 1 : 0;
                 e_cursor (window, 1);
-                e_refresh ();
+                e_u_refresh ();
             }
         }
         else if (e_mouse.y == window->e.y && e_mouse.x == window->e.x - 2)
@@ -903,7 +903,7 @@ e_edt_mouse (int c, we_window_t * window)
                 window->buffer->cursor.x = window->buffer->cursor.x < window->buffer->buflines[window->buffer->cursor.y].len ?
                                            window->buffer->cursor.x + 1 : window->buffer->buflines[window->buffer->cursor.y].len;
                 e_cursor (window, 1);
-                e_refresh ();
+                e_u_refresh ();
             }
         }
         else if (e_mouse.y == window->e.y &&
@@ -913,7 +913,7 @@ e_edt_mouse (int c, we_window_t * window)
                 e_lst_mouse (window->a.x + 19, window->e.y, window->e.x - window->a.x - 20, 1,
                              window->buffer->mx.x, num_cols_off_screen_left(window));
             e_cursor (window, 1);
-            e_refresh ();
+            e_u_refresh ();
         }
     }
     else
@@ -960,12 +960,12 @@ e_ccp_mouse (int c, we_window_t * window)
     if (c == -2)
     {
         e_mouse_cursor (buffer, s, window);
-        return ((bioskey () & 8) ? AltEin : ShiftEin);
+        return ((u_bioskey () & 8) ? AltEin : ShiftEin);
     }
     else if (c == -4)
     {
-        return ((bioskey () & 3) ? ShiftDel
-                : ((bioskey () & 8) ? AltDel : CEINFG));
+        return ((u_bioskey () & 3) ? ShiftDel
+                : ((u_bioskey () & 8) ? AltDel : CEINFG));
     }
     else
         return (0);
@@ -982,7 +982,7 @@ we_window_t *window;
     bs.x = buffer->cursor.x;
     bs.y = buffer->cursor.y;
     e_mouse_cursor (buffer, s, window);
-    if ((bioskey () & 3) == 0)
+    if ((u_bioskey () & 3) == 0)
     {
         if (buffer->cursor.x == bs.x && buffer->cursor.y == bs.y && window->dtmd != DTMD_HELP)
         {
@@ -1071,7 +1071,7 @@ we_window_t *window;
         }
         e_cursor (window, 1);
         e_write_screen (window, 1);
-        e_refresh ();
+        e_u_refresh ();
     }
     s->ks.x = buffer->cursor.x;
     s->ks.y = buffer->cursor.y;
