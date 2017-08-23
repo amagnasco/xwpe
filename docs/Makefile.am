@@ -6,7 +6,7 @@ $(directory)/man/man3: doxyfile.stamp
 
 doxyfile.stamp: Doxyfile
 	$(DOXYGEN) $^
-	cd latex && $(MAKE)
+	cd latex && $(MAKE) > latexrun.log
 	echo Timestamp > $@
 	cp ./latex/refman.pdf $(directory)/xwpe-refman.pdf
 
