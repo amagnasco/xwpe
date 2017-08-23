@@ -10,6 +10,7 @@
 #include "messages.h"
 #include "model.h"
 #include "edit.h"
+#include "we_term.h"
 #include "we_block.h"
 #include "we_progn.h"
 #include "we_edit.h"

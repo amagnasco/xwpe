@@ -28,6 +28,8 @@
 extern char *global_screen;
 extern char *global_alt_screen;
 
+extern int MAXSLNS, MAXSCOL;
+
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
 extern char *extbyte;
 extern char *altextbyte;

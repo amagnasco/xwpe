@@ -11,9 +11,13 @@
 #include "options.h"
 #include "model.h"
 #include "edit.h"
+#include "we_term.h"
 #include "we_menue.h"
 #include "we_progn.h"
 #include "we_prog.h"
+
+/** global field */
+int MENOPT = 8;
 
 int e_p_show_messages (we_window_t * window);
 int e_p_show_watches (we_window_t * window);

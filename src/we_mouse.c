@@ -11,6 +11,7 @@
 #include "options.h"
 #include "model.h"
 #include "edit.h"
+#include "we_term.h"
 #include "we_prog.h"
 #include "we_mouse.h"
 

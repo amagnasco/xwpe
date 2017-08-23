@@ -89,11 +89,8 @@ we_colorset_t *u_fb, *x_fb;
 
 char MCI, MCA, RD1, RD2, RD3, RD4, RD5, RD6, WBT;
 char RE1, RE2, RE3, RE4, RE5, RE6;
-int MENOPT = 8;
 int e_mn_men = 3;
 
-int MAXSLNS = 24;
-int MAXSCOL = 80;
 struct termios otermio, ntermio, ttermio;
 void *libxwpe;
 

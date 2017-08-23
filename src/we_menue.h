@@ -10,6 +10,9 @@
 #include "we_mouse.h"
 #include "we_opt.h"
 
+/** global field */
+extern int MENOPT;
+
 /*   we_menue.c   */
 int WpeHandleMainmenu(int n, we_window_t* window);
 int WpeHandleSubmenu(int xa, int ya, int xe, int ye,

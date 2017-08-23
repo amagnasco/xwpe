@@ -83,6 +83,10 @@ int cur_x = -1;
 int cur_y = -1;
 /** global field also used in we_xterm.c */
 char *ctree[5];
+/** global field for screen maximum number of lines */
+int MAXSLNS = 24;
+/** global field for screen maximum number of columns */
+int MAXSCOL = 80;
 
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 static char *key_f[KEYFN], *key_key;

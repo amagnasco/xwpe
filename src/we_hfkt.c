@@ -11,6 +11,7 @@
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
+#include "we_term.h"
 #include "WeString.h"
 #include "we_hfkt.h"
 #include "utils.h"

@@ -11,6 +11,7 @@
 #include "model.h"
 #include "we_control.h"
 #include "edit.h"
+#include "we_term.h"
 #include "WeString.h"
 #include "we_e_aus.h"
 
