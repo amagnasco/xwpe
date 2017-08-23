@@ -14,6 +14,7 @@
 #include "messages.h"
 #include "options.h"
 #include "model.h"
+#include "we_term.h"
 #include "we_control.h"
 #include "edit.h"
 #include "we_debug.h"
@@ -21,6 +22,7 @@
 #include "WeString.h"
 
 #ifndef NO_XWINDOWS
+#include "we_xterm.h"
 #include "WeXterm.h"
 #endif
 
@@ -74,7 +76,6 @@ extern int wfildes[2], efildes[2];
 extern struct termios otermio, ntermio, ttermio;
 extern struct e_s_prog e_sv_prog;
 extern we_buffer_t *e_p_w_buffer;
-extern char *att_no;
 extern char *e_tmp_dir;
 
 #ifndef HAVE_TPARM
@@ -1250,7 +1251,7 @@ e_make_stack (we_window_t * window)
     return (0);
 }
 
-/*******************************************************/
+/**************************************************************/
 /** resyncing global_screen - screen output with breakpoints **/
 
 int
@@ -1280,8 +1281,6 @@ e_brk_schirm (we_window_t * window)
     }
     return 0;
 }
-
-/*****************************************/
 
 /*******************************************/
 /***  reinitialize breakpoints from prj  ***/

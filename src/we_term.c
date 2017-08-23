@@ -11,6 +11,7 @@
 #include "model.h"
 #include "edit.h"
 #include "we_term.h"
+#include "we_unix.h"
 #include "we_gpm.h"
 #include "we_hfkt.h"
 #include "we_gpm.h"
@@ -35,7 +36,6 @@
 #define WpeDllInit WpeTermInit
 #endif
 
-/*    we_term.c    */
 char *init_key (char *key);
 char *init_kkey (char *key);
 int init_cursor (void);
@@ -63,30 +63,69 @@ int e_s_sys_ini ();
 extern int MAXSLNS;
 extern int MAXSCOL;
 
+/** global field also used in we_xterm.c */
+char *global_screen = NULL;
+/** global field also used in we_xterm.c */
+char *global_alt_screen = NULL;
+/** global field also used in we_xterm.c and we_wind.c */
+#if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
+char *extbyte = NULL;
+char *altextbyte = NULL;
+#endif
 
-//#ifndef NCURSES : always TRUE
+/** global field also used in we_debug.c */
+char *att_no;
+/** global field also used in we_control.c */
+int col_num = 0;
+/** global field also used in we_xterm.c */
+int cur_x = -1;
+/** global field also used in we_xterm.c */
+int cur_y = -1;
+/** global field also used in we_xterm.c */
+char *ctree[5];
+
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-char *key_f[KEYFN], *key_key;
+static char *key_f[KEYFN], *key_key;
 #endif
-char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, cur_attr;
-char *att_so, *att_ul, *att_rv, *att_bl, *att_dm, *att_bo;
-char *ratt_no, *ratt_so, *ratt_ul, *ratt_rv, *ratt_bl, *ratt_dm, *ratt_bo;
-char *beg_scr, *swt_scr, *sav_cur, *res_cur;
-extern char *global_alt_screen;
-extern char *att_no;
-char *col_fg, *col_bg, *spc_st, *spc_in, *spc_bg, *spc_nd;
 
-extern int col_num;
-//#ifdef NCURSES
+static char *cur_rc;
+static char cur_attr;
+
+static char *att_so;
+static char *att_ul;
+static char *att_rv;
+static char *att_bl;
+static char *att_dm;
+static char *att_bo;
+
+static char *ratt_no;
+static char *ratt_so;
+static char *ratt_ul;
+static char *ratt_rv;
+static char *ratt_bl;
+static char *ratt_dm;
+static char *ratt_bo;
+
+static char *beg_scr;
+static char *swt_scr;
+static char *sav_cur;
+static char *res_cur;
+
+static char *col_fg;
+static char *col_bg;
+
+static char *spc_st;
+static char *spc_in;
+static char *spc_bg;
+static char *spc_nd;
+
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-chtype sp_chr[NSPCHR];
+static chtype sp_chr[NSPCHR];
 #else
-char *sp_chr[NSPCHR];
+static char *sp_chr[NSPCHR];
 #endif
 
-extern int cur_x, cur_y;
 extern struct termios otermio, ntermio, ttermio;
-//#ifdef TERMCAP
 #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 char area[315];
 char *ap = area;
@@ -107,7 +146,6 @@ char *tgoto ();
 #define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
 #define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
 
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #define term_move(x,y) move(y, x)
 #define term_refresh() refresh()
@@ -115,7 +153,7 @@ char *tgoto ();
 #define term_move(x,y) e_putp(tparm2(cur_rc, y, x))
 #define term_refresh() fflush(stdout)
 #endif
-#endif // (#else) #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
+#endif
 
 int
 WpeDllInit (int *argc, char **argv)
@@ -227,7 +265,32 @@ init_key (char *key)
     return (keystr);
 }
 
-//#ifndef NCURSES
+
+int
+e_ini_size ()
+{
+    if (global_screen)
+        free (global_screen);
+    if (global_alt_screen)
+        free (global_alt_screen);
+    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
+    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
+#ifdef NEWSTYLE
+    if (extbyte)
+        free (extbyte);
+    if (altextbyte)
+        free (altextbyte);
+    extbyte = malloc (MAXSCOL * MAXSLNS);
+    altextbyte = malloc (MAXSCOL * MAXSLNS);
+    if (!global_screen || !global_alt_screen || !extbyte || !altextbyte)
+        return (-1);
+#else
+    if (!global_screen || !global_alt_screen)
+        return (-1);
+#endif
+    return (0);
+}
+
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 char *
 init_kkey (char *key)
@@ -257,6 +320,18 @@ init_kkey (char *key)
     return (tmp);
 }
 #endif
+
+
+int
+e_abs_refr ()
+{
+    int i;
+
+    for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++)
+        global_alt_screen[i] = 0;
+    return (0);
+}
+
 
 char *
 init_spchr (char c)
@@ -846,7 +921,7 @@ e_t_sys_ini ()
 {
     e_u_refresh ();
     tcgetattr (STDIN_FILENO, &ttermio);
-    svflgs = fcntl (0, F_GETFL, 0);
+    svflgs = fcntl (STDIN_FILENO, F_GETFL, 0);
     e_endwin ();
     return (0);
 }
@@ -855,7 +930,7 @@ int
 e_t_sys_end ()
 {
     tcsetattr (STDIN_FILENO, TCSADRAIN, &ttermio);
-    fcntl (0, F_SETFL, svflgs);
+    fcntl (STDIN_FILENO, F_SETFL, svflgs);
     e_abs_refr ();
     fk_u_locate (0, 0);
     return (0);
@@ -868,14 +943,13 @@ e_t_kbhit ()
     char kbdflgs, c;
 
     e_u_refresh ();
-    kbdflgs = fcntl (0, F_GETFL, 0);
-    fcntl (0, F_SETFL, kbdflgs | O_NONBLOCK);
+    kbdflgs = fcntl (STDIN_FILENO, F_GETFL, 0);
+    fcntl (STDIN_FILENO, F_SETFL, kbdflgs | O_NONBLOCK);
     ret = read (0, &c, 1);
-    fcntl (0, F_SETFL, kbdflgs & ~O_NONBLOCK);
+    fcntl (STDIN_FILENO, F_SETFL, kbdflgs & ~O_NONBLOCK);
     return (ret == 1 ? c : 0);
 }
 
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 int
 e_t_getch ()
@@ -1115,7 +1189,7 @@ e_t_getch ()
     return (c);
 }
 
-#else // #ifdef NCURSES : i.e. FALSE
+#else // #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 int
 e_t_getch ()
 {
@@ -1344,7 +1418,7 @@ e_find_key (int c, int j, int sw)
     }
     return (0);
 }
-#endif // #ifdef NCURSES i.e. FALSE
+#endif // #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 
 int
 fk_t_locate (int x, int y)
@@ -1352,7 +1426,6 @@ fk_t_locate (int x, int y)
     if (col_num > 0)
     {
         fk_colset (e_gt_col (cur_x, cur_y));
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
         /* Causes problems.  Reason unknown. - Dennis */
         /*mvaddch(cur_y,cur_x,e_gt_char(cur_x, cur_y)); */

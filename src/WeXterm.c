@@ -32,6 +32,7 @@
 /* needed for the time being to call old routines */
 #include "model.h"
 #include "edit.h"
+#include "we_term.h"
 
 
 #include "WeString.h"
@@ -509,7 +510,9 @@ WpeXInit (int *argc, char **argv)
 
     /* Copied with little change since I haven't had the time to look into
        what it does */
-    if ((*e_u_ini_size) ())
+    old_cursor_x = cur_x;
+    old_cursor_y = cur_y;
+    if (e_ini_size())
     {
         *argc = -1;
         return;

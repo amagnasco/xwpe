@@ -29,6 +29,7 @@
 #include "messages.h"
 #include "keys.h"
 #include "we_mouse.h"
+#include "we_term.h"
 #include "options.h"
 #include "WeString.h"
 #include "we_prog.h"
@@ -47,8 +48,6 @@
 extern char *e_tmp_dir;
 extern char *e_hlp_str[];
 
-extern int col_num;
-
 extern we_colorset_t *u_fb, *x_fb;
 
 /* globals */
@@ -58,7 +57,7 @@ int fk__cursor = 0;
 WOPT *eblst, *fblst, *mblst, *dblst, *xblst, *wblst, *rblst;
 WOPT *ablst, *sblst, *hblst, *gblst, *oblst;
 
-char *e_hlp, *user_shell;
+char *e_hlp;
 WOPT *blst;
 int nblst = 7;
 

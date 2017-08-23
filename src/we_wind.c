@@ -13,6 +13,7 @@
 #include "model.h"
 #include "we_control.h"
 #include "edit.h"
+#include "we_term.h"
 #include "we_wind.h"
 #include "we_progn.h"
 #include "we_prog.h"

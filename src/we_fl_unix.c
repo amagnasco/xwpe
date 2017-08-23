@@ -13,6 +13,7 @@
 #include "messages.h"
 #include "model.h"
 #include "options.h"
+#include "we_term.h"
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 #include "curses.h"
 #endif

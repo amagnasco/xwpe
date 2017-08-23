@@ -21,8 +21,6 @@ typedef enum wpeMouseShape
     WpeLastShape
 } WpeMouseShape;
 
-/*   we_unix.c   */
-int e_abs_refr(void);
 void e_refresh_area(int x, int y, int width, int height);
 void WpeNullFunction(void);
 int WpeZeroFunction();
@@ -65,7 +63,6 @@ extern int (*e_u_cp_X_to_buffer)(we_window_t* window);
 extern int (*e_u_copy_X_buffer)(we_window_t* window);
 extern int (*e_u_paste_X_buffer)(we_window_t* window);
 extern int (*e_u_change)(we_view_t* view);
-//extern int (*e_u_ini_size)(void);
 extern int (*e_u_s_sys_end)(void);
 extern int (*e_u_s_sys_ini)(void);
 extern void (*e_u_setlastpic)(we_view_t* view);
@@ -74,5 +71,4 @@ extern int (*e_u_kbhit)(void);
 extern void (*WpeDisplayEnd)(void);
 
 extern char e_we_sw;
-
 #endif

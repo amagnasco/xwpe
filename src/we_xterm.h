@@ -9,8 +9,16 @@
 #include "we_block.h"
 #include "we_e_aus.h"
 
-extern int (*e_u_ini_size) (void);
+extern char *user_shell;
+/** global field necessary for WeXterm only */
+extern int old_cursor_x;
+/** global field necessary for WeXterm only */
+extern int old_cursor_y;
 
 int e_X_sw_color (void);
+
+#ifndef XTERM_CMD
+#define XTERM_CMD "xterm"
+#endif
 
 #endif

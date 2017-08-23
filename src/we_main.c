@@ -35,7 +35,7 @@
 
 #include "we_control.h"
 
-
+const char *default_shell = "sh";
 
 int
 main (int argc, char **argv)
@@ -66,7 +66,7 @@ main (int argc, char **argv)
     e_read_help_str ();
     e_hlp = e_hlp_str[0];
     if (!(user_shell = getenv ("SHELL")))
-        user_shell = DEF_SHELL;
+        user_shell = (char *) default_shell;
 #ifdef HAVE_MKDTEMP
     e_tmp_dir = strdup ("/tmp/xwpe_XXXXXX");
     if (mkdtemp (e_tmp_dir) == NULL)

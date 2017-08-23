@@ -15,6 +15,7 @@
 #include "edit.h"
 #include "we_unix.h"
 #include "WeString.h"
+#include "we_term.h"
 #include "we_xterm.h"
 
 /* partial conversion in place */
@@ -29,8 +30,10 @@
 #define WpeDllInit WpeXtermInit
 #endif
 
+/** global field filled in we_main.c and used in we_fl_unix.c */
+char *user_shell;
+
 int fk_show_cursor (void);
-int e_ini_size (void);
 int e_x_getch (void);
 int fk_x_mouse (int *g);
 int e_x_refresh (void);
@@ -74,11 +77,10 @@ extern char *e_tmp_dir;
 
 /*  for TextSchirm (text screen)   */
 
-extern char *global_alt_screen;
-#ifdef NEWSTYLE
-extern char *extbyte, *altextbyte;
-#endif
-int old_cursor_x = 0, old_cursor_y = 0, cur_on = 1;
+int old_cursor_x = 0, old_cursor_y = 0;
+
+static int cur_on = 1;
+
 extern we_view_t *e_X_l_pic;
 
 extern struct mouse e_mouse;
@@ -105,7 +107,6 @@ WpeDllInit (int *argc, char **argv)
     e_u_paste_X_buffer = e_x_paste_X_buffer;
     e_u_kbhit = e_x_kbhit;
     e_u_change = e_x_change;
-    e_u_ini_size = e_ini_size;
     e_u_setlastpic = e_setlastpic;
     WpeMouseChangeShape = (void (*)(WpeMouseShape)) WpeNullFunction;
     WpeMouseRestoreShape = (void (*)(void)) WpeNullFunction;
@@ -326,34 +327,6 @@ fk_show_cursor ()
     old_cursor_x = cur_x;
     old_cursor_y = cur_y;
     return (cur_on);
-}
-
-int
-e_ini_size ()
-{
-    old_cursor_x = cur_x;
-    old_cursor_y = cur_y;
-
-    if (global_screen)
-        free (global_screen);
-    if (global_alt_screen)
-        free (global_alt_screen);
-    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
-    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
-#ifdef NEWSTYLE
-    if (extbyte)
-        free (extbyte);
-    if (altextbyte)
-        free (altextbyte);
-    extbyte = malloc (MAXSCOL * MAXSLNS);
-    altextbyte = malloc (MAXSCOL * MAXSLNS);
-    if (!global_screen || !global_alt_screen || !extbyte || !altextbyte)
-        return (-1);
-#else
-    if (!global_screen || !global_alt_screen)
-        return (-1);
-#endif
-    return (0);
 }
 
 #define A_Normal 	16
@@ -1004,6 +977,8 @@ e_x_repaint_desk (we_window_t * window)
         nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y, e_X_l_pic->e.x,
                               e_X_l_pic->e.y, 0, 2);
     }
+    old_cursor_x = cur_x;
+    old_cursor_y = cur_y;
     e_ini_size ();
     if (control->mxedt < 1)
     {

@@ -10,6 +10,7 @@
 #include "model.h"		/* exchange for D.S.  */
 #include "we_control.h"
 #include "options.h"
+#include "we_term.h"
 #include <signal.h>
 
 #ifdef UNIX
@@ -46,7 +47,6 @@ int WpeTermInit (int *argc, char **argv);
 #define S_ISLNK(x)  0
 #endif
 
-char *global_screen = NULL;
 char e_we_sw = 0;
 
 void WpeSignalUnknown (int sig);
@@ -79,7 +79,6 @@ int (*e_u_copy_X_buffer) (we_window_t * window);
 int (*e_u_paste_X_buffer) (we_window_t * window);
 int (*e_u_kbhit) (void);
 int (*e_u_change) (we_view_t * view);
-int (*e_u_ini_size) (void);
 int (*e_get_pic_urect) (int xa, int ya, int xe, int ye,
                         struct view_struct * view);
 int (*e_u_s_sys_end) (void);
@@ -90,22 +89,14 @@ we_colorset_t *u_fb, *x_fb;
 
 char MCI, MCA, RD1, RD2, RD3, RD4, RD5, RD6, WBT;
 char RE1, RE2, RE3, RE4, RE5, RE6;
-char *ctree[5];
 int MENOPT = 8;
 int e_mn_men = 3;
 
 int MAXSLNS = 24;
 int MAXSCOL = 80;
-int col_num = 0;
-char *att_no;
 struct termios otermio, ntermio, ttermio;
-int cur_x = -1, cur_y = -1;
 void *libxwpe;
 
-#ifdef NEWSTYLE
-char *extbyte = NULL, *altextbyte = NULL;
-#endif
-char *global_alt_screen = NULL;
 we_view_t *e_X_l_pic = NULL;
 
 void
@@ -275,21 +266,9 @@ e_ini_unix (int *argc, char **argv)
     return (*argc);
 }
 
-int
-e_abs_refr ()
-{
-    extern char *global_alt_screen;
-    int i;
-
-    for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++)
-        global_alt_screen[i] = 0;
-    return (0);
-}
-
 void
 e_refresh_area (int x, int y, int width, int height)
 {
-    extern char *global_alt_screen;
     char *curloc;
     int i, j;
 

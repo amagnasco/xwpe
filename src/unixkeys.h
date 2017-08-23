@@ -27,9 +27,6 @@
 #define BUFFER_NAME "Buffer"	/*  Clipboard in Buffer changed  */
 #define SUDIR "*"
 #define MAXREC 15
-#ifndef DEF_SHELL
-#define DEF_SHELL "sh"
-#endif
 
 /*   Characters  */
 

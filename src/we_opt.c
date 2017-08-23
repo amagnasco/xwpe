@@ -9,6 +9,9 @@
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
+#include "we_mouse.h"
+#include "we_term.h"
+#include "we_xterm.h"
 #include "model.h"
 #include "edit.h"
 #include "we_opt.h"
@@ -177,7 +180,9 @@ e_repaint_desk (we_window_t * window)
             nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y,
                                   e_X_l_pic->e.x, e_X_l_pic->e.y, 0, 2);
         }
-        (*e_u_ini_size) ();
+        old_cursor_x = cur_x;
+        old_cursor_y = cur_y;
+        e_ini_size();
     }
 #endif
     if (control->mxedt < 1)
