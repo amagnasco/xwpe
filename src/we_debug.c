@@ -3124,8 +3124,8 @@ e_g_sys_ini ()
 {
     if (!e_d_swtch || e_deb_mode)
         return (0);
-    tcgetattr (0, &ttermio);
-    return (tcsetattr (0, TCSADRAIN, &otermio));
+    tcgetattr (STDIN_FILENO, &ttermio);
+    return (tcsetattr (STDIN_FILENO, TCSADRAIN, &otermio));
 }
 
 int
@@ -3133,7 +3133,7 @@ e_g_sys_end ()
 {
     if (!e_d_swtch || e_deb_mode)
         return (0);
-    return (tcsetattr (0, TCSADRAIN, &ttermio));
+    return (tcsetattr (STDIN_FILENO, TCSADRAIN, &ttermio));
 }
 
 int

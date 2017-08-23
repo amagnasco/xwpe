@@ -523,7 +523,7 @@ e_t_initscr ()
     WINDOW *stdscr;
 #endif
 
-    ret = tcgetattr (1, &otermio);	/* save old settings */
+    ret = tcgetattr (STDOUT_FILENO, &otermio);	/* save old settings */
     if (ret)
     {
         int errno_save = errno;	// save errno before it is overwritten
@@ -578,7 +578,7 @@ e_t_initscr ()
         printf ("Terminal Not in the right mode\n");
         e_exit (1);
     }
-    tcgetattr (0, &ntermio);
+    tcgetattr (STDIN_FILENO, &ntermio);
     ntermio.c_iflag = 0;		/* setup new settings */
     ntermio.c_oflag = 0;
     ntermio.c_lflag = 0;
@@ -587,7 +587,7 @@ e_t_initscr ()
 #ifdef VSWTCH
     ntermio.c_cc[VSWTCH] = 0;
 #endif
-    tcsetattr (0, TCSADRAIN, &ntermio);
+    tcsetattr (STDIN_FILENO, TCSADRAIN, &ntermio);
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
     if (spc_in)
         e_putp (spc_in);
@@ -845,7 +845,7 @@ int
 e_t_sys_ini ()
 {
     e_u_refresh ();
-    tcgetattr (0, &ttermio);
+    tcgetattr (STDIN_FILENO, &ttermio);
     svflgs = fcntl (0, F_GETFL, 0);
     e_endwin ();
     return (0);
@@ -854,7 +854,7 @@ e_t_sys_ini ()
 int
 e_t_sys_end ()
 {
-    tcsetattr (0, TCSADRAIN, &ttermio);
+    tcsetattr (STDIN_FILENO, TCSADRAIN, &ttermio);
     fcntl (0, F_SETFL, svflgs);
     e_abs_refr ();
     fk_u_locate (0, 0);
