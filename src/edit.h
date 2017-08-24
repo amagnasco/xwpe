@@ -20,10 +20,10 @@
 #ifdef UNIX
 #include "unixkeys.h"
 #include "unixmakr.h"
+#endif
 
 /** Maximum number of editting windows */
 #define MAXEDT 35
-#endif		  // #ifdef UNIX
 
 /**
  *  \brief The number of lines used to allocation of new buffer or window or
