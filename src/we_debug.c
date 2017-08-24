@@ -510,7 +510,7 @@ e_d_getchar ()
     }
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
-        c = (*e_u_change) (NULL);
+        c = e_u_change (NULL);
 #endif
     if (c || (i = read (fd, &c, 1)) == 1)
     {
@@ -2185,10 +2185,10 @@ e_start_debug (we_window_t * window)
         e_error (estr, 0, window->colorset);
         return (-1);
     }
-    (*e_u_sys_ini) ();
+    e_u_sys_ini ();
     if (e__project && (file = e_exec_deb (window, e_s_prog.exe_name)) == 0)
     {
-        (*e_u_sys_end) ();
+        e_u_sys_end ();
         return (-2);
     }
     else if (!e__project)
@@ -2205,11 +2205,11 @@ e_start_debug (we_window_t * window)
         }
         if ((file = e_exec_deb (window, estr)) == 0)
         {
-            (*e_u_sys_end) ();
+            e_u_sys_end ();
             return (-2);
         }
     }
-    (*e_u_sys_end) ();
+    e_u_sys_end ();
     e_d_p_message (e_d_msg[ERR_STARTDEBUG], window, 1);
     WpeMouseChangeShape (WpeDebuggingShape);
     if (control->mxedt > 1)

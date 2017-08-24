@@ -69,7 +69,6 @@ extern char RE1, RE2, RE3, RE4, RE5, RE6, WBT;
 #define DGZ 25			/*  ctrl y  */
 
 #define WPE_CR 13
-//extern const unsigned char WPE_WR;
 #define WPE_WR 10
 #define WPE_ESC 27
 #define WPE_DC 8

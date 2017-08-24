@@ -27,7 +27,7 @@
 
 /**
  *  \brief The number of lines used to allocation of new buffer or window or
- *  for adding lines to an already allocated buffer or window.
+ *  for incrementing the number of lines to an already allocated buffer or window.
  */
 #define MAXLINES 10
 /** The number of columns used for the initial control

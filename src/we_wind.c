@@ -329,7 +329,7 @@ e_open_view (int xa, int ya, int xe, int ye, int col, int sw)
     }
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
-        (*e_u_setlastpic) (view);
+        e_u_setlastpic (view);
 #endif
 #ifndef NEWSTYLE
     if (WpeIsXwin ())
@@ -358,7 +358,7 @@ e_close_view (we_view_t * view, int sw)
     int i, j;
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
-        (*e_u_setlastpic) (NULL);
+        e_u_setlastpic (NULL);
 #endif
     if (view == NULL)
         return (-1);
@@ -839,7 +839,7 @@ e_change_pic (int xa, int ya, int xe, int ye, we_view_t * view, int sw, int frb)
     }
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
-        (*e_u_setlastpic) (new_view);
+        e_u_setlastpic (new_view);
 #endif
     return (new_view);
 }
@@ -1792,7 +1792,7 @@ e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * window)
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ())
     {
-        while ((i = (*e_u_kbhit) ()))
+        while ((i = e_u_kbhit ()))
         {
             if (i == -1 && e_mouse.y == ye - 2 && e_mouse.x > (xe + xa - 10) / 2
                     && e_mouse.x < (xe + xa + 6) / 2)
@@ -1803,7 +1803,7 @@ e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * window)
     }
     else
 #endif
-        while ((i = (*e_u_kbhit) ()) && i != CtrlC)
+        while ((i = e_u_kbhit ()) && i != CtrlC)
             ;
     return (i == CtrlC ? 1 : 0);
 }

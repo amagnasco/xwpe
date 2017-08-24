@@ -114,7 +114,7 @@ e_ini_unix (int *argc, char **argv)
     int i, debug;
     struct sigaction act;
 #ifdef XWPE_DLL
-    int (*initfunc) (int *argc, char **argv);
+    int initfunc (int *argc, char **argv);
 #endif
 
     setlocale (LC_ALL, "");
@@ -152,7 +152,7 @@ e_ini_unix (int *argc, char **argv)
     initfunc = dlsym (libxwpe, "WpeDllInit");
     if (initfunc)
     {
-        (*initfunc) (argc, argv);
+        initfunc (argc, argv);
     }
     else
     {
@@ -456,8 +456,8 @@ e_exit (int n)
     if (e_d_pid)
         kill (e_d_pid, 7);
 #endif
-    (*WpeDisplayEnd) ();
-    (*e_u_switch_screen) (0);
+    WpeDisplayEnd ();
+    e_u_switch_screen (0);
     if (n != 0)
     {
         printf ("\nError-Exit!   Code: %d!\n", n);

@@ -1110,14 +1110,14 @@ WpeHandleFileManager (we_control_t * control)
                     g[0] = 2;
                     fk_mouse (g);
 #endif
-                    (*e_u_sys_ini) ();
+                    e_u_sys_ini ();
                     printf (e_msg[ERR_EXEC], filen);
                     fflush (stdout);
                 }
-                if ((*e_u_system) (filen))
+                if (e_u_system (filen))
                 {
                     if (!WpeIsXwin ())
-                        (*e_u_sys_end) ();
+                        e_u_sys_end ();
                     e_error (e_msg[ERR_COMMAND], 0, window->colorset);
                 }
                 else if (!WpeIsXwin ())
@@ -1129,7 +1129,7 @@ WpeHandleFileManager (we_control_t * control)
                 }
                 if (!WpeIsXwin ())
                 {
-                    (*e_u_sys_end) ();
+                    e_u_sys_end ();
                     e_close_view (outp, 1);
                     fk_u_cursor (0);
 #if MOUSE
@@ -3170,12 +3170,12 @@ WpeShell (we_window_t * window)
         g[0] = 2;
         fk_mouse (g);
 #endif
-        (*e_u_s_sys_ini) ();
+        e_u_s_sys_ini ();
     }
-    (*e_u_system) (user_shell);
+    e_u_system (user_shell);
     if (!WpeIsXwin ())
     {
-        (*e_u_s_sys_end) ();
+        e_u_s_sys_end ();
         e_close_view (outp, 1);
         fk_u_cursor (0);
 #if  MOUSE
