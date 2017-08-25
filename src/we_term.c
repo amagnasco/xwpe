@@ -150,13 +150,8 @@ char *tgoto ();
 #define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
 #define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
 
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #define term_move(x,y) move(y, x)
 #define term_refresh() refresh()
-#else
-#define term_move(x,y) e_putp(tparm2(cur_rc, y, x))
-#define term_refresh() fflush(stdout)
-#endif
 #endif
 
 int
@@ -597,7 +592,6 @@ int
 e_t_initscr ()
 {
     int ret, i, k;
-//#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     WINDOW *stdscr;
 #endif
@@ -621,7 +615,6 @@ e_t_initscr ()
          otermio.c_cc[6], otermio.c_cc[7]);
         e_exit (1);
     }
-//#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     if ((stdscr = initscr ()) == (WINDOW *) ERR)
         exit (27);
@@ -644,7 +637,7 @@ e_t_initscr ()
             }
         }
     }
-#endif // #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
+#endif
     e_begscr ();
     global_screen = malloc (2 * MAXSCOL * MAXSLNS);
     global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
@@ -663,6 +656,11 @@ e_t_initscr ()
     ntermio.c_lflag = 0;
     ntermio.c_cc[VMIN] = 1;
     ntermio.c_cc[VTIME] = 0;
+    /**
+     * VSWTCH is not supported by linux or defined in POSIX. It is used in some
+     * System V systems. I suspect the following conditional code was incorporated to
+     * initialize that specific special character.
+     */
 #ifdef VSWTCH
     ntermio.c_cc[VSWTCH] = 0;
 #endif
@@ -706,7 +704,6 @@ e_begscr ()
 void
 e_endwin ()
 {
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
     endwin ();
 #else
@@ -868,7 +865,7 @@ int
 e_t_refresh ()
 {
     int x = cur_x, y = cur_y, i, j, c;
-    fk_u_cursor (0);
+    fk_t_cursor (0);
     for (i = 0; i < MAXSLNS; i++)
         for (j = 0; j < MAXSCOL; j++)
         {
@@ -896,13 +893,12 @@ e_t_refresh ()
                 else
                     fk_colset (e_gt_col (j, i));
                 c = e_gt_char (j, i);
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
                 if (c < NSPCHR)
                     addch (sp_chr[c]);
                 else
                     addch (c);
-#else // #ifdef NCURSES : i.e. false
+#else
                 if (c < NSPCHR)
                     e_putp (sp_chr[c]);
                 else
@@ -914,16 +910,22 @@ e_t_refresh ()
                     *(global_screen + 2 * MAXSCOL * i + 2 * j + 1);
             }
         }
-    fk_u_cursor (1);
-    fk_u_locate (x, y);
+    fk_t_cursor (1);
+    fk_t_locate (x, y);
     term_refresh ();
     return (0);
 }
 
+/**
+ * Terminal initialization.
+ *
+ * \todo Why does this call e_endwin()? That is ncurses way of closing a window!
+ */
+
 int
 e_t_sys_ini ()
 {
-    e_u_refresh ();
+    e_t_refresh ();
     tcgetattr (STDIN_FILENO, &ttermio);
     svflgs = fcntl (STDIN_FILENO, F_GETFL, 0);
     e_endwin ();
@@ -936,7 +938,7 @@ e_t_sys_end ()
     tcsetattr (STDIN_FILENO, TCSADRAIN, &ttermio);
     fcntl (STDIN_FILENO, F_SETFL, svflgs);
     e_abs_refr ();
-    fk_u_locate (0, 0);
+    fk_t_locate (0, 0);
     return (0);
 }
 
@@ -946,7 +948,7 @@ e_t_kbhit ()
     int ret;
     char kbdflgs, c;
 
-    e_u_refresh ();
+    e_t_refresh ();
     kbdflgs = fcntl (STDIN_FILENO, F_GETFL, 0);
     fcntl (STDIN_FILENO, F_SETFL, kbdflgs | O_NONBLOCK);
     ret = read (0, &c, 1);
@@ -960,7 +962,7 @@ e_t_getch ()
 {
     int c, bk;
 
-    e_u_refresh ();
+    e_t_refresh ();
     c = fk_getch ();
     if (c > KEY_CODE_YES)
     {
@@ -1200,7 +1202,7 @@ e_t_getch ()
     int c, c2, pshift, bk;
 
     pshift = 0;
-    e_u_refresh ();
+    e_t_refresh ();
     if ((c = fk_getch ()) != WPE_ESC)
     {
         if (key_f[20] && c == *key_f[20])
@@ -1494,6 +1496,11 @@ e_t_deb_out (we_window_t * window)
     e_u_d_switch_out (0);
     return (0);
 }
+
+/**
+ * This function initializes or closes.
+ *
+ */
 
 int
 e_d_switch_screen (int sw)

@@ -64,16 +64,59 @@ we_color_t (*e_s_u_clr) (int fg_color, int bg_color);
 we_color_t (*e_n_u_clr) (int fg_bg_color);
 void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * window, int sw);
 int (*fk_mouse) (int g[]);
+/**
+ * refresh the screen.
+ *
+ * filled with e_t_refresh for non-X terminal or e_x_refresh for X terminal.
+ */
 int (*e_u_refresh) (void);
+/**
+ * get character.
+ *
+ * filled with e_t_getch for non-X terminal or e_x_getch for X terminal.
+ */
 int (*e_u_getch) (void);
+/**
+ * Initialize terminal.
+ *
+ * filled with e_t_sys_ini for non-X terminal or e_x_sys_ini (= zero function) for X terminal.
+ */
 int (*e_u_sys_ini) (void);
+/**
+ * Ending
+ *
+ * filled with e_t_sys_end for non-X terminal or e_x_sys_end (= zero function) for X terminal.
+ */
 int (*e_u_sys_end) (void);
+/**
+ * Function to execute a system command.
+ *
+ * filled with system for non-X terminal or e_x_system for X terminal.
+ * Remark that e_x_system is wrapped around system and includes some specific X features
+ * like -geometry.
+ */
 int (*e_u_system) (const char *exe);
-int (*e_make_urect) (int xa, int ya, int xe, int ye, int sw);
-int (*e_make_urect_abs) (int xa, int ya, int xe, int ye, int sw);
+/**
+ * This function does some sort of screen switch: \todo: what does it do exactly?
+ *
+ * filled with e_t_d_switch_out for non-X terminal or WpeZeroFunction for X terminal.
+ */
 int (*e_u_d_switch_out) (int sw);
+/**
+ * This function does some sort of screen switch: \todo: what does it exactly do?
+ *
+ * filled with e_t_switch_screen for non-X terminal or WpeZeroFunction for X terminal.
+ */
 int (*e_u_switch_screen) (int sw);
+/**
+ * debug output function
+ *
+ * filled with e_t_deb_out for non-X terminal.
+ */
 int (*e_u_deb_out) (we_window_t * window);
+/**
+ * Copies
+ */
 int (*e_u_cp_X_to_buffer) (we_window_t * window);
 int (*e_u_copy_X_buffer) (we_window_t * window);
 int (*e_u_paste_X_buffer) (we_window_t * window);

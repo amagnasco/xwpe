@@ -51,6 +51,11 @@ int e_x_change (we_view_t * view);
 int e_x_repaint_desk (we_window_t * window);
 void e_setlastpic (we_view_t * view);
 int e_x_kbhit (void);
+x_selection_t e_x_get_X_selection();
+void e_x_empty_buffer(we_buffer_t *buffer);
+void e_x_free_X_selection(x_selection_t xsel);
+void e_x_paste_X_selection(we_buffer_t *buffer, x_selection_t xsel);
+void e_x_reinit_marked_area(we_screen_t *screen, we_buffer_t *buffer);
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -1067,90 +1072,21 @@ fk_x_mouse (int *g)
 int
 e_x_cp_X_to_buffer (we_window_t * window)
 {
-    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
-    we_screen_t *s0 = window->edit_control->window[0]->screen;
-    int i, j, k, n;
-    unsigned char *str;
-    XEvent report;
-    Atom type;
-    int format;
-    unsigned long nitems, bytes_left;
 
-    for (i = 1; i < b0->mxlines; i++)
-        free (b0->buflines[i].s);
-    b0->mxlines = 1;
-    *(b0->buflines[0].s) = WPE_WR;
-    *(b0->buflines[0].s + 1) = '\0';
-    b0->buflines[0].len = 0;
-#if defined SELECTION
-    if (WpeXInfo.selection)
+    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
+    e_x_empty_buffer(b0);
+
+    x_selection_t xsel = e_x_get_X_selection();
+    if (xsel.success)
     {
-        str = (unsigned char *) WpeStrdup ((const char *) WpeXInfo.selection);
-        n = strlen ((const char *) str);
+        /* paste x selection string into window buffer */
+        e_x_paste_X_selection(b0, xsel);
+        e_x_free_X_selection(xsel);
+
+        we_screen_t *s0 = window->edit_control->window[0]->screen;
+        e_x_reinit_marked_area(s0, b0);
     }
-    else
-    {
-        /* Should check for errors especially failure to send SelectionNotify */
-        XConvertSelection (WpeXInfo.display, WpeXInfo.selection_atom,
-                           WpeXInfo.text_atom, WpeXInfo.property_atom,
-                           WpeXInfo.window, CurrentTime);
-        n = 0;
-        while (!XCheckTypedEvent (WpeXInfo.display, SelectionNotify, &report))
-        {
-            /* Should probably have a better timeout period than this. */
-            sleep (0);
-            n++;
-            if (n > 1000)
-                return 0;
-        }
-        if (WpeXInfo.property_atom == None)
-            return 0;
-        XGetWindowProperty (WpeXInfo.display, WpeXInfo.window,
-                            WpeXInfo.property_atom, 0, 1000000, FALSE,
-                            WpeXInfo.text_atom, &type, &format, &nitems,
-                            &bytes_left, &str);
-        if (type == None)
-        {
-            /* Specified property does not exit */
-            return 0;
-        }
-        n = strlen ((const char *) str);
-    }
-#else
-    str = XFetchBytes (WpeXInfo.display, &n);
-#endif
-    for (i = k = 0; i < n; i++, k++)
-    {
-        for (j = 0; i < n && str[i] != '\n' && j < b0->mx.x - 1; j++, i++)
-            b0->buflines[k].s[j] = str[i];
-        if (i < n)
-        {
-            e_new_line (k + 1, b0);
-            if (str[i] == '\n')
-            {
-                b0->buflines[k].s[j] = WPE_WR;
-                b0->buflines[k].nrc = j + 1;
-            }
-            else
-                b0->buflines[k].nrc = j;
-            b0->buflines[k].s[j + 1] = '\0';
-            b0->buflines[k].len = j;
-        }
-        else
-        {
-            b0->buflines[k].s[j] = '\0';
-            b0->buflines[k].nrc = b0->buflines[k].len = j;
-        }
-    }
-    s0->mark_begin.x = s0->mark_begin.y = 0;
-    s0->mark_end.y = b0->mxlines - 1;
-    s0->mark_end.x = b0->buflines[b0->mxlines - 1].len;
-#if defined SELECTION
-    if (WpeXInfo.selection)
-        free (str);
-    else
-#endif
-        XFree (str);
+
     return 0;
 }
 
@@ -1224,6 +1160,153 @@ e_x_paste_X_buffer (we_window_t * window)
     WpeXInfo.selection = NULL;
 #endif
     return (0);
+}
+
+/**
+ * Retrieves the current selection from the X buffer
+ *
+ * @return x_selection_t the selection results containing indiction of success, length of
+ * the string and the string.
+ *
+ */
+x_selection_t
+e_x_get_X_selection()
+{
+    /** The local length variable being computed */
+    int n;
+    /** The local string variable for the resulting selection. */
+    unsigned char *str;
+
+    /** The selection to be returned, including an indication of success */
+    x_selection_t xsel;
+
+    /** Local variable necessary for call to XWindows functions. */
+    XEvent report;
+    /**
+     * Indicates failure if type == None.
+     *
+     * Local variable necessary for call to XWindows functions.
+     */
+    Atom type;
+    /** Local variable necessary for call to XWindows functions. */
+    int format;
+    /** Local variable necessary for call to XWindows functions. */
+    unsigned long bytes_left;
+    /** Local variable necessary for call to XWindows functions. */
+    unsigned long nitems;
+
+    xsel.success = false;
+    xsel.len = 0;
+    xsel.str = NULL;
+
+#if defined SELECTION
+    if (WpeXInfo.selection)
+    {
+        str = (unsigned char *) WpeStrdup ((const char *) WpeXInfo.selection);
+        n = strlen ((const char *) str);
+    }
+    else
+    {
+        /* Should check for errors especially failure to send SelectionNotify */
+        XConvertSelection (WpeXInfo.display, WpeXInfo.selection_atom,
+                           WpeXInfo.text_atom, WpeXInfo.property_atom,
+                           WpeXInfo.window, CurrentTime);
+        n = 0;
+        while (!XCheckTypedEvent (WpeXInfo.display, SelectionNotify, &report))
+        {
+            /* Should probably have a better timeout period than this. */
+            sleep (0);
+            n++;
+            if (n > 1000)
+                return xsel;
+        }
+        if (WpeXInfo.property_atom == None)
+            return xsel;
+        XGetWindowProperty (WpeXInfo.display, WpeXInfo.window,
+                            WpeXInfo.property_atom, 0, 1000000, FALSE,
+                            WpeXInfo.text_atom, &type, &format, &nitems,
+                            &bytes_left, &str);
+        if (type == None)
+        {
+            /* Specified property does not exist */
+            return xsel;
+        }
+        n = strlen ((const char *) str);
+    }
+#else
+    str = XFetchBytes (WpeXInfo.display, &n);
+#endif
+    xsel.success = true;
+    xsel.len = n;
+    xsel.str = str;
+    return xsel;
+}
+
+void e_x_empty_buffer(we_buffer_t *buffer)
+{
+    for (int i = 1; i < buffer->mxlines; i++)
+        free (buffer->buflines[i].s);
+    buffer->mxlines = 1;
+    *(buffer->buflines[0].s) = WPE_WR;
+    *(buffer->buflines[0].s + 1) = '\0';
+    buffer->buflines[0].len = 0;
+}
+
+void
+e_x_free_X_selection(x_selection_t xsel)
+{
+#if defined SELECTION
+    if (WpeXInfo.selection)
+        free (xsel.str);
+    else
+#endif
+        XFree (xsel.str);
+}
+
+void e_x_paste_X_selection(we_buffer_t *buffer,  x_selection_t xsel)
+{
+    /* copy input parameters for easier reference */
+    unsigned char *str = xsel.str;
+    int n = xsel.len;
+
+    int i;	/**< index into string to fetch characters */
+    int j;  /**< index into buffer to put characters */
+    int k;	/**< index into buffer to put characters into the right line */
+
+    for (i = k = 0; i < n; i++, k++)
+    {
+        for (j = 0; i < n && str[i] != '\n' && j < buffer->mx.x - 1; j++, i++)
+            buffer->buflines[k].s[j] = str[i];
+        if (i < n)
+        {
+            e_new_line (k + 1, buffer);
+            if (str[i] == '\n')
+            {
+                buffer->buflines[k].s[j] = WPE_WR;
+                buffer->buflines[k].nrc = j + 1;
+            }
+            else
+                buffer->buflines[k].nrc = j;
+            buffer->buflines[k].s[j + 1] = '\0';
+            buffer->buflines[k].len = j;
+        }
+        else
+        {
+            buffer->buflines[k].s[j] = '\0';
+            buffer->buflines[k].nrc = buffer->buflines[k].len = j;
+        }
+    }
+}
+
+/**
+ * Initializes the marked area on the screen to be the complete buffer.
+ *
+ */
+void e_x_reinit_marked_area(we_screen_t *screen, we_buffer_t *buffer)
+{
+    screen->mark_begin.x = screen->mark_begin.y = 0;
+    screen->mark_end.y = buffer->mxlines - 1;
+    screen->mark_end.x = buffer->buflines[buffer->mxlines - 1].len;
 }
 
 #endif
