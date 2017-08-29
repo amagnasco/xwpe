@@ -1,4 +1,4 @@
-/* we_control.c                                             */
+/** \file we_control.c */
 /* Copyright (C) 1993 Fred Kruse
    Copyright (C) 2017 Guus Bonnema
 
@@ -22,7 +22,6 @@
  * Most of the code in this file was copied from we_main.c and later adapted
  * For that reason the copyright starts with Fred Kruse's original copyright
  * even though he never created this file.
- *
  */
 
 #include "config.h"
@@ -30,6 +29,7 @@
 #include "messages.h"
 #include "keys.h"
 #include "we_mouse.h"
+#include "we_term.h"
 #include "options.h"
 #include "WeString.h"
 #include "we_prog.h"
@@ -48,8 +48,6 @@
 extern char *e_tmp_dir;
 extern char *e_hlp_str[];
 
-extern int col_num;
-
 extern we_colorset_t *u_fb, *x_fb;
 
 /* globals */
@@ -59,7 +57,7 @@ int fk__cursor = 0;
 WOPT *eblst, *fblst, *mblst, *dblst, *xblst, *wblst, *rblst;
 WOPT *ablst, *sblst, *hblst, *gblst, *oblst;
 
-char *e_hlp, *user_shell;
+char *e_hlp;
 WOPT *blst;
 int nblst = 7;
 
@@ -304,120 +302,120 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
 };
 
 void
-ECNT_Init (we_control_t * cn)
+ECNT_Init (we_control_t * control)
 {
-    cn->mxedt = -1;
-    cn->curedt = 0;
-    cn->edt[0] = 0;
-    cn->fb = NULL;
-    cn->print_cmd = WpeStrdup (PRNTCMD);
+    control->mxedt = -1;
+    control->curedt = 0;
+    control->edt[0] = 0;
+    control->colorset = NULL;
+    control->print_cmd = WpeStrdup (PRNTCMD);
 
-    cn->dirct = WpeGetCurrentDir (cn);
+    control->dirct = WpeGetCurrentDir (control);
 
-    strcpy (cn->fd.search, "");
-    strcpy (cn->fd.replace, "");
-    strcpy (cn->fd.file, SUDIR);
-    cn->fd.dirct = WpeStrdup (cn->dirct);
+    strcpy (control->find.search, "");
+    strcpy (control->find.replace, "");
+    strcpy (control->find.file, SUDIR);
+    control->find.dirct = WpeStrdup (control->dirct);
 
-    cn->fd.sw = 16;
-    cn->fd.sn = 0;
-    cn->fd.rn = 0;
+    control->find.sw = 16;
+    control->find.sn = 0;
+    control->find.rn = 0;
 
-    cn->sdf = cn->rdf = cn->fdf = cn->ddf = cn->wdf = cn->hdf = cn->shdf = NULL;
+    control->sdf = control->rdf = control->fdf = control->ddf = control->wdf = control->hdf = control->shdf = NULL;
 
     /*   standard adjustments    */
-    cn->dtmd = DTMD_NORMAL;
-    cn->autosv = 0;
-    cn->maxchg = 999;
-    cn->numundo = 10;
-    cn->maxcol = MAXCOLUM;
-    cn->tabn = 8;
-    cn->autoindent = 3;
-    cn->tabs = malloc ((cn->tabn + 1) * sizeof (char));
-    WpeStringBlank (cn->tabs, cn->tabn);
-    cn->flopt = FM_REKURSIVE_ACTIONS | FM_REMOVE_INTO_WB | FM_MOVE_PROMPT |
-                FM_MOVE_PROMPT | FM_PROMPT_DELETE;
-    cn->edopt = ED_SOURCE_AUTO_INDENT | ED_ERRORS_STOP_AT | ED_SYNTAX_HIGHLIGHT;
+    control->dtmd = DTMD_NORMAL;
+    control->autosv = 0;
+    control->maxchg = 999;
+    control->numundo = 10;
+    control->maxcol = MAXCOLUM;
+    control->tabn = 8;
+    control->autoindent = 3;
+    control->tabs = malloc ((control->tabn + 1) * sizeof (char));
+    WpeStringBlank (control->tabs, control->tabn);
+    control->flopt = FM_REKURSIVE_ACTIONS | FM_REMOVE_INTO_WB | FM_MOVE_PROMPT |
+                     FM_MOVE_PROMPT | FM_PROMPT_DELETE;
+    control->edopt = ED_SOURCE_AUTO_INDENT | ED_ERRORS_STOP_AT | ED_SYNTAX_HIGHLIGHT;
 }
 
 int
-e_switch_blst (we_control_t * cn)
+e_switch_blst (we_control_t * control)
 {
     int i;
-    we_window_t *f;
+    we_window_t *window;
 
-    if (cn->edopt & ED_CUA_STYLE)
+    if (control->edopt & ED_CUA_STYLE)
     {
-        for (i = 0; i <= cn->mxedt; i++)
+        for (i = 0; i <= control->mxedt; i++)
         {
-            f = cn->f[i];
-            if (f->blst == eblst_o)
-                f->blst = eblst_u;
-            else if (f->blst == fblst_o)
-                f->blst = fblst_u;
-            else if (f->blst == mblst_o)
-                f->blst = mblst_u;
-            else if (f->blst == dblst_o)
-                f->blst = dblst_u;
-            else if (f->blst == xblst_o)
-                f->blst = xblst_u;
-            else if (f->blst == wblst_o)
-                f->blst = wblst_u;
-            else if (f->blst == rblst_o)
-                f->blst = rblst_u;
-            else if (f->blst == ablst_o)
-                f->blst = ablst_u;
-            else if (f->blst == sblst_o)
-                f->blst = sblst_u;
-            else if (f->blst == hblst_o)
-                f->blst = hblst_u;
-            else if (f->blst == gblst_o)
-                f->blst = gblst_u;
-            else if (f->blst == oblst_o)
-                f->blst = oblst_u;
+            window = control->window[i];
+            if (window->blst == eblst_o)
+                window->blst = eblst_u;
+            else if (window->blst == fblst_o)
+                window->blst = fblst_u;
+            else if (window->blst == mblst_o)
+                window->blst = mblst_u;
+            else if (window->blst == dblst_o)
+                window->blst = dblst_u;
+            else if (window->blst == xblst_o)
+                window->blst = xblst_u;
+            else if (window->blst == wblst_o)
+                window->blst = wblst_u;
+            else if (window->blst == rblst_o)
+                window->blst = rblst_u;
+            else if (window->blst == ablst_o)
+                window->blst = ablst_u;
+            else if (window->blst == sblst_o)
+                window->blst = sblst_u;
+            else if (window->blst == hblst_o)
+                window->blst = hblst_u;
+            else if (window->blst == gblst_o)
+                window->blst = gblst_u;
+            else if (window->blst == oblst_o)
+                window->blst = oblst_u;
         }
     }
     else
     {
-        for (i = 0; i <= cn->mxedt; i++)
+        for (i = 0; i <= control->mxedt; i++)
         {
-            f = cn->f[i];
-            if (f->blst == eblst_u)
-                f->blst = eblst_o;
-            else if (f->blst == fblst_u)
-                f->blst = fblst_o;
-            else if (f->blst == mblst_u)
-                f->blst = mblst_o;
-            else if (f->blst == dblst_u)
-                f->blst = dblst_o;
-            else if (f->blst == xblst_u)
-                f->blst = xblst_o;
-            else if (f->blst == wblst_u)
-                f->blst = wblst_o;
-            else if (f->blst == rblst_u)
-                f->blst = rblst_o;
-            else if (f->blst == ablst_u)
-                f->blst = ablst_o;
-            else if (f->blst == sblst_u)
-                f->blst = sblst_o;
-            else if (f->blst == hblst_u)
-                f->blst = hblst_o;
-            else if (f->blst == gblst_u)
-                f->blst = gblst_o;
-            else if (f->blst == oblst_u)
-                f->blst = oblst_o;
+            window = control->window[i];
+            if (window->blst == eblst_u)
+                window->blst = eblst_o;
+            else if (window->blst == fblst_u)
+                window->blst = fblst_o;
+            else if (window->blst == mblst_u)
+                window->blst = mblst_o;
+            else if (window->blst == dblst_u)
+                window->blst = dblst_o;
+            else if (window->blst == xblst_u)
+                window->blst = xblst_o;
+            else if (window->blst == wblst_u)
+                window->blst = wblst_o;
+            else if (window->blst == rblst_u)
+                window->blst = rblst_o;
+            else if (window->blst == ablst_u)
+                window->blst = ablst_o;
+            else if (window->blst == sblst_u)
+                window->blst = sblst_o;
+            else if (window->blst == hblst_u)
+                window->blst = hblst_o;
+            else if (window->blst == gblst_u)
+                window->blst = gblst_o;
+            else if (window->blst == oblst_u)
+                window->blst = oblst_o;
         }
     }
     return (0);
 }
 
 void
-e_ini_desk (we_control_t * cn)
+e_ini_desk (we_control_t * control)
 {
     extern int e_mn_men;
     int i;
 
-    if (cn->edopt & ED_CUA_STYLE)
+    if (control->edopt & ED_CUA_STYLE)
     {
         eblst = eblst_u;
         fblst = fblst_u;
@@ -447,19 +445,19 @@ e_ini_desk (we_control_t * cn)
         gblst = gblst_o;
         oblst = oblst_o;
     }
-    e_cls (cn->fb->df.fb, cn->fb->dc);
-    e_blk (MAXSCOL, 0, 0, cn->fb->mt.fb);
+    e_cls (control->colorset->df.fg_bg_color, control->colorset->dc);
+    e_blk (MAXSCOL, 0, 0, control->colorset->mt.fg_bg_color);
 
     /* put out the main menu */
     for (i = 0; i < MENOPT; ++i)
     {
-        e_pr_str_wsd (opt[i].x, 0, opt[i].t, cn->fb->mt.fb, 0, 1, cn->fb->ms.fb,
+        e_pr_str_wsd (opt[i].x, 0, opt[i].t, control->colorset->mt.fg_bg_color, 0, 1, control->colorset->ms.fg_bg_color,
                       (i == 0 ? 0 : opt[i].x - e_mn_men),
                       (i ==
                        MENOPT - 1) ? MAXSCOL - 1 : opt[i + 1].x - e_mn_men - 1);
     }
 
-    e_pr_uul (cn->fb);
+    e_pr_uul (control->colorset);
 }
 
 void
@@ -571,11 +569,11 @@ e_ini_farbe ()
 }
 
 void
-e_free_find (FIND * fd)
+e_free_find (FIND * find)
 {
-    if (fd->dirct)
+    if (find->dirct)
     {
-        free (fd->dirct);
-        fd->dirct = NULL;
+        free (find->dirct);
+        find->dirct = NULL;
     }
 }

@@ -1,4 +1,4 @@
-/* we_term.c                                              */
+/** \file we_term.c                                        */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and or  */
 /* modify it under the terms of the                       */
@@ -11,6 +11,7 @@
 #include "model.h"
 #include "edit.h"
 #include "we_term.h"
+#include "we_unix.h"
 #include "we_gpm.h"
 #include "we_hfkt.h"
 #include "we_gpm.h"
@@ -35,7 +36,6 @@
 #define WpeDllInit WpeTermInit
 #endif
 
-/*    we_term.c    */
 char *init_key (char *key);
 char *init_kkey (char *key);
 int init_cursor (void);
@@ -56,37 +56,80 @@ int e_t_initscr (void);
 int e_t_kbhit (void);
 int e_t_d_switch_out (int sw);
 int e_t_switch_screen (int sw);
-int e_t_deb_out (we_window_t * f);
+int e_t_deb_out (we_window_t * window);
 int e_s_sys_end ();
 int e_s_sys_ini ();
 
 extern int MAXSLNS;
 extern int MAXSCOL;
 
+/** global field also used in we_xterm.c */
+char *global_screen = NULL;
+/** global field also used in we_xterm.c */
+char *global_alt_screen = NULL;
+/** global field also used in we_xterm.c and we_wind.c */
+#if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
+char *extbyte = NULL;
+char *altextbyte = NULL;
+#endif
 
-//#ifndef NCURSES : always TRUE
+/** global field also used in we_debug.c */
+char *att_no;
+/** global field also used in we_control.c */
+int col_num = 0;
+/** global field also used in we_xterm.c */
+int cur_x = -1;
+/** global field also used in we_xterm.c */
+int cur_y = -1;
+/** global field also used in we_xterm.c */
+char *ctree[5];
+/** global field for screen maximum number of lines */
+int MAXSLNS = 24;
+/** global field for screen maximum number of columns */
+int MAXSCOL = 80;
+
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-char *key_f[KEYFN], *key_key;
+static char *key_f[KEYFN], *key_key;
 #endif
-char *cur_rc, *cur_vs, *cur_nvs, *cur_vvs, cur_attr;
-char *att_so, *att_ul, *att_rv, *att_bl, *att_dm, *att_bo;
-char *ratt_no, *ratt_so, *ratt_ul, *ratt_rv, *ratt_bl, *ratt_dm, *ratt_bo;
-char *beg_scr, *swt_scr, *sav_cur, *res_cur;
-extern char *altschirm;
-extern char *att_no;
-char *col_fg, *col_bg, *spc_st, *spc_in, *spc_bg, *spc_nd;
 
-extern int col_num;
-//#ifdef NCURSES
+static char *cur_rc;
+static char cur_attr;
+
+static char *att_so;
+static char *att_ul;
+static char *att_rv;
+static char *att_bl;
+static char *att_dm;
+static char *att_bo;
+
+static char *ratt_no;
+static char *ratt_so;
+static char *ratt_ul;
+static char *ratt_rv;
+static char *ratt_bl;
+static char *ratt_dm;
+static char *ratt_bo;
+
+static char *beg_scr;
+static char *swt_scr;
+static char *sav_cur;
+static char *res_cur;
+
+static char *col_fg;
+static char *col_bg;
+
+static char *spc_st;
+static char *spc_in;
+static char *spc_bg;
+static char *spc_nd;
+
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-chtype sp_chr[NSPCHR];
+static chtype sp_chr[NSPCHR];
 #else
-char *sp_chr[NSPCHR];
+static char *sp_chr[NSPCHR];
 #endif
 
-extern int cur_x, cur_y;
 extern struct termios otermio, ntermio, ttermio;
-//#ifdef TERMCAP
 #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 char area[315];
 char *ap = area;
@@ -104,18 +147,12 @@ char *tgoto ();
 #include <term.h>
 
 /* AIX requires that tparm has 10 arguments. */
-#define tparm1(a,b) tparm((a), (b), 0, 0, 0, 0, 0, 0, 0, 0)
-#define tparm2(a,b,c) tparm((a), (b), (c), 0, 0, 0, 0, 0, 0, 0)
+#define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
+#define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
 
-//#ifdef NCURSES
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #define term_move(x,y) move(y, x)
 #define term_refresh() refresh()
-#else
-#define term_move(x,y) e_putp(tparm2(cur_rc, y, x))
-#define term_refresh() fflush(stdout)
 #endif
-#endif // (#else) #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 
 int
 WpeDllInit (int *argc, char **argv)
@@ -227,7 +264,32 @@ init_key (char *key)
     return (keystr);
 }
 
-//#ifndef NCURSES
+
+int
+e_ini_size ()
+{
+    if (global_screen)
+        free (global_screen);
+    if (global_alt_screen)
+        free (global_alt_screen);
+    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
+    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
+#ifdef NEWSTYLE
+    if (extbyte)
+        free (extbyte);
+    if (altextbyte)
+        free (altextbyte);
+    extbyte = malloc (MAXSCOL * MAXSLNS);
+    altextbyte = malloc (MAXSCOL * MAXSLNS);
+    if (!global_screen || !global_alt_screen || !extbyte || !altextbyte)
+        return (-1);
+#else
+    if (!global_screen || !global_alt_screen)
+        return (-1);
+#endif
+    return (0);
+}
+
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 char *
 init_kkey (char *key)
@@ -257,6 +319,18 @@ init_kkey (char *key)
     return (tmp);
 }
 #endif
+
+
+int
+e_abs_refr ()
+{
+    int i;
+
+    for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++)
+        global_alt_screen[i] = 0;
+    return (0);
+}
+
 
 char *
 init_spchr (char c)
@@ -518,12 +592,11 @@ int
 e_t_initscr ()
 {
     int ret, i, k;
-//#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     WINDOW *stdscr;
 #endif
 
-    ret = tcgetattr (1, &otermio);	/* save old settings */
+    ret = tcgetattr (STDOUT_FILENO, &otermio);	/* save old settings */
     if (ret)
     {
         int errno_save = errno;	// save errno before it is overwritten
@@ -540,20 +613,16 @@ e_t_initscr ()
          otermio.c_lflag, otermio.c_line, otermio.c_cc[0], otermio.c_cc[1],
          otermio.c_cc[2], otermio.c_cc[3], otermio.c_cc[4], otermio.c_cc[5],
          otermio.c_cc[6], otermio.c_cc[7]);
-        WpeExit (1);
+        e_exit (1);
     }
-//#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     if ((stdscr = initscr ()) == (WINDOW *) ERR)
         exit (27);
-//#ifdef NCURSES
-//#if FALSE
     cbreak ();
     noecho ();
     nonl ();
     intrflush (stdscr, FALSE);
     keypad (stdscr, TRUE);
-//#endif // #if NCURSES i.e. FALSE
     if (has_colors ())
     {
         start_color ();
@@ -568,10 +637,10 @@ e_t_initscr ()
             }
         }
     }
-#endif // #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
+#endif
     e_begscr ();
-    schirm = malloc (2 * MAXSCOL * MAXSLNS);
-    altschirm = malloc (2 * MAXSCOL * MAXSLNS);
+    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
+    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
     extbyte = malloc (MAXSCOL * MAXSLNS);
 #endif
@@ -581,16 +650,21 @@ e_t_initscr ()
         printf ("Terminal Not in the right mode\n");
         e_exit (1);
     }
-    tcgetattr (0, &ntermio);
+    tcgetattr (STDIN_FILENO, &ntermio);
     ntermio.c_iflag = 0;		/* setup new settings */
     ntermio.c_oflag = 0;
     ntermio.c_lflag = 0;
     ntermio.c_cc[VMIN] = 1;
     ntermio.c_cc[VTIME] = 0;
+    /**
+     * VSWTCH is not supported by linux or defined in POSIX. It is used in some
+     * System V systems. I suspect the following conditional code was incorporated to
+     * initialize that specific special character.
+     */
 #ifdef VSWTCH
     ntermio.c_cc[VSWTCH] = 0;
 #endif
-    tcsetattr (0, TCSADRAIN, &ntermio);
+    tcsetattr (STDIN_FILENO, TCSADRAIN, &ntermio);
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
     if (spc_in)
         e_putp (spc_in);
@@ -608,15 +682,11 @@ e_begscr ()
     kbdflgs = fcntl (0, F_GETFL, 0);
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-//#ifndef NCURSES
-//#if TRUE
-// setupterm((char *)0, 1, (int *)0);
-//#endif
     if ((lns = tigetnum ("lines")) > 0)
         MAXSLNS = lns;
     if ((cols = tigetnum ("cols")) > 0)
         MAXSCOL = cols;
-#else // #if defined HAVE_LIBNCURSES || define HAVE_LIBCURSES
+#else
     if ((tc_screen = getenv ("TERM")) == NULL)
         e_exitm ("Environment variable TERM not defined!", 1);
     if ((tgetent (tcbuf, tc_screen)) != 1)
@@ -634,13 +704,12 @@ e_begscr ()
 void
 e_endwin ()
 {
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
     endwin ();
 #else
     fk_putp (ratt_bo);
 #endif
-    tcsetattr (0, TCSADRAIN, &otermio);
+    tcsetattr (STDIN_FILENO, TCSADRAIN, &otermio);
 }
 
 int
@@ -796,16 +865,16 @@ int
 e_t_refresh ()
 {
     int x = cur_x, y = cur_y, i, j, c;
-    fk_cursor (0);
+    fk_t_cursor (0);
     for (i = 0; i < MAXSLNS; i++)
         for (j = 0; j < MAXSCOL; j++)
         {
             if (i == MAXSLNS - 1 && j == MAXSCOL - 1)
                 break;
-            if (*(schirm + 2 * MAXSCOL * i + 2 * j) !=
-                    *(altschirm + 2 * MAXSCOL * i + 2 * j)
-                    || *(schirm + 2 * MAXSCOL * i + 2 * j + 1) !=
-                    *(altschirm + 2 * MAXSCOL * i + 2 * j + 1))
+            if (*(global_screen + 2 * MAXSCOL * i + 2 * j) !=
+                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j)
+                    || *(global_screen + 2 * MAXSCOL * i + 2 * j + 1) !=
+                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1))
             {
                 if (cur_x != j || cur_y != i)
                     term_move (j, i);
@@ -824,36 +893,41 @@ e_t_refresh ()
                 else
                     fk_colset (e_gt_col (j, i));
                 c = e_gt_char (j, i);
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
                 if (c < NSPCHR)
                     addch (sp_chr[c]);
                 else
                     addch (c);
-#else // #ifdef NCURSES : i.e. false
+#else
                 if (c < NSPCHR)
                     e_putp (sp_chr[c]);
                 else
                     fputc (c, stdout);
 #endif
-                *(altschirm + 2 * MAXSCOL * i + 2 * j) =
-                    *(schirm + 2 * MAXSCOL * i + 2 * j);
-                *(altschirm + 2 * MAXSCOL * i + 2 * j + 1) =
-                    *(schirm + 2 * MAXSCOL * i + 2 * j + 1);
+                *(global_alt_screen + 2 * MAXSCOL * i + 2 * j) =
+                    *(global_screen + 2 * MAXSCOL * i + 2 * j);
+                *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1) =
+                    *(global_screen + 2 * MAXSCOL * i + 2 * j + 1);
             }
         }
-    fk_cursor (1);
-    fk_locate (x, y);
+    fk_t_cursor (1);
+    fk_t_locate (x, y);
     term_refresh ();
     return (0);
 }
 
+/**
+ * Terminal initialization.
+ *
+ * \todo Why does this call e_endwin()? That is ncurses way of closing a window!
+ */
+
 int
 e_t_sys_ini ()
 {
-    e_refresh ();
-    tcgetattr (0, &ttermio);
-    svflgs = fcntl (0, F_GETFL, 0);
+    e_t_refresh ();
+    tcgetattr (STDIN_FILENO, &ttermio);
+    svflgs = fcntl (STDIN_FILENO, F_GETFL, 0);
     e_endwin ();
     return (0);
 }
@@ -861,10 +935,10 @@ e_t_sys_ini ()
 int
 e_t_sys_end ()
 {
-    tcsetattr (0, TCSADRAIN, &ttermio);
-    fcntl (0, F_SETFL, svflgs);
+    tcsetattr (STDIN_FILENO, TCSADRAIN, &ttermio);
+    fcntl (STDIN_FILENO, F_SETFL, svflgs);
     e_abs_refr ();
-    fk_locate (0, 0);
+    fk_t_locate (0, 0);
     return (0);
 }
 
@@ -874,22 +948,21 @@ e_t_kbhit ()
     int ret;
     char kbdflgs, c;
 
-    e_refresh ();
-    kbdflgs = fcntl (0, F_GETFL, 0);
-    fcntl (0, F_SETFL, kbdflgs | O_NONBLOCK);
+    e_t_refresh ();
+    kbdflgs = fcntl (STDIN_FILENO, F_GETFL, 0);
+    fcntl (STDIN_FILENO, F_SETFL, kbdflgs | O_NONBLOCK);
     ret = read (0, &c, 1);
-    fcntl (0, F_SETFL, kbdflgs & ~O_NONBLOCK);
+    fcntl (STDIN_FILENO, F_SETFL, kbdflgs & ~O_NONBLOCK);
     return (ret == 1 ? c : 0);
 }
 
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 int
 e_t_getch ()
 {
     int c, bk;
 
-    e_refresh ();
+    e_t_refresh ();
     c = fk_getch ();
     if (c > KEY_CODE_YES)
     {
@@ -1007,7 +1080,7 @@ e_t_getch ()
             c = 0;
             break;
         }
-        bk = bioskey ();
+        bk = u_bioskey ();
         if (bk & 3)
             c += 512;
         else if (bk & 4)
@@ -1015,7 +1088,7 @@ e_t_getch ()
     }
     else if (c == WPE_TAB)
     {
-        bk = bioskey ();
+        bk = u_bioskey ();
         if (bk & 3)
             c = WPE_BTAB;
         else
@@ -1110,7 +1183,7 @@ e_t_getch ()
                 c = 0;
                 break;
             }
-            bk = bioskey ();
+            bk = u_bioskey ();
             if (bk & 3)
                 c += 512;
             else if (bk & 4)
@@ -1122,14 +1195,14 @@ e_t_getch ()
     return (c);
 }
 
-#else // #ifdef NCURSES : i.e. FALSE
+#else // #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 int
 e_t_getch ()
 {
     int c, c2, pshift, bk;
 
     pshift = 0;
-    e_refresh ();
+    e_t_refresh ();
     if ((c = fk_getch ()) != WPE_ESC)
     {
         if (key_f[20] && c == *key_f[20])
@@ -1138,7 +1211,7 @@ e_t_getch ()
             return (ENTF);
         else if (c == WPE_TAB)
         {
-            bk = bioskey ();
+            bk = u_bioskey ();
             if (bk & 3)
                 return (WPE_BTAB);
             else
@@ -1149,7 +1222,7 @@ e_t_getch ()
     }
     else if ((c = fk_getch ()) == WPE_CR)
         return (WPE_ESC);
-    bk = bioskey ();
+    bk = u_bioskey ();
     if (bk & 3)
         pshift = 512;
     else if (bk & 4)
@@ -1351,7 +1424,7 @@ e_find_key (int c, int j, int sw)
     }
     return (0);
 }
-#endif // #ifdef NCURSES i.e. FALSE
+#endif // #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 
 int
 fk_t_locate (int x, int y)
@@ -1359,7 +1432,6 @@ fk_t_locate (int x, int y)
     if (col_num > 0)
     {
         fk_colset (e_gt_col (cur_x, cur_y));
-//#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
         /* Causes problems.  Reason unknown. - Dennis */
         /*mvaddch(cur_y,cur_x,e_gt_char(cur_x, cur_y)); */
@@ -1412,18 +1484,23 @@ e_t_switch_screen (int sw)
 }
 
 int
-e_t_deb_out (we_window_t * f)
+e_t_deb_out (we_window_t * window)
 {
 //#ifndef NCURSES
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
     if (!swt_scr || !beg_scr)
 #endif
-        return (e_error ("Your terminal don\'t use begin/end cup", 0, f->fb));
-    e_d_switch_out (1);
+        return (e_error ("Your terminal don\'t use begin/end cup", 0, window->colorset));
+    e_u_d_switch_out (1);
     getchar ();
-    e_d_switch_out (0);
+    e_u_d_switch_out (0);
     return (0);
 }
+
+/**
+ * This function initializes or closes.
+ *
+ */
 
 int
 e_d_switch_screen (int sw)
@@ -1434,7 +1511,7 @@ e_d_switch_screen (int sw)
     else
         e_g_sys_end ();
 #endif
-    return ((*e_u_switch_screen) (sw));
+    return e_u_switch_screen(sw);
 }
 
 int
@@ -1462,7 +1539,7 @@ e_t_d_switch_out (int sw)
     {
         e_d_switch_screen (1);
         e_abs_refr ();
-        e_refresh ();
+        e_u_refresh ();
     }
     return (sw);
 }
@@ -1479,15 +1556,15 @@ e_exitm (char *s, int n)
 int
 e_s_sys_ini ()
 {
-    (*e_u_sys_ini) ();
-    return ((*e_u_switch_screen) (0));
+    e_u_sys_ini ();
+    return (e_u_switch_screen (0));
 }
 
 int
 e_s_sys_end ()
 {
-    (*e_u_switch_screen) (1);
-    return ((*e_u_sys_end) ());
+    e_u_switch_screen (1);
+    return (e_u_sys_end ());
 }
 
 #endif /*  Is UNIX       */

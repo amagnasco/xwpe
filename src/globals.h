@@ -1,5 +1,6 @@
 #ifndef WE_GLOBALS_H
 #define WE_GLOBALS_H
+/** \file globals.h */
 
 #include "config.h"
 

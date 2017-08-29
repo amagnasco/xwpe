@@ -1,4 +1,4 @@
-/* we_mouse.c                                             */
+/** \file we_mouse.c                                       */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
@@ -11,6 +11,7 @@
 #include "options.h"
 #include "model.h"
 #include "edit.h"
+#include "we_term.h"
 #include "we_prog.h"
 #include "we_mouse.h"
 
@@ -136,25 +137,25 @@ e_msg_mouse (int x, int y, int x1, int x2, int yy)
 }
 
 int
-e_rahmen_mouse (we_window_t * f)
+e_rahmen_mouse (we_window_t * window)
 {
     extern struct mouse e_mouse;
     int c = 1;
 
-    if (e_mouse.x == f->a.x + 3 && e_mouse.y == f->a.y)
+    if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
         c = WPE_ESC;
-    else if (e_mouse.x == f->e.x - 3 && e_mouse.y == f->a.y)
-        e_ed_zoom (f);
-    else if (e_mouse.x == f->a.x && e_mouse.y == f->a.y)
-        e_eck_mouse (f, 1);
-    else if (e_mouse.x == f->e.x && e_mouse.y == f->a.y)
-        e_eck_mouse (f, 2);
-    else if (e_mouse.x == f->e.x && e_mouse.y == f->e.y)
-        e_eck_mouse (f, 3);
-    else if (e_mouse.x == f->a.x && e_mouse.y == f->e.y)
-        e_eck_mouse (f, 4);
-    else if (e_mouse.y == f->a.y && e_mouse.x > f->a.x && e_mouse.x < f->e.x)
-        e_eck_mouse (f, 0);
+    else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+        e_ed_zoom (window);
+    else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+        e_eck_mouse (window, 1);
+    else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+        e_eck_mouse (window, 2);
+    else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+        e_eck_mouse (window, 3);
+    else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+        e_eck_mouse (window, 4);
+    else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x)
+        e_eck_mouse (window, 0);
     else
         c = 0;
     while (e_mshit () != 0)
@@ -163,123 +164,123 @@ e_rahmen_mouse (we_window_t * f)
 }
 
 int
-WpeMngMouseInFileManager (we_window_t * f)
+WpeMngMouseInFileManager (we_window_t * window)
 {
     extern struct mouse e_mouse;
-    we_control_t *cn = f->ed;
-    FLBFFR *b = (FLBFFR *) f->b;
+    we_control_t *control = window->edit_control;
+    FLBFFR *file_buffer = (FLBFFR *) window->buffer;
     int i, c = 0, by = 4;
 
     if (e_mouse.y == 0)
         return (AltBl);
     else if (e_mouse.y == MAXSLNS - 1)
         return (e_m3_mouse ());
-    else if (e_mouse.x < f->a.x || e_mouse.x > f->e.x
-             || e_mouse.y < f->a.y || e_mouse.y > f->e.y)
+    else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
+             || e_mouse.y < window->a.y || e_mouse.y > window->e.y)
     {
-        for (i = cn->mxedt; i > 0; i--)
+        for (i = control->mxedt; i > 0; i--)
         {
-            if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x
-                    && e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
+            if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x
+                    && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
             {
                 while (e_mshit () != 0);
-                return (cn->edt[i] <
-                        10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i]);
+                return (control->edt[i] <
+                        10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
             }
         }
     }
-    else if (e_mouse.x == f->a.x + 3 && e_mouse.y == f->a.y)
+    else if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
         c = WPE_ESC;
-    else if (e_mouse.x == f->e.x - 3 && e_mouse.y == f->a.y)
-        e_ed_zoom (f);
-    else if (e_mouse.x == f->a.x && e_mouse.y == f->a.y)
-        e_eck_mouse (f, 1);
-    else if (e_mouse.x == f->e.x && e_mouse.y == f->a.y)
-        e_eck_mouse (f, 2);
-    else if (e_mouse.x == f->e.x && e_mouse.y == f->e.y)
-        e_eck_mouse (f, 3);
-    else if (e_mouse.x == f->a.x && e_mouse.y == f->e.y)
-        e_eck_mouse (f, 4);
-    else if (e_mouse.y == f->a.y && e_mouse.x > f->a.x && e_mouse.x < f->e.x)
-        e_eck_mouse (f, 0);
+    else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+        e_ed_zoom (window);
+    else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+        e_eck_mouse (window, 1);
+    else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+        e_eck_mouse (window, 2);
+    else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+        e_eck_mouse (window, 3);
+    else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+        e_eck_mouse (window, 4);
+    else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x)
+        e_eck_mouse (window, 0);
     else
     {
-        if (num_lines_on_screen(f) <= 17)
+        if (num_lines_on_screen(window) <= 17)
             by = -1;
-        else if (b->sw != 0 || num_lines_on_screen(f) <= 19)
+        else if (file_buffer->sw != 0 || num_lines_on_screen(window) <= 19)
             by = 2;
 
-        if (num_lines_on_screen(f) > 17)
+        if (num_lines_on_screen(window) > 17)
         {
-            if (e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 3
-                    && e_mouse.x <= f->a.x + 10)
+            if (e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 3
+                    && e_mouse.x <= window->a.x + 10)
                 c = WPE_ESC;
-            else if (e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 13
-                     && e_mouse.x <= f->a.x + 24)
+            else if (e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 13
+                     && e_mouse.x <= window->a.x + 24)
                 c = AltC;
-            else if (b->sw == 1 && num_cols_on_screen(f) >= 34
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 27
-                     && e_mouse.x <= f->a.x + 32)
+            else if (file_buffer->sw == 1 && num_cols_on_screen(window) >= 34
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                     && e_mouse.x <= window->a.x + 32)
                 c = AltR;
-            else if (b->sw == 2 && num_cols_on_screen(f) >= 35
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 27
-                     && e_mouse.x <= f->a.x + 33)
+            else if (file_buffer->sw == 2 && num_cols_on_screen(window) >= 35
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                     && e_mouse.x <= window->a.x + 33)
                 c = AltW;
-            else if (b->sw == 4 && num_cols_on_screen(f) >= 34
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 27
-                     && e_mouse.x <= f->a.x + 32)
+            else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 34
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                     && e_mouse.x <= window->a.x + 32)
                 c = AltS;
-            else if (b->sw == 4 && num_cols_on_screen(f) >= 48
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 35
-                     && e_mouse.x <= f->a.x + 46)
+            else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 48
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 35
+                     && e_mouse.x <= window->a.x + 46)
                 c = AltY;
-            else if (b->sw == 3 && num_cols_on_screen(f) >= 37
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 27
-                     && e_mouse.x <= f->a.x + 35)
+            else if (file_buffer->sw == 3 && num_cols_on_screen(window) >= 37
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                     && e_mouse.x <= window->a.x + 35)
                 c = AltE;
-            else if (b->sw == 5 && num_cols_on_screen(f) >= 33
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 27
-                     && e_mouse.x <= f->a.x + 31)
+            else if (file_buffer->sw == 5 && num_cols_on_screen(window) >= 33
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                     && e_mouse.x <= window->a.x + 31)
                 c = AltA;
-            else if (b->sw == 0 && num_cols_on_screen(f) >= 35
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 27
-                     && e_mouse.x <= f->a.x + 33)
+            else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 35
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                     && e_mouse.x <= window->a.x + 33)
                 c = AltK;
-            else if (b->sw == 0 && num_cols_on_screen(f) >= 49
-                     && e_mouse.y == f->e.y - by && e_mouse.x >= f->a.x + 36
-                     && e_mouse.x <= f->a.x + 47)
+            else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 49
+                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 36
+                     && e_mouse.x <= window->a.x + 47)
                 c = AltA;
         }
-        if (b->sw == 0 && num_lines_on_screen(f) > 19)
+        if (file_buffer->sw == 0 && num_lines_on_screen(window) > 19)
         {
-            if (e_mouse.y == f->e.y - 2 && e_mouse.x >= f->a.x + 3
-                    && e_mouse.x <= f->a.x + 8)
+            if (e_mouse.y == window->e.y - 2 && e_mouse.x >= window->a.x + 3
+                    && e_mouse.x <= window->a.x + 8)
                 c = AltM;
-            else if (e_mouse.y == f->e.y - 2 && num_cols_on_screen(f) >= 21 &&
-                     e_mouse.x >= f->a.x + 12 && e_mouse.x <= f->a.x + 19)
+            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 21 &&
+                     e_mouse.x >= window->a.x + 12 && e_mouse.x <= window->a.x + 19)
                 c = AltR;
-            else if (e_mouse.y == f->e.y - 2 && num_cols_on_screen(f) >= 30 &&
-                     e_mouse.x >= f->a.x + 23 && e_mouse.x <= f->a.x + 28)
+            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 30 &&
+                     e_mouse.x >= window->a.x + 23 && e_mouse.x <= window->a.x + 28)
                 c = AltL;
-            else if (e_mouse.y == f->e.y - 2 && num_cols_on_screen(f) >= 39 &&
-                     e_mouse.x >= f->a.x + 32 && e_mouse.x <= f->a.x + 37)
+            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 39 &&
+                     e_mouse.x >= window->a.x + 32 && e_mouse.x <= window->a.x + 37)
                 c = AltO;
-            else if (e_mouse.y == f->e.y - 2 && num_cols_on_screen(f) >= 48 &&
-                     e_mouse.x >= f->a.x + 41 && e_mouse.x <= f->a.x + 46)
+            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 48 &&
+                     e_mouse.x >= window->a.x + 41 && e_mouse.x <= window->a.x + 46)
                 c = AltE;
         }
 
-        if (e_mouse.y == f->a.y + 3 && e_mouse.x >= f->a.x + b->xfa
-                && e_mouse.x <= f->a.x + b->xfa + b->xfd)
+        if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + file_buffer->xfa
+                && e_mouse.x <= window->a.x + file_buffer->xfa + file_buffer->xfd)
             c = AltN;
-        else if (e_mouse.y == f->a.y + 3 && e_mouse.x >= f->a.x + b->xda
-                 && e_mouse.x <= f->a.x + b->xda + b->xdd)
+        else if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + file_buffer->xda
+                 && e_mouse.x <= window->a.x + file_buffer->xda + file_buffer->xdd)
             c = AltD;
-        else if (e_mouse.y >= b->fw->ya && e_mouse.y <= b->fw->ye
-                 && e_mouse.x >= b->fw->xa && e_mouse.x <= b->fw->xe)
+        else if (e_mouse.y >= file_buffer->fw->ya && e_mouse.y <= file_buffer->fw->ye
+                 && e_mouse.x >= file_buffer->fw->xa && e_mouse.x <= file_buffer->fw->xe)
             c = AltF;
-        else if (e_mouse.y >= b->dw->ya && e_mouse.y <= b->dw->ye
-                 && e_mouse.x >= b->dw->xa && e_mouse.x <= b->dw->xe)
+        else if (e_mouse.y >= file_buffer->dw->ya && e_mouse.y <= file_buffer->dw->ye
+                 && e_mouse.x >= file_buffer->dw->xa && e_mouse.x <= file_buffer->dw->xe)
             c = AltT;
     }
     while (e_mshit () != 0);
@@ -287,73 +288,73 @@ WpeMngMouseInFileManager (we_window_t * f)
 }
 
 int
-WpeMouseInFileDirList (int k, int sw, we_window_t * f)
+WpeMouseInFileDirList (int k, int sw, we_window_t * window)
 {
     extern struct mouse e_mouse;
-    we_control_t *cn = f->ed;
-    FLBFFR *b = (FLBFFR *) f->b;
+    we_control_t *control = window->edit_control;
+    FLBFFR *file_buffer = (FLBFFR *) window->buffer;
     int i;
     char tmp[256];
 
-    if (e_mouse.x >= f->a.x && e_mouse.x <= f->e.x
-            && e_mouse.y >= f->a.y && e_mouse.y <= f->e.y)
+    if (e_mouse.x >= window->a.x && e_mouse.x <= window->e.x
+            && e_mouse.y >= window->a.y && e_mouse.y <= window->e.y)
         return (0);
-    for (i = cn->mxedt - 1; i > 0; i--)
+    for (i = control->mxedt - 1; i > 0; i--)
     {
-        if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x
-                && e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
+        if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x
+                && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
             break;
     }
     if (i <= 0)
         return (0);
     if (sw)
     {
-        if (cn->f[i]->dirct[strlen (cn->f[i]->dirct) - 1] == DIRC)
-            sprintf (tmp, "%s%s", cn->f[i]->dirct,
-                     b->dd->name[b->dw->nf - b->cd->nr_files]);
+        if (control->window[i]->dirct[strlen (control->window[i]->dirct) - 1] == DIRC)
+            sprintf (tmp, "%s%s", control->window[i]->dirct,
+                     file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files]);
         else
-            sprintf (tmp, "%s/%s", cn->f[i]->dirct,
-                     b->dd->name[b->dw->nf - b->cd->nr_files]);
+            sprintf (tmp, "%s/%s", control->window[i]->dirct,
+                     file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files]);
         if (k == -2)
-            e_copy (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, f);
+            e_copy (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
         else if (k == -4)
-            e_link (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, f);
+            e_link (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
         else
-            e_rename (b->dd->name[b->dw->nf - b->cd->nr_files], tmp, f);
-        freedf (b->cd);
-        freedf (b->dw->df);
-        freedf (b->dd);
-        b->dd = e_find_dir (SUDIR, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-        b->cd = WpeCreateWorkingDirTree (f->save, cn);	/* ??? cn */
-        b->dw->df = WpeGraphicalDirTree (b->cd, b->dd, cn);
-        b->dw->nf = b->cd->nr_files - 1;
-        b->dw->ia = b->dw->ja = 0;
-        e_pr_file_window (b->dw, 0, 1, f->fb->ft.fb, f->fb->fz.fb,
-                          f->fb->frft.fb);
+            e_rename (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
+        freedf (file_buffer->cd);
+        freedf (file_buffer->dw->df);
+        freedf (file_buffer->dd);
+        file_buffer->dd = e_find_dir (SUDIR, window->edit_control->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
+        file_buffer->cd = WpeCreateWorkingDirTree (window->save, control);	/* ??? control */
+        file_buffer->dw->df = WpeGraphicalDirTree (file_buffer->cd, file_buffer->dd, control);
+        file_buffer->dw->nf = file_buffer->cd->nr_files - 1;
+        file_buffer->dw->ia = file_buffer->dw->ja = 0;
+        e_pr_file_window (file_buffer->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
+                          window->colorset->frft.fg_bg_color);
     }
     else
     {
-        if (cn->f[i]->dirct[strlen (cn->f[i]->dirct) - 1] == DIRC)
-            sprintf (tmp, "%s%s", cn->f[i]->dirct, b->df->name[b->fw->nf]);
+        if (control->window[i]->dirct[strlen (control->window[i]->dirct) - 1] == DIRC)
+            sprintf (tmp, "%s%s", control->window[i]->dirct, file_buffer->df->name[file_buffer->fw->nf]);
         else
-            sprintf (tmp, "%s/%s", cn->f[i]->dirct, b->df->name[b->fw->nf]);
+            sprintf (tmp, "%s/%s", control->window[i]->dirct, file_buffer->df->name[file_buffer->fw->nf]);
         if (k == -2)
-            e_copy (b->df->name[b->fw->nf], tmp, f);
+            e_copy (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
         else if (k == -4)
-            e_link (b->df->name[b->fw->nf], tmp, f);
+            e_link (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
         else
-            e_rename (b->df->name[b->fw->nf], tmp, f);
-        freedf (b->df);
-        freedf (b->fw->df);
-        b->df =
-            e_find_files (b->rdfile, f->ed->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
-        b->fw->df = WpeGraphicalFileList (b->df, f->ed->flopt >> 9, cn);
-        b->fw->ia = b->fw->nf = 0;
-        b->fw->ja = b->fw->srcha;
-        e_pr_file_window (b->fw, 0, 1, f->fb->ft.fb, f->fb->fz.fb,
-                          f->fb->frft.fb);
+            e_rename (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
+        freedf (file_buffer->df);
+        freedf (file_buffer->fw->df);
+        file_buffer->df =
+            e_find_files (file_buffer->rdfile, window->edit_control->flopt & FM_SHOW_HIDDEN_DIRS ? 1 : 0);
+        file_buffer->fw->df = WpeGraphicalFileList (file_buffer->df, window->edit_control->flopt >> 9, control);
+        file_buffer->fw->ia = file_buffer->fw->nf = 0;
+        file_buffer->fw->ja = file_buffer->fw->srcha;
+        e_pr_file_window (file_buffer->fw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
+                          window->colorset->frft.fg_bg_color);
     }
-    return (cn->edt[i] < 10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i]);
+    return (control->edt[i] < 10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
 }
 
 
@@ -437,8 +438,8 @@ FLWND *fw;
                         yn = e_mouse.y;
                         if (fw->srcha < 0)
                         {
-                            FLBFFR *b = (FLBFFR *) fw->f->b;
-                            if (b->cd->nr_files > fw->nf)
+                            FLBFFR *file_buffer = (FLBFFR *) fw->window->buffer;
+                            if (file_buffer->cd->nr_files > fw->nf)
                             {
                                 while (e_mshit () != 0)
                                 {
@@ -458,7 +459,7 @@ FLWND *fw;
                         for (i = 0; i < MLEN / 2; i++)
                         {
                             file[2 * i] = *(fw->df->name[fw->nf] + c + i);
-                            file[2 * i + 1] = fw->f->fb->fz.fb;
+                            file[2 * i + 1] = fw->window->colorset->fz.fg_bg_color;
                         }
                         e_gt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, bgrd);
                         while (e_mshit () != 0)
@@ -468,7 +469,7 @@ FLWND *fw;
                             yn = e_mouse.y;
                             e_gt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, bgrd);
                             e_pt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, file);
-                            e_refresh ();
+                            e_u_refresh ();
                         }
                         e_pt_btstr (xn - xdif, yn, MLEN, bgrd);
                         free (file);
@@ -535,7 +536,7 @@ int nf;
                 iold = e_mouse.y;
 #ifdef NEWSTYLE
                 e_make_xrect_abs (x, iold, x, iold, 1);
-                e_refresh ();
+                e_u_refresh ();
 #endif
                 fk_mouse (g);
                 for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3)
@@ -554,7 +555,7 @@ int nf;
                         e_make_xrect (x, y + 1, x, y + n - 2, 0);
                         e_make_xrect_abs (x, inew, x, inew, 1);
 #endif
-                        e_refresh ();
+                        e_u_refresh ();
                         iold = inew;
                         g[0] = 1;
                         fk_mouse (g);
@@ -600,7 +601,7 @@ int nf;
                 iold = e_mouse.x;
 #ifdef NEWSTYLE
                 e_make_xrect_abs (iold, y, iold, y, 1);
-                e_refresh ();
+                e_u_refresh ();
 #endif
                 fk_mouse (g);
                 for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3)
@@ -619,7 +620,7 @@ int nf;
                         e_make_xrect (x + 1, y, x + n - 2, y, 0);
                         e_make_xrect_abs (inew, y, inew, y, 1);
 #endif
-                        e_refresh ();
+                        e_u_refresh ();
                         iold = inew;
                         g[0] = 1;
                         fk_mouse (g);
@@ -652,24 +653,24 @@ int nf;
 
 /*   mouse window resizer control */
 void
-e_eck_mouse (we_window_t * f, int sw)
+e_eck_mouse (we_window_t * window, int sw)
 {
     int g[4];			/*  = { 3, 1, 0, 0 };  */
     int xold, yold, x, y, xa, xmin = 26, ymin = 3;
     we_point_t fa, fe;
 
-    e_ed_rahmen (f, 0);
-    memcpy (&fa, &f->a, sizeof (we_point_t));
-    memcpy (&fe, &f->e, sizeof (we_point_t));
+    e_ed_rahmen (window, 0);
+    memcpy (&fa, &window->a, sizeof (we_point_t));
+    memcpy (&fe, &window->e, sizeof (we_point_t));
     g[0] = 3;
     g[1] = 1;
     fk_mouse (g);
     xold = g[2] / 8;
     yold = g[3] / 8;
-    xa = xold - f->a.x;
-    if (f->dtmd == DTMD_FILEDROPDOWN)
+    xa = xold - window->a.x;
+    if (window->dtmd == DTMD_FILEDROPDOWN)
         xmin = 15;
-    else if (!DTMD_ISTEXT (f->dtmd))
+    else if (!DTMD_ISTEXT (window->dtmd))
         ymin = 9;
     while (g[1] != 0)
     {
@@ -692,239 +693,239 @@ e_eck_mouse (we_window_t * f, int sw)
                 x -= xa;
                 if (x < 0)
                     x = 0;
-                else if (x + num_cols_on_screen(f) > MAXSCOL - 1)
-                    x = MAXSCOL - f->e.x + f->a.x - 1;
-                if (f->e.y + y - f->a.y > MAXSLNS - 2)
-                    y = MAXSLNS - f->e.y + f->a.y - 2;
-                f->e.x = num_cols_on_screen(f) + x;
-                f->a.x = x;
-                f->e.y = f->e.y + y - f->a.y;
-                f->a.y = y;
+                else if (x + num_cols_on_screen(window) > MAXSCOL - 1)
+                    x = MAXSCOL - window->e.x + window->a.x - 1;
+                if (window->e.y + y - window->a.y > MAXSLNS - 2)
+                    y = MAXSLNS - window->e.y + window->a.y - 2;
+                window->e.x = num_cols_on_screen(window) + x;
+                window->a.x = x;
+                window->e.y = window->e.y + y - window->a.y;
+                window->a.y = y;
             }
             else if (sw == 1)
             {
-                if (x > f->e.x - xmin)
-                    x = f->e.x - xmin;
-                if (y > f->e.y - ymin)
-                    y = f->e.y - ymin;
-                f->a.x = x;
-                f->a.y = y;
+                if (x > window->e.x - xmin)
+                    x = window->e.x - xmin;
+                if (y > window->e.y - ymin)
+                    y = window->e.y - ymin;
+                window->a.x = x;
+                window->a.y = y;
             }
             else if (sw == 2)
             {
-                if (x < f->a.x + xmin)
-                    x = f->a.x + xmin;
-                if (y > f->e.y - ymin)
-                    y = f->e.y - ymin;
-                f->e.x = x;
-                f->a.y = y;
+                if (x < window->a.x + xmin)
+                    x = window->a.x + xmin;
+                if (y > window->e.y - ymin)
+                    y = window->e.y - ymin;
+                window->e.x = x;
+                window->a.y = y;
             }
             else if (sw == 3)
             {
-                if (x < f->a.x + xmin)
-                    x = f->a.x + xmin;
-                if (y < f->a.y + ymin)
-                    y = f->a.y + ymin;
-                f->e.x = x;
-                f->e.y = y;
+                if (x < window->a.x + xmin)
+                    x = window->a.x + xmin;
+                if (y < window->a.y + ymin)
+                    y = window->a.y + ymin;
+                window->e.x = x;
+                window->e.y = y;
             }
             else if (sw == 4)
             {
-                if (x > f->e.x - xmin)
-                    x = f->e.x - xmin;
-                if (y < f->a.y + ymin)
-                    y = f->a.y + ymin;
-                f->a.x = x;
-                f->e.y = y;
+                if (x > window->e.x - xmin)
+                    x = window->e.x - xmin;
+                if (y < window->a.y + ymin)
+                    y = window->a.y + ymin;
+                window->a.x = x;
+                window->e.y = y;
             }
             g[0] = 2;
             fk_mouse (g);
-            f->pic = e_ed_kst (f, f->pic, 0);
-            if (f->pic == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, f->fb);
-            if (f->dtmd == DTMD_FILEDROPDOWN)
+            window->view = e_ed_kst (window, window->view, 0);
+            if (window->view == NULL)
+                e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+            if (window->dtmd == DTMD_FILEDROPDOWN)
             {
-                FLWND *fw = (FLWND *) f->b;
-                fw->xa = f->a.x + 1;
-                fw->xe = f->e.x;
-                fw->ya = f->a.y + 1;
-                fw->ye = f->e.y;
+                FLWND *fw = (FLWND *) window->buffer;
+                fw->xa = window->a.x + 1;
+                fw->xe = window->e.x;
+                fw->ya = window->a.y + 1;
+                fw->ye = window->e.y;
             }
             g[0] = 1;
             fk_mouse (g);
-            e_cursor (f, 0);
-            e_schirm (f, 0);
-            e_refresh ();
+            e_cursor (window, 0);
+            e_write_screen (window, 0);
+            e_u_refresh ();
         }
         g[0] = 3;
         fk_mouse (g);
     }
-    if ((memcmp (&fa, &f->a, sizeof (we_point_t))) ||
-            (memcmp (&fe, &f->e, sizeof (we_point_t))))
-        f->zoom = 0;
-    e_ed_rahmen (f, 1);
+    if ((memcmp (&fa, &window->a, sizeof (we_point_t))) ||
+            (memcmp (&fe, &window->e, sizeof (we_point_t))))
+        window->zoom = 0;
+    e_ed_rahmen (window, 1);
 }
 
 /*       Mouse edit window control   */
 int
-e_edt_mouse (int c, we_window_t * f)
+e_edt_mouse (int c, we_window_t * window)
 {
     int i, ret = 0;
     extern struct mouse e_mouse;
-    we_control_t *cn = f->ed;
+    we_control_t *control = window->edit_control;
 
     if (e_mouse.y == 0)
         return (e_m1_mouse ());
     else if (e_mouse.y == MAXSLNS - 1)
         return (e_m3_mouse ());
-    else if (e_mouse.x >= f->a.x && e_mouse.x <= f->e.x &&
-             e_mouse.y >= f->a.y && e_mouse.y <= f->e.y)
+    else if (e_mouse.x >= window->a.x && e_mouse.x <= window->e.x &&
+             e_mouse.y >= window->a.y && e_mouse.y <= window->e.y)
     {
-        if (e_mouse.x == f->a.x + 3 && e_mouse.y == f->a.y)
-            ret = f->ed->edopt & ED_CUA_STYLE ? CF4 : AF3;
-        else if (e_mouse.x == f->e.x - 3 && e_mouse.y == f->a.y)
-            e_ed_zoom (f);
-        else if (e_mouse.x == f->a.x && e_mouse.y == f->a.y)
-            e_eck_mouse (f, 1);
-        else if (e_mouse.x == f->e.x && e_mouse.y == f->a.y)
-            e_eck_mouse (f, 2);
-        else if (e_mouse.x == f->e.x && e_mouse.y == f->e.y)
-            e_eck_mouse (f, 3);
-        else if (e_mouse.x == f->a.x && e_mouse.y == f->e.y)
-            e_eck_mouse (f, 4);
-        else if (e_mouse.y == f->a.y)
-            e_eck_mouse (f, 0);
-        else if (e_mouse.x == f->a.x && e_mouse.y == f->a.y + 2)
-            ret = f->ed->edopt & ED_CUA_STYLE ? AF3 : F4;
-        else if (e_mouse.x == f->a.x && e_mouse.y == f->a.y + 4)
-            ret = f->ed->edopt & ED_CUA_STYLE ? CF3 : AF4;
-        else if (e_mouse.x == f->a.x && e_mouse.y == f->a.y + 6)
-            ret = f->ed->edopt & ED_CUA_STYLE ? F3 : CF4;
-        else if (f->ins != 8 && e_mouse.x == f->a.x && e_mouse.y == f->a.y + 8)
-            ret = f->ed->edopt & ED_CUA_STYLE ? AF2 : F2;
-        else if (e_mouse.y == f->e.y && e_mouse.x > f->a.x + 4 &&
-                 e_mouse.x < f->a.x + 14)
+        if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? CF4 : AF3;
+        else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+            e_ed_zoom (window);
+        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+            e_eck_mouse (window, 1);
+        else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+            e_eck_mouse (window, 2);
+        else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+            e_eck_mouse (window, 3);
+        else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+            e_eck_mouse (window, 4);
+        else if (e_mouse.y == window->a.y)
+            e_eck_mouse (window, 0);
+        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 2)
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? AF3 : F4;
+        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 4)
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? CF3 : AF4;
+        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 6)
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? F3 : CF4;
+        else if (window->ins != 8 && e_mouse.x == window->a.x && e_mouse.y == window->a.y + 8)
+            ret = window->edit_control->edopt & ED_CUA_STYLE ? AF2 : F2;
+        else if (e_mouse.y == window->e.y && e_mouse.x > window->a.x + 4 &&
+                 e_mouse.x < window->a.x + 14)
             ret = AltG;
-        else if (e_mouse.y == f->e.y && e_mouse.x == f->a.x + 15 && f->ins != 8)
+        else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 15 && window->ins != 8)
         {
-            if (f->ins & 1)
-                f->ins &= ~1;
+            if (window->ins & 1)
+                window->ins &= ~1;
             else
-                f->ins |= 1;
-            e_pr_filetype (f);
+                window->ins |= 1;
+            e_pr_filetype (window);
         }
-        else if (e_mouse.y == f->e.y && e_mouse.x == f->a.x + 16 && f->ins != 8)
+        else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 16 && window->ins != 8)
         {
-            if (f->ins & 2)
-                f->ins &= ~2;
+            if (window->ins & 2)
+                window->ins &= ~2;
             else
-                f->ins |= 2;
-            e_pr_filetype (f);
+                window->ins |= 2;
+            e_pr_filetype (window);
         }
-        else if (e_mouse.x > f->a.x && e_mouse.x < f->e.x &&
-                 e_mouse.y > f->a.y && e_mouse.y < f->e.y)
+        else if (e_mouse.x > window->a.x && e_mouse.x < window->e.x &&
+                 e_mouse.y > window->a.y && e_mouse.y < window->e.y)
         {
             if (c < -1)
-                ret = e_ccp_mouse (c, f);
-            else if (f->dtmd == DTMD_HELP && f->ins == 8 &&
-                     f->b->b.y ==
-                     e_mouse.y - f->a.y + num_lines_off_screen_top(f) - 1
-                     && ((i = f->b->b.x) == e_mouse_cursor (f->b, f->s, f)))
+                ret = e_ccp_mouse (c, window);
+            else if (window->dtmd == DTMD_HELP && window->ins == 8 &&
+                     window->buffer->cursor.y ==
+                     e_mouse.y - window->a.y + num_lines_off_screen_top(window) - 1
+                     && ((i = window->buffer->cursor.x) == e_mouse_cursor (window->buffer, window->screen, window)))
                 ret = WPE_CR;
             else
 #ifdef PROG
 #ifdef DEBUGGER
             {
-                if (WpeIsProg () && (!strcmp (f->datnam, "Watches") ||
-                                     !strcmp (f->datnam, "Messages") ||
-                                     !strcmp (f->datnam, "Stack")))
-                    ret = e_d_car_mouse (f);
+                if (WpeIsProg () && (!strcmp (window->datnam, "Watches") ||
+                                     !strcmp (window->datnam, "Messages") ||
+                                     !strcmp (window->datnam, "Stack")))
+                    ret = e_d_car_mouse (window);
                 else
-                    e_cur_mouse (f);
+                    e_cur_mouse (window);
             }
 #else
             {
-                if (WpeIsProg () && !strcmp (f->datnam, "Messages"))
-                    ret = e_d_car_mouse (f);
+                if (WpeIsProg () && !strcmp (window->datnam, "Messages"))
+                    ret = e_d_car_mouse (window);
                 else
-                    e_cur_mouse (f);
+                    e_cur_mouse (window);
             }
 #endif
 #else
-                e_cur_mouse (f);
+                e_cur_mouse (window);
 #endif
         }
-        else if (e_mouse.x == f->e.x && e_mouse.y == f->a.y + 1)
+        else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y + 1)
         {
             /*changed the while()... to a do...while();  :Mark L */
             do
             {
-                f->b->b.y = f->b->b.y > 0 ? f->b->b.y - 1 : 0;
-                f->b->b.x = e_chr_sp (f->b->clsv, f->b, f);
-                e_cursor (f, 1);
-                e_refresh ();
+                window->buffer->cursor.y = window->buffer->cursor.y > 0 ? window->buffer->cursor.y - 1 : 0;
+                window->buffer->cursor.x = e_chr_sp (window->buffer->clsv, window->buffer, window);
+                e_cursor (window, 1);
+                e_u_refresh ();
             }
             while (e_mshit ());
         }
-        else if (e_mouse.x == f->e.x && e_mouse.y == f->e.y - 1)
+        else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y - 1)
         {
             /*changed the while()... to a do...while();  :Mark L */
             do
             {
-                f->b->b.y = f->b->b.y < f->b->mxlines - 1 ?
-                            f->b->b.y + 1 : f->b->mxlines - 1;
-                f->b->b.x = e_chr_sp (f->b->clsv, f->b, f);
-                e_cursor (f, 1);
-                e_refresh ();
+                window->buffer->cursor.y = window->buffer->cursor.y < window->buffer->mxlines - 1 ?
+                                           window->buffer->cursor.y + 1 : window->buffer->mxlines - 1;
+                window->buffer->cursor.x = e_chr_sp (window->buffer->clsv, window->buffer, window);
+                e_cursor (window, 1);
+                e_u_refresh ();
             }
             while (e_mshit ());
         }
-        else if (e_mouse.x == f->e.x &&
-                 e_mouse.y > f->a.y + 1 && e_mouse.y < f->e.y - 1)
+        else if (e_mouse.x == window->e.x &&
+                 e_mouse.y > window->a.y + 1 && e_mouse.y < window->e.y - 1)
         {
-            f->b->b.y = e_lst_mouse (f->e.x, f->a.y + 1, f->e.y - f->a.y - 1, 0,
-                                     f->b->mxlines, f->b->b.y);
-            e_cursor (f, 1);
-            e_refresh ();
+            window->buffer->cursor.y = e_lst_mouse (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
+                                                    window->buffer->mxlines, window->buffer->cursor.y);
+            e_cursor (window, 1);
+            e_u_refresh ();
         }
-        else if (e_mouse.y == f->e.y && e_mouse.x == f->a.x + 19)
+        else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 19)
         {
             while (e_mshit ())
             {
-                f->b->b.x = f->b->b.x > 0 ? f->b->b.x - 1 : 0;
-                e_cursor (f, 1);
-                e_refresh ();
+                window->buffer->cursor.x = window->buffer->cursor.x > 0 ? window->buffer->cursor.x - 1 : 0;
+                e_cursor (window, 1);
+                e_u_refresh ();
             }
         }
-        else if (e_mouse.y == f->e.y && e_mouse.x == f->e.x - 2)
+        else if (e_mouse.y == window->e.y && e_mouse.x == window->e.x - 2)
         {
             while (e_mshit ())
             {
-                f->b->b.x = f->b->b.x < f->b->bf[f->b->b.y].len ?
-                            f->b->b.x + 1 : f->b->bf[f->b->b.y].len;
-                e_cursor (f, 1);
-                e_refresh ();
+                window->buffer->cursor.x = window->buffer->cursor.x < window->buffer->buflines[window->buffer->cursor.y].len ?
+                                           window->buffer->cursor.x + 1 : window->buffer->buflines[window->buffer->cursor.y].len;
+                e_cursor (window, 1);
+                e_u_refresh ();
             }
         }
-        else if (e_mouse.y == f->e.y &&
-                 e_mouse.x > f->a.x + 19 && e_mouse.x < f->e.x - 2)
+        else if (e_mouse.y == window->e.y &&
+                 e_mouse.x > window->a.x + 19 && e_mouse.x < window->e.x - 2)
         {
-            f->b->b.x =
-                e_lst_mouse (f->a.x + 19, f->e.y, f->e.x - f->a.x - 20, 1,
-                             f->b->mx.x, num_cols_off_screen_left(f));
-            e_cursor (f, 1);
-            e_refresh ();
+            window->buffer->cursor.x =
+                e_lst_mouse (window->a.x + 19, window->e.y, window->e.x - window->a.x - 20, 1,
+                             window->buffer->mx.x, num_cols_off_screen_left(window));
+            e_cursor (window, 1);
+            e_u_refresh ();
         }
     }
     else
     {
-        for (i = cn->mxedt; i > 0; i--)
+        for (i = control->mxedt; i > 0; i--)
         {
-            if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x &&
-                    e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
+            if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x &&
+                    e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
             {
                 ret =
-                    cn->edt[i] < 10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i];
+                    control->edt[i] < 10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i];
                 break;
             }
         }
@@ -935,37 +936,37 @@ e_edt_mouse (int c, we_window_t * f)
 }
 
 int
-e_mouse_cursor (BUFFER * b, we_screen_t * s, we_window_t * f)
+e_mouse_cursor (we_buffer_t * buffer, we_screen_t * s, we_window_t * window)
 {
     extern struct mouse e_mouse;
 
-    b->b.x = e_mouse.x - f->a.x + s->c.x - 1;
-    b->b.y = e_mouse.y - f->a.y + s->c.y - 1;
-    if (b->b.y < 0)
-        b->b.y = 0;
-    else if (b->b.y >= b->mxlines)
-        b->b.y = b->mxlines - 1;
-    return (b->b.x = e_chr_sp (b->b.x, b, f));
+    buffer->cursor.x = e_mouse.x - window->a.x + s->c.x - 1;
+    buffer->cursor.y = e_mouse.y - window->a.y + s->c.y - 1;
+    if (buffer->cursor.y < 0)
+        buffer->cursor.y = 0;
+    else if (buffer->cursor.y >= buffer->mxlines)
+        buffer->cursor.y = buffer->mxlines - 1;
+    return (buffer->cursor.x = e_chr_sp (buffer->cursor.x, buffer, window));
 }
 
 /*  Copy, Cut and Paste functions    */
 int
-e_ccp_mouse (int c, we_window_t * f)
+e_ccp_mouse (int c, we_window_t * window)
 {
-    BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-    we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
+    we_screen_t *s = window->edit_control->window[window->edit_control->mxedt]->screen;
 
     while (e_mshit () != 0)
         ;
     if (c == -2)
     {
-        e_mouse_cursor (b, s, f);
-        return ((bioskey () & 8) ? AltEin : ShiftEin);
+        e_mouse_cursor (buffer, s, window);
+        return ((u_bioskey () & 8) ? AltEin : ShiftEin);
     }
     else if (c == -4)
     {
-        return ((bioskey () & 3) ? ShiftDel
-                : ((bioskey () & 8) ? AltDel : CEINFG));
+        return ((u_bioskey () & 3) ? ShiftDel
+                : ((u_bioskey () & 8) ? AltDel : CEINFG));
     }
     else
         return (0);
@@ -973,71 +974,71 @@ e_ccp_mouse (int c, we_window_t * f)
 
 /*       Mouse cursor in edit window control   */
 void
-e_cur_mouse (f)
-we_window_t *f;
+e_cur_mouse (window)
+we_window_t *window;
 {
-    BUFFER *b = f->ed->f[f->ed->mxedt]->b;
-    we_screen_t *s = f->ed->f[f->ed->mxedt]->s;
+    we_buffer_t *buffer = window->edit_control->window[window->edit_control->mxedt]->buffer;
+    we_screen_t *s = window->edit_control->window[window->edit_control->mxedt]->screen;
     we_point_t bs;
-    bs.x = b->b.x;
-    bs.y = b->b.y;
-    e_mouse_cursor (b, s, f);
-    if ((bioskey () & 3) == 0)
+    bs.x = buffer->cursor.x;
+    bs.y = buffer->cursor.y;
+    e_mouse_cursor (buffer, s, window);
+    if ((u_bioskey () & 3) == 0)
     {
-        if (b->b.x == bs.x && b->b.y == bs.y && f->dtmd != DTMD_HELP)
+        if (buffer->cursor.x == bs.x && buffer->cursor.y == bs.y && window->dtmd != DTMD_HELP)
         {
-            if (s->mark_begin.y == b->b.y && s->mark_end.y == b->b.y
-                    && s->mark_begin.x <= b->b.x && s->mark_end.x > b->b.x)
+            if (s->mark_begin.y == buffer->cursor.y && s->mark_end.y == buffer->cursor.y
+                    && s->mark_begin.x <= buffer->cursor.x && s->mark_end.x > buffer->cursor.x)
             {
                 s->mark_begin.x = 0;
-                s->mark_end.x = b->bf[b->b.y].len;
+                s->mark_end.x = buffer->buflines[buffer->cursor.y].len;
             }
             else
             {
-                s->mark_begin.y = s->mark_end.y = b->b.y;
-                for (s->mark_begin.x = b->b.x; s->mark_begin.x > 0
-                        && isalnum1 (b->bf[b->b.y].s[s->mark_begin.x - 1]);
+                s->mark_begin.y = s->mark_end.y = buffer->cursor.y;
+                for (s->mark_begin.x = buffer->cursor.x; s->mark_begin.x > 0
+                        && isalnum1 (buffer->buflines[buffer->cursor.y].s[s->mark_begin.x - 1]);
                         s->mark_begin.x--);
-                for (s->mark_end.x = b->b.x;
-                        s->mark_end.x < b->bf[b->b.y].len
-                        && isalnum1 (b->bf[b->b.y].s[s->mark_end.x]);
+                for (s->mark_end.x = buffer->cursor.x;
+                        s->mark_end.x < buffer->buflines[buffer->cursor.y].len
+                        && isalnum1 (buffer->buflines[buffer->cursor.y].s[s->mark_end.x]);
                         s->mark_end.x++);
             }
-            e_schirm (f, 1);
+            e_write_screen (window, 1);
         }
-        s->ks.x = b->b.x;
-        s->ks.y = b->b.y;
+        s->ks.x = buffer->cursor.x;
+        s->ks.y = buffer->cursor.y;
     }
     else
     {
-        if (s->mark_end.y < b->b.y
-                || (s->mark_end.y == b->b.y && s->mark_end.x <= b->b.x))
+        if (s->mark_end.y < buffer->cursor.y
+                || (s->mark_end.y == buffer->cursor.y && s->mark_end.x <= buffer->cursor.x))
         {
-            s->mark_end.x = b->b.x;
-            s->mark_end.y = b->b.y;
+            s->mark_end.x = buffer->cursor.x;
+            s->mark_end.y = buffer->cursor.y;
             s->ks.x = s->mark_begin.x;
             s->ks.y = s->mark_begin.y;
         }
-        else if (s->mark_begin.y > b->b.y
-                 || (s->mark_begin.y == b->b.y && s->mark_begin.x >= b->b.x))
+        else if (s->mark_begin.y > buffer->cursor.y
+                 || (s->mark_begin.y == buffer->cursor.y && s->mark_begin.x >= buffer->cursor.x))
         {
-            s->mark_begin.x = b->b.x;
-            s->mark_begin.y = b->b.y;
+            s->mark_begin.x = buffer->cursor.x;
+            s->mark_begin.y = buffer->cursor.y;
             s->ks.x = s->mark_end.x;
             s->ks.y = s->mark_end.y;
         }
         else if (s->mark_end.y < bs.y
                  || (s->mark_end.y == bs.y && s->mark_end.x <= bs.x))
         {
-            s->mark_begin.x = b->b.x;
-            s->mark_begin.y = b->b.y;
+            s->mark_begin.x = buffer->cursor.x;
+            s->mark_begin.y = buffer->cursor.y;
             s->ks.x = s->mark_end.x;
             s->ks.y = s->mark_end.y;
         }
         else
         {
-            s->mark_end.x = b->b.x;
-            s->mark_end.y = b->b.y;
+            s->mark_end.x = buffer->cursor.x;
+            s->mark_end.y = buffer->cursor.y;
             s->ks.x = s->mark_begin.x;
             s->ks.y = s->mark_begin.y;
         }
@@ -1045,38 +1046,38 @@ we_window_t *f;
     WpeMouseChangeShape (WpeSelectionShape);
     while (e_mshit () != 0)
     {
-        bs.x = b->b.x;
-        bs.y = b->b.y;
-        e_mouse_cursor (b, s, f);
-        if (b->b.x < 0)
-            b->b.x = 0;
-        else if (b->b.x > b->bf[b->b.y].len)
-            b->b.x = b->bf[b->b.y].len;
-        if (b->b.x != bs.x || b->b.y != bs.y)
+        bs.x = buffer->cursor.x;
+        bs.y = buffer->cursor.y;
+        e_mouse_cursor (buffer, s, window);
+        if (buffer->cursor.x < 0)
+            buffer->cursor.x = 0;
+        else if (buffer->cursor.x > buffer->buflines[buffer->cursor.y].len)
+            buffer->cursor.x = buffer->buflines[buffer->cursor.y].len;
+        if (buffer->cursor.x != bs.x || buffer->cursor.y != bs.y)
         {
-            if (s->ks.y < b->b.y || (s->ks.y == b->b.y && s->ks.x <= b->b.x))
+            if (s->ks.y < buffer->cursor.y || (s->ks.y == buffer->cursor.y && s->ks.x <= buffer->cursor.x))
             {
-                s->mark_end.x = b->b.x;
-                s->mark_end.y = b->b.y;
+                s->mark_end.x = buffer->cursor.x;
+                s->mark_end.y = buffer->cursor.y;
                 s->mark_begin.x = s->ks.x;
                 s->mark_begin.y = s->ks.y;
             }
             else
             {
-                s->mark_begin.x = b->b.x;
-                s->mark_begin.y = b->b.y;
+                s->mark_begin.x = buffer->cursor.x;
+                s->mark_begin.y = buffer->cursor.y;
                 s->mark_end.x = s->ks.x;
                 s->mark_end.y = s->ks.y;
             }
         }
-        e_cursor (f, 1);
-        e_schirm (f, 1);
-        e_refresh ();
+        e_cursor (window, 1);
+        e_write_screen (window, 1);
+        e_u_refresh ();
     }
-    s->ks.x = b->b.x;
-    s->ks.y = b->b.y;
+    s->ks.x = buffer->cursor.x;
+    s->ks.y = buffer->cursor.y;
     WpeMouseRestoreShape ();
-    e_cursor (f, 1);
+    e_cursor (window, 1);
 }
 
 int
@@ -1259,62 +1260,62 @@ e_opt_bs_mouse ()
 }
 
 int
-e_data_ein_mouse (f)
-we_window_t *f;
+e_data_ein_mouse (window)
+we_window_t *window;
 {
     extern struct mouse e_mouse;
-    FLWND *fw = (FLWND *) f->b;
-    we_control_t *cn = f->ed;
+    FLWND *fw = (FLWND *) window->buffer;
+    we_control_t *control = window->edit_control;
     int i, c = 0;
     if (e_mouse.y == 0)
         return (AltBl);
     else if (e_mouse.y == MAXSLNS - 1)
         return (e_m3_mouse ());
-    else if (e_mouse.x < f->a.x || e_mouse.x > f->e.x
-             || e_mouse.y < f->a.y || e_mouse.y > f->e.y)
+    else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
+             || e_mouse.y < window->a.y || e_mouse.y > window->e.y)
     {
-        for (i = cn->mxedt; i > 0; i--)
+        for (i = control->mxedt; i > 0; i--)
         {
-            if (e_mouse.x >= cn->f[i]->a.x && e_mouse.x <= cn->f[i]->e.x
-                    && e_mouse.y >= cn->f[i]->a.y && e_mouse.y <= cn->f[i]->e.y)
-                return (cn->edt[i] <
-                        10 ? Alt1 - 1 + cn->edt[i] : 1014 + cn->edt[i]);
+            if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x
+                    && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
+                return (control->edt[i] <
+                        10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
         }
     }
-    else if (e_mouse.x == f->a.x + 3 && e_mouse.y == f->a.y)
+    else if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
         c = WPE_ESC;
-    else if (e_mouse.x == f->e.x - 3 && e_mouse.y == f->a.y)
-        e_ed_zoom (f);
-    else if (e_mouse.x == f->a.x && e_mouse.y == f->a.y)
-        e_eck_mouse (f, 1);
-    else if (e_mouse.x == f->e.x && e_mouse.y == f->a.y)
-        e_eck_mouse (f, 2);
-    else if (e_mouse.x == f->e.x && e_mouse.y == f->e.y)
-        e_eck_mouse (f, 3);
-    else if (e_mouse.x == f->a.x && e_mouse.y == f->e.y)
-        e_eck_mouse (f, 4);
-    else if (e_mouse.y == f->a.y && e_mouse.x > f->a.x && e_mouse.x < f->e.x)
-        e_eck_mouse (f, 0);
+    else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+        e_ed_zoom (window);
+    else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+        e_eck_mouse (window, 1);
+    else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+        e_eck_mouse (window, 2);
+    else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+        e_eck_mouse (window, 3);
+    else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+        e_eck_mouse (window, 4);
+    else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x)
+        e_eck_mouse (window, 0);
     else if (e_mouse.y >= fw->ya && e_mouse.y <= fw->ye &&
              e_mouse.x >= fw->xa && e_mouse.x <= fw->xe)
         c = AltF;
-    else if (e_mouse.y == f->e.y - 2 && e_mouse.x >= f->e.x - 9
-             && e_mouse.x <= f->e.x - 3)
+    else if (e_mouse.y == window->e.y - 2 && e_mouse.x >= window->e.x - 9
+             && e_mouse.x <= window->e.x - 3)
         c = WPE_ESC;
-    else if ((f->ins < 4 || f->ins == 7) && e_mouse.y == f->e.y - 4
-             && e_mouse.x >= f->e.x - 9 && e_mouse.x <= f->e.x - 3)
+    else if ((window->ins < 4 || window->ins == 7) && e_mouse.y == window->e.y - 4
+             && e_mouse.x >= window->e.x - 9 && e_mouse.x <= window->e.x - 3)
         c = AltS;
-    else if (f->ins > 3 && e_mouse.y == f->e.y - 8 && e_mouse.x >= f->e.x - 9
-             && e_mouse.x <= f->e.x - 3)
+    else if (window->ins > 3 && e_mouse.y == window->e.y - 8 && e_mouse.x >= window->e.x - 9
+             && e_mouse.x <= window->e.x - 3)
         c = AltA;
-    else if (f->ins > 3 && e_mouse.y == f->e.y - 6 && e_mouse.x >= f->e.x - 9
-             && e_mouse.x <= f->e.x - 3)
+    else if (window->ins > 3 && e_mouse.y == window->e.y - 6 && e_mouse.x >= window->e.x - 9
+             && e_mouse.x <= window->e.x - 3)
         c = AltE;
-    else if (f->ins > 3 && e_mouse.y == f->e.y - 4 && e_mouse.x >= f->e.x - 9
-             && e_mouse.x <= f->e.x - 3)
+    else if (window->ins > 3 && e_mouse.y == window->e.y - 4 && e_mouse.x >= window->e.x - 9
+             && e_mouse.x <= window->e.x - 3)
         c = AltD;
-    else if (f->ins == 4 && e_mouse.y == f->e.y - 10 && e_mouse.x >= f->e.x - 9
-             && e_mouse.x <= f->e.x - 3)
+    else if (window->ins == 4 && e_mouse.y == window->e.y - 10 && e_mouse.x >= window->e.x - 9
+             && e_mouse.x <= window->e.x - 3)
         c = AltO;
     else
         c = AltF;
@@ -1328,15 +1329,15 @@ W_OPTSTR *o;
 {
     int g[4];
     int xold, yold, x, y, xa;
-    we_view_t *pic;
-    e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
+    we_view_t *view;
+    e_std_window (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
     if (!WpeIsXwin ())
-        pic = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
+        view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
     else
-        pic = e_open_view (o->xa, o->ya, o->xe - 2, o->ye - 1, 0, 2);
+        view = e_open_view (o->xa, o->ya, o->xe - 2, o->ye - 1, 0, 2);
 #else
-    pic = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
+    view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
 #endif
     g[0] = 3;
     g[1] = 1;
@@ -1373,27 +1374,27 @@ W_OPTSTR *o;
             o->ya = y;
             g[0] = 2;
             fk_mouse (g);
-            o->pic =
-                e_change_pic (o->xa, o->ya, o->xe, o->ye, o->pic, 1, o->frt);
-            if (o->pic == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, o->f->fb);
+            o->view =
+                e_change_pic (o->xa, o->ya, o->xe, o->ye, o->view, 1, o->frt);
+            if (o->view == NULL)
+                e_error (e_msg[ERR_LOWMEM], 1, o->window->colorset);
             g[0] = 1;
             fk_mouse (g);
-            pic->a.x = o->xa;
-            pic->a.y = o->ya;
-            pic->e.x = o->xe;
-            pic->e.y = o->ye;
-            e_close_view (pic, 2);
+            view->a.x = o->xa;
+            view->a.y = o->ya;
+            view->e.x = o->xe;
+            view->e.y = o->ye;
+            e_close_view (view, 2);
         }
         g[0] = 3;
         fk_mouse (g);
     }
-    pic->a.x = o->xa;
-    pic->a.y = o->ya;
-    pic->e.x = o->xe;
-    pic->e.y = o->ye;
-    e_close_view (pic, 1);
-    e_std_rahmen (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
+    view->a.x = o->xa;
+    view->a.y = o->ya;
+    view->e.x = o->xe;
+    view->e.y = o->ye;
+    e_close_view (view, 1);
+    e_std_window (o->xa, o->ya, o->xe, o->ye, o->name, 1, o->frt, o->frs);
 }
 
 int

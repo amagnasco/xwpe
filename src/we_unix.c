@@ -1,4 +1,4 @@
-/* we_unix.c                                             */
+/** \file we_unix.c                                        */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
@@ -10,13 +10,14 @@
 #include "model.h"		/* exchange for D.S.  */
 #include "we_control.h"
 #include "options.h"
+#include "we_term.h"
 #include <signal.h>
 
 #ifdef UNIX
 #include <unistd.h>
 #endif
 
-// TODO: checkout when and if we need XWPE_DLL
+// \todo TODO: checkout when and if we need XWPE_DLL
 #ifdef XWPE_DLL
 #include <dlfcn.h>
 #else
@@ -46,8 +47,6 @@ int WpeTermInit (int *argc, char **argv);
 #define S_ISLNK(x)  0
 #endif
 
-
-char *schirm = NULL;
 char e_we_sw = 0;
 
 void WpeSignalUnknown (int sig);
@@ -58,56 +57,86 @@ void (*WpeMouseRestoreShape) (void);
 void (*WpeDisplayEnd) (void);
 int (*fk_u_locate) (int x, int y);
 int (*fk_u_cursor) (int x);
-int (*e_u_initscr) (int argc, char *argv[]);
 int (*fk_u_putchar) (int c);
 int (*u_bioskey) (void);
-int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * f, int md);
-we_color_t (*e_s_u_clr) (int f, int b);
-we_color_t (*e_n_u_clr) (int fb);
-void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * f, int sw);
+int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * window, int md);
+we_color_t (*e_s_u_clr) (int fg_color, int bg_color);
+we_color_t (*e_n_u_clr) (int fg_bg_color);
+void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * window, int sw);
 int (*fk_mouse) (int g[]);
+/**
+ * refresh the screen.
+ *
+ * filled with e_t_refresh for non-X terminal or e_x_refresh for X terminal.
+ */
 int (*e_u_refresh) (void);
+/**
+ * get character.
+ *
+ * filled with e_t_getch for non-X terminal or e_x_getch for X terminal.
+ */
 int (*e_u_getch) (void);
+/**
+ * Initialize terminal.
+ *
+ * filled with e_t_sys_ini for non-X terminal or e_x_sys_ini (= zero function) for X terminal.
+ */
 int (*e_u_sys_ini) (void);
+/**
+ * Ending
+ *
+ * filled with e_t_sys_end for non-X terminal or e_x_sys_end (= zero function) for X terminal.
+ */
 int (*e_u_sys_end) (void);
+/**
+ * Function to execute a system command.
+ *
+ * filled with system for non-X terminal or e_x_system for X terminal.
+ * Remark that e_x_system is wrapped around system and includes some specific X features
+ * like -geometry.
+ */
 int (*e_u_system) (const char *exe);
-int (*e_make_urect) (int xa, int ya, int xe, int ye, int sw);
-int (*e_make_urect_abs) (int xa, int ya, int xe, int ye, int sw);
+/**
+ * This function does some sort of screen switch: \todo: what does it do exactly?
+ *
+ * filled with e_t_d_switch_out for non-X terminal or WpeZeroFunction for X terminal.
+ */
 int (*e_u_d_switch_out) (int sw);
+/**
+ * This function does some sort of screen switch: \todo: what does it exactly do?
+ *
+ * filled with e_t_switch_screen for non-X terminal or WpeZeroFunction for X terminal.
+ */
 int (*e_u_switch_screen) (int sw);
-int (*e_u_deb_out) (struct FNST * f);
-int (*e_u_cp_X_to_buffer) (struct FNST * f);
-int (*e_u_copy_X_buffer) (struct FNST * f);
-int (*e_u_paste_X_buffer) (struct FNST * f);
+/**
+ * debug output function
+ *
+ * filled with e_t_deb_out for non-X terminal.
+ */
+int (*e_u_deb_out) (we_window_t * window);
+/**
+ * Copies
+ */
+int (*e_u_cp_X_to_buffer) (we_window_t * window);
+int (*e_u_copy_X_buffer) (we_window_t * window);
+int (*e_u_paste_X_buffer) (we_window_t * window);
 int (*e_u_kbhit) (void);
-int (*e_u_change) (we_view_t * pic);
-int (*e_u_ini_size) (void);
+int (*e_u_change) (we_view_t * view);
 int (*e_get_pic_urect) (int xa, int ya, int xe, int ye,
-                        struct view_struct * pic);
+                        struct view_struct * view);
 int (*e_u_s_sys_end) (void);
 int (*e_u_s_sys_ini) (void);
-void (*e_u_setlastpic) (we_view_t * pic);
+void (*e_u_setlastpic) (we_view_t * view);
 
 we_colorset_t *u_fb, *x_fb;
 
 char MCI, MCA, RD1, RD2, RD3, RD4, RD5, RD6, WBT;
 char RE1, RE2, RE3, RE4, RE5, RE6;
-char *ctree[5];
-int MENOPT = 8;
 int e_mn_men = 3;
 
-int MAXSLNS = 24;
-int MAXSCOL = 80;
-int col_num = 0;
-char *att_no;
 struct termios otermio, ntermio, ttermio;
-int cur_x = -1, cur_y = -1;
 void *libxwpe;
 
-#ifdef NEWSTYLE
-char *extbyte = NULL, *altextbyte = NULL;
-#endif
-char *altschirm = NULL;
 we_view_t *e_X_l_pic = NULL;
 
 void
@@ -128,7 +157,7 @@ e_ini_unix (int *argc, char **argv)
     int i, debug;
     struct sigaction act;
 #ifdef XWPE_DLL
-    int (*initfunc) (int *argc, char **argv);
+    int initfunc (int *argc, char **argv);
 #endif
 
     setlocale (LC_ALL, "");
@@ -154,8 +183,8 @@ e_ini_unix (int *argc, char **argv)
     if (!strncmp ("wpe", (argv[0] + i + e_we_sw + 1), 3))
         e_we_sw |= 2;
 #endif
-// TODO: Checkout whether we need XWPE_DLL
-// FIXME: adjusted code to read only libxwpe (common library), needs testing
+// \todo TODO: Checkout whether we need XWPE_DLL
+// \todo FIXME: adjusted code to read only libxwpe (common library), needs testing
 #ifdef XWPE_DLL
     libxwpe = dlopen (LIBRARY_DIR "/libxwpe.so", RTLD_NOW);
     if (!libxwpe)
@@ -166,7 +195,7 @@ e_ini_unix (int *argc, char **argv)
     initfunc = dlsym (libxwpe, "WpeDllInit");
     if (initfunc)
     {
-        (*initfunc) (argc, argv);
+        initfunc (argc, argv);
     }
     else
     {
@@ -277,21 +306,9 @@ e_ini_unix (int *argc, char **argv)
     return (*argc);
 }
 
-int
-e_abs_refr ()
-{
-    extern char *altschirm;
-    int i;
-
-    for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++)
-        altschirm[i] = 0;
-    return (0);
-}
-
 void
 e_refresh_area (int x, int y, int width, int height)
 {
-    extern char *altschirm;
     char *curloc;
     int i, j;
 
@@ -303,7 +320,7 @@ e_refresh_area (int x, int y, int width, int height)
     {
         height = MAXSLNS - y;
     }
-    curloc = altschirm + ((x + (y * MAXSCOL)) * 2);
+    curloc = global_alt_screen + ((x + (y * MAXSCOL)) * 2);
     for (j = 0; j < height; j++, curloc += MAXSCOL * 2)
     {
         for (i = 0; i < width; i++)
@@ -438,35 +455,35 @@ static int e_bool_exit = 0;
 void
 e_err_save ()
 {
-    we_control_t *cn = global_editor_control;
+    we_control_t *control = global_editor_control;
     int i;
     unsigned long maxname;
-    we_window_t *f;
-    BUFFER *b;
+    we_window_t *window;
+    we_buffer_t *buffer;
 
     /* Quick fix to multiple emergency save problems */
     if (e_bool_exit)
         return;
     e_bool_exit = 1;
-    for (i = 0; i <= cn->mxedt; i++)
+    for (i = 0; i <= control->mxedt; i++)
     {
-        if (DTMD_ISTEXT (cn->f[i]->dtmd))
+        if (DTMD_ISTEXT (control->window[i]->dtmd))
         {
-            f = cn->f[i];
-            b = cn->f[i]->b;
-            if (b->mxlines > 1 || b->bf[0].len > 0)
+            window = control->window[i];
+            buffer = control->window[i]->buffer;
+            if (buffer->mxlines > 1 || buffer->buflines[0].len > 0)
             {
                 /* Check if file system could have an autosave or emergency save file
                    >12 check is to eliminate dos file systems */
                 if (((maxname =
-                            pathconf (f->dirct,
-                                      _PC_NAME_MAX)) >= strlen (f->datnam) + 4)
+                            pathconf (window->dirct,
+                                      _PC_NAME_MAX)) >= strlen (window->datnam) + 4)
                         && (maxname > 12))
                 {
-                    strcat (f->datnam, ".ESV");
-                    printf ("Try to save %s!\n", f->datnam);
-                    if (!e_save (f))
-                        printf ("File %s saved!\n", f->datnam);
+                    strcat (window->datnam, ".ESV");
+                    printf ("Try to save %s!\n", window->datnam);
+                    if (!e_save (window))
+                        printf ("File %s saved!\n", window->datnam);
                 }
             }
         }
@@ -482,8 +499,8 @@ e_exit (int n)
     if (e_d_pid)
         kill (e_d_pid, 7);
 #endif
-    (*WpeDisplayEnd) ();
-    (*e_u_switch_screen) (0);
+    WpeDisplayEnd ();
+    e_u_switch_screen (0);
     if (n != 0)
     {
         printf ("\nError-Exit!   Code: %d!\n", n);
@@ -803,60 +820,60 @@ e_file_info (char *filen, char *str, int *num, int sw)
 }
 
 void
-ini_repaint (we_control_t * cn)
+ini_repaint (we_control_t * control)
 {
-    e_cls (cn->fb->df.fb, cn->fb->dc);
-    e_ini_desk (cn);
+    e_cls (control->colorset->df.fg_bg_color, control->colorset->dc);
+    e_ini_desk (control);
 }
 
 void
 end_repaint ()
 {
-    e_refresh ();
+    e_u_refresh ();
 }
 
 int
-e_recover (we_control_t * cn)
+e_recover (we_control_t * control)
 {
     struct dirfile *files;
-    we_window_t *f = NULL;
-    BUFFER *b;
+    we_window_t *window = NULL;
+    we_buffer_t *buffer;
     we_screen_t *s;
     int i;
 
     files = e_find_files ("*.ESV", 1);
     for (i = 0; i < files->nr_files; i++)
     {
-        e_edit (cn, files->name[i]);
-        f = cn->f[cn->mxedt];
-        f->datnam[strlen (f->datnam) - 4] = '\0';
-        if (!strcmp (f->datnam, BUFFER_NAME))
+        e_edit (control, files->name[i]);
+        window = control->window[control->mxedt];
+        window->datnam[strlen (window->datnam) - 4] = '\0';
+        if (!strcmp (window->datnam, BUFFER_NAME))
         {
-            s = cn->f[cn->mxedt]->s;
-            b = cn->f[cn->mxedt]->b;
-            s->mark_end.y = b->mxlines - 1;
-            s->mark_end.x = b->bf[b->mxlines - 1].len;
-            e_edt_copy (f);
-            e_close_window (f);
+            s = control->window[control->mxedt]->screen;
+            buffer = control->window[control->mxedt]->buffer;
+            s->mark_end.y = buffer->mxlines - 1;
+            s->mark_end.x = buffer->buflines[buffer->mxlines - 1].len;
+            e_edt_copy (window);
+            e_close_window (window);
         }
         else
-            f->save = 1;
+            window->save = 1;
 #ifdef PROG
         if (WpeIsProg ())
-            e_add_synt_tl (f->datnam, f);
+            e_add_synt_tl (window->datnam, window);
 #endif
-        if ((f->ed->edopt & ED_ALWAYS_AUTO_INDENT) ||
-                ((f->ed->edopt & ED_SOURCE_AUTO_INDENT) && f->c_st))
-            f->flg = 1;
+        if ((window->edit_control->edopt & ED_ALWAYS_AUTO_INDENT) ||
+                ((window->edit_control->edopt & ED_SOURCE_AUTO_INDENT) && window->c_st))
+            window->flg = 1;
     }
     freedf (files);
     return (0);
 }
 
 int
-e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
+e_frb_t_menue (int sw, int xa, int ya, we_window_t * window, int md)
 {
-    we_color_t *frb = &(f->fb->er);
+    we_color_t *frb = &(window->colorset->er);
     int i, j, y, c = 1, fb, fsv;
 
     if (md == 1)
@@ -865,7 +882,7 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
         sw += 16;
     else if (md == 3)
         sw += 32;
-    fsv = fb = frb[sw].fb;
+    fsv = fb = frb[sw].fg_bg_color;
     if (fb == 0)
         y = 0;
     else
@@ -882,25 +899,25 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * f, int md)
         else
             for (i = 1, fb = 1; i < y; i++)
                 fb *= 2;
-        frb[sw] = e_n_clr (fb);
-        e_pr_t_col_kasten (xa, ya, fb, fb, f, 1);
-        e_pr_ed_beispiel (1, 2, f, sw, md);
+        frb[sw] = e_n_u_clr (fb);
+        e_pr_t_col_kasten (xa, ya, fb, fb, window, 1);
+        e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
-        if ((c = e_getch ()) == -1)
+        if ((c = e_u_getch ()) == -1)
             c = e_opt_ck_mouse (xa, ya, md);
 #else
-        c = e_getch ();
+        c = e_u_getch ();
 #endif
     }
     while (c != WPE_ESC && c != WPE_CR && c > -2);
     if (c == WPE_ESC || c < -1)
-        frb[sw] = e_n_clr (fsv);
-    return (frb[sw].fb);
+        frb[sw] = e_n_u_clr (fsv);
+    return (frb[sw].fg_bg_color);
 }
 
 /*   draw colors box  */
 void
-e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
+e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * window, int sw)
 {
     int rfrb, xe = xa + 14, ye = ya + 8;
 
@@ -909,10 +926,10 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
     else
         for (rfrb = x, y = 1; rfrb > 1; y++)
             rfrb /= 2;
-    rfrb = sw == 0 ? f->fb->nt.fb : f->fb->fs.fb;
-    e_std_rahmen (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
+    rfrb = sw == 0 ? window->colorset->nt.fg_bg_color : window->colorset->fs.fg_bg_color;
+    e_std_window (xa, ya, xe, ye, "Colors", 0, rfrb, 0);
     /*     e_pr_str((xa+xe-8)/2, ya, "Colors", rfrb, 0, 1,
-                                            f->fb->ms.f+16*(rfrb/16), 0);
+                                            window->colorset->ms.fg_color+16*(rfrb/16), 0);
     */
     e_pr_nstr (xa + 2, ya + 1, xe - xa - 1, "A_NORMAL   ", 0, 0);
     e_pr_nstr (xa + 2, ya + 2, xe - xa - 1, "A_STANDOUT ", A_STANDOUT,
@@ -925,5 +942,5 @@ e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * f, int sw)
     e_pr_nstr (xa + 2, ya + 6, xe - xa - 1, "A_DIM      ", A_DIM, A_DIM);
     e_pr_nstr (xa + 2, ya + 7, xe - xa - 1, "A_BOLD     ", A_BOLD, A_BOLD);
 
-    fk_locate (xa + 4, ya + y + 1);
+    fk_u_locate (xa + 4, ya + y + 1);
 }

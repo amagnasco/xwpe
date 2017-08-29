@@ -1,11 +1,20 @@
 /**
- *  we_find.c
+ *  \file we_find.c
  *
  *  Copyright (C) 2017 Guus Bonnema
  *
- *  This is free software; You can redistribute it and/or
- *  modify it under the terms of the GNU Public License version 2 or later.
- *  See the file COPYING for license information.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *  Contents of the search functions is based on a rewritten version of the original
  *  search functions in we_edit.c.
@@ -31,7 +40,7 @@ int e_strstr(int start_offset, int end_offset,
 
     int len_search_expr = strlen((const char*)search_expression);
 
-    /**
+    /*
      *  Search forward or backward.
      *
      *  When searching backward start < end. In order to use the same algorithm

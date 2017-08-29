@@ -15,6 +15,7 @@ AC_CONFIG_SRCDIR([src/keys.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
+AC_LANG([C])
 # AM_PROG_AR		# defines the correct AR program for the platform, not needed now
 LT_INIT				# working with libtool
 LT_PREREQ([2.4.0])		# At least version 2.4 for libtool
@@ -39,6 +40,7 @@ AM_CONDITIONAL([HAVE_X11], [test "X$no_x" != "Xyes"])
 # Specific defines
 AC_DEFINE([UNUSED(X)], [(void)(X)], [Define for arguments in a header that are not going to be used.])
 AC_DEFINE([_XOPEN_SOURCE], [700], [Single UNIX specification version 4. Subsumes _POSIX_C_SOURCE])
+AC_DEFINE([DOXYGEN_CONFIG_H], [/**< \file config.h */], [A line for doxygen])
 
 # Many code blocks depend on NO_XWINDOWS being defined or not defined
 if test "X${no_x}" = "Xyes"; then
@@ -63,8 +65,7 @@ AC_CHECK_LIB([rt], [timer_create])
 AC_CHECK_LIB([pthread], [__pthread_register_cancel])
 AC_CHECK_LIB([subunit], [subunit_test_start])
 # Ubuntu does not install the dynamic library for check, but check and check_pic
-# The search statement below checks for check_pic first, because libcheck.a does
-# not contain symbols.
+# check_pic is the one containing symbols and should be used if present.
 AC_CHECK_LIB([check], [tcase_create])
 AC_CHECK_LIB([check_pic], [tcase_create])
 
@@ -75,6 +76,21 @@ if test -n "${PRNTCMD}"; then
 	AC_DEFINE_UNQUOTED([PRNTCMD], ["${PRNTCMD}"], [Copy print command found to config.h])
 else
 	AC_DEFINE([PRNTCMD], [""], [Empty print command if no command found])
+fi
+
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+if test -z "$DOXYGEN"; then
+   AC_MSG_WARN([Doxygen not found - continue without Doxygen support])
+fi
+
+AC_CHECK_PROGS([DOT], [dot])
+if test -z "$DOT"; then
+	AC_MSG_WARN([Doxygen needs dot, please install dot])
+fi
+
+AC_CHECK_PROGS([PDFLATEX], [pdflatex])
+if test -z "$PDFLATEX"; then
+   AC_MSG_WARN([Doxygen needs pdflatex program, it is part of TeX http://www.tug.org/texlive/acquire-netinstall.html])
 fi
 
 # for we_fl_unix.c
@@ -100,6 +116,10 @@ AC_CHECK_FUNCS([symlink tparm mkdtemp tempnam])
 AC_CHECK_FUNCS([getcwd memset mkdir mkfifo pathconf regcomp rmdir setlocale])
 AC_CHECK_FUNCS([strchr strdup strrchr strstr])
 AC_CHECK_FUNCS([backtrace])
+
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Doxyfile])])
+AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Makefile])])
 
 AC_CONFIG_FILES([Makefile src/Makefile data/Makefile man/Makefile test/Makefile])
 AC_OUTPUT

@@ -15,7 +15,7 @@ changes the code.
 From the project root do
 
     `cd build`
-    `make chake`
+    `make check`
 
 to execute the testcases. Check `test-suite.log` to check the results if you receive errors.
 

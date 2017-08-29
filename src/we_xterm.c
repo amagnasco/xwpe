@@ -1,4 +1,4 @@
-/* we_xterm.c                                             */
+/** \file we_xterm.c                                       */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
@@ -15,6 +15,7 @@
 #include "edit.h"
 #include "we_unix.h"
 #include "WeString.h"
+#include "we_term.h"
 #include "we_xterm.h"
 
 /* partial conversion in place */
@@ -29,8 +30,10 @@
 #define WpeDllInit WpeXtermInit
 #endif
 
+/** global field filled in we_main.c and used in we_fl_unix.c */
+char *user_shell;
+
 int fk_show_cursor (void);
-int e_ini_size (void);
 int e_x_getch (void);
 int fk_x_mouse (int *g);
 int e_x_refresh (void);
@@ -41,14 +44,18 @@ int e_x_sys_end (void);
 int fk_x_putchar (int c);
 int x_bioskey (void);
 int e_x_system (const char *exe);
-int e_x_cp_X_to_buffer (we_window_t * f);
-int e_x_copy_X_buffer (we_window_t * f);
-int e_x_paste_X_buffer (we_window_t * f);
-int e_x_change (we_view_t * pic);
-int e_x_repaint_desk (we_window_t * f);
-void e_setlastpic (we_view_t * pic);
-int e_make_xr_rahmen (int xa, int ya, int xe, int ye, int sw);
+int e_x_cp_X_to_buffer (we_window_t * window);
+int e_x_copy_X_buffer (we_window_t * window);
+int e_x_paste_X_buffer (we_window_t * window);
+int e_x_change (we_view_t * view);
+int e_x_repaint_desk (we_window_t * window);
+void e_setlastpic (we_view_t * view);
 int e_x_kbhit (void);
+x_selection_t e_x_get_X_selection();
+void e_x_empty_buffer(we_buffer_t *buffer);
+void e_x_free_X_selection(x_selection_t xsel);
+void e_x_paste_X_selection(we_buffer_t *buffer, x_selection_t xsel);
+void e_x_reinit_marked_area(we_screen_t *screen, we_buffer_t *buffer);
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -75,11 +82,10 @@ extern char *e_tmp_dir;
 
 /*  for TextSchirm (text screen)   */
 
-extern char *altschirm;
-#ifdef NEWSTYLE
-extern char *extbyte, *altextbyte;
-#endif
-int old_cursor_x = 0, old_cursor_y = 0, cur_on = 1;
+int old_cursor_x = 0, old_cursor_y = 0;
+
+static int cur_on = 1;
+
 extern we_view_t *e_X_l_pic;
 
 extern struct mouse e_mouse;
@@ -106,7 +112,6 @@ WpeDllInit (int *argc, char **argv)
     e_u_paste_X_buffer = e_x_paste_X_buffer;
     e_u_kbhit = e_x_kbhit;
     e_u_change = e_x_change;
-    e_u_ini_size = e_ini_size;
     e_u_setlastpic = e_setlastpic;
     WpeMouseChangeShape = (void (*)(WpeMouseShape)) WpeNullFunction;
     WpeMouseRestoreShape = (void (*)(void)) WpeNullFunction;
@@ -300,13 +305,13 @@ fk_show_cursor ()
     if (x > 0)
     {
         XSetForeground (WpeXInfo.display, WpeXInfo.gc,
-                        WpeXInfo.colors[schirm[x + 1] % 16]);
+                        WpeXInfo.colors[global_screen[x + 1] % 16]);
         XSetBackground (WpeXInfo.display, WpeXInfo.gc,
-                        WpeXInfo.colors[schirm[x + 1] / 16]);
+                        WpeXInfo.colors[global_screen[x + 1] / 16]);
         XDrawImageString (WpeXInfo.display, WpeXInfo.window, WpeXInfo.gc,
                           WpeXInfo.font_width * old_cursor_x,
                           WpeXInfo.font_height * (old_cursor_y + 1) -
-                          WpeXInfo.font->max_bounds.descent, schirm + x, 1);
+                          WpeXInfo.font->max_bounds.descent, global_screen + x, 1);
 #ifdef NEWSTYLE
         e_print_xrect (old_cursor_x, old_cursor_y, x / 2);
 #ifndef NOXCACHE
@@ -317,44 +322,16 @@ fk_show_cursor ()
     x = 2 * cur_x + 2 * MAXSCOL * cur_y;
 
     XSetForeground (WpeXInfo.display, WpeXInfo.gc,
-                    WpeXInfo.colors[schirm[x + 1] / 16]);
+                    WpeXInfo.colors[global_screen[x + 1] / 16]);
     XSetBackground (WpeXInfo.display, WpeXInfo.gc,
-                    WpeXInfo.colors[schirm[x + 1] % 16]);
+                    WpeXInfo.colors[global_screen[x + 1] % 16]);
     XDrawImageString (WpeXInfo.display, WpeXInfo.window, WpeXInfo.gc,
                       WpeXInfo.font_width * cur_x,
                       WpeXInfo.font_height * (cur_y + 1) -
-                      WpeXInfo.font->max_bounds.descent, schirm + x, 1);
+                      WpeXInfo.font->max_bounds.descent, global_screen + x, 1);
     old_cursor_x = cur_x;
     old_cursor_y = cur_y;
     return (cur_on);
-}
-
-int
-e_ini_size ()
-{
-    old_cursor_x = cur_x;
-    old_cursor_y = cur_y;
-
-    if (schirm)
-        free (schirm);
-    if (altschirm)
-        free (altschirm);
-    schirm = malloc (2 * MAXSCOL * MAXSLNS);
-    altschirm = malloc (2 * MAXSCOL * MAXSLNS);
-#ifdef NEWSTYLE
-    if (extbyte)
-        free (extbyte);
-    if (altextbyte)
-        free (altextbyte);
-    extbyte = malloc (MAXSCOL * MAXSLNS);
-    altextbyte = malloc (MAXSCOL * MAXSLNS);
-    if (!schirm || !altschirm || !extbyte || !altextbyte)
-        return (-1);
-#else
-    if (!schirm || !altschirm)
-        return (-1);
-#endif
-    return (0);
 }
 
 #define A_Normal 	16
@@ -366,31 +343,31 @@ e_ini_size ()
 int
 e_X_sw_color ()
 {
-    we_colorset_t *fb = global_editor_control->fb;
-    fb->er = e_n_clr (A_Normal);
-    fb->et = e_n_clr (A_Normal);
-    fb->ez = e_n_clr (A_Reverse);
-    fb->es = e_n_clr (A_Normal);
-    fb->em = e_n_clr (A_Standout);
-    fb->ek = e_n_clr (A_Underline);
-    fb->nr = e_n_clr (A_Standout);
-    fb->nt = e_n_clr (A_Reverse);
-    fb->nz = e_n_clr (A_Normal);
-    fb->ns = e_n_clr (A_Bold);
-    fb->mr = e_n_clr (A_Standout);
-    fb->mt = e_n_clr (A_Standout);
-    fb->mz = e_n_clr (A_Normal);
-    fb->ms = e_n_clr (A_Normal);
-    fb->fr = e_n_clr (A_Normal);
-    fb->ft = e_n_clr (A_Normal);
-    fb->fz = e_n_clr (A_Standout);
-    fb->fs = e_n_clr (A_Standout);
-    fb->of = e_n_clr (A_Standout);
-    fb->df = e_n_clr (A_Normal);
+    we_colorset_t *fb = global_editor_control->colorset;
+    fb->er = e_n_u_clr (A_Normal);
+    fb->et = e_n_u_clr (A_Normal);
+    fb->ez = e_n_u_clr (A_Reverse);
+    fb->es = e_n_u_clr (A_Normal);
+    fb->em = e_n_u_clr (A_Standout);
+    fb->ek = e_n_u_clr (A_Underline);
+    fb->nr = e_n_u_clr (A_Standout);
+    fb->nt = e_n_u_clr (A_Reverse);
+    fb->nz = e_n_u_clr (A_Normal);
+    fb->ns = e_n_u_clr (A_Bold);
+    fb->mr = e_n_u_clr (A_Standout);
+    fb->mt = e_n_u_clr (A_Standout);
+    fb->mz = e_n_u_clr (A_Normal);
+    fb->ms = e_n_u_clr (A_Normal);
+    fb->fr = e_n_u_clr (A_Normal);
+    fb->ft = e_n_u_clr (A_Normal);
+    fb->fz = e_n_u_clr (A_Standout);
+    fb->fs = e_n_u_clr (A_Standout);
+    fb->of = e_n_u_clr (A_Standout);
+    fb->df = e_n_u_clr (A_Normal);
     fb->dc = 0x02;
 #ifdef DEBUGGER
-    fb->db = e_n_clr (A_Standout);
-    fb->dy = e_n_clr (A_Standout);
+    fb->db = e_n_u_clr (A_Standout);
+    fb->dy = e_n_u_clr (A_Standout);
 #endif
     return (0);
 }
@@ -405,39 +382,39 @@ e_x_refresh ()
     int stringcount = 0, oldI = 0, oldX = 0, oldY = 0, oldJ = 0;
 #endif
     int i, j, x, y, cur_tmp = cur_on;
-    fk_cursor (0);
+    fk_u_cursor (0);
     for (i = 0; i < MAXSLNS; i++)
         for (j = 0; j < MAXSCOL; j++)
         {
             y = j + MAXSCOL * i;
             x = 2 * y;
 #ifdef NEWSTYLE
-            if (schirm[x] != altschirm[x] || schirm[x + 1] != altschirm[x + 1]
+            if (global_screen[x] != global_alt_screen[x] || global_screen[x + 1] != global_alt_screen[x + 1]
                     || extbyte[y] != altextbyte[y])
 #else
-            if (schirm[x] != altschirm[x] || schirm[x + 1] != altschirm[x + 1])
+            if (global_screen[x] != global_alt_screen[x] || global_screen[x + 1] != global_alt_screen[x + 1])
 #endif
             {
 #ifdef NOXCACHE
                 XSetForeground (WpeXInfo.display, WpeXInfo.gc,
-                                WpeXInfo.colors[schirm[x + 1] % 16]);
+                                WpeXInfo.colors[global_screen[x + 1] % 16]);
                 XSetBackground (WpeXInfo.display, WpeXInfo.gc,
-                                WpeXInfo.colors[schirm[x + 1] / 16]);
+                                WpeXInfo.colors[global_screen[x + 1] / 16]);
                 XDrawImageString (WpeXInfo.display, WpeXInfo.window, WpeXInfo.gc,
                                   WpeXInfo.font_width * j,
                                   WpeXInfo.font_height * (i + 1) -
-                                  WpeXInfo.font->max_bounds.descent, schirm + x,
+                                  WpeXInfo.font->max_bounds.descent, global_screen + x,
                                   1);
 #else
-                if (oldback != (unsigned) WpeXInfo.colors[schirm[x + 1] / 16]	/* a.r. */
-                        || oldfore != (unsigned) WpeXInfo.colors[schirm[x + 1] % 16] || i != oldI || j > oldJ + 1	/* is there a more elegant solution? */
+                if (oldback != (unsigned) WpeXInfo.colors[global_screen[x + 1] / 16]	/* a.r. */
+                        || oldfore != (unsigned) WpeXInfo.colors[global_screen[x + 1] % 16] || i != oldI || j > oldJ + 1	/* is there a more elegant solution? */
                         || stringcount >= STRBUFSIZE)
                 {
                     XDrawImageString (WpeXInfo.display, WpeXInfo.window,
                                       WpeXInfo.gc, oldX, oldY, stringbuf,
                                       stringcount);
-                    oldback = WpeXInfo.colors[schirm[x + 1] / 16];
-                    oldfore = WpeXInfo.colors[schirm[x + 1] % 16];
+                    oldback = WpeXInfo.colors[global_screen[x + 1] / 16];
+                    oldfore = WpeXInfo.colors[global_screen[x + 1] % 16];
                     XSetForeground (WpeXInfo.display, WpeXInfo.gc, oldfore);
                     XSetBackground (WpeXInfo.display, WpeXInfo.gc, oldback);
                     oldX = WpeXInfo.font_width * j;
@@ -446,13 +423,13 @@ e_x_refresh ()
                         WpeXInfo.font->max_bounds.descent;
                     oldI = i;
                     stringcount = 0;
-                    stringbuf[stringcount++] = schirm[x];
+                    stringbuf[stringcount++] = global_screen[x];
                 }
                 else
-                    stringbuf[stringcount++] = schirm[x];
+                    stringbuf[stringcount++] = global_screen[x];
 #endif
 #ifndef NEWSTYLE
-                if (schirm[x] == 16)
+                if (global_screen[x] == 16)
                 {
                     XFillRectangle (WpeXInfo.display, WpeXInfo.window,
                                     WpeXInfo.gc, WpeXInfo.font_width * j,
@@ -461,7 +438,7 @@ e_x_refresh ()
                                     (WpeXInfo.font_height +
                                      WpeXInfo.font->max_bounds.descent) / 2);
                 }
-                else if (schirm[x] == 20)
+                else if (global_screen[x] == 20)
                 {
                     XFillRectangle (WpeXInfo.display, WpeXInfo.window,
                                     WpeXInfo.gc, WpeXInfo.font_width * j,
@@ -471,8 +448,8 @@ e_x_refresh ()
                                      WpeXInfo.font->max_bounds.descent) / 2);
                 }
 #endif
-                altschirm[x] = schirm[x];
-                altschirm[x + 1] = schirm[x + 1];
+                global_alt_screen[x] = global_screen[x];
+                global_alt_screen[x + 1] = global_screen[x + 1];
 #ifdef NEWSTYLE
                 e_print_xrect (j, i, y);
                 altextbyte[y] = extbyte[y];
@@ -489,14 +466,14 @@ e_x_refresh ()
     e_flush_xrect ();
 #endif
 #endif
-    fk_cursor (cur_tmp);
+    fk_u_cursor (cur_tmp);
     fk_show_cursor ();
     XFlush (WpeXInfo.display);
     return (0);
 }
 
 int
-e_x_change (we_view_t * pic)
+e_x_change (we_view_t * view)
 {
     XEvent report;
     XExposeEvent *expose_report;
@@ -520,7 +497,7 @@ e_x_change (we_view_t * pic)
                             expose_report->width / WpeXInfo.font_width + 2,
                             expose_report->height / WpeXInfo.font_height + 2);
             /*	    e_abs_refr();*/
-            e_refresh ();
+            e_u_refresh ();
             break;
         case ConfigureNotify:
             size_hints.width =
@@ -534,7 +511,7 @@ e_x_change (we_view_t * pic)
             {
                 MAXSCOL = size_hints.width / WpeXInfo.font_width;
                 MAXSLNS = size_hints.height / WpeXInfo.font_height;
-                e_x_repaint_desk (global_editor_control->f[global_editor_control->mxedt]);
+                e_x_repaint_desk (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
         case KeyPress:
@@ -544,7 +521,7 @@ e_x_change (we_view_t * pic)
                 return (CtrlC);
             break;
         case ButtonPress:
-            if (!pic)
+            if (!view)
                 break;
             key_b = report.xbutton.state;
             if (report.xbutton.button == 1)
@@ -554,8 +531,8 @@ e_x_change (we_view_t * pic)
                             (key_b & WpeXInfo.altmask) ? 8 : 0;
                 e_mouse.x = report.xbutton.x / WpeXInfo.font_width;
                 e_mouse.y = report.xbutton.y / WpeXInfo.font_height;
-                if (e_mouse.x > (pic->e.x + pic->a.x - 10) / 2 &&
-                        e_mouse.x < (pic->e.x + pic->a.x + 6) / 2)
+                if (e_mouse.x > (view->e.x + view->a.x - 10) / 2 &&
+                        e_mouse.x < (view->e.x + view->a.x + 6) / 2)
                     return (CtrlC);
             }
             break;
@@ -577,7 +554,7 @@ e_x_getch ()
     unsigned int key_b;
     XSizeHints size_hints;
 
-    e_refresh ();
+    e_u_refresh ();
 
     XQueryPointer (WpeXInfo.display, WpeXInfo.window, &tmp_root, &tmp_win,
                    &root_x, &root_y, &x, &y, &key_b);
@@ -613,7 +590,7 @@ e_x_getch ()
             }
             while (XCheckMaskEvent (WpeXInfo.display, ExposureMask, &report) ==
                     True);
-            e_refresh ();
+            e_u_refresh ();
             break;
         case ConfigureNotify:
             size_hints.width =
@@ -627,7 +604,7 @@ e_x_getch ()
             {
                 MAXSCOL = size_hints.width / WpeXInfo.font_width;
                 MAXSLNS = size_hints.height / WpeXInfo.font_height;
-                e_x_repaint_desk (global_editor_control->f[global_editor_control->mxedt]);
+                e_x_repaint_desk (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
         case ClientMessage:
@@ -642,7 +619,7 @@ e_x_getch ()
                                                    data.l[0] ==
                                                    WpeXInfo.delete_atom)))
             {
-                e_quit (global_editor_control->f[global_editor_control->mxedt]);
+                e_quit (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
         case KeyPress:
@@ -883,7 +860,7 @@ e_x_kbhit ()
     int c;
     unsigned int key_b;
 
-    e_refresh ();
+    e_u_refresh ();
 
     if (XCheckMaskEvent
             (WpeXInfo.display, ButtonPressMask | KeyPressMask, &report) == False)
@@ -916,11 +893,11 @@ e_x_kbhit ()
 }
 
 void
-e_setlastpic (we_view_t * pic)
+e_setlastpic (we_view_t * view)
 {
     extern we_view_t *e_X_l_pic;
 
-    e_X_l_pic = pic;
+    e_X_l_pic = view;
 }
 
 int
@@ -992,24 +969,26 @@ e_x_system (const char *exe)
 }
 
 int
-e_x_repaint_desk (we_window_t * f)
+e_x_repaint_desk (we_window_t * window)
 {
-    we_control_t *cn = f->ed;
+    we_control_t *control = window->edit_control;
     int i, g[4];
     extern we_view_t *e_X_l_pic;
     we_view_t *sv_pic = NULL, *nw_pic = NULL;
 
-    if (e_X_l_pic && e_X_l_pic != cn->f[cn->mxedt]->pic)
+    if (e_X_l_pic && e_X_l_pic != control->window[control->mxedt]->view)
     {
         sv_pic = e_X_l_pic;
         nw_pic = e_open_view (e_X_l_pic->a.x, e_X_l_pic->a.y, e_X_l_pic->e.x,
                               e_X_l_pic->e.y, 0, 2);
     }
+    old_cursor_x = cur_x;
+    old_cursor_y = cur_y;
     e_ini_size ();
-    if (cn->mxedt < 1)
+    if (control->mxedt < 1)
     {
-        e_cls (f->fb->df.fb, f->fb->dc);
-        e_ini_desk (f->ed);
+        e_cls (window->colorset->df.fg_bg_color, window->colorset->dc);
+        e_ini_desk (window->edit_control);
         if (nw_pic)
         {
             e_close_view (nw_pic, 1);
@@ -1017,34 +996,34 @@ e_x_repaint_desk (we_window_t * f)
         }
         return (0);
     }
-    ini_repaint (cn);
+    ini_repaint (control);
     e_abs_refr ();
-    for (i = cn->mxedt; i >= 1; i--)
+    for (i = control->mxedt; i >= 1; i--)
     {
-        free (cn->f[i]->pic->p);
-        free (cn->f[i]->pic);
+        free (control->window[i]->view->p);
+        free (control->window[i]->view);
     }
-    for (i = 0; i <= cn->mxedt; i++)
+    for (i = 0; i <= control->mxedt; i++)
     {
-        if (cn->f[i]->e.x >= MAXSCOL)
-            cn->f[i]->e.x = MAXSCOL - 1;
-        if (cn->f[i]->e.y >= MAXSLNS - 1)
-            cn->f[i]->e.y = MAXSLNS - 2;
-        if (cn->f[i]->e.x - cn->f[i]->a.x < 26)
-            cn->f[i]->a.x = cn->f[i]->e.x - 26;
-        if (!DTMD_ISTEXT (cn->f[i]->dtmd) && cn->f[i]->e.y - cn->f[i]->a.y < 9)
-            cn->f[i]->a.y = cn->f[i]->e.y - 9;
-        else if (DTMD_ISTEXT (cn->f[i]->dtmd)
-                 && cn->f[i]->e.y - cn->f[i]->a.y < 3)
-            cn->f[i]->a.y = cn->f[i]->e.y - 3;
+        if (control->window[i]->e.x >= MAXSCOL)
+            control->window[i]->e.x = MAXSCOL - 1;
+        if (control->window[i]->e.y >= MAXSLNS - 1)
+            control->window[i]->e.y = MAXSLNS - 2;
+        if (control->window[i]->e.x - control->window[i]->a.x < 26)
+            control->window[i]->a.x = control->window[i]->e.x - 26;
+        if (!DTMD_ISTEXT (control->window[i]->dtmd) && control->window[i]->e.y - control->window[i]->a.y < 9)
+            control->window[i]->a.y = control->window[i]->e.y - 9;
+        else if (DTMD_ISTEXT (control->window[i]->dtmd)
+                 && control->window[i]->e.y - control->window[i]->a.y < 3)
+            control->window[i]->a.y = control->window[i]->e.y - 3;
     }
-    for (i = 1; i < cn->mxedt; i++)
+    for (i = 1; i < control->mxedt; i++)
     {
-        e_firstl (cn->f[i], 0);
-        e_schirm (cn->f[i], 0);
+        e_firstl (control->window[i], 0);
+        e_write_screen (control->window[i], 0);
     }
-    e_firstl (cn->f[i], 1);
-    e_schirm (cn->f[i], 1);
+    e_firstl (control->window[i], 1);
+    e_write_screen (control->window[i], 1);
     if (nw_pic)
     {
         e_close_view (nw_pic, 1);
@@ -1053,7 +1032,7 @@ e_x_repaint_desk (we_window_t * f)
     g[0] = 2;
     fk_mouse (g);
     end_repaint ();
-    e_cursor (cn->f[i], 1);
+    e_cursor (control->window[i], 1);
     g[0] = 0;
     fk_mouse (g);
     g[0] = 1;
@@ -1091,23 +1070,135 @@ fk_x_mouse (int *g)
 }
 
 int
-e_x_cp_X_to_buffer (we_window_t * f)
+e_x_cp_X_to_buffer (we_window_t * window)
 {
-    BUFFER *b0 = f->ed->f[0]->b;
-    we_screen_t *s0 = f->ed->f[0]->s;
-    int i, j, k, n;
-    unsigned char *str;
-    XEvent report;
-    Atom type;
-    int format;
-    unsigned long nitems, bytes_left;
 
-    for (i = 1; i < b0->mxlines; i++)
-        free (b0->bf[i].s);
-    b0->mxlines = 1;
-    *(b0->bf[0].s) = WPE_WR;
-    *(b0->bf[0].s + 1) = '\0';
-    b0->bf[0].len = 0;
+    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
+    e_x_empty_buffer(b0);
+
+    x_selection_t xsel = e_x_get_X_selection();
+    if (xsel.success)
+    {
+        /* paste x selection string into window buffer */
+        e_x_paste_X_selection(b0, xsel);
+        e_x_free_X_selection(xsel);
+
+        we_screen_t *s0 = window->edit_control->window[0]->screen;
+        e_x_reinit_marked_area(s0, b0);
+    }
+
+    return 0;
+}
+
+int
+e_x_copy_X_buffer (we_window_t * window)
+{
+    e_u_cp_X_to_buffer (window);
+    e_edt_einf (window);
+    return (0);
+}
+
+int
+e_x_paste_X_buffer (we_window_t * window)
+{
+    we_buffer_t *b0 = window->edit_control->window[0]->buffer;
+    we_screen_t *s0 = window->edit_control->window[0]->screen;
+    int i, n;
+    unsigned int j;
+
+    e_edt_copy (window);
+#if defined SELECTION
+    if (WpeXInfo.selection)
+    {
+        free (WpeXInfo.selection);
+        WpeXInfo.selection = NULL;
+    }
+#endif
+    if ((s0->mark_end.y == 0 && s0->mark_end.x == 0) ||
+            s0->mark_end.y < s0->mark_begin.y)
+        return (0);
+    if (s0->mark_end.y == s0->mark_begin.y)
+    {
+        if (s0->mark_end.x < s0->mark_begin.x)
+            return (0);
+        n = s0->mark_end.x - s0->mark_begin.x;
+#if defined SELECTION
+        WpeXInfo.selection = malloc (n + 1);
+        strncpy ((char *) WpeXInfo.selection,
+                 (char *) b0->buflines[s0->mark_begin.y].s + s0->mark_begin.x, n);
+        WpeXInfo.selection[n] = 0;
+        XSetSelectionOwner (WpeXInfo.display, WpeXInfo.selection_atom,
+                            WpeXInfo.window, CurrentTime);
+#else
+        XStoreBytes (WpeXInfo.display,
+                     b0->buflines[s0->mark_begin.y].s + s0->mark_begin.x, n);
+#endif
+        return (0);
+    }
+    WpeXInfo.selection = malloc (b0->buflines[s0->mark_begin.y].nrc * sizeof (char));
+    for (n = 0, j = s0->mark_begin.x; j < b0->buflines[s0->mark_begin.y].nrc;
+            j++, n++)
+        WpeXInfo.selection[n] = b0->buflines[s0->mark_begin.y].s[j];
+    for (i = s0->mark_begin.y + 1; i < s0->mark_end.y; i++)
+    {
+        WpeXInfo.selection =
+            realloc (WpeXInfo.selection, (n + b0->buflines[i].nrc) * sizeof (char));
+        for (j = 0; j < b0->buflines[i].nrc; j++, n++)
+            WpeXInfo.selection[n] = b0->buflines[i].s[j];
+    }
+    WpeXInfo.selection =
+        realloc (WpeXInfo.selection, (n + s0->mark_end.x + 1) * sizeof (char));
+    for (j = 0; j < (unsigned) s0->mark_end.x; j++, n++)
+        WpeXInfo.selection[n] = b0->buflines[i].s[j];
+    WpeXInfo.selection[n] = 0;
+#if defined SELECTION
+    XSetSelectionOwner (WpeXInfo.display, WpeXInfo.selection_atom,
+                        WpeXInfo.window, CurrentTime);
+#else
+    XStoreBytes (WpeXInfo.display, WpeXInfo.selection, n);
+    free (WpeXInfo.selection);
+    WpeXInfo.selection = NULL;
+#endif
+    return (0);
+}
+
+/**
+ * Retrieves the current selection from the X buffer
+ *
+ * @return x_selection_t the selection results containing indiction of success, length of
+ * the string and the string.
+ *
+ */
+x_selection_t
+e_x_get_X_selection()
+{
+    /** The local length variable being computed */
+    int n;
+    /** The local string variable for the resulting selection. */
+    unsigned char *str;
+
+    /** The selection to be returned, including an indication of success */
+    x_selection_t xsel;
+
+    /** Local variable necessary for call to XWindows functions. */
+    XEvent report;
+    /**
+     * Indicates failure if type == None.
+     *
+     * Local variable necessary for call to XWindows functions.
+     */
+    Atom type;
+    /** Local variable necessary for call to XWindows functions. */
+    int format;
+    /** Local variable necessary for call to XWindows functions. */
+    unsigned long bytes_left;
+    /** Local variable necessary for call to XWindows functions. */
+    unsigned long nitems;
+
+    xsel.success = false;
+    xsel.len = 0;
+    xsel.str = NULL;
+
 #if defined SELECTION
     if (WpeXInfo.selection)
     {
@@ -1127,129 +1218,95 @@ e_x_cp_X_to_buffer (we_window_t * f)
             sleep (0);
             n++;
             if (n > 1000)
-                return 0;
+                return xsel;
         }
         if (WpeXInfo.property_atom == None)
-            return 0;
+            return xsel;
         XGetWindowProperty (WpeXInfo.display, WpeXInfo.window,
                             WpeXInfo.property_atom, 0, 1000000, FALSE,
                             WpeXInfo.text_atom, &type, &format, &nitems,
                             &bytes_left, &str);
         if (type == None)
         {
-            /* Specified property does not exit */
-            return 0;
+            /* Specified property does not exist */
+            return xsel;
         }
         n = strlen ((const char *) str);
     }
 #else
     str = XFetchBytes (WpeXInfo.display, &n);
 #endif
+    xsel.success = true;
+    xsel.len = n;
+    xsel.str = str;
+    return xsel;
+}
+
+void e_x_empty_buffer(we_buffer_t *buffer)
+{
+    for (int i = 1; i < buffer->mxlines; i++)
+        free (buffer->buflines[i].s);
+    buffer->mxlines = 1;
+    *(buffer->buflines[0].s) = WPE_WR;
+    *(buffer->buflines[0].s + 1) = '\0';
+    buffer->buflines[0].len = 0;
+}
+
+void
+e_x_free_X_selection(x_selection_t xsel)
+{
+#if defined SELECTION
+    if (WpeXInfo.selection)
+        free (xsel.str);
+    else
+#endif
+        XFree (xsel.str);
+}
+
+void e_x_paste_X_selection(we_buffer_t *buffer,  x_selection_t xsel)
+{
+    /* copy input parameters for easier reference */
+    unsigned char *str = xsel.str;
+    int n = xsel.len;
+
+    int i;	/**< index into string to fetch characters */
+    int j;  /**< index into buffer to put characters */
+    int k;	/**< index into buffer to put characters into the right line */
+
     for (i = k = 0; i < n; i++, k++)
     {
-        for (j = 0; i < n && str[i] != '\n' && j < b0->mx.x - 1; j++, i++)
-            b0->bf[k].s[j] = str[i];
+        for (j = 0; i < n && str[i] != '\n' && j < buffer->mx.x - 1; j++, i++)
+            buffer->buflines[k].s[j] = str[i];
         if (i < n)
         {
-            e_new_line (k + 1, b0);
+            e_new_line (k + 1, buffer);
             if (str[i] == '\n')
             {
-                b0->bf[k].s[j] = WPE_WR;
-                b0->bf[k].nrc = j + 1;
+                buffer->buflines[k].s[j] = WPE_WR;
+                buffer->buflines[k].nrc = j + 1;
             }
             else
-                b0->bf[k].nrc = j;
-            b0->bf[k].s[j + 1] = '\0';
-            b0->bf[k].len = j;
+                buffer->buflines[k].nrc = j;
+            buffer->buflines[k].s[j + 1] = '\0';
+            buffer->buflines[k].len = j;
         }
         else
         {
-            b0->bf[k].s[j] = '\0';
-            b0->bf[k].nrc = b0->bf[k].len = j;
+            buffer->buflines[k].s[j] = '\0';
+            buffer->buflines[k].nrc = buffer->buflines[k].len = j;
         }
     }
-    s0->mark_begin.x = s0->mark_begin.y = 0;
-    s0->mark_end.y = b0->mxlines - 1;
-    s0->mark_end.x = b0->bf[b0->mxlines - 1].len;
-#if defined SELECTION
-    if (WpeXInfo.selection)
-        free (str);
-    else
-#endif
-        XFree (str);
-    return 0;
 }
 
-int
-e_x_copy_X_buffer (we_window_t * f)
+/**
+ * Initializes the marked area on the screen to be the complete buffer.
+ *
+ */
+void e_x_reinit_marked_area(we_screen_t *screen, we_buffer_t *buffer)
 {
-    e_cp_X_to_buffer (f);
-    e_edt_einf (f);
-    return (0);
-}
-
-int
-e_x_paste_X_buffer (we_window_t * f)
-{
-    BUFFER *b0 = f->ed->f[0]->b;
-    we_screen_t *s0 = f->ed->f[0]->s;
-    int i, n;
-    unsigned int j;
-
-    e_edt_copy (f);
-#if defined SELECTION
-    if (WpeXInfo.selection)
-    {
-        free (WpeXInfo.selection);
-        WpeXInfo.selection = NULL;
-    }
-#endif
-    if ((s0->mark_end.y == 0 && s0->mark_end.x == 0) ||
-            s0->mark_end.y < s0->mark_begin.y)
-        return (0);
-    if (s0->mark_end.y == s0->mark_begin.y)
-    {
-        if (s0->mark_end.x < s0->mark_begin.x)
-            return (0);
-        n = s0->mark_end.x - s0->mark_begin.x;
-#if defined SELECTION
-        WpeXInfo.selection = malloc (n + 1);
-        strncpy ((char *) WpeXInfo.selection,
-                 (char *) b0->bf[s0->mark_begin.y].s + s0->mark_begin.x, n);
-        WpeXInfo.selection[n] = 0;
-        XSetSelectionOwner (WpeXInfo.display, WpeXInfo.selection_atom,
-                            WpeXInfo.window, CurrentTime);
-#else
-        XStoreBytes (WpeXInfo.display,
-                     b0->bf[s0->mark_begin.y].s + s0->mark_begin.x, n);
-#endif
-        return (0);
-    }
-    WpeXInfo.selection = malloc (b0->bf[s0->mark_begin.y].nrc * sizeof (char));
-    for (n = 0, j = s0->mark_begin.x; j < b0->bf[s0->mark_begin.y].nrc;
-            j++, n++)
-        WpeXInfo.selection[n] = b0->bf[s0->mark_begin.y].s[j];
-    for (i = s0->mark_begin.y + 1; i < s0->mark_end.y; i++)
-    {
-        WpeXInfo.selection =
-            realloc (WpeXInfo.selection, (n + b0->bf[i].nrc) * sizeof (char));
-        for (j = 0; j < b0->bf[i].nrc; j++, n++)
-            WpeXInfo.selection[n] = b0->bf[i].s[j];
-    }
-    WpeXInfo.selection =
-        realloc (WpeXInfo.selection, (n + s0->mark_end.x + 1) * sizeof (char));
-    for (j = 0; j < (unsigned) s0->mark_end.x; j++, n++)
-        WpeXInfo.selection[n] = b0->bf[i].s[j];
-    WpeXInfo.selection[n] = 0;
-#if defined SELECTION
-    XSetSelectionOwner (WpeXInfo.display, WpeXInfo.selection_atom,
-                        WpeXInfo.window, CurrentTime);
-#else
-    XStoreBytes (WpeXInfo.display, WpeXInfo.selection, n);
-    free (WpeXInfo.selection);
-    WpeXInfo.selection = NULL;
-#endif
-    return (0);
+    screen->mark_begin.x = screen->mark_begin.y = 0;
+    screen->mark_end.y = buffer->mxlines - 1;
+    screen->mark_end.x = buffer->buflines[buffer->mxlines - 1].len;
 }
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef WELINUX_H
 #define WELINUX_H
 
+/** \file WeLinux.h */
+
 #include "config.h"
 
 /* WeLinux.c */

@@ -1,5 +1,6 @@
 #ifndef __WESTRING_H
 #define __WESTRING_H
+/** \file WeString.h */
 /*-------------------------------------------------------------------------*\
   <WeString.h> -- Header file for some string routines for xwpe
 

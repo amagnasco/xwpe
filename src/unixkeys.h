@@ -1,4 +1,4 @@
-/* unixkeys.h						  */
+/** \file unixkeys.h						  */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
@@ -27,9 +27,6 @@
 #define BUFFER_NAME "Buffer"	/*  Clipboard in Buffer changed  */
 #define SUDIR "*"
 #define MAXREC 15
-#ifndef DEF_SHELL
-#define DEF_SHELL "sh"
-#endif
 
 /*   Characters  */
 
@@ -72,7 +69,6 @@ extern char RE1, RE2, RE3, RE4, RE5, RE6, WBT;
 #define DGZ 25			/*  ctrl y  */
 
 #define WPE_CR 13
-//extern const unsigned char WPE_WR;
 #define WPE_WR 10
 #define WPE_ESC 27
 #define WPE_DC 8

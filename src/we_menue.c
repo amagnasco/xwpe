@@ -1,4 +1,4 @@
-/* we_menue.c                                             */
+/** \file we_menue.c                                       */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
@@ -11,44 +11,48 @@
 #include "options.h"
 #include "model.h"
 #include "edit.h"
+#include "we_term.h"
 #include "we_menue.h"
 #include "we_progn.h"
 #include "we_prog.h"
 
-int e_p_show_messages (we_window_t * f);
-int e_p_show_watches (we_window_t * f);
-int e_blck_gt_beg (we_window_t * f);
-int e_blck_gt_end (we_window_t * f);
-int e_blck_mrk_line (we_window_t * f);
-int e_blck_mrk_all (we_window_t * f);
-int e_blck_to_left (we_window_t * f);
-int e_blck_to_right (we_window_t * f);
-int e_cl_project (we_window_t * f);
-int e_p_add_item (we_window_t * f);
-int e_p_del_item (we_window_t * f);
-int e_show_project (we_window_t * f);
-int e_info (we_window_t * f);
-int e_help_options (we_window_t * f);
-int e_hp_ret (we_window_t * f);
-int e_hp_back (we_window_t * f);
-int e_hp_prev (we_window_t * f);
-int e_hp_next (we_window_t * f);
+/** global field */
+int MENOPT = 8;
+
+int e_p_show_messages (we_window_t * window);
+int e_p_show_watches (we_window_t * window);
+int e_blck_gt_beg (we_window_t * window);
+int e_blck_gt_end (we_window_t * window);
+int e_blck_mrk_line (we_window_t * window);
+int e_blck_mrk_all (we_window_t * window);
+int e_blck_to_left (we_window_t * window);
+int e_blck_to_right (we_window_t * window);
+int e_cl_project (we_window_t * window);
+int e_p_add_item (we_window_t * window);
+int e_p_del_item (we_window_t * window);
+int e_show_project (we_window_t * window);
+int e_info (we_window_t * window);
+int e_help_options (we_window_t * window);
+int e_hp_ret (we_window_t * window);
+int e_hp_back (we_window_t * window);
+int e_hp_prev (we_window_t * window);
+int e_hp_next (we_window_t * window);
 OPTK WpeFillSubmenuItem (char *t, int x, char o, int (*fkt) ());
 
 /* main menu control bar */
 int
-WpeHandleMainmenu (int n, we_window_t * f)
+WpeHandleMainmenu (int n, we_window_t * window)
 {
     extern int e_mn_men;
     int i, c = 255, nold = n <= 0 ? 1 : n - 1;
     extern OPT opt[];
     extern char *e_hlp, *e_hlp_str[];
-    we_control_t *cn = f->ed;
+    we_control_t *control = window->edit_control;
     MENU *mainmenu = malloc (MENOPT * sizeof (MENU));
 
     for (i = 0; i < MENOPT; i++)
         mainmenu[i].width = 0;
-    fk_cursor (0);
+    fk_u_cursor (0);
     if (n < 0)
         n = 0;
     else
@@ -69,7 +73,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
 #endif
     if ((mainmenu[0].menuitems =
                 malloc (mainmenu[0].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     mainmenu[0].menuitems[0] =
         WpeFillSubmenuItem ("About WE", 0, 'A', e_about_WE);
     mainmenu[0].menuitems[1] =
@@ -90,8 +94,8 @@ WpeHandleMainmenu (int n, we_window_t * f)
     mainmenu[1].no_of_items = 11;
     if ((mainmenu[1].menuitems =
                 malloc (mainmenu[1].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
-    if (f->ed->edopt & ED_CUA_STYLE)
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+    if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[1].menuitems[0] =
             WpeFillSubmenuItem ("File-Manager     F2", 0, 'M', WpeManager);
@@ -134,7 +138,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
         mainmenu[2].no_of_items = 7;
     if ((mainmenu[2].menuitems =
                 malloc (mainmenu[2].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     mainmenu[2].menuitems[0] =
         WpeFillSubmenuItem ("Cut     Shift Del / ^X", 2, 'T', e_edt_del);
     mainmenu[2].menuitems[1] =
@@ -165,8 +169,8 @@ WpeHandleMainmenu (int n, we_window_t * f)
     mainmenu[3].no_of_items = 4;
     if ((mainmenu[3].menuitems =
                 malloc (mainmenu[3].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
-    if (f->ed->edopt & ED_CUA_STYLE)
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+    if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[3].menuitems[0] =
             WpeFillSubmenuItem ("Find      Alt F3 / ^O F", 0, 'F', e_find);
@@ -191,7 +195,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
     mainmenu[4].no_of_items = 15;
     if ((mainmenu[4].menuitems =
                 malloc (mainmenu[4].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     mainmenu[4].menuitems[0] =
         WpeFillSubmenuItem ("Begin Mark      ^K B", 0, 'B', e_blck_begin);
     mainmenu[4].menuitems[1] =
@@ -230,7 +234,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
         mainmenu[5].no_of_items = 12;
         if ((mainmenu[5].menuitems =
                     malloc (mainmenu[5].no_of_items * sizeof (OPTK))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
         mainmenu[5].menuitems[0] =
             WpeFillSubmenuItem ("Compile         Alt F9 / Alt C", 0, 'C',
                                 e_compile);
@@ -272,7 +276,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
         mainmenu[MENOPT - 4].no_of_items = 5;
         if ((mainmenu[MENOPT - 4].menuitems =
                     malloc (mainmenu[MENOPT - 4].no_of_items * sizeof (OPTK))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
         mainmenu[MENOPT - 4].menuitems[0] =
             WpeFillSubmenuItem ("Open Project", 5, 'P', e_project);
         mainmenu[MENOPT - 4].menuitems[1] =
@@ -293,9 +297,9 @@ WpeHandleMainmenu (int n, we_window_t * f)
         mainmenu[MENOPT - 5].no_of_items = 13;
         if ((mainmenu[MENOPT - 5].menuitems =
                     malloc (mainmenu[MENOPT - 5].no_of_items * sizeof (OPTK))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
 
-        if (f->ed->edopt & ED_CUA_STYLE)
+        if (window->edit_control->edopt & ED_CUA_STYLE)
         {
             mainmenu[MENOPT - 5].menuitems[0] =
                 WpeFillSubmenuItem ("Toggle Breakpoint  F5 / ^G B", 7, 'B',
@@ -364,7 +368,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
         mainmenu[MENOPT - 3].no_of_items = 5;
     if ((mainmenu[MENOPT - 3].menuitems =
                 malloc (mainmenu[MENOPT - 3].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     mainmenu[MENOPT - 3].menuitems[0] =
         WpeFillSubmenuItem ("Adjust Colors", 0, 'A', e_ad_colors);
     mainmenu[MENOPT - 3].menuitems[1] =
@@ -411,8 +415,8 @@ WpeHandleMainmenu (int n, we_window_t * f)
 #endif
     if ((mainmenu[MENOPT - 2].menuitems =
                 malloc (mainmenu[MENOPT - 2].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
-    if (f->ed->edopt & ED_CUA_STYLE)
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+    if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[MENOPT - 2].menuitems[0] =
             WpeFillSubmenuItem ("Size/Move            ^L", 0, 'S', e_size_move);
@@ -472,7 +476,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
 #endif
     if ((mainmenu[MENOPT - 1].menuitems =
                 malloc (mainmenu[MENOPT - 1].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
     mainmenu[MENOPT - 1].menuitems[0] =
         WpeFillSubmenuItem ("Editor              F1", 0, 'E', e_help);
 #if defined(PROG)
@@ -501,8 +505,8 @@ WpeHandleMainmenu (int n, we_window_t * f)
     while (c != WPE_ESC)
     {
 
-        f = cn->f[cn->mxedt];
-        if (e_tst_dfkt (f, c) == 0)
+        window = control->window[control->mxedt];
+        if (e_tst_dfkt (window, c) == 0)
         {
             c = 0;
             break;
@@ -520,16 +524,16 @@ WpeHandleMainmenu (int n, we_window_t * f)
         if (nold != n)
         {
             /* paint unselected the option */
-            e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, f->fb->mt.fb, 0, 1,
-                          f->fb->ms.fb,
+            e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, window->colorset->mt.fg_bg_color, 0, 1,
+                          window->colorset->ms.fg_bg_color,
                           (nold == 0 ? 0 : opt[nold].x - e_mn_men),
                           (nold ==
                            MENOPT - 1) ? MAXSCOL - 1 : opt[nold + 1].x -
                           e_mn_men - 1);
 
             /* paint selected the option */
-            e_pr_str_wsd (opt[n].x, 0, opt[n].t, f->fb->mz.fb, 0, 1,
-                          f->fb->mz.fb, (n == 0 ? 0 : opt[n].x - e_mn_men),
+            e_pr_str_wsd (opt[n].x, 0, opt[n].t, window->colorset->mz.fg_bg_color, 0, 1,
+                          window->colorset->mz.fg_bg_color, (n == 0 ? 0 : opt[n].x - e_mn_men),
                           (n ==
                            MENOPT - 1) ? MAXSCOL - 1 : opt[n + 1].x - e_mn_men -
                           1);
@@ -564,7 +568,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
                                       opt[n].x + mainmenu[n].width +
                                       mainmenu[n].position,
                                       mainmenu[n].no_of_items + 2, n,
-                                      mainmenu[n].menuitems, f);
+                                      mainmenu[n].menuitems, window);
             if (c < MENOPT)
             {
                 n = c;
@@ -577,10 +581,10 @@ WpeHandleMainmenu (int n, we_window_t * f)
         {
             e_hlp = e_hlp_str[24];
 #if MOUSE
-            if ((c = e_getch ()) == -1)
+            if ((c = e_u_getch ()) == -1)
                 c = e_m1_mouse ();
 #else
-            c = e_getch ();
+            c = e_u_getch ();
 #endif
             c = toupper (c);
         }
@@ -595,7 +599,7 @@ WpeHandleMainmenu (int n, we_window_t * f)
         else if (c == ENDE || c == CtrlE)	/* most right in the main menu */
             n = MENOPT - 1;
         else if (c == AltX)	/* quit the whole business */
-            c = e_quit (f);
+            c = e_quit (window);
 
         /* adjust the selected main menu */
         if (n < 0)
@@ -605,9 +609,9 @@ WpeHandleMainmenu (int n, we_window_t * f)
     }
 
     /* paint unselected the last selected main menu option */
-    f = cn->f[cn->mxedt];
-    e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, f->fb->mt.fb, 0, 1,
-                  f->fb->ms.fb, (nold == 0 ? 0 : opt[nold].x - e_mn_men),
+    window = control->window[control->mxedt];
+    e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, window->colorset->mt.fg_bg_color, 0, 1,
+                  window->colorset->ms.fg_bg_color, (nold == 0 ? 0 : opt[nold].x - e_mn_men),
                   (nold ==
                    MENOPT - 1) ? MAXSCOL - 1 : opt[nold + 1].x - e_mn_men - 1);
 
@@ -617,48 +621,48 @@ WpeHandleMainmenu (int n, we_window_t * f)
             free (mainmenu[i].menuitems);
     free (mainmenu);
 
-    fk_cursor (1);
+    fk_u_cursor (1);
     return (c);
 }
 
 /* sub menu box */
 int
 WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
-                  we_window_t * f)
+                  we_window_t * window)
 {
 #if MOUSE
     extern struct mouse e_mouse;
     extern int e_mn_men;
 #endif
-    we_view_t *pic;
+    we_view_t *view;
     int i, n = 0, nold = 1, c = 0;
     extern OPT opt[];
 
     /* save whatever will be behind the submenu */
 #ifdef NEWSTYLE
     if (WpeIsXwin ())
-        pic = e_open_view (xa + 1, ya, xe - 1, ye, f->fb->mt.fb, 1);
+        view = e_open_view (xa + 1, ya, xe - 1, ye, window->colorset->mt.fg_bg_color, 1);
     else
 #endif
-        pic = e_open_view (xa, ya, xe, ye, f->fb->mt.fb, 1);
+        view = e_open_view (xa, ya, xe, ye, window->colorset->mt.fg_bg_color, 1);
 
-    if (pic == NULL)
+    if (view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, f->fb);
+        e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
         return (WPE_ESC);
     }
 
     /* draw the frame and the background of the submenu */
-    e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, f->fb->mr.fb, 0);
+    e_std_window (xa + 1, ya, xe - 1, ye, NULL, 0, window->colorset->mr.fg_bg_color, 0);
 
     /* draw the submenu items (colors are default, none selected) */
     for (i = ya + 1; i < ye; i++)
-        e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, f->fb->mt.fb,
-                       fopt[i - ya - 1].x, 1, f->fb->ms.fb, xa + 2, xe - 2);
+        e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, window->colorset->mt.fg_bg_color,
+                       fopt[i - ya - 1].x, 1, window->colorset->ms.fg_bg_color, xa + 2, xe - 2);
 
 #if MOUSE
     /* show the actual changes */
-    e_refresh ();
+    e_u_refresh ();
     /* until mouse button released */
     while (e_mshit () != 0)
     {
@@ -673,14 +677,14 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
                 /* check whether nold is in the range of the available items and unselect it */
                 if (nold < ye - ya - 1 && nold >= 0)
                     e_pr_str_scan (xa + 3, nold + ya + 1, fopt[nold].t,
-                                   f->fb->mt.fb, fopt[nold].x, 1, f->fb->ms.fb,
+                                   window->colorset->mt.fg_bg_color, fopt[nold].x, 1, window->colorset->ms.fg_bg_color,
                                    xa + 2, xe - 2);
                 /* draw the newly selected item */
-                e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->fb->mz.fb,
-                               fopt[n].x, 1, f->fb->mz.fb, xa + 2, xe - 2);
+                e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, window->colorset->mz.fg_bg_color,
+                               fopt[n].x, 1, window->colorset->mz.fg_bg_color, xa + 2, xe - 2);
                 /* save the selection */
                 nold = n;
-                e_refresh ();
+                e_u_refresh ();
             }
         }
         /* mouse is in the main menu area */
@@ -694,7 +698,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
             if (i != nm + 1)
             {
                 /* if yes, restore what was behind */
-                e_close_view (pic, 1);
+                e_close_view (view, 1);
                 return (i - 1);
             }
         }
@@ -712,31 +716,31 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
         {
             /* check whether nold is in the range of the available items and unselect it */
             if (nold < ye - ya - 1 && nold >= 0)
-                e_pr_str_scan (xa + 3, nold + ya + 1, fopt[nold].t, f->fb->mt.fb,
-                               fopt[nold].x, 1, f->fb->ms.fb, xa + 2, xe - 2);
+                e_pr_str_scan (xa + 3, nold + ya + 1, fopt[nold].t, window->colorset->mt.fg_bg_color,
+                               fopt[nold].x, 1, window->colorset->ms.fg_bg_color, xa + 2, xe - 2);
             /* draw the newly selected item */
-            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->fb->mz.fb,
-                           fopt[n].x, 1, f->fb->mz.fb, xa + 2, xe - 2);
+            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, window->colorset->mz.fg_bg_color,
+                           fopt[n].x, 1, window->colorset->mz.fg_bg_color, xa + 2, xe - 2);
             /* save the selection */
             nold = n;
         }
 #if MOUSE
         if (c != MBKEY)
         {
-            if ((c = toupper (e_getch ())) == -1)
+            if ((c = toupper (e_u_getch ())) == -1)
                 c = e_m2_mouse (xa, ya, xe, ye, fopt);
         }
         else
             c = WPE_CR;		/* mouse released at a proper place, submenu item accepted */
 #else
-        c = toupper (e_getch ());
+        c = toupper (e_u_getch ());
 #endif
 
         /* check main menu shortcut keys */
         for (i = 0; i < MENOPT; i++)
             if (c == opt[i].as)
             {
-                e_close_view (pic, 1);
+                e_close_view (view, 1);
                 return (i);
             }
 
@@ -744,8 +748,8 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
         for (i = 0; i < ye - ya - 1; i++)
             if (c == fopt[i].o)
             {
-                e_close_view (pic, 1);
-                fopt[i].fkt (f);
+                e_close_view (view, 1);
+                fopt[i].fkt (window);
                 return (WPE_ESC);
             }
 
@@ -756,8 +760,8 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
             c = WPE_ESC;
         else if (c == WPE_CR)	/* submenu item accepted */
         {
-            e_close_view (pic, 1);
-            fopt[n].fkt (f);
+            e_close_view (view, 1);
+            fopt[n].fkt (window);
             return (WPE_ESC);
         }
         else if (c == CUP || c == CtrlP)	/* going up in the submenu */
@@ -782,27 +786,27 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
         {
             /* this is the anything else case, ESC, keys which are not listed in
                the submenu */
-            e_close_view (pic, 1);
-            if (c != WPE_ESC && e_tst_dfkt (f, c) == 0)
+            e_close_view (view, 1);
+            if (c != WPE_ESC && e_tst_dfkt (window, c) == 0)
                 return (WPE_ESC);
 #ifdef NEWSTYLE
-            pic = e_open_view (xa + 1, ya, xe - 1, ye, f->fb->mt.fb, 1);
+            view = e_open_view (xa + 1, ya, xe - 1, ye, window->colorset->mt.fg_bg_color, 1);
 #else
-            pic = e_open_view (xa, ya, xe, ye, f->fb->mt.fb, 1);
+            view = e_open_view (xa, ya, xe, ye, window->colorset->mt.fg_bg_color, 1);
 #endif
             /* draw the frame for the submenu */
-            e_std_rahmen (xa + 1, ya, xe - 1, ye, NULL, 0, f->fb->mr.fb, 0);
+            e_std_window (xa + 1, ya, xe - 1, ye, NULL, 0, window->colorset->mr.fg_bg_color, 0);
             /* draw every item in the submenu, unselected */
             for (i = ya + 1; i < ye; i++)
-                e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, f->fb->mt.fb,
-                               fopt[i - ya - 1].x, 1, f->fb->ms.fb, xa + 2,
+                e_pr_str_scan (xa + 3, i, fopt[i - ya - 1].t, window->colorset->mt.fg_bg_color,
+                               fopt[i - ya - 1].x, 1, window->colorset->ms.fg_bg_color, xa + 2,
                                xe - 2);
             /* draw the selected item */
-            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, f->fb->mz.fb,
-                           fopt[n].x, 1, f->fb->mz.fb, xa + 2, xe - 2);
+            e_pr_str_scan (xa + 3, n + ya + 1, fopt[n].t, window->colorset->mz.fg_bg_color,
+                           fopt[n].x, 1, window->colorset->mz.fg_bg_color, xa + 2, xe - 2);
         }
     }
-    e_close_view (pic, 1);
+    e_close_view (view, 1);
     return (c == WPE_ESC ? 255 : c);
 }
 

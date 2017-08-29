@@ -1,4 +1,4 @@
-/* we_control.h                                             */
+/** \file we_control.h */
 /* Copyright (C) 1993 Fred Kruse
    Copyright (C) 2017 Guus Bonnema
 
@@ -37,7 +37,7 @@ extern WOPT *eblst;
 extern WOPT eblst_u[];
 extern WOPT eblst_o[];
 
-void ECNT_Init(we_control_t * cn);
+void ECNT_Init(we_control_t * control);
 
 extern struct CNT *global_editor_control;
 

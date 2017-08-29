@@ -1,6 +1,8 @@
 #ifndef WE_E_AUS_H
 #define WE_E_AUS_H
 
+/** \file we_e_aus.h */
+
 #include "config.h"
 #include "globals.h"
 #include "we_edit.h"

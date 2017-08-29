@@ -1,5 +1,6 @@
 #ifndef __WEXTERM_H
 #define __WEXTERM_H
+/** \file WeXterm.h */
 /*-------------------------------------------------------------------------*\
   <WeXterm.h> -- Header file of Xwpe routines for X window support
 
@@ -20,14 +21,6 @@ extern "C"
 #include <X11/Xlib.h>
 #include "edit.h"
 #include "we_xterm.h"
-//#include "we_unix.h"
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
-  Defines
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-#ifndef XTERM_CMD
-#define XTERM_CMD "xterm"
-#endif
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   New Types

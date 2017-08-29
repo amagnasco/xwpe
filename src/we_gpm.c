@@ -1,4 +1,4 @@
-
+/** \file we_gpm.c */
 #include "config.h"
 
 #ifdef HAVE_LIBGPM

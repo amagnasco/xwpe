@@ -1,5 +1,5 @@
 /**
- * utils.c
+ * \file utils.c
  *
  * Copyright Fred Kruse, Guus Bonnema.
  *

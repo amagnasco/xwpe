@@ -1,3 +1,4 @@
+/** \file WeString.c */
 /*-------------------------------------------------------------------------*\
   <WeString.c> -- Some string routines for xwpe
 

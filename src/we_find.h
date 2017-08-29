@@ -1,7 +1,7 @@
 #ifndef WE_FIND_H
 #define WE_FIND_H
 /**
- *  we_find.h
+ *  \file we_find.h
  *
  *  Copyright (C) 2017 Guus Bonnema
  *

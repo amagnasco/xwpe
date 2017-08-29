@@ -1,4 +1,4 @@
-/* we_e_aus.c                                             */
+/** \file we_e_aus.c                                       */
 /* Copyright (C) 1993 Fred Kruse                          */
 /* This is free software; you can redistribute it and/or  */
 /* modify it under the terms of the                       */
@@ -11,6 +11,7 @@
 #include "model.h"
 #include "we_control.h"
 #include "edit.h"
+#include "we_term.h"
 #include "WeString.h"
 #include "we_e_aus.h"
 
@@ -204,9 +205,9 @@ e_schreib_zif (int *num, int x, int y, int max, int ft, int fs)
     char *s = malloc ((max + 1) * sizeof (char));
 
     e_pr_zstring (WpeNumberToString (ntmp, max, s), x, y, max, fs);
-    fk_locate (x + jc, y);
-    fk_cursor (1);
-    while ((c = e_getch ()) != WPE_ESC)
+    fk_u_locate (x + jc, y);
+    fk_u_cursor (1);
+    while ((c = e_u_getch ()) != WPE_ESC)
     {
 #if  MOUSE
         if (c < 0)
@@ -291,7 +292,7 @@ e_schreib_zif (int *num, int x, int y, int max, int ft, int fs)
             jc = max - nnum;
 
         e_pr_zstring (s, x, y, max, ft);
-        fk_locate (x + jc, y);
+        fk_u_locate (x + jc, y);
         first = 0;
     }
     return (c);
@@ -310,7 +311,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
     int sond = 0, first = 1;
     char *tmp = malloc (max + 1);
 
-    fk_cursor (1);
+    fk_u_cursor (1);
     strcpy (tmp, s);
     jc = l;
     for (jd = 0, i = ja; tmp[i] && i <= n - 3 + jd; i++)
@@ -321,11 +322,11 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
     e_schr_nchar (tmp, x, y, 0, n, fs);
     e_pr_char (x, y, ' ', ft);
     e_pr_char (x + n - 1, y, ' ', ft);
-    fk_locate (x + jc + jd + 1, y);
+    fk_u_locate (x + jc + jd + 1, y);
 #ifdef NEWSTYLE
     e_make_xrect (x, y, x + n - 1, y, 1);
 #endif
-    while ((c = e_getch ()) != WPE_ESC)
+    while ((c = e_u_getch ()) != WPE_ESC)
     {
 #if  MOUSE
         if (c < 0)
@@ -335,10 +336,10 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
                 jc = e_mouse.x - x - 1 < l ? e_mouse.x - x - 1 : l;
                 if (c == -2)
                 {
-                    int len = global_editor_control->f[0]->b->bf[0].len;
+                    int len = global_editor_control->window[0]->buffer->buflines[0].len;
 #ifndef NO_XWINDOWS
-                    if (bioskey () & 8)
-                        e_cp_X_to_buffer (global_editor_control->f[global_editor_control->mxedt]);
+                    if (u_bioskey () & 8)
+                        e_u_cp_X_to_buffer (global_editor_control->window[global_editor_control->mxedt]);
 #endif
                     while (e_mshit ())
                         ;
@@ -353,7 +354,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
                     for (i = l; i >= jc; i--)
                         tmp[i + len] = tmp[i];
                     for (i = jc; i < jc + len; i++)
-                        tmp[i] = global_editor_control->f[0]->b->bf[0].s[i - jc];
+                        tmp[i] = global_editor_control->window[0]->buffer->buflines[0].s[i - jc];
                     jc += len;
                     l += len;
                 }
@@ -363,7 +364,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
                 if (c > -4)
                     strcpy (s, tmp);
                 free (tmp);
-                fk_cursor (0);
+                fk_u_cursor (0);
                 return (c);
             }
         }
@@ -390,10 +391,10 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
             sond = !sond;
         else if (c == PASTE || c == ShiftEin || c == CtrlV || c == AltEin)
         {
-            int len = global_editor_control->f[0]->b->bf[0].len;
+            int len = global_editor_control->window[0]->buffer->buflines[0].len;
 #ifndef NO_XWINDOWS
             if (WpeIsXwin () && c == AltEin)
-                e_cp_X_to_buffer (global_editor_control->f[global_editor_control->mxedt]);
+                e_u_cp_X_to_buffer (global_editor_control->window[global_editor_control->mxedt]);
 #endif
             if (first == 1)
             {
@@ -406,7 +407,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
             for (i = l; i >= jc; i--)
                 tmp[i + len] = tmp[i];
             for (i = jc; i < jc + len; i++)
-                tmp[i] = global_editor_control->f[0]->b->bf[0].s[i - jc];
+                tmp[i] = global_editor_control->window[0]->buffer->buflines[0].s[i - jc];
             jc += len;
             l += len;
         }
@@ -440,7 +441,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
         }
         else if (!sond && c == CtrlO)
         {
-            if ((c = e_getch ()) != CtrlT && toupper (c) != 'T')
+            if ((c = e_u_getch ()) != CtrlT && toupper (c) != 'T')
                 continue;
             c = jc - e_su_rblk (jc, (unsigned char *) tmp);
             {
@@ -478,7 +479,7 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
             if (c != WPE_ESC)
                 strcpy (s, tmp);
             free (tmp);
-            fk_cursor (0);
+            fk_u_cursor (0);
             if (c == CtrlP)
                 c = CUP;
             else if (c == CtrlN)
@@ -497,13 +498,13 @@ e_schreib_leiste (char *s, int x, int y, int n, int max, int ft, int fs)
 
         e_pr_char (x, y, ja > 0 ? MCL : ' ', ft);
         e_pr_char (x + n - 1, y, l - ja > n - 2 ? MCR : ' ', ft);
-        fk_locate (x + jc + jd - ja + 1, y);
+        fk_u_locate (x + jc + jd - ja + 1, y);
         first = 0;
 #ifdef NEWSTYLE
         e_make_xrect (x, y, x + n - 1, y, 1);
 #endif
     }
-    fk_cursor (0);
+    fk_u_cursor (0);
     return (c);
 }
 
