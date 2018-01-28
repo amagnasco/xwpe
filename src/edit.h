@@ -30,13 +30,6 @@
  *  for incrementing the number of lines to an already allocated buffer or window.
  */
 #define MAXLINES 10
-/** The number of columns used for the initial control
- *
- *  This is only used in the function ECNT_Init in we_control.c
- *  \todo: check how important this define is and whether it should be in we_control.h
- *
- * */
-#define MAXCOLUM 120
 
 /**
  * \brief WPE_NOBACKUP is a number to determine not to make a backup.

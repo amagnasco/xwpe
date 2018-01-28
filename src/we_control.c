@@ -44,6 +44,13 @@
 #include "attrb.h"
 #endif
 
+/** The number of columns used for the initial control
+ *
+ *  This is only used in the function ECNT_Init in we_control.c
+ *
+ * */
+#define MAXCOLUM 120
+
 /* externals */
 extern char *e_tmp_dir;
 extern char *e_hlp_str[];
