@@ -31,6 +31,8 @@
 #include "config.h"
 #include "edit.h"
 
+we_colorset_t* e_ini_farbe();
+
 extern char *e_hlp;
 extern WOPT *blst;
 extern WOPT *eblst;

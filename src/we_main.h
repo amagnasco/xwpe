@@ -16,7 +16,6 @@
 
 void e_ini_desk(we_control_t* control);
 void we_colorset_Init(we_colorset_t* fb);
-we_colorset_t* e_ini_farbe();
 int e_switch_blst(we_control_t* control);
 void e_free_find(FIND* find);
 
