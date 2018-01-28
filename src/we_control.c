@@ -505,7 +505,7 @@ we_colorset_Init (we_colorset_t * fb)
 }
 
 we_colorset_t *
-e_ini_farbe ()
+e_ini_colorset ()
 {
     if (WpeIsXwin ())
     {

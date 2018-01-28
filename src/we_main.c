@@ -57,7 +57,7 @@ main (int argc, char **argv)
     ECNT_Init (control);
     e_ini_unix (&argc, argv);
     e_u_switch_screen (1);
-    fb = e_ini_farbe ();
+    fb = e_ini_colorset ();
     global_editor_control = control;
     control->colorset = fb;
 
