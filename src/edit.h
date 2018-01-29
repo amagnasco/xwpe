@@ -330,26 +330,6 @@ typedef struct we_window_struct
     FIND find;
 } we_window_t;
 
-typedef struct CNT
-{
-    int major, minor, patch; /**< Version of option file. */
-    int maxcol, tabn;
-    int maxchg, numundo;
-    int flopt, edopt;
-    int mxedt;		 /**< max number of editing windows */
-    int curedt;		 /**< currently active window */
-    int edt[MAXEDT + 1]; /**< 1 <= window IDs <= MAXEDT, arbitrary order */
-    int autoindent;
-    char* print_cmd;
-    char* dirct; /**< current directory */
-    char *optfile, *tabs;
-    struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
-    FIND find;
-    we_colorset_t* colorset;
-    we_window_t* window[MAXEDT + 1];
-    char dtmd, autosv;
-} we_control_t;
-
 /* structure for the windows in the file manager ??? */
 typedef struct fl_wnd
 {
@@ -450,12 +430,6 @@ typedef struct
     W_O_NUMSTR** nstr;
     we_window_t* window;
 } W_OPTSTR;
-
-typedef struct wpeOptionSection
-{
-    char* section;
-    int (*function)(we_control_t* control, char* section, char* option, char* value);
-} WpeOptionSection;
 
 #ifdef UNIX
 

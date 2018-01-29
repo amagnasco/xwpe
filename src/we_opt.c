@@ -47,6 +47,12 @@ extern we_colorset_t *u_fb, *x_fb;
 #define OPT_SECTION_PROGRAMMING "Programming"
 #define OPT_SECTION_LANGUAGE    "Language"
 
+typedef struct wpeOptionSection
+{
+    char* section;
+    int (*function)(we_control_t* control, char* section, char* option, char* value);
+} WpeOptionSection;
+
 WpeOptionSection WpeSectionRead[] =
 {
     {OPT_SECTION_GENERAL, WpeReadGeneral},

@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "globals.h"
+#include "we_control.h"
 #include "we_main.h"
 #include "we_mouse.h"
 

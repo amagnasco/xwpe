@@ -31,6 +31,26 @@
 #include "config.h"
 #include "edit.h"
 
+typedef struct CNT
+{
+    int major, minor, patch; /**< Version of option file. */
+    int maxcol, tabn;
+    int maxchg, numundo;
+    int flopt, edopt;
+    int mxedt;		 /**< max number of editing windows */
+    int curedt;		 /**< currently active window */
+    int edt[MAXEDT + 1]; /**< 1 <= window IDs <= MAXEDT, arbitrary order */
+    int autoindent;
+    char* print_cmd;
+    char* dirct; /**< current directory */
+    char *optfile, *tabs;
+    struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
+    FIND find;
+    we_colorset_t* colorset;
+    we_window_t* window[MAXEDT + 1];
+    char dtmd, autosv;
+} we_control_t;
+
 we_colorset_t* e_ini_colorset();
 
 extern char *e_hlp;

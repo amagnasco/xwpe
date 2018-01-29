@@ -18,6 +18,7 @@ extern "C"
 /* needed for the time being to call old routines and data types */
 #include "model.h"
 #include "edit.h"
+#include "we_control.h"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   New Types
