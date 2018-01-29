@@ -44,13 +44,6 @@
 #include "attrb.h"
 #endif
 
-/** The number of columns used for the initial control
- *
- *  This is only used in the function ECNT_Init in we_control.c
- *
- * */
-#define MAXCOLUM 120
-
 /* externals */
 extern char *e_tmp_dir;
 extern char *e_hlp_str[];
@@ -311,6 +304,11 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
 void
 ECNT_Init (we_control_t * control)
 {
+    /** The number of columns used for the initial control
+     *
+     * */
+    const int MAXCOLUM = 120;
+
     control->mxedt = -1;
     control->curedt = 0;
     control->edt[0] = 0;
