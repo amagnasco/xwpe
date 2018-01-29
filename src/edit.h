@@ -26,12 +26,6 @@
 #define MAXEDT 35
 
 /**
- *  \brief The number of lines used to allocation of new buffer or window or
- *  for incrementing the number of lines to an already allocated buffer or window.
- */
-#define MAXLINES 10
-
-/**
  * \brief WPE_NOBACKUP is a number to determine not to make a backup.
  *
  * The meaning of the number is to make no backup.

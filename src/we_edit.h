@@ -14,6 +14,11 @@
 #include "we_mouse.h"
 #include "we_wind.h"
 
+/**
+ *  \brief The number of lines used to allocation of new buffer or window or
+ *  for incrementing the number of lines to an already allocated buffer or window.
+ */
+extern const int MAXLINES;
 extern int global_disable_add_undo;
 
 int e_edit(we_control_t* control, char* filename);

@@ -28,6 +28,8 @@
 #include <unistd.h>
 #endif
 
+const int MAXLINES = 10;
+
 int global_disable_add_undo = 0;
 /**
  * e_phases enumerates the phases of editting as far as undo and redo are concerned.
