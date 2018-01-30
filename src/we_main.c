@@ -49,12 +49,12 @@ main (int argc, char **argv)
     int so = 0, sd = 1;
     char *tp;
 
-    if ((control = (we_control_t *) malloc (sizeof (we_control_t))) == NULL)
+    control = e_control_new ();
+    if (control == NULL)
     {
-        printf (" Fatal Error: %s\n", e_msg[ERR_LOWMEM]);
+        printf (" Fatal Error: Failed to create control.\n");
         return 0;
     }
-    e_control_init (control);
     e_ini_unix (&argc, argv);
     e_u_switch_screen (1);
     fb = e_ini_colorset ();

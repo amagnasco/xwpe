@@ -59,8 +59,8 @@ extern WOPT *eblst;
 extern WOPT eblst_u[];
 extern WOPT eblst_o[];
 
-void e_control_init(we_control_t * control);
-
 extern struct CNT *global_editor_control;
+
+we_control_t *e_control_new();
 
 #endif

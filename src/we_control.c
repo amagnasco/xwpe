@@ -44,6 +44,9 @@
 #include "attrb.h"
 #endif
 
+/* prototype for internal functions (not exported) */
+void e_control_init(we_control_t * control);
+
 /* externals */
 extern char *e_tmp_dir;
 extern char *e_hlp_str[];
@@ -301,6 +304,18 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
     {"Alt-F4 Quit", 63, 0, 6, AF4}
 };
 
+we_control_t *e_control_new ()
+{
+    we_control_t *control = (we_control_t *) malloc (sizeof(we_control_t));
+    if (control == NULL)
+    {
+        printf (" Fatal Error: %s\n", e_msg[ERR_LOWMEM]);
+        return NULL;
+    }
+    e_control_init (control);
+    return control;
+}
+
 void
 e_control_init (we_control_t * control)
 {
@@ -326,7 +341,9 @@ e_control_init (we_control_t * control)
     control->find.sn = 0;
     control->find.rn = 0;
 
-    control->sdf = control->rdf = control->fdf = control->ddf = control->wdf = control->hdf = control->shdf = NULL;
+    control->sdf = control->rdf = control->fdf
+                                  = control->ddf = control->wdf
+                                          = control->hdf = control->shdf = NULL;
 
     /*   standard adjustments    */
     control->dtmd = DTMD_NORMAL;
