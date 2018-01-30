@@ -803,7 +803,7 @@ WpeReadColor (we_control_t * control, char *section, char *option, char *value)
         if (!u_fb)
         {
             u_fb = malloc (sizeof (we_colorset_t));
-            we_colorset_Init (u_fb);
+            we_colorset_init (u_fb);
         }
         fb = u_fb;
     }
@@ -812,7 +812,7 @@ WpeReadColor (we_control_t * control, char *section, char *option, char *value)
         if (!x_fb)
         {
             x_fb = malloc (sizeof (we_colorset_t));
-            we_colorset_Init (x_fb);
+            we_colorset_init (x_fb);
         }
         fb = x_fb;
         if ((control->major <= 1) && (control->minor <= 5) && (control->patch <= 27))

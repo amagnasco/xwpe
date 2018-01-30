@@ -466,7 +466,7 @@ e_ini_desk (we_control_t * control)
 }
 
 void
-we_colorset_Init (we_colorset_t * fb)
+we_colorset_init (we_colorset_t * fb)
 {
     fb->er = e_s_x_clr (15, 4);	/*  Editor Frames         */
     fb->et = e_s_x_clr (11, 4);	/*  Editor Text           */
@@ -516,7 +516,7 @@ e_ini_colorset ()
     {
         if (!x_fb)
             x_fb = malloc (sizeof (we_colorset_t));
-        we_colorset_Init (x_fb);
+        we_colorset_init (x_fb);
         return x_fb;
     }
     else
@@ -525,7 +525,7 @@ e_ini_colorset ()
             u_fb = malloc (sizeof (we_colorset_t));
         if (col_num)
         {
-            we_colorset_Init (u_fb);
+            we_colorset_init (u_fb);
         }
         else
         {

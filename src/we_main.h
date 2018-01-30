@@ -15,7 +15,7 @@
 #include <stdlib.h>
 
 void e_ini_desk(we_control_t* control);
-void we_colorset_Init(we_colorset_t* fb);
+void we_colorset_init(we_colorset_t* fb);
 int e_switch_blst(we_control_t* control);
 void e_free_find(FIND* find);
 
