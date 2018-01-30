@@ -54,7 +54,7 @@ main (int argc, char **argv)
         printf (" Fatal Error: %s\n", e_msg[ERR_LOWMEM]);
         return 0;
     }
-    ECNT_Init (control);
+    e_control_init (control);
     e_ini_unix (&argc, argv);
     e_u_switch_screen (1);
     fb = e_ini_colorset ();

@@ -302,7 +302,7 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
 };
 
 void
-ECNT_Init (we_control_t * control)
+e_control_init (we_control_t * control)
 {
     /** The number of columns used for the initial control
      *
