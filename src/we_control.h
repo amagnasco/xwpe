@@ -39,6 +39,16 @@ we_colorset_t* e_ini_colorset();
 we_control_t *e_control_new();
 int max_edit_windows();
 
+/** Maximum number of open edit windows.
+ *
+ * This define is only meant for internal use. Do not
+ * use it outside we_control.c / we_control.h.
+ * See \function max_edit_windows() for general access.
+ *
+ *
+ * */
+#define MAX_EDIT_WINDOWS 35
+
 struct CNT
 {
     int major, minor, patch; /**< Version of option file. */
@@ -47,7 +57,7 @@ struct CNT
     int flopt, edopt;
     int mxedt;		 /**< max number of editing windows */
     int curedt;		 /**< currently active window */
-    int edt[MAXEDT + 1]; /**< 1 <= window IDs <= MAXEDT, arbitrary order */
+    int edt[MAX_EDIT_WINDOWS + 1]; /**< 1 <= window IDs <= max_edit_windows(), arbitrary order */
     int autoindent;
     char* print_cmd;
     char* dirct; /**< current directory */
@@ -55,7 +65,7 @@ struct CNT
     struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
     FIND find;
     we_colorset_t* colorset;
-    we_window_t* window[MAXEDT + 1];
+    we_window_t* window[MAX_EDIT_WINDOWS + 1];
     char dtmd, autosv;
 };
 

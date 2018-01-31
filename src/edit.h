@@ -22,9 +22,6 @@
 #include "unixmakr.h"
 #endif
 
-/** Maximum number of editting windows */
-#define MAXEDT 35
-
 /**
  * \brief WPE_NOBACKUP is a number to determine not to make a backup.
  *

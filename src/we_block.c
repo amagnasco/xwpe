@@ -153,12 +153,12 @@ e_show_clipboard (we_window_t * window)
             return (0);
         }
 
-    if (control->mxedt > MAXEDT)
+    if (control->mxedt > max_edit_windows())
     {
         e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (0);
     }
-    for (j = 1; j <= MAXEDT; j++)
+    for (j = 1; j <= max_edit_windows(); j++)
     {
         for (i = 1; i <= control->mxedt && control->edt[i] != j; i++);
         if (i > control->mxedt)

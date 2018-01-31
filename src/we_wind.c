@@ -1110,11 +1110,11 @@ int
 e_ed_tile (we_window_t * window)
 {
     we_control_t *control = window->edit_control;
-    we_point_t atmp[MAXEDT + 1];
-    we_point_t etmp[MAXEDT + 1];
+    we_point_t atmp[max_edit_windows() + 1];
+    we_point_t etmp[max_edit_windows() + 1];
     int i, j, ni, nj;
     int editwin = 0;		/* number of editor windows */
-    int editorwin[MAXEDT + 1];
+    int editorwin[max_edit_windows() + 1];
     int maxlines = MAXSLNS;
 
     for (i = control->mxedt; i >= 1; i--)

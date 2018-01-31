@@ -127,7 +127,7 @@ e_edit (we_control_t * control, char *filename)
         }
     }
 
-    if (control->mxedt >= MAXEDT)
+    if (control->mxedt >= max_edit_windows())
     {
         e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (-1);
@@ -140,7 +140,7 @@ e_edit (we_control_t * control, char *filename)
             return (-1);
         }
     }
-    for (j = 1; j <= MAXEDT; j++)
+    for (j = 1; j <= max_edit_windows(); j++)
     {
         for (i = 1; i <= control->mxedt && control->edt[i] != j; i++);
         if (i > control->mxedt)

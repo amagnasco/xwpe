@@ -304,6 +304,16 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
     {"Alt-F4 Quit", 63, 0, 6, AF4}
 };
 
+/**
+ * Returns the maximum number of open edit windows.
+ */
+int max_edit_windows()
+{
+    return MAX_EDIT_WINDOWS;
+}
+/**
+ * Returns an initialized control struct.
+ */
 we_control_t *e_control_new ()
 {
     we_control_t *control = (we_control_t *) malloc (sizeof(we_control_t));

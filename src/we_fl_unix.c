@@ -108,14 +108,14 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
     char *sfile;
 
     /* check whether we reached the maximum number of windows */
-    if (control->mxedt >= MAXEDT)
+    if (control->mxedt >= max_edit_windows())
     {
         e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (-1);
     }
 
     /* search for a not used window ID number (j) */
-    for (j = 1; j <= MAXEDT; j++)
+    for (j = 1; j <= max_edit_windows(); j++)
     {
         for (i = 1; i <= control->mxedt && control->edt[i] != j; i++)
             ;
@@ -3792,12 +3792,12 @@ e_data_first (int sw, we_control_t * control, char *nstr)
     struct dirfile *df = NULL;
     FLWND *fw;
 
-    if (control->mxedt >= MAXEDT)
+    if (control->mxedt >= max_edit_windows())
     {
         e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
         return (-1);
     }
-    for (j = 1; j <= MAXEDT; j++)
+    for (j = 1; j <= max_edit_windows(); j++)
     {
         for (i = 1; i <= control->mxedt && control->edt[i] != j; i++);
         if (i > control->mxedt)
