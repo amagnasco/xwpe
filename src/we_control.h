@@ -31,7 +31,15 @@
 #include "config.h"
 #include "edit.h"
 
-typedef struct CNT
+typedef struct CNT we_control_t;
+
+/* prototypes */
+void we_colorset_init(we_colorset_t* fb);
+we_colorset_t* e_ini_colorset();
+we_control_t *e_control_new();
+int max_edit_windows();
+
+struct CNT
 {
     int major, minor, patch; /**< Version of option file. */
     int maxcol, tabn;
@@ -49,9 +57,7 @@ typedef struct CNT
     we_colorset_t* colorset;
     we_window_t* window[MAXEDT + 1];
     char dtmd, autosv;
-} we_control_t;
-
-we_colorset_t* e_ini_colorset();
+};
 
 extern char *e_hlp;
 extern WOPT *blst;
@@ -59,8 +65,6 @@ extern WOPT *eblst;
 extern WOPT eblst_u[];
 extern WOPT eblst_o[];
 
-extern struct CNT *global_editor_control;
-
-we_control_t *e_control_new();
+extern we_control_t *global_editor_control;
 
 #endif
