@@ -146,7 +146,7 @@ main (int argc, char **argv)
 #endif
     /* this error comes from reading the options file */
     if (err > 0)
-        e_error (e_msg[err], 0, control->colorset);
+        e_error (e_msg[err], ERROR_MSG, control->colorset);
     if (WpeIsProg ())
         WpeSyntaxReadFile (control);
 #ifdef UNIX

@@ -155,7 +155,7 @@ e_show_clipboard (we_window_t * window)
 
     if (control->mxedt > max_edit_windows())
     {
-        e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
+        e_error (e_msg[ERR_MAXWINS], ERROR_MSG, control->colorset);
         return (0);
     }
     for (j = 1; j <= max_edit_windows(); j++)
@@ -359,7 +359,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         bz->cursor.y = y;
         if ((cstr = malloc (window->edit_control->maxcol * sizeof (char))) == NULL)
         {
-            e_error (e_msg[ERR_LOWMEM], 0, bz->colorset);
+            e_error (e_msg[ERR_LOWMEM], ERROR_MSG, bz->colorset);
             return;
         }
         for (i = 0; i < n; i++)
@@ -386,7 +386,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         bv->cursor.y = y;
         if ((cstr = malloc (window->edit_control->maxcol * sizeof (char))) == NULL)
         {
-            e_error (e_msg[ERR_LOWMEM], 0, bz->colorset);
+            e_error (e_msg[ERR_LOWMEM], ERROR_MSG, bz->colorset);
             return;
         }
         for (i = 0; i < n; i++)
@@ -412,7 +412,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
         bv->cursor.y = y;
         if ((cstr = malloc (window->edit_control->maxcol * sizeof (char))) == NULL)
         {
-            e_error (e_msg[ERR_LOWMEM], 0, bz->colorset);
+            e_error (e_msg[ERR_LOWMEM], ERROR_MSG, bz->colorset);
             return;
         }
         for (i = 0; i < n; i++)
@@ -434,7 +434,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
     {
         bz->mx.y += MAXLINES;
         if ((tmp = realloc (bz->buflines, bz->mx.y * sizeof (STRING))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, bz->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, bz->colorset);
         else
             bz->buflines = tmp;
         if (bz->window->c_sw)
@@ -442,7 +442,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
     }
     if ((str = malloc ((n + 2) * sizeof (STRING))) == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, bz->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, bz->colorset);
         return;
     }
     for (i = kay; i <= key; i++)
@@ -553,7 +553,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
         return;
     if ((cstr = malloc (buffer_src->mx.x + 1)) == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer_dst->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, buffer_dst->colorset);
         return;
     }
     if (kay == key)
@@ -591,7 +591,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
         if ((tmp =
                     realloc (buffer_dst->buflines,
                              buffer_dst->mx.y * sizeof (STRING))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, buffer_dst->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, buffer_dst->colorset);
         else
             buffer_dst->buflines = tmp;
         if (buffer_dst->window->c_sw)
@@ -600,7 +600,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
     }
     if ((str = malloc ((n + 2) * sizeof (STRING *))) == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer_dst->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, buffer_dst->colorset);
         free (cstr);
         return;
     }
@@ -628,7 +628,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
     for (i = 1; i <= n; i++)
     {
         if ((buffer_dst->buflines[i + y].s = malloc (buffer_dst->mx.x + 1)) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, buffer->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, buffer->colorset);
         for (j = 0; j <= str[i]->len; j++)
             *(buffer_dst->buflines[i + y].s + j) = *(str[i]->s + j);
         if (*(str[i]->s + str[i]->len) != '\0')

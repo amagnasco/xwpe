@@ -1695,7 +1695,7 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
             df = e_p_get_var ("FILES");
             if (!df)
             {
-                e_error (e_p_msg[ERR_NOTHING], 0, window->colorset);
+                e_error (e_p_msg[ERR_NOTHING], ERROR_MSG, window->colorset);
                 WpeMouseRestoreShape ();
                 return (-1);
             }
@@ -1722,7 +1722,7 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     if (ret)
     {
         sprintf (str, "%s not found!", name);
-        e_error (str, 0, window->colorset);
+        e_error (str, ERROR_MSG, window->colorset);
         WpeMouseRestoreShape ();
         return (-1);
     }
@@ -2097,7 +2097,7 @@ e_nxt_brk (we_window_t * window)
             }
         }
     }
-    return (e_error ("No Matching Bracket!", 0, window->edit_control->colorset));
+    return (e_error ("No Matching Bracket!", ERROR_MSG, window->edit_control->colorset));
 }
 
 char *

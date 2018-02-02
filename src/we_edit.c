@@ -129,7 +129,7 @@ e_edit (we_control_t * control, char *filename)
 
     if (control->mxedt >= max_edit_windows())
     {
-        e_error (e_msg[ERR_MAXWINS], 0, control->colorset);
+        e_error (e_msg[ERR_MAXWINS], ERROR_MSG, control->colorset);
         return (-1);
     }
     if (stat (filename, buf) == 0)
@@ -151,17 +151,17 @@ e_edit (we_control_t * control, char *filename)
     control->edt[control->mxedt] = j;
 
     if ((window = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, control->colorset);
 
     window->colorset = control->colorset;
     control->window[control->mxedt] = window;
 
     if ((window->buffer = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     if ((window->screen = (we_screen_t *) malloc (sizeof (we_screen_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     if ((window->buffer->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
 #ifdef PROG
     for (i = control->mxedt - 1;
             i > 0 && (!strcmp (control->window[i]->datnam, "Messages")
@@ -363,7 +363,7 @@ e_edit (we_control_t * control, char *filename)
     {
         e_readin (0, 0, fp, window->buffer, &window->dtmd);
         if (fclose (fp) != 0)
-            e_error (e_msg[ERR_FCLOSE], 0, control->colorset);
+            e_error (e_msg[ERR_FCLOSE], ERROR_MSG, control->colorset);
         if (control->dtmd == DTMD_HELP)
             control->dtmd = DTMD_NORMAL;
 #ifdef PROG
@@ -2055,7 +2055,7 @@ e_new_line (int yd, we_buffer_t * buffer)
     {
         buffer->mx.y += MAXLINES;
         if ((buffer->buflines = realloc (buffer->buflines, buffer->mx.y * sizeof (STRING))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, buffer->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, buffer->colorset);
         if (buffer->window->c_sw)
             buffer->window->c_sw = realloc (buffer->window->c_sw, buffer->mx.y * sizeof (int));
     }
@@ -2066,7 +2066,7 @@ e_new_line (int yd, we_buffer_t * buffer)
     (buffer->mxlines)++;
     buffer->buflines[yd].s = malloc (buffer->mx.x + 1);
     if (buffer->buflines[yd].s == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, buffer->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, buffer->colorset);
     *(buffer->buflines[yd].s) = '\0';
     buffer->buflines[yd].len = 0;
     buffer->buflines[yd].nrc = 0;
@@ -2439,7 +2439,7 @@ e_create_undo(int undo_type, we_buffer_t *buffer, int x, int y, int n)
     undo = malloc(sizeof(we_undo_t));
     if (undo == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, buffer->colorset);
         return undo;
     }
     undo->type = undo_type;
@@ -2508,7 +2508,7 @@ e_process_undo_s_search_replace (we_buffer_t * buffer, we_undo_t *next)
 
     if (str == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, buffer->colorset);
         free (next);
         return (-1);
     }
@@ -2562,7 +2562,7 @@ e_process_undo_d_block_delete (we_buffer_t * buffer, we_undo_t *next)
 
     bn->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING));
     if (bn == NULL || sn == 0 || bn->buflines == NULL)
-        return (e_error (e_msg[ERR_LOWMEM], 0, buffer->colorset));
+        return (e_error (e_msg[ERR_LOWMEM], ERROR_MSG, buffer->colorset));
     fn->buffer = bn;
     fn->c_sw = NULL;
     fn->c_st = NULL;
@@ -2661,7 +2661,7 @@ e_make_rudo (we_window_t * window, int doing_redo)
     undo = doing_redo ? buffer->redo : buffer->undo;
     if (undo == NULL)
     {
-        e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), 0, buffer->colorset);
+        e_error ((doing_redo ? e_msg[ERR_REDO] : e_msg[ERR_UNDO]), ERROR_MSG, buffer->colorset);
         return (-1);
     }
     window = window->edit_control->window[window->edit_control->mxedt];

@@ -126,7 +126,7 @@ StringToStringArray (char *str, int *maxLen, int minWidth, int *nr_lines_return)
 /*
       Print error message        */
 int
-e_error (char *text, int sw, we_colorset_t * colorset)
+e_error (char *text, enum msg_type_t message_type, we_colorset_t * colorset)
 {
     we_view_t *view = NULL;
     int len, i, xa, xe, ya = 8, ye = 14;
@@ -138,26 +138,26 @@ e_error (char *text, int sw, we_colorset_t * colorset)
         len = 20;
     xa = (80 - len) / 2 - 2;
     xe = 82 - (80 - len) / 2;
-    if (sw == -1)
+    if (message_type == INFO_MSG)
         header = "Message";
-    else if (sw == 0)
+    else if (message_type == ERROR_MSG)
         header = "Error";
-    else if (sw == 1)
+    else if (message_type == SERIOUS_ERROR_MSG)
         header = "Serious Error";
-    else if (sw == 2)
+    else if (message_type == FATAL_ERROR_MSG)
         header = "Fatal Error";
 
-    if (sw < 2)
+    if (message_type == INFO_MSG || message_type == ERROR_MSG || message_type == SERIOUS_ERROR_MSG)
         view = e_std_view (xa, ya, xe, ye, header, 1,
                            colorset->nr.fg_bg_color,
                            colorset->nt.fg_bg_color,
                            colorset->ne.fg_bg_color);
-    if (sw == 2 || view == NULL)
+    if (message_type == FATAL_ERROR_MSG || view == NULL)
     {
         view = e_open_view (xa, ya, xe, ye, 0, 0);
         e_std_window (xa, ya, xe, ye, header, 1, 0, 0);
     }
-    if (sw < 2)
+    if (message_type == INFO_MSG || message_type == ERROR_MSG || message_type == SERIOUS_ERROR_MSG)
     {
         e_pr_str ((xe + xa - e_str_len ((unsigned char *) text)) / 2,
                   ya + 2, text, colorset->nt.fg_bg_color, 0, 0, 0, 0);
@@ -188,11 +188,11 @@ e_error (char *text, int sw, we_colorset_t * colorset)
     else
         e_cls (0, ' ');
     fk_u_cursor (1);
-    if (sw == 1)
+    if (message_type == SERIOUS_ERROR_MSG)
         e_quit (global_editor_control->window[global_editor_control->mxedt]);
-    if (sw > 0)
-        e_exit (sw);
-    return (sw);
+    if (message_type > ERROR_MSG)
+        e_exit (message_type);
+    return (message_type);
 }
 
 /*   message with selection        */
@@ -248,7 +248,7 @@ e_firstl (we_window_t * window, int sw)
     window->view = NULL;
     window->view = e_ed_kst (window, window->view, sw);
     if (window->view == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
 }
 
 /*         Writing of the file type    */
@@ -642,7 +642,7 @@ e_size_move (we_window_t * window)
             window->e.y = ye;
             window->view = e_ed_kst (window, window->view, 0);
             if (window->view == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+                e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
             if (window->dtmd == DTMD_FILEDROPDOWN)
             {
                 FLWND *fw = (FLWND *) window->buffer;
@@ -1068,7 +1068,7 @@ e_ed_zoom (we_window_t * window)
         }
         window->view = e_ed_kst (window, window->view, 1);
         if (window->view == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
         e_cursor (window, 1);
         e_write_screen (window, 1);
     }
@@ -1617,7 +1617,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
     FLWND *fw = malloc (sizeof (FLWND));
 
     if ((window = (we_window_t *) malloc (sizeof (we_window_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, control->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, control->colorset);
     if (xe > MAXSCOL - 3)
     {
         xe = MAXSCOL - 3;
@@ -1641,7 +1641,7 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
     window->datnam = "";
     if (!(window->view = e_ed_kst (window, NULL, 1)))
     {
-        e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, window->colorset);
         return (0);
     }
     window->buffer = (we_buffer_t *) fw;
@@ -1822,7 +1822,7 @@ e_opt_sec_box (int xa, int ya, int num, OPTK * opt, we_window_t * window, int sw
                     window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, window->colorset);
         return (-2);
     }
     for (i = 0; i < num; i++)

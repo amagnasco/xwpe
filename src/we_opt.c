@@ -75,7 +75,7 @@ e_about_WE (we_window_t * window)
                     window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
         return (WPE_ESC);
     }
 
@@ -250,7 +250,7 @@ e_sys_info (we_window_t * window)
                     window->colorset->ne.fg_bg_color);
     if (view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
         return (WPE_ESC);
     }
     e_pr_str (xa + 3, ya + 2, " Current File: ", window->colorset->nt.fg_bg_color, 0, 0, 0, 0);
@@ -322,7 +322,7 @@ e_ad_colors_md (we_window_t * window, int md)
                        window->colorset->et.fg_bg_color, window->colorset->es.fg_bg_color);
     if (view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
         return (WPE_ESC);
     }
     sw = e_dif_colors (sw, xe - 13, ya + 1, window, md);
@@ -1183,7 +1183,7 @@ e_save_opt (we_window_t * window)
     fp = fopen (control->optfile, "w");
     if (fp == NULL)
     {
-        e_error (e_msg[ERR_OPEN_OPF], 0, window->colorset);
+        e_error (e_msg[ERR_OPEN_OPF], ERROR_MSG, window->colorset);
         return (-1);
     }
     str_line = OPT_SECTION_GENERAL;
@@ -1661,7 +1661,7 @@ e_opt_move (W_OPTSTR * o)
             o->view =
                 e_change_pic (o->xa, o->ya, o->xe, o->ye, o->view, 1, o->frt);
             if (o->view == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, o->window->colorset);
+                e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, o->window->colorset);
             view->a.x = o->xa;
             view->a.y = o->ya;
             view->e.x = o->xe;
@@ -1772,7 +1772,7 @@ e_opt_kst (W_OPTSTR * o)
                     o->frs);
     if (o->view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, o->window->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, o->window->colorset);
         return (-1);
     }
     if (!c)

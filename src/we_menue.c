@@ -73,7 +73,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
 #endif
     if ((mainmenu[0].menuitems =
                 malloc (mainmenu[0].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     mainmenu[0].menuitems[0] =
         WpeFillSubmenuItem ("About WE", 0, 'A', e_about_WE);
     mainmenu[0].menuitems[1] =
@@ -94,7 +94,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     mainmenu[1].no_of_items = 11;
     if ((mainmenu[1].menuitems =
                 malloc (mainmenu[1].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[1].menuitems[0] =
@@ -138,7 +138,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
         mainmenu[2].no_of_items = 7;
     if ((mainmenu[2].menuitems =
                 malloc (mainmenu[2].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     mainmenu[2].menuitems[0] =
         WpeFillSubmenuItem ("Cut     Shift Del / ^X", 2, 'T', e_edt_del);
     mainmenu[2].menuitems[1] =
@@ -169,7 +169,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     mainmenu[3].no_of_items = 4;
     if ((mainmenu[3].menuitems =
                 malloc (mainmenu[3].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[3].menuitems[0] =
@@ -195,7 +195,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     mainmenu[4].no_of_items = 15;
     if ((mainmenu[4].menuitems =
                 malloc (mainmenu[4].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     mainmenu[4].menuitems[0] =
         WpeFillSubmenuItem ("Begin Mark      ^K B", 0, 'B', e_blck_begin);
     mainmenu[4].menuitems[1] =
@@ -234,7 +234,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
         mainmenu[5].no_of_items = 12;
         if ((mainmenu[5].menuitems =
                     malloc (mainmenu[5].no_of_items * sizeof (OPTK))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
         mainmenu[5].menuitems[0] =
             WpeFillSubmenuItem ("Compile         Alt F9 / Alt C", 0, 'C',
                                 e_compile);
@@ -276,7 +276,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
         mainmenu[MENOPT - 4].no_of_items = 5;
         if ((mainmenu[MENOPT - 4].menuitems =
                     malloc (mainmenu[MENOPT - 4].no_of_items * sizeof (OPTK))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
         mainmenu[MENOPT - 4].menuitems[0] =
             WpeFillSubmenuItem ("Open Project", 5, 'P', e_project);
         mainmenu[MENOPT - 4].menuitems[1] =
@@ -297,7 +297,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
         mainmenu[MENOPT - 5].no_of_items = 13;
         if ((mainmenu[MENOPT - 5].menuitems =
                     malloc (mainmenu[MENOPT - 5].no_of_items * sizeof (OPTK))) == NULL)
-            e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+            e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
 
         if (window->edit_control->edopt & ED_CUA_STYLE)
         {
@@ -368,7 +368,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
         mainmenu[MENOPT - 3].no_of_items = 5;
     if ((mainmenu[MENOPT - 3].menuitems =
                 malloc (mainmenu[MENOPT - 3].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     mainmenu[MENOPT - 3].menuitems[0] =
         WpeFillSubmenuItem ("Adjust Colors", 0, 'A', e_ad_colors);
     mainmenu[MENOPT - 3].menuitems[1] =
@@ -415,7 +415,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
 #endif
     if ((mainmenu[MENOPT - 2].menuitems =
                 malloc (mainmenu[MENOPT - 2].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     if (window->edit_control->edopt & ED_CUA_STYLE)
     {
         mainmenu[MENOPT - 2].menuitems[0] =
@@ -476,7 +476,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
 #endif
     if ((mainmenu[MENOPT - 1].menuitems =
                 malloc (mainmenu[MENOPT - 1].no_of_items * sizeof (OPTK))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     mainmenu[MENOPT - 1].menuitems[0] =
         WpeFillSubmenuItem ("Editor              F1", 0, 'E', e_help);
 #if defined(PROG)
@@ -648,7 +648,7 @@ WpeHandleSubmenu (int xa, int ya, int xe, int ye, int nm, OPTK * fopt,
 
     if (view == NULL)
     {
-        e_error (e_msg[ERR_LOWMEM], 0, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], ERROR_MSG, window->colorset);
         return (WPE_ESC);
     }
 

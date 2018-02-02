@@ -1490,7 +1490,9 @@ e_t_deb_out (we_window_t * window)
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
     if (!swt_scr || !beg_scr)
 #endif
-        return (e_error ("Your terminal don\'t use begin/end cup", 0, window->colorset));
+        return (e_error ("Your terminal don\'t use begin/end cup",
+                         ERROR_MSG,
+                         window->colorset));
     e_u_d_switch_out (1);
     getchar ();
     e_u_d_switch_out (0);

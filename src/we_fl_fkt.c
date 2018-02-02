@@ -308,18 +308,18 @@ e_write (int xa, int ya, int xe, int ye, we_window_t * window, int backup)
     ptmp = e_mkfilename (window->dirct, window->datnam);
 // F_OK means: test for existance and has the value zero.
 // Use R_OK, W_OK and X_OK for Read, Write or execute permissions
-// FIXME: man page discourage use of access: switch to real user and test open, then switch back.
+// FIXME: man page of access: determines access based on real user, not effective user
     if ((backup == WPE_BACKUP) && (access (ptmp, F_OK) == 0))
     {
         tmp = e_bakfilename (ptmp);
-        if (access (tmp, F_OK) == 0)
-            remove (tmp);
+        if (access (tmp, F_OK) == 0)  // real user ID has access to this file and it exists
+            remove (tmp);			  // remove on basis of effective user ID
         WpeRenameCopy (ptmp, tmp, window, 1);
         free (tmp);
     }
     if ((fp = fopen (ptmp, "wb")) == NULL)
     {
-        e_error (e_msg[ERR_FOPEN], 0, window->colorset);
+        e_error (e_msg[ERR_FOPEN], ERROR_MSG, window->colorset);
         free (ptmp);
         return (WPE_ESC);
     }
@@ -880,9 +880,9 @@ e_read_help (char *str, we_window_t * window, int sw)
         return (1);
     e_close_buffer (window->buffer);
     if ((window->buffer = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     if ((window->buffer->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     window->buffer->window = window;
     window->buffer->cursor = e_set_pnt (0, 0);
     window->buffer->mx = e_set_pnt (window->edit_control->maxcol, MAXLINES);
@@ -919,7 +919,7 @@ e_read_help (char *str, we_window_t * window, int sw)
         if (!ptmp)
         {
             e_i_fclose (fp);
-            return (e_error ("No Next Page", 0, window->colorset));
+            return (e_error ("No Next Page", ERROR_MSG, window->colorset));
         }
         else
         {
@@ -1108,7 +1108,7 @@ e_help_next (we_window_t * window, int sw)
             last->pstr = NULL;
         }
         else
-            return (e_error (sw ? "No Next Page" : "No Previous Page", 0, window->colorset));
+            return (e_error (sw ? "No Next Page" : "No Previous Page", ERROR_MSG, window->colorset));
         e_read_info (last->str, window, last->file);
         window->buffer->cursor.x = window->buffer->cursor.y = 0;
         e_cursor (window, 1);
@@ -1138,7 +1138,7 @@ e_help_next (we_window_t * window, int sw)
         else
             return (e_help_last (window));
     }
-    return (e_error (sw ? "No Next Page" : "No Previous Page", 0, window->colorset));
+    return (e_error (sw ? "No Next Page" : "No Previous Page", ERROR_MSG, window->colorset));
 }
 
 int
@@ -1189,7 +1189,7 @@ e_help_comp (we_window_t * window)
                     ;
                 if (str[k - i - 1] != HED)
                 {
-                    e_error ("Error in Switch!", 0, window->colorset);
+                    e_error ("Error in Switch!", ERROR_MSG, window->colorset);
                     buffer->cursor.x = k;
                     buffer->cursor.y = j;
                     e_cursor (window, 1);
@@ -1216,7 +1216,7 @@ e_help_comp (we_window_t * window)
                     ;
                 if (str[k - i - 1] != HED)
                 {
-                    e_error ("Error in Header!", 0, window->colorset);
+                    e_error ("Error in Header!", ERROR_MSG, window->colorset);
                     buffer->cursor.x = k;
                     buffer->cursor.y = j;
                     e_cursor (window, 1);
@@ -1238,7 +1238,7 @@ e_help_comp (we_window_t * window)
         if (i >= hn)
         {
             sprintf (str, "Switch \'%s\' has no Header!", swtch[j]);
-            e_error (str, 0, window->colorset);
+            e_error (str, ERROR_MSG, window->colorset);
             goto ende;
         }
     }
@@ -1250,7 +1250,7 @@ e_help_comp (we_window_t * window)
         if (i >= sn)
         {
             sprintf (str, "No Jump to Header \'%s\'!", hdrs[j]);
-            e_error (str, 0, window->colorset);
+            e_error (str, ERROR_MSG, window->colorset);
             goto ende;
         }
     }
@@ -1529,9 +1529,9 @@ e_read_info (char *str, we_window_t * window, char *file)
         return (1);
     e_close_buffer (window->buffer);
     if ((window->buffer = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     if ((window->buffer->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL)
-        e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+        e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     window->buffer->window = window;
     window->buffer->cursor = e_set_pnt (0, 0);
     window->buffer->mx = e_set_pnt (window->edit_control->maxcol, MAXLINES);

@@ -136,7 +136,7 @@ WpeSyntaxReadFile (we_control_t * control)
             {
                 if (fscanf (syntax_file, "%s", tmp) != 1)
                 {
-                    e_error ("Error reading syntax_def", 0, control->colorset);
+                    e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
                     return;
                 }
                 new_syntax->extension[k] = WpeStrdup (tmp);
@@ -151,7 +151,7 @@ WpeSyntaxReadFile (we_control_t * control)
         new_syntax->syntax_rule = malloc (sizeof (WpeSyntaxRule));
         if (fscanf (syntax_file, "%d", &reserved_num) != 1)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->reserved_word = malloc ((reserved_num + 1) *
@@ -160,7 +160,7 @@ WpeSyntaxReadFile (we_control_t * control)
         {
             if (fscanf (syntax_file, "%s", tmp) != 1)
             {
-                e_error ("Error reading syntax_def", 0, control->colorset);
+                e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
                 return;
             }
             new_syntax->syntax_rule->reserved_word[i] = WpeStrdup (tmp);
@@ -168,7 +168,7 @@ WpeSyntaxReadFile (we_control_t * control)
         new_syntax->syntax_rule->reserved_word[i] = NULL;
         if (fscanf (syntax_file, "%d", &long_op_num) != 1)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->long_operator = malloc ((long_op_num + 1) *
@@ -177,7 +177,7 @@ WpeSyntaxReadFile (we_control_t * control)
         {
             if (fscanf (syntax_file, "%s", tmp) != 1)
             {
-                e_error ("Error reading syntax_def", 0, control->colorset);
+                e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
                 return;
             }
             new_syntax->syntax_rule->long_operator[i] = WpeStrdup (tmp);
@@ -185,35 +185,35 @@ WpeSyntaxReadFile (we_control_t * control)
         new_syntax->syntax_rule->long_operator[i] = NULL;
         if (fscanf (syntax_file, "%s", tmp) != 1)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->single_operator =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
         if (fscanf (syntax_file, "%s", tmp) != 1)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->begin_comment =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
         if (fscanf (syntax_file, "%s", tmp) != 1)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->end_comment =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
         if (fscanf (syntax_file, "%s", tmp) != 1)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->line_comment =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
         if (fscanf (syntax_file, "%s", tmp) != 1)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->special_comment =
@@ -227,7 +227,7 @@ WpeSyntaxReadFile (we_control_t * control)
                  &new_syntax->syntax_rule->continue_char,
                  &new_syntax->syntax_rule->insensitive) != 6)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         /* This is currently a mess but this format of syntax_def is unlikely to
@@ -274,7 +274,7 @@ WpeSyntaxReadFile (we_control_t * control)
                  &new_syntax->syntax_rule->continue_column,
                  &new_syntax->syntax_rule->comment_column) != 3)
         {
-            e_error ("Error reading syntax_def", 0, control->colorset);
+            e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         qsort (new_syntax->syntax_rule->reserved_word, reserved_num,

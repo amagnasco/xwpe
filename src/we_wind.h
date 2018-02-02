@@ -9,6 +9,9 @@
 #include "we_main.h"
 #include "we_mouse.h"
 
+/** Message type enumeration. Defines types of message e_error function displays. */
+enum msg_type_t { INFO_MSG=-1, ERROR_MSG=0, SERIOUS_ERROR_MSG=1, FATAL_ERROR_MSG=2 };
+
 /*******************************************************************************/
 /* (we_window_t *)window                                   */
 /*            |                                   */
@@ -78,7 +81,7 @@ char e_gt_char(int x, int y);
 char e_gt_col(int x, int y);
 char e_gt_byte(int x, int y);
 void e_pt_byte(int x, int y, int c);
-int e_error(char* text, int sw, we_colorset_t* colorset);
+int e_error(char* text, int message_type, we_colorset_t* colorset);
 int e_message(int sw, char* str, we_window_t* window);
 void e_firstl(we_window_t* window, int sw);
 int e_pr_filetype(we_window_t* window);

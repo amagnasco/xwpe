@@ -742,7 +742,7 @@ e_eck_mouse (we_window_t * window, int sw)
             fk_mouse (g);
             window->view = e_ed_kst (window, window->view, 0);
             if (window->view == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, window->colorset);
+                e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
             if (window->dtmd == DTMD_FILEDROPDOWN)
             {
                 FLWND *fw = (FLWND *) window->buffer;
@@ -1377,7 +1377,7 @@ W_OPTSTR *o;
             o->view =
                 e_change_pic (o->xa, o->ya, o->xe, o->ye, o->view, 1, o->frt);
             if (o->view == NULL)
-                e_error (e_msg[ERR_LOWMEM], 1, o->window->colorset);
+                e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, o->window->colorset);
             g[0] = 1;
             fk_mouse (g);
             view->a.x = o->xa;
