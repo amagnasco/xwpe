@@ -1,6 +1,6 @@
-#ifndef WE_FL_FKT_H
-#define WE_FL_FKT_H
-/** \file we_fl_fkt.h */
+#ifndef WE_FILE_FKT_H
+#define WE_FILE_FKT_H
+/** \file we_file_fkt.h */
 
 #include "config.h"
 #include "we_debug.h"
@@ -14,7 +14,6 @@
 extern char* info_file;
 extern char* e_tmp_dir;
 
-/*   we_fl_fkt.c   */
 char* e_mkfilename(char* dr, char* fn);
 we_point_t e_readin(int i, int j, FILE* fp, we_buffer_t* buffer, char* sw);
 int e_new(we_window_t* window);

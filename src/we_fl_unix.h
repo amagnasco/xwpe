@@ -6,7 +6,7 @@
 #include "config.h"
 #include "we_block.h"
 #include "we_debug.h"
-#include "we_fl_fkt.h"
+#include "we_file_fkt.h"
 #include "we_mouse.h"
 #include "we_opt.h"
 #include "we_wind.h"

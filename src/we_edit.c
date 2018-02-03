@@ -20,7 +20,7 @@
 #include "we_prog.h"
 #include "WeString.h"
 #include "we_wind.h"
-#include "we_fl_fkt.h"
+#include "we_file_fkt.h"
 
 #ifdef UNIX
 #include<sys/types.h>		/*  included for digital station  */
