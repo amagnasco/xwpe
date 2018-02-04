@@ -72,7 +72,14 @@ e_readin (int i, int j, FILE * fp, we_buffer_t * buffer, char *type)
         for (; i < buffer->mx.x; i++)
         {
             if (hb != 2)
+            {
                 n = fread (&c, sizeof (char), 1, fp);
+                if (n == 0 && ferror(fp))
+                {
+                    char *msg = "Error during read of stream.";
+                    e_error(msg, SERIOUS_ERROR_MSG, buffer->colorset); // does not return
+                }
+            }
             else
             {
                 c = cc;
@@ -97,10 +104,20 @@ e_readin (int i, int j, FILE * fp, we_buffer_t * buffer, char *type)
                 else
                     i--;
                 n = fread (&c, sizeof (char), 1, fp);
+                if (n == 0 && ferror(fp))
+                {
+                    char *msg = "Error during read of stream.";
+                    e_error(msg, SERIOUS_ERROR_MSG, buffer->colorset); // does not return
+                }
             }
             else if ((DTMD_HELP == *type) && (hb == 1))
             {
                 n = fread (&cc, sizeof (char), 1, fp);
+                if (n == 0 && ferror(fp))
+                {
+                    char *msg = "Error during read of stream.";
+                    e_error(msg, SERIOUS_ERROR_MSG, buffer->colorset); // does not return
+                }
                 if (cc != HBS)
                 {
                     *(buffer->buflines[j].s + i) = HED;
@@ -108,7 +125,14 @@ e_readin (int i, int j, FILE * fp, we_buffer_t * buffer, char *type)
                     hb = 2;
                 }
                 else
+                {
                     n = fread (&c, sizeof (char), 1, fp);
+                    if (n == 0 && ferror(fp))
+                    {
+                        char *msg = "Error during read of stream.";
+                        e_error(msg, SERIOUS_ERROR_MSG, buffer->colorset); // does not return
+                    }
+                }
             }
             if (n != 1)
             {

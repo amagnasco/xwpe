@@ -2940,6 +2940,11 @@ WpeCopyFileCont (char *oldfile, char *newfile, we_window_t * window)
     do
     {
         ret = fread (buffer, 1, E_C_BUFFERSIZE, fpo);
+        if (ret == 0 && ferror(fpo))
+        {
+            char *msg = "Error during read of stream.";
+            e_error(msg, SERIOUS_ERROR_MSG, window->colorset); // does not return
+        }
         /* we should be able to write the same amount of info */
         if (fwrite (buffer, 1, ret, fpn) != ret)
         {
