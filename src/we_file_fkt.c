@@ -34,7 +34,16 @@ int e_read_info ();
 char *info_file = NULL;
 char *e_tmp_dir = NULL;
 
-/* create complete file name */
+/**
+ * \brief create complete file name.
+ *
+ * \param dr char pointer to the directory (validate?).
+ * \param fn char pointer to the filename.
+ *
+ * \returns char pointer to the complete filename, including path.
+ *
+ *
+ * */
 char *
 e_mkfilename (char *dr, char *fn)
 {
@@ -56,7 +65,18 @@ e_mkfilename (char *dr, char *fn)
     return (fl);
 }
 
-/*   read file routine     */
+/**
+ *	\brief read file routine.
+ *
+ *	\param i int
+ *	\param j int
+ *	\param fp FILE pointer
+ *	\param buffer we_buffer_t pointer
+ *	\param type char pointer
+ *
+ *	\returns we_point_t struct containing
+ *
+ **/
 we_point_t
 e_readin (int i, int j, FILE * fp, we_buffer_t * buffer, char *type)
 {
