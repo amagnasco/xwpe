@@ -1,7 +1,7 @@
 #ifndef WE_FL_UNIX_H
 #define WE_FL_UNIX_H
 
-/** \file we_fl_unix.h */
+/** \file we_file_unix.h */
 
 #include "config.h"
 #include "we_block.h"

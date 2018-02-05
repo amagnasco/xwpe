@@ -6,7 +6,7 @@
 #include "we_debug.h"
 #include "we_e_aus.h"
 #include "we_edit.h"
-#include "we_fl_unix.h"
+#include "we_file_unix.h"
 #include "we_mouse.h"
 #include "we_opt.h"
 #include <stdlib.h>

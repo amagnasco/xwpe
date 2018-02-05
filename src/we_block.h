@@ -5,7 +5,7 @@
 
 #include "config.h"
 #include "we_debug.h"
-#include "we_fl_unix.h"
+#include "we_file_unix.h"
 #include "we_opt.h"
 
 int e_blck_del(we_window_t* window);
