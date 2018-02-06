@@ -1329,49 +1329,62 @@ e_info (we_window_t * window)
 
 #define IFE 31
 
+/**
+ * Make an Info button.
+ *
+ *
+ * \TODO This function assumes an unknown format.
+ *
+ * Remark. Refactored name 'bg' into border. Suspect it meant begrenzung.
+ * Refactored 'nd' to next data. Also suspicion.
+ *
+ * \param str char pointer to the info on the button.
+ * \returns 1 if the string is empty, zero if the string was ok, -1 on error.
+ *
+ */
 int
 e_mk_info_button (char *str)
 {
-    int i, bg, nd, len = strlen (str);
+    int i, border, next, len = strlen (str);
 
     if (str[0] == '\n' || str[0] == '\0')
         return (1);
-    for (bg = 0; str[bg] && isspace (str[bg]); bg++)
+    for (border = 0; str[border] && isspace (str[border]); border++)
         ;
-    for (nd = bg; str[nd] && (str[nd] != ':' ||
-                              (!isspace (str[nd + 1]) && (str[nd + 1] != '(')
-                               && (str[nd + 1] != ':'
-                                   || (!isspace (str[nd + 2])
-                                       && str[nd + 2] != '.')))); nd++)
+    for (next = border; str[next] && (str[next] != ':' ||
+                                      (!isspace (str[next + 1]) && (str[next + 1] != '(')
+                                       && (str[next + 1] != ':'
+                                           || (!isspace (str[next + 2])
+                                                   && str[next + 2] != '.')))); next++)
         ;
-    if (!str[nd])
+    if (!str[next])
         return (-1);
-    if (str[nd + 1] != ':')
+    if (str[next + 1] != ':')
     {
-        for (nd++; str[nd] && isspace (str[nd]); nd++);
-        if (str[nd] == '(')
+        for (next++; str[next] && isspace (str[next]); next++);
+        if (str[next] == '(')
         {
-            for (i = len; i >= bg; i--)
+            for (i = len; i >= border; i--)
                 str[i + 1] = str[i];
-            str[bg] = HNF;
-            str[nd + 1] = HED;
-            for (nd++; str[nd] && str[nd] && str[nd] != ')'; nd++);
-            if (str[nd])
-                str[nd] = HED;
+            str[border] = HNF;
+            str[next + 1] = HED;
+            for (next++; str[next] && str[next] && str[next] != ')'; next++);
+            if (str[next])
+                str[next] = HED;
             return (0);
         }
-        for (; str[nd] && (str[nd] != '.' || isalnum1 (str[nd + 1])); nd++);
-        if (!str[nd])
+        for (; str[next] && (str[next] != '.' || isalnum1 (str[next + 1])); next++);
+        if (!str[next])
             return (-1);
-        for (bg = nd; str[bg] != ':' || !isspace (str[bg + 1]); bg--);
-        for (bg++; isspace (str[bg]); bg++);
+        for (border = next; str[border] != ':' || !isspace (str[border + 1]); border--);
+        for (border++; isspace (str[border]); border++);
     }
-    for (i = len; i >= nd; i--)
+    for (i = len; i >= next; i--)
         str[i + 2] = str[i];
-    str[nd + 1] = HED;
-    for (; i >= bg; i--)
+    str[next + 1] = HED;
+    for (; i >= border; i--)
         str[i + 1] = str[i];
-    str[bg] = HBG;
+    str[border] = HBG;
     return (0);
 }
 
