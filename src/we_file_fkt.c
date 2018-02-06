@@ -1332,10 +1332,9 @@ e_info (we_window_t * window)
 /**
  * Make an Info button.
  *
- *
  * \TODO This function assumes an unknown format.
  *
- * Remark. Refactored name 'bg' into border. Suspect it meant begrenzung.
+ * Remark. Refactored name 'bg' into begin. See HBG for reference.
  * Refactored 'nd' to next data. Also suspicion.
  *
  * \param str char pointer to the info on the button.
@@ -1345,17 +1344,17 @@ e_info (we_window_t * window)
 int
 e_mk_info_button (char *str)
 {
-    int i, border, next, len = strlen (str);
+    int i, begin, next, len = strlen (str);
 
     if (str[0] == '\n' || str[0] == '\0')
         return (1);
-    for (border = 0; str[border] && isspace (str[border]); border++)
+    for (begin = 0; str[begin] && isspace (str[begin]); begin++)
         ;
-    for (next = border; str[next] && (str[next] != ':' ||
-                                      (!isspace (str[next + 1]) && (str[next + 1] != '(')
-                                       && (str[next + 1] != ':'
-                                           || (!isspace (str[next + 2])
-                                                   && str[next + 2] != '.')))); next++)
+    for (next = begin; str[next] && (str[next] != ':' ||
+                                     (!isspace (str[next + 1]) && (str[next + 1] != '(')
+                                      && (str[next + 1] != ':'
+                                          || (!isspace (str[next + 2])
+                                                  && str[next + 2] != '.')))); next++)
         ;
     if (!str[next])
         return (-1);
@@ -1364,9 +1363,9 @@ e_mk_info_button (char *str)
         for (next++; str[next] && isspace (str[next]); next++);
         if (str[next] == '(')
         {
-            for (i = len; i >= border; i--)
+            for (i = len; i >= begin; i--)
                 str[i + 1] = str[i];
-            str[border] = HNF;
+            str[begin] = HNF;
             str[next + 1] = HED;
             for (next++; str[next] && str[next] && str[next] != ')'; next++);
             if (str[next])
@@ -1376,15 +1375,15 @@ e_mk_info_button (char *str)
         for (; str[next] && (str[next] != '.' || isalnum1 (str[next + 1])); next++);
         if (!str[next])
             return (-1);
-        for (border = next; str[border] != ':' || !isspace (str[border + 1]); border--);
-        for (border++; isspace (str[border]); border++);
+        for (begin = next; str[begin] != ':' || !isspace (str[begin + 1]); begin--);
+        for (begin++; isspace (str[begin]); begin++);
     }
     for (i = len; i >= next; i--)
         str[i + 2] = str[i];
     str[next + 1] = HED;
-    for (; i >= border; i--)
+    for (; i >= begin; i--)
         str[i + 1] = str[i];
-    str[border] = HBG;
+    str[begin] = HBG;
     return (0);
 }
 
