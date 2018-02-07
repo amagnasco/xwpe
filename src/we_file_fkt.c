@@ -1272,7 +1272,7 @@ e_mk_info_button (char *str)
     /* Search for beginning of string */
     for (begin = 0; str[begin] && isspace (str[begin]); begin++)
         ;
-    /* Seems to look for next combi of: EOF or ": " or ":[.]*(" or ":[.]*:\." */
+    /* Seems to look for next selection of: EOF or ": " or ":[.]*(" or ":[.]*:\." */
     /* \TODO Find out the purpose of these formats. */
     for (next = begin; str[next] &&
             (str[next] != ':' ||
