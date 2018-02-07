@@ -1346,32 +1346,51 @@ e_mk_info_button (char *str)
 {
     int i, begin, next, len = strlen (str);
 
+    /* Return 1 for empty string */
     if (str[0] == '\n' || str[0] == '\0')
         return (1);
+    /* Search for beginning of string */
     for (begin = 0; str[begin] && isspace (str[begin]); begin++)
         ;
-    for (next = begin; str[next] && (str[next] != ':' ||
-                                     (!isspace (str[next + 1]) && (str[next + 1] != '(')
-                                      && (str[next + 1] != ':'
-                                          || (!isspace (str[next + 2])
-                                                  && str[next + 2] != '.')))); next++)
+    /* Seems to look for next combi of: EOF or ": " or ":[.]*(" or ":[.]*:\." */
+    /* \TODO Find out the purpose of these formats. */
+    for (next = begin; str[next] &&
+            (str[next] != ':' ||
+             (!isspace (str[next + 1]) && (str[next + 1] != '(')
+              && (str[next + 1] != ':'
+                  || (!isspace (str[next + 2])
+                      && str[next + 2] != '.')
+                 )
+             )
+            ); next++)
         ;
+    /* postcondition: str contains EOF or ": " or ":(" or "::."
+     * the space could be any character that isspace() recognizes as space.
+     */
+    /* if we get an empty string after the previous search, we have an error */
     if (!str[next])
         return (-1);
+    /* in case of ":" process the text further */
     if (str[next + 1] != ':')
     {
+        /* Find the first non space character */
         for (next++; str[next] && isspace (str[next]); next++);
+        /* process text between parentheses, removing the parentheses. */
         if (str[next] == '(')
         {
             for (i = len; i >= begin; i--)
                 str[i + 1] = str[i];
             str[begin] = HNF;
             str[next + 1] = HED;
+            /* Find ending parentheses */
             for (next++; str[next] && str[next] && str[next] != ')'; next++);
+            /* Replace ending parentheses */
             if (str[next])
                 str[next] = HED;
+            /* return zero to indicate string found */
             return (0);
         }
+
         for (; str[next] && (str[next] != '.' || isalnum1 (str[next + 1])); next++);
         if (!str[next])
             return (-1);
