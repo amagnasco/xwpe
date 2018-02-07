@@ -61,12 +61,9 @@ inline int num_cols_off_screen_left(we_window_t* window)
 inline int num_cols_on_screen_safe(we_window_t* window)
 {
     int result;
-    if (window->e.x - window->a.x < window->buffer->mx.x + 1)
-    {
+    if (window->e.x - window->a.x < window->buffer->mx.x + 1) {
         result = window->e.x - window->a.x;
-    }
-    else
-    {
+    } else {
         result = window->buffer->mx.x + 1;
     }
     return result;

@@ -21,8 +21,7 @@ int e_X_sw_color (void);
 #define XTERM_CMD "xterm"
 #endif
 
-typedef struct x_selection_struct
-{
+typedef struct x_selection_struct {
     /** true if retrieval of x_selection was successful */
     _Bool success;
     /** the length of the selection string in characters. */

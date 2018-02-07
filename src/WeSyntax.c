@@ -28,8 +28,7 @@
 
 #include "we_wind.h"
 
-char *WpeCReservedWord[] =
-{
+char *WpeCReservedWord[] = {
     "auto", "break", "case", "char", "const", "continue", "default", "do",
     "double", "else", "enum", "extern", "float", "for", "goto", "if", "int",
     "long", "register", "return", "short", "signed", "sizeof", "static",
@@ -37,8 +36,7 @@ char *WpeCReservedWord[] =
     "while", NULL
 };
 
-char *WpeCxxReservedWord[] =
-{
+char *WpeCxxReservedWord[] = {
     "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case",
     "catch", "char", "class", "compl", "const", "const_cast", "continue",
     "default", "delete", "do", "double", "dynamic_cast", "else", "enum",
@@ -54,14 +52,12 @@ char *WpeCxxReservedWord[] =
 #define WpeCLongOperator NULL
 #define WpeCxxLongOperator NULL
 
-WpeSyntaxRule WpeCSyntaxRule =
-{
+WpeSyntaxRule WpeCSyntaxRule = {
     WpeCReservedWord, WpeCLongOperator, "~^()[]{}<>+-/*%=|&!.?:,;", "/*", "*/",
     "", '\"', '\'', '#', '\\', '\\', '\0', -1, 1000, -1, ""
 };
 
-WpeSyntaxRule WpeCxxSyntaxRule =
-{
+WpeSyntaxRule WpeCxxSyntaxRule = {
     WpeCxxReservedWord, WpeCxxLongOperator, "~^()[]{}<>+-/*%=|&!.?:,;", "/*",
     "*/", "//", '\"', '\'', '#', '\\', '\\', '\0', -1, 1000, -1, ""
 };
@@ -96,11 +92,9 @@ WpeSyntaxReadFile (we_control_t * control)
         (WpeSyntaxExt **) WpeExpArrayCreate (0, sizeof (WpeSyntaxExt *), 4);
     sprintf (tmp, "%s/%s/%s", getenv ("HOME"), XWPE_HOME, SYNTAX_FILE);
 
-    if ((syntax_file = fopen (tmp, "r")) == NULL)
-    {
+    if ((syntax_file = fopen (tmp, "r")) == NULL) {
         sprintf (tmp, "%s/%s", DATADIR, SYNTAX_FILE);
-        if ((syntax_file = fopen (tmp, "r")) == NULL)
-        {
+        if ((syntax_file = fopen (tmp, "r")) == NULL) {
             /* C Syntax (".c" extension) */
             new_syntax = malloc (sizeof (WpeSyntaxExt));
             new_syntax->extension =
@@ -124,95 +118,78 @@ WpeSyntaxReadFile (we_control_t * control)
             return;
         }
     }
-    while (fscanf (syntax_file, "%s", tmp) == 1)
-    {
+    while (fscanf (syntax_file, "%s", tmp) == 1) {
         new_syntax = malloc (sizeof (WpeSyntaxExt));
         i = atoi (tmp);
-        if (i > 0)
-        {
+        if (i > 0) {
             new_syntax->extension =
                 (char **) WpeExpArrayCreate (i, sizeof (char *), 1);
-            for (k = 0; k < i; k++)
-            {
-                if (fscanf (syntax_file, "%s", tmp) != 1)
-                {
+            for (k = 0; k < i; k++) {
+                if (fscanf (syntax_file, "%s", tmp) != 1) {
                     e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
                     return;
                 }
                 new_syntax->extension[k] = WpeStrdup (tmp);
             }
-        }
-        else
-        {
+        } else {
             new_syntax->extension =
                 (char **) WpeExpArrayCreate (1, sizeof (char *), 1);
             new_syntax->extension[0] = WpeStrdup (tmp);
         }
         new_syntax->syntax_rule = malloc (sizeof (WpeSyntaxRule));
-        if (fscanf (syntax_file, "%d", &reserved_num) != 1)
-        {
+        if (fscanf (syntax_file, "%d", &reserved_num) != 1) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->reserved_word = malloc ((reserved_num + 1) *
                 sizeof (char *));
-        for (i = 0; i < reserved_num; i++)
-        {
-            if (fscanf (syntax_file, "%s", tmp) != 1)
-            {
+        for (i = 0; i < reserved_num; i++) {
+            if (fscanf (syntax_file, "%s", tmp) != 1) {
                 e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
                 return;
             }
             new_syntax->syntax_rule->reserved_word[i] = WpeStrdup (tmp);
         }
         new_syntax->syntax_rule->reserved_word[i] = NULL;
-        if (fscanf (syntax_file, "%d", &long_op_num) != 1)
-        {
+        if (fscanf (syntax_file, "%d", &long_op_num) != 1) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->long_operator = malloc ((long_op_num + 1) *
                 sizeof (char *));
-        for (i = 0; i < long_op_num; i++)
-        {
-            if (fscanf (syntax_file, "%s", tmp) != 1)
-            {
+        for (i = 0; i < long_op_num; i++) {
+            if (fscanf (syntax_file, "%s", tmp) != 1) {
                 e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
                 return;
             }
             new_syntax->syntax_rule->long_operator[i] = WpeStrdup (tmp);
         }
         new_syntax->syntax_rule->long_operator[i] = NULL;
-        if (fscanf (syntax_file, "%s", tmp) != 1)
-        {
+        if (fscanf (syntax_file, "%s", tmp) != 1) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->single_operator =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
-        if (fscanf (syntax_file, "%s", tmp) != 1)
-        {
+        if (fscanf (syntax_file, "%s", tmp) != 1) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->begin_comment =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
-        if (fscanf (syntax_file, "%s", tmp) != 1)
-        {
+        if (fscanf (syntax_file, "%s", tmp) != 1) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->end_comment =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
-        if (fscanf (syntax_file, "%s", tmp) != 1)
-        {
+        if (fscanf (syntax_file, "%s", tmp) != 1) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         new_syntax->syntax_rule->line_comment =
             WpeStrdup (strcmp (tmp, "NULL") ? tmp : "");
-        if (fscanf (syntax_file, "%s", tmp) != 1)
-        {
+        if (fscanf (syntax_file, "%s", tmp) != 1) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
@@ -225,55 +202,43 @@ WpeSyntaxReadFile (we_control_t * control)
                  &new_syntax->syntax_rule->preproc_cmd,
                  &new_syntax->syntax_rule->quoting_char,
                  &new_syntax->syntax_rule->continue_char,
-                 &new_syntax->syntax_rule->insensitive) != 6)
-        {
+                 &new_syntax->syntax_rule->insensitive) != 6) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }
         /* This is currently a mess but this format of syntax_def is unlikely to
            stay - Dennis */
-        if (new_syntax->syntax_rule->string_constant == ' ')
-        {
+        if (new_syntax->syntax_rule->string_constant == ' ') {
             new_syntax->syntax_rule->string_constant = '\0';
         }
-        if (new_syntax->syntax_rule->char_constant == ' ')
-        {
+        if (new_syntax->syntax_rule->char_constant == ' ') {
             new_syntax->syntax_rule->char_constant = '\0';
         }
-        if (new_syntax->syntax_rule->preproc_cmd == ' ')
-        {
+        if (new_syntax->syntax_rule->preproc_cmd == ' ') {
             new_syntax->syntax_rule->preproc_cmd = '\0';
         }
-        if (new_syntax->syntax_rule->quoting_char == ' ')
-        {
+        if (new_syntax->syntax_rule->quoting_char == ' ') {
             new_syntax->syntax_rule->quoting_char = '\0';
         }
-        if (new_syntax->syntax_rule->continue_char == ' ')
-        {
+        if (new_syntax->syntax_rule->continue_char == ' ') {
             new_syntax->syntax_rule->continue_char = '\0';
         }
-        if (new_syntax->syntax_rule->insensitive == ' ')
-        {
+        if (new_syntax->syntax_rule->insensitive == ' ') {
             new_syntax->syntax_rule->insensitive = '\0';
-        }
-        else
-        {
+        } else {
             /* Convert all reserved words to upper case for case insensitive syntax */
-            for (i = 0; new_syntax->syntax_rule->reserved_word[i]; i++)
-            {
+            for (i = 0; new_syntax->syntax_rule->reserved_word[i]; i++) {
                 WpeStringToUpper (new_syntax->syntax_rule->reserved_word[i]);
             }
             /* Convert all long operators to upper case for case insensitive syntax */
-            for (i = 0; new_syntax->syntax_rule->long_operator[i]; i++)
-            {
+            for (i = 0; new_syntax->syntax_rule->long_operator[i]; i++) {
                 WpeStringToUpper (new_syntax->syntax_rule->long_operator[i]);
             }
         }
         if (fscanf
                 (syntax_file, "%d%d%d", &new_syntax->syntax_rule->special_column,
                  &new_syntax->syntax_rule->continue_column,
-                 &new_syntax->syntax_rule->comment_column) != 3)
-        {
+                 &new_syntax->syntax_rule->comment_column) != 3) {
             e_error ("Error reading syntax_def", ERROR_MSG, control->colorset);
             return;
         }

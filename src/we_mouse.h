@@ -7,8 +7,7 @@
 #include "we_wind.h"
 
 #if MOUSE
-struct mouse
-{
+struct mouse {
     int x;
     int y;
     int k;

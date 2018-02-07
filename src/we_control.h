@@ -49,8 +49,7 @@ int max_edit_windows();
  * */
 #define MAX_EDIT_WINDOWS 35
 
-struct CNT
-{
+struct CNT {
     int major, minor, patch; /**< Version of option file. */
     int maxcol, tabn;
     int maxchg, numundo;

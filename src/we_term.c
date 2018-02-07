@@ -174,11 +174,9 @@ WpeDllInit (int *argc, char **argv)
     e_u_system = system;
     fk_u_putchar = fk_t_putchar;
 #ifdef HAVE_LIBGPM
-    if (WpeGpmMouseInit () == 0)
-    {
+    if (WpeGpmMouseInit () == 0) {
         fk_mouse = WpeGpmMouse;
-    }
-    else
+    } else
 #endif
         fk_mouse = fk_t_mouse;
     WpeMouseChangeShape = (void (*)(WpeMouseShape)) WpeNullFunction;
@@ -190,15 +188,12 @@ WpeDllInit (int *argc, char **argv)
     u_bioskey = WpeZeroFunction;
 #endif
     e_t_initscr ();
-    if (col_num > 0)
-    {
+    if (col_num > 0) {
         e_pr_u_col_kasten = e_pr_x_col_kasten;
         e_frb_u_menue = e_frb_x_menue;
         e_s_u_clr = e_s_x_clr;
         e_n_u_clr = e_n_x_clr;
-    }
-    else
-    {
+    } else {
         e_pr_u_col_kasten = e_pr_t_col_kasten;
         e_frb_u_menue = e_frb_t_menue;
         e_s_u_clr = e_s_t_clr;
@@ -254,10 +249,9 @@ init_key (char *key)
     char *tmp, *keystr;
 
     tmp = (char *) tigetstr (key);
-    if (tmp == NULL || tmp == ((char *) -1))
+    if (tmp == NULL || tmp == ((char *) -1)) {
         return (NULL);
-    else
-    {
+    } else {
         keystr = malloc (strlen (tmp) + 1);
         strcpy (keystr, tmp);
     }
@@ -268,24 +262,30 @@ init_key (char *key)
 int
 e_ini_size ()
 {
-    if (global_screen)
+    if (global_screen) {
         free (global_screen);
-    if (global_alt_screen)
+    }
+    if (global_alt_screen) {
         free (global_alt_screen);
+    }
     global_screen = malloc (2 * MAXSCOL * MAXSLNS);
     global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
 #ifdef NEWSTYLE
-    if (extbyte)
+    if (extbyte) {
         free (extbyte);
-    if (altextbyte)
+    }
+    if (altextbyte) {
         free (altextbyte);
+    }
     extbyte = malloc (MAXSCOL * MAXSLNS);
     altextbyte = malloc (MAXSCOL * MAXSLNS);
-    if (!global_screen || !global_alt_screen || !extbyte || !altextbyte)
+    if (!global_screen || !global_alt_screen || !extbyte || !altextbyte) {
         return (-1);
+    }
 #else
-    if (!global_screen || !global_alt_screen)
+    if (!global_screen || !global_alt_screen) {
         return (-1);
+    }
 #endif
     return (0);
 }
@@ -298,20 +298,19 @@ init_kkey (char *key)
     int i;
 
     tmp = init_key (key);
-    if (tmp == NULL)
+    if (tmp == NULL) {
         return (NULL);
-    if (!key_key)
-    {
+    }
+    if (!key_key) {
         key_key = malloc (2);
         key_key[0] = tmp[1];
         key_key[1] = '\0';
         return (tmp);
-    }
-    else
-    {
+    } else {
         for (i = 0; key_key[i] != '\0'; i++)
-            if (key_key[i] == tmp[1])
+            if (key_key[i] == tmp[1]) {
                 return (tmp);
+            }
         key_key = realloc (key_key, i + 2);
         key_key[i] = tmp[1];
         key_key[i + 1] = '\0';
@@ -326,8 +325,9 @@ e_abs_refr ()
 {
     int i;
 
-    for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++)
+    for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++) {
         global_alt_screen[i] = 0;
+    }
     return (0);
 }
 
@@ -338,15 +338,16 @@ init_spchr (char c)
     int i;
     char *pt = NULL;
 
-    if (!spc_st || !spc_bg || !spc_nd)
+    if (!spc_st || !spc_bg || !spc_nd) {
         return (NULL);
+    }
     for (i = 0; spc_st[i] && spc_st[i + 1] && spc_st[i] != c; i += 2)
         ;
-    if (spc_st[i] && spc_st[i + 1])
-    {
+    if (spc_st[i] && spc_st[i + 1]) {
         pt = malloc ((strlen (spc_bg) + strlen (spc_nd) + 2) * sizeof (char));
-        if (pt)
+        if (pt) {
             sprintf (pt, "%s%c%s", spc_bg, spc_st[i + 1], spc_nd);
+        }
     }
     return (pt);
 }
@@ -356,30 +357,26 @@ init_cursor ()
 {
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-    if (!(cur_rc = init_key ("cup")))
+    if (!(cur_rc = init_key ("cup"))) {
         return (-1);
-    if ((col_fg = init_key ("setaf")) && (col_bg = init_key ("setab")))
-    {
+    }
+    if ((col_fg = init_key ("setaf")) && (col_bg = init_key ("setab"))) {
         /* terminfo 10.2.x color code */
-        if ((col_num = tigetnum ("colors")) < 0)
+        if ((col_num = tigetnum ("colors")) < 0) {
             col_num = 8;
-    }
-    else if ((col_fg = init_key ("setf")) && (col_bg = init_key ("setb")))
-    {
+        }
+    } else if ((col_fg = init_key ("setf")) && (col_bg = init_key ("setb"))) {
         /* Older terminfo color code */
-        if ((col_num = tigetnum ("colors")) < 0)
+        if ((col_num = tigetnum ("colors")) < 0) {
             col_num = 8;
-    }
-    else
-    {
+        }
+    } else {
         /* No colors */
-        if (col_fg)
-        {
+        if (col_fg) {
             free (col_fg);
             col_fg = NULL;
         }
-        if (col_bg)
-        {
+        if (col_bg) {
             free (col_bg);
             col_bg = NULL;
         }
@@ -427,8 +424,9 @@ init_cursor ()
     key_f[14] = init_kkey ("kich1");
     key_f[15] = init_kkey ("khome");
     key_f[16] = init_kkey ("kpp");
-    if (!(key_f[17] = init_kkey ("kdch1")))
+    if (!(key_f[17] = init_kkey ("kdch1"))) {
         key_f[17] = "\177";
+    }
     key_f[18] = init_kkey ("kend");
     key_f[19] = init_kkey ("knp");
     key_f[20] = init_kkey ("kbs");
@@ -457,22 +455,19 @@ init_cursor ()
 
 #else // #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 
-    if (!(cur_rc = init_key ("cm")))
+    if (!(cur_rc = init_key ("cm"))) {
         return (-1);
-    if ((col_fg = init_key ("Sf")) && (col_bg = init_key ("Sb")))
-    {
-        if ((col_num = tgetnum ("Co")) < 0)
-            col_num = 8;
     }
-    else
-    {
-        if (col_fg)
-        {
+    if ((col_fg = init_key ("Sf")) && (col_bg = init_key ("Sb"))) {
+        if ((col_num = tgetnum ("Co")) < 0) {
+            col_num = 8;
+        }
+    } else {
+        if (col_fg) {
             free (col_fg);
             col_fg = NULL;
         }
-        if (col_bg)
-        {
+        if (col_bg) {
             free (col_bg);
             col_bg = NULL;
         }
@@ -560,30 +555,42 @@ init_cursor ()
     sp_chr[12] = ' ';
 #else // #else #ifdef NCURSES (i.e. FALSE)
     sp_chr[0] = "";
-    if (!(sp_chr[1] = init_spchr ('l')))
+    if (!(sp_chr[1] = init_spchr ('l'))) {
         sp_chr[1] = "+";
-    if (!(sp_chr[2] = init_spchr ('k')))
+    }
+    if (!(sp_chr[2] = init_spchr ('k'))) {
         sp_chr[2] = "+";
-    if (!(sp_chr[3] = init_spchr ('m')))
+    }
+    if (!(sp_chr[3] = init_spchr ('m'))) {
         sp_chr[3] = "+";
-    if (!(sp_chr[4] = init_spchr ('j')))
+    }
+    if (!(sp_chr[4] = init_spchr ('j'))) {
         sp_chr[4] = "+";
-    if (!(sp_chr[5] = init_spchr ('q')))
+    }
+    if (!(sp_chr[5] = init_spchr ('q'))) {
         sp_chr[5] = "-";
-    if (!(sp_chr[6] = init_spchr ('x')))
+    }
+    if (!(sp_chr[6] = init_spchr ('x'))) {
         sp_chr[6] = "|";
-    if (!(sp_chr[7] = init_spchr ('w')))
+    }
+    if (!(sp_chr[7] = init_spchr ('w'))) {
         sp_chr[7] = "_";
-    if (!(sp_chr[8] = init_spchr ('t')))
+    }
+    if (!(sp_chr[8] = init_spchr ('t'))) {
         sp_chr[8] = "|";
-    if (!(sp_chr[9] = init_spchr ('m')))
+    }
+    if (!(sp_chr[9] = init_spchr ('m'))) {
         sp_chr[9] = "|";
-    if (!(sp_chr[10] = init_spchr ('q')))
+    }
+    if (!(sp_chr[10] = init_spchr ('q'))) {
         sp_chr[10] = "_";
-    if (!(sp_chr[11] = init_spchr ('`')))
+    }
+    if (!(sp_chr[11] = init_spchr ('`'))) {
         sp_chr[11] = "#";
-    if (!(sp_chr[12] = init_spchr ('a')))
+    }
+    if (!(sp_chr[12] = init_spchr ('a'))) {
         sp_chr[12] = " ";
+    }
 #endif
     return (0);
 }
@@ -597,8 +604,7 @@ e_t_initscr ()
 #endif
 
     ret = tcgetattr (STDOUT_FILENO, &otermio);	/* save old settings */
-    if (ret)
-    {
+    if (ret) {
         int errno_save = errno;	// save errno before it is overwritten
         const int max_desc = 1024;
         char err_desc[max_desc];
@@ -616,22 +622,19 @@ e_t_initscr ()
         e_exit (1);
     }
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-    if ((stdscr = initscr ()) == (WINDOW *) ERR)
+    if ((stdscr = initscr ()) == (WINDOW *) ERR) {
         exit (27);
+    }
     cbreak ();
     noecho ();
     nonl ();
     intrflush (stdscr, FALSE);
     keypad (stdscr, TRUE);
-    if (has_colors ())
-    {
+    if (has_colors ()) {
         start_color ();
-        for (i = 0; i < COLORS; i++)
-        {
-            for (k = 0; k < COLORS; k++)
-            {
-                if (i != 0 || k != 0)
-                {
+        for (i = 0; i < COLORS; i++) {
+            for (k = 0; k < COLORS; k++) {
+                if (i != 0 || k != 0) {
                     init_pair (i * 8 + k, k, i);
                 }
             }
@@ -645,8 +648,7 @@ e_t_initscr ()
     extbyte = malloc (MAXSCOL * MAXSLNS);
 #endif
     e_abs_refr ();
-    if (init_cursor ())
-    {
+    if (init_cursor ()) {
         printf ("Terminal Not in the right mode\n");
         e_exit (1);
     }
@@ -666,8 +668,9 @@ e_t_initscr ()
 #endif
     tcsetattr (STDIN_FILENO, TCSADRAIN, &ntermio);
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-    if (spc_in)
+    if (spc_in) {
         e_putp (spc_in);
+    }
 #endif
     return (0);
 }
@@ -682,19 +685,25 @@ e_begscr ()
     kbdflgs = fcntl (0, F_GETFL, 0);
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-    if ((lns = tigetnum ("lines")) > 0)
+    if ((lns = tigetnum ("lines")) > 0) {
         MAXSLNS = lns;
-    if ((cols = tigetnum ("cols")) > 0)
+    }
+    if ((cols = tigetnum ("cols")) > 0) {
         MAXSCOL = cols;
+    }
 #else
-    if ((tc_screen = getenv ("TERM")) == NULL)
+    if ((tc_screen = getenv ("TERM")) == NULL) {
         e_exitm ("Environment variable TERM not defined!", 1);
-    if ((tgetent (tcbuf, tc_screen)) != 1)
+    }
+    if ((tgetent (tcbuf, tc_screen)) != 1) {
         e_exitm ("Unknown terminal type!", 1);
-    if ((lns = tgetnum ("li")) > 0)
+    }
+    if ((lns = tgetnum ("li")) > 0) {
         MAXSLNS = lns;
-    if ((cols = tgetnum ("co")) > 0)
+    }
+    if ((cols = tgetnum ("co")) > 0) {
         MAXSCOL = cols;
+    }
 #endif
     return (0);
 }
@@ -733,12 +742,12 @@ fk_t_putchar (int c)
 int
 fk_attrset (int a)
 {
-    if (cur_attr == a)
+    if (cur_attr == a) {
         return (0);
+    }
 //#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-    switch (a)
-    {
+    switch (a) {
     case 0:
         attrset (A_NORMAL);
         break;
@@ -762,8 +771,7 @@ fk_attrset (int a)
         break;
     }
 #else
-    switch (cur_attr)
-    {
+    switch (cur_attr) {
     case 0:
         fk_putp (ratt_no);
         break;
@@ -786,8 +794,7 @@ fk_attrset (int a)
         fk_putp (ratt_bo);
         break;
     }
-    switch (a)
-    {
+    switch (a) {
     case 0:
         fk_putp (att_no);
         break;
@@ -818,20 +825,18 @@ void
 fk_colset (int c)
 {
     int bg;
-    if (cur_attr == c)
+    if (cur_attr == c) {
         return;
+    }
     cur_attr = c;
     bg = c / 16;
 //#ifdef TERMCAP
 #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
-    if ((c %= 16) >= col_num)
-    {
+    if ((c %= 16) >= col_num) {
         fk_putp (att_bo);
         e_putp (tgoto (col_fg, 0, c % col_num));
         e_putp (tgoto (col_bg, 0, bg));
-    }
-    else
-    {
+    } else {
         fk_putp (ratt_bo);
         e_putp (tgoto (col_fg, 0, c));
         e_putp (tgoto (col_bg, 0, bg));
@@ -839,20 +844,18 @@ fk_colset (int c)
 #else // #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 //#ifdef NCURSES
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-    if (c & 8)
+    if (c & 8) {
         attrset (A_BOLD);
-    else
+    } else {
         attrset (A_NORMAL);
+    }
     color_set ((bg * 8) + c % 8, NULL);
 #else // #ifdef NCURSES i.e. FALSE
-    if ((c %= 16) >= col_num)
-    {
+    if ((c %= 16) >= col_num) {
         fk_putp (att_bo);
         e_putp (tparm1 (col_fg, c % col_num));
         e_putp (tparm1 (col_bg, bg));
-    }
-    else
-    {
+    } else {
         fk_putp (ratt_bo);
         e_putp (tparm1 (col_fg, c));
         e_putp (tparm1 (col_bg, bg));
@@ -867,42 +870,42 @@ e_t_refresh ()
     int x = cur_x, y = cur_y, i, j, c;
     fk_t_cursor (0);
     for (i = 0; i < MAXSLNS; i++)
-        for (j = 0; j < MAXSCOL; j++)
-        {
-            if (i == MAXSLNS - 1 && j == MAXSCOL - 1)
+        for (j = 0; j < MAXSCOL; j++) {
+            if (i == MAXSLNS - 1 && j == MAXSCOL - 1) {
                 break;
+            }
             if (*(global_screen + 2 * MAXSCOL * i + 2 * j) !=
                     *(global_alt_screen + 2 * MAXSCOL * i + 2 * j)
                     || *(global_screen + 2 * MAXSCOL * i + 2 * j + 1) !=
-                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1))
-            {
-                if (cur_x != j || cur_y != i)
+                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1)) {
+                if (cur_x != j || cur_y != i) {
                     term_move (j, i);
-                if (cur_x < MAXSCOL)
-                {
+                }
+                if (cur_x < MAXSCOL) {
                     cur_x = j + 1;
                     cur_y = i;
-                }
-                else
-                {
+                } else {
                     cur_x = 0;
                     cur_y = i + 1;
                 }
-                if (col_num <= 0)
+                if (col_num <= 0) {
                     fk_attrset (e_gt_col (j, i));
-                else
+                } else {
                     fk_colset (e_gt_col (j, i));
+                }
                 c = e_gt_char (j, i);
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-                if (c < NSPCHR)
+                if (c < NSPCHR) {
                     addch (sp_chr[c]);
-                else
+                } else {
                     addch (c);
+                }
 #else
-                if (c < NSPCHR)
+                if (c < NSPCHR) {
                     e_putp (sp_chr[c]);
-                else
+                } else {
                     fputc (c, stdout);
+                }
 #endif
                 *(global_alt_screen + 2 * MAXSCOL * i + 2 * j) =
                     *(global_screen + 2 * MAXSCOL * i + 2 * j);
@@ -964,10 +967,8 @@ e_t_getch ()
 
     e_t_refresh ();
     c = fk_getch ();
-    if (c > KEY_CODE_YES)
-    {
-        switch (c)
-        {
+    if (c > KEY_CODE_YES) {
+        switch (c) {
         case KEY_F (1):
             c = F1;
             break;
@@ -1081,26 +1082,22 @@ e_t_getch ()
             break;
         }
         bk = u_bioskey ();
-        if (bk & 3)
+        if (bk & 3) {
             c += 512;
-        else if (bk & 4)
+        } else if (bk & 4) {
             c += 514;
-    }
-    else if (c == WPE_TAB)
-    {
+        }
+    } else if (c == WPE_TAB) {
         bk = u_bioskey ();
-        if (bk & 3)
+        if (bk & 3) {
             c = WPE_BTAB;
-        else
+        } else {
             c = WPE_TAB;
-    }
-    else if (c == WPE_ESC)
-    {
+        }
+    } else if (c == WPE_ESC) {
         c = fk_getch ();
-        if (c > KEY_CODE_YES)
-        {
-            switch (c)
-            {
+        if (c > KEY_CODE_YES) {
+            switch (c) {
             case KEY_F (1):
                 c = AF1;
                 break;
@@ -1184,13 +1181,14 @@ e_t_getch ()
                 break;
             }
             bk = u_bioskey ();
-            if (bk & 3)
+            if (bk & 3) {
                 c += 512;
-            else if (bk & 4)
+            } else if (bk & 4) {
                 c += 514;
-        }
-        else if (c != WPE_ESC)
+            }
+        } else if (c != WPE_ESC) {
             c = e_tast_sim (c);
+        }
     }
     return (c);
 }
@@ -1203,39 +1201,41 @@ e_t_getch ()
 
     pshift = 0;
     e_t_refresh ();
-    if ((c = fk_getch ()) != WPE_ESC)
-    {
-        if (key_f[20] && c == *key_f[20])
+    if ((c = fk_getch ()) != WPE_ESC) {
+        if (key_f[20] && c == *key_f[20]) {
             return (WPE_DC);
-        else if (key_f[17] && c == *key_f[17])
+        } else if (key_f[17] && c == *key_f[17]) {
             return (ENTF);
-        else if (c == WPE_TAB)
-        {
+        } else if (c == WPE_TAB) {
             bk = u_bioskey ();
-            if (bk & 3)
+            if (bk & 3) {
                 return (WPE_BTAB);
-            else
+            } else {
                 return (WPE_TAB);
-        }
-        else
+            }
+        } else {
             return (c);
-    }
-    else if ((c = fk_getch ()) == WPE_CR)
+        }
+    } else if ((c = fk_getch ()) == WPE_CR) {
         return (WPE_ESC);
-    bk = u_bioskey ();
-    if (bk & 3)
-        pshift = 512;
-    else if (bk & 4)
-        pshift = 514;
-    if (c == WPE_ESC)
-    {
-        if ((c = fk_getch ()) == WPE_ESC)
-            return (WPE_ESC);
-        if ((c2 = e_find_key (c, 1, 1)))
-            return (c2 + pshift);
     }
-    if ((c2 = e_find_key ((char) c, 1, 0)))
+    bk = u_bioskey ();
+    if (bk & 3) {
+        pshift = 512;
+    } else if (bk & 4) {
+        pshift = 514;
+    }
+    if (c == WPE_ESC) {
+        if ((c = fk_getch ()) == WPE_ESC) {
+            return (WPE_ESC);
+        }
+        if ((c2 = e_find_key (c, 1, 1))) {
+            return (c2 + pshift);
+        }
+    }
+    if ((c2 = e_find_key ((char) c, 1, 0))) {
         return (c2 + pshift);
+    }
     return (e_tast_sim (c + pshift));
 }
 
@@ -1247,19 +1247,16 @@ e_find_key (int c, int j, int sw)
     int i, k;
     e_key_save[j] = c;
     e_key_save[j + 1] = '\0';
-    for (i = 0; i < KEYFN; i++)
-    {
-        if (key_f[i] == NULL)
+    for (i = 0; i < KEYFN; i++) {
+        if (key_f[i] == NULL) {
             continue;
+        }
         for (k = 1; k <= j && e_key_save[k] == *(key_f[i] + k); k++);
-        if (k > j)
-        {
-            if (*(key_f[i] + k) != '\0')
+        if (k > j) {
+            if (*(key_f[i] + k) != '\0') {
                 return (e_find_key (fk_getch (), j + 1, sw));
-            else if (sw)
-            {
-                switch (i)
-                {
+            } else if (sw) {
+                switch (i) {
                 case 0:
                     return (AF1);
                 case 1:
@@ -1327,11 +1324,8 @@ e_find_key (int c, int j, int sw)
                 default:
                     return (0);
                 }
-            }
-            else
-            {
-                switch (i)
-                {
+            } else {
+                switch (i) {
                 case 0:
                     return (F1);
                 case 1:
@@ -1429,8 +1423,7 @@ e_find_key (int c, int j, int sw)
 int
 fk_t_locate (int x, int y)
 {
-    if (col_num > 0)
-    {
+    if (col_num > 0) {
         fk_colset (e_gt_col (cur_x, cur_y));
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
         /* Causes problems.  Reason unknown. - Dennis */
@@ -1457,29 +1450,29 @@ e_t_switch_screen (int sw)
 {
     static int sav_sw = -1;
 
-    if (sw == sav_sw)
+    if (sw == sav_sw) {
         return (0);
+    }
     sav_sw = sw;
-    if (sw && beg_scr)
-    {
+    if (sw && beg_scr) {
         term_refresh ();
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-        if (sav_cur)
+        if (sav_cur) {
             e_putp (sav_cur);
+        }
         e_putp (beg_scr);
 #endif
-    }
-    else if (!sw && swt_scr)
-    {
+    } else if (!sw && swt_scr) {
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
         e_putp (swt_scr);
-        if (res_cur)
+        if (res_cur) {
             e_putp (res_cur);
+        }
 #endif
         term_refresh ();
-    }
-    else
+    } else {
         return (-1);
+    }
     return (0);
 }
 
@@ -1508,10 +1501,11 @@ int
 e_d_switch_screen (int sw)
 {
 #ifdef DEBUGGER
-    if (!sw)
+    if (!sw) {
         e_g_sys_ini ();
-    else
+    } else {
         e_g_sys_end ();
+    }
 #endif
     return e_u_switch_screen(sw);
 }
@@ -1522,23 +1516,22 @@ e_t_d_switch_out (int sw)
     int i, j;
     static int save_sw = 32000;
 
-    if (save_sw == sw)
+    if (save_sw == sw) {
         return (0);
+    }
     save_sw = sw;
-    if (sw && e_d_switch_screen (0))
-    {
+    if (sw && e_d_switch_screen (0)) {
         term_move (0, 0);
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
         e_putp (att_no);
 #endif
         for (i = 0; i < MAXSLNS; i++)
-            for (j = 0; j < MAXSCOL; j++)
+            for (j = 0; j < MAXSCOL; j++) {
                 e_d_putchar (' ');
+            }
         term_move (0, 0);
         term_refresh ();
-    }
-    else if (!sw)
-    {
+    } else if (!sw) {
         e_d_switch_screen (1);
         e_abs_refr ();
         e_u_refresh ();
@@ -1550,8 +1543,9 @@ void
 e_exitm (char *s, int n)
 {
     e_endwin ();
-    if (n != 0)
+    if (n != 0) {
         printf ("\n%s\n", s);
+    }
     exit (n);
 }
 

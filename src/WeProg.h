@@ -23,8 +23,7 @@ extern "C"
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   New Types
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-typedef struct wpeSyntaxRule
-{
+typedef struct wpeSyntaxRule {
     char **reserved_word;	/* Reserved words */
     char **long_operator;	/* Operators longer than a single character */
     char *single_operator;	/* Single character operators */
@@ -47,8 +46,7 @@ typedef struct wpeSyntaxRule
     char *special_comment;
 } WpeSyntaxRule;
 
-typedef struct wpeSyntaxExt
-{
+typedef struct wpeSyntaxExt {
     char **extension;
     WpeSyntaxRule *syntax_rule;
 } WpeSyntaxExt;

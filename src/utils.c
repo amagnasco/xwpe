@@ -52,15 +52,13 @@ print_stacktrace ()
     printf ("backtrace() returned %d addresses.\n", nptrs);
 
     strings = backtrace_symbols (buff, nptrs);
-    if (strings == NULL)
-    {
+    if (strings == NULL) {
         perror
         ("backtrace_symbols had a problem returning the stacktrace symbols.");
         exit (EXIT_FAILURE);
     }
 
-    for (int i = 0; i < nptrs; i++)
-    {
+    for (int i = 0; i < nptrs; i++) {
         printf ("%s\n", strings[i]);
     }
 
@@ -72,15 +70,15 @@ print_stacktrace ()
 int compile_regex(regex_t *preg, const unsigned char *regular_expression,
                   const _Bool case_sensitive)
 {
-    if (!preg)
+    if (!preg) {
         return -1;
+    }
 
     int cflags = REG_EXTENDED | REG_NEWLINE;
     cflags = case_sensitive ? cflags : cflags | REG_ICASE;
 
     int errcode = regcomp(preg, (const char *) regular_expression, cflags);
-    if (errcode != 0)
-    {
+    if (errcode != 0) {
         const size_t buff_size = 1024;
         char *err_buff;
         err_buff = malloc(buff_size * sizeof(char));
@@ -98,12 +96,9 @@ int search_regex(regex_t *preg, const unsigned char * search_string,
 {
     int errcode =
         regexec (preg, (const char *)search_string, nr_matches, matches, REG_NOTBOL | REG_NOTEOL);
-    if (errcode == REG_NOMATCH)
-    {
+    if (errcode == REG_NOMATCH) {
         return -1;
-    }
-    else if (errcode != 0)
-    {
+    } else if (errcode != 0) {
         print_regerror(errcode, preg);
         return -1;
     }
@@ -125,13 +120,14 @@ void print_regerror(int errcode, regex_t *preg)
 int
 strncasecmp (const char *s1, const char *s2, size_t n)
 {
-    if (n == 0)
+    if (n == 0) {
         return 0;
+    }
 
-    while (n-- != 0 && tolower(*s1) == tolower(*s2))
-    {
-        if (n == 0 || *s1 == '\0' || *s2 == '\0')
+    while (n-- != 0 && tolower(*s1) == tolower(*s2)) {
+        if (n == 0 || *s1 == '\0' || *s2 == '\0') {
             break;
+        }
         s1++;
         s2++;
     }

@@ -61,11 +61,9 @@ int e_strstr(int start_offset, int end_offset,
     int i = forward_search ? start : -1 * (start - 1);
     int i_end = forward_search ? end : -1 * end;
 
-    for (; i <= i_end; i++)
-    {
+    for (; i <= i_end; i++) {
         if (0 == compare((const char*)search_string + abs(i),
-                         (const char*)search_expression, len_search_expr))
-        {
+                         (const char*)search_expression, len_search_expr)) {
             size_t start_match_return = abs(i);
             *end_match_return = abs(i) + len_search_expr;
             return (start_match_return);
@@ -98,15 +96,17 @@ int e_rstrstr(const size_t start_offset,
     size_t end = forward_search ? end_offset : start_offset;
 
     size_t len_search_string = strlen((const char*)search_string);
-    if (end > len_search_string)
+    if (end > len_search_string) {
         return -1;
+    }
 
     regex_t* preg = malloc(sizeof(regex_t));
 
     // Compile regular expression, return -1 if compile fails.
     int errcode = compile_regex(preg, regular_expression, case_sensitive);
-    if (errcode != 0)
+    if (errcode != 0) {
         return -1;
+    }
 
     // Allocate matches.
     size_t nr_matches = preg->re_nsub + 1;
@@ -116,8 +116,9 @@ int e_rstrstr(const size_t start_offset,
     unsigned char* str;
     size_t len_str = end - start;
     str = calloc(len_str + 1, sizeof(unsigned char*));
-    if (!str)
+    if (!str) {
         return -1;
+    }
     strncpy((char*)str, (const char*)search_string + start, len_str);
 
     //calculate pointer
@@ -125,8 +126,7 @@ int e_rstrstr(const size_t start_offset,
 
     // First search
     errcode = search_regex(preg, pstr, nr_matches, matches);
-    if (errcode != 0)
-    {
+    if (errcode != 0) {
         regfree(preg);
         free(matches);
         return -1;
@@ -135,31 +135,26 @@ int e_rstrstr(const size_t start_offset,
     // Length of the result depends on the specific match of the reg expr.
     size_t len;
     // for backwards we need to find the last occurrence within the [start, end] range
-    if (!forward_search)
-    {
+    if (!forward_search) {
         unsigned char save_char = '\0';
-        if (strlen((const char*)search_string) > 0)
-        {
+        if (strlen((const char*)search_string) > 0) {
             save_char = str[end];
             str[end] = '\0';
         }
-        while (errcode == 0)
-        {
+        while (errcode == 0) {
             len = matches[0].rm_eo - matches[0].rm_so;
             pstr = pstr + matches[0].rm_so;
             pstr++; // one past the last match
             errcode = search_regex(preg, pstr, nr_matches, matches);
         }
         pstr--; // return to the last match
-        if (strlen((const char*)search_string) > 0)
-        {
+        if (strlen((const char*)search_string) > 0) {
             str[end] = save_char;
         }
     }
 
     // Saving the result of the forward search
-    if (errcode == 0)
-    {
+    if (errcode == 0) {
         // set pointer and calc length
         len = matches[0].rm_eo - matches[0].rm_so;
         pstr = pstr + matches[0].rm_so;

@@ -45,15 +45,15 @@ e_m1_mouse ()
     extern int e_mn_men;
     int c, n;
 
-    if (e_mouse.y == MAXSLNS - 1)
+    if (e_mouse.y == MAXSLNS - 1) {
         c = e_m3_mouse ();
-    else if (e_mouse.y != 0)
+    } else if (e_mouse.y != 0) {
         c = WPE_ESC;
-    else
-    {
+    } else {
         for (n = 1; n < MENOPT; n++)
-            if (e_mouse.x < opt[n].x - e_mn_men)
+            if (e_mouse.x < opt[n].x - e_mn_men) {
                 break;
+            }
         c = opt[n - 1].as;
     }
     return (c);
@@ -66,15 +66,16 @@ e_m2_mouse (int xa, int ya, int xe, int ye, OPTK * fopt)
     extern struct mouse e_mouse;
     int c;
 
-    if (e_mouse.y == MAXSLNS)
+    if (e_mouse.y == MAXSLNS) {
         c = e_m3_mouse ();
-    else if (e_mouse.y == 0)
+    } else if (e_mouse.y == 0) {
         return (e_m1_mouse ());
-    else if (e_mouse.x <= xa || e_mouse.x >= xe || e_mouse.y <= ya ||
-             e_mouse.y >= ye)
+    } else if (e_mouse.x <= xa || e_mouse.x >= xe || e_mouse.y <= ya ||
+               e_mouse.y >= ye) {
         c = WPE_ESC;
-    else
+    } else {
         c = fopt[e_mouse.y - ya - 1].o;
+    }
     while (e_mshit ())
         ;
     return (c);
@@ -89,13 +90,15 @@ e_m3_mouse ()
     extern int nblst;
     int i;
 
-    if (e_mouse.y != MAXSLNS - 1)
+    if (e_mouse.y != MAXSLNS - 1) {
         return (WPE_ESC);
+    }
     while (e_mshit ())
         ;
     for (i = 1; i < nblst; i++)
-        if (e_mouse.x < blst[i].x)
+        if (e_mouse.x < blst[i].x) {
             return (blst[i - 1].as);
+        }
     return (blst[nblst - 1].as);
 }
 
@@ -107,10 +110,12 @@ e_er_mouse (int x, int y, int xx, int yy)
 
     while (e_mshit () != 0)
         ;
-    if (y == e_mouse.y && x == e_mouse.x)
+    if (y == e_mouse.y && x == e_mouse.x) {
         return (WPE_CR);
-    if (yy == e_mouse.y && xx - 1 <= e_mouse.x && xx + 4 >= e_mouse.x)
+    }
+    if (yy == e_mouse.y && xx - 1 <= e_mouse.x && xx + 4 >= e_mouse.x) {
         return (WPE_CR);
+    }
     return (0);
 }
 
@@ -122,16 +127,19 @@ e_msg_mouse (int x, int y, int x1, int x2, int yy)
 
     while (e_mshit () != 0)
         ;
-    if (y == e_mouse.y && x == e_mouse.x)
+    if (y == e_mouse.y && x == e_mouse.x) {
         return (WPE_CR);
-    if (yy == e_mouse.y)
-    {
-        if (x1 - 1 <= e_mouse.x && x1 + 5 >= e_mouse.x)
+    }
+    if (yy == e_mouse.y) {
+        if (x1 - 1 <= e_mouse.x && x1 + 5 >= e_mouse.x) {
             return ('Y');
-        if (x2 - 1 <= e_mouse.x && x2 + 5 >= e_mouse.x)
+        }
+        if (x2 - 1 <= e_mouse.x && x2 + 5 >= e_mouse.x) {
             return (WPE_ESC);
-        if ((x1 = (x1 + x2) / 2 - 1) <= e_mouse.x && x1 + 5 >= e_mouse.x)
+        }
+        if ((x1 = (x1 + x2) / 2 - 1) <= e_mouse.x && x1 + 5 >= e_mouse.x) {
             return ('N');
+        }
     }
     return (0);
 }
@@ -142,22 +150,23 @@ e_rahmen_mouse (we_window_t * window)
     extern struct mouse e_mouse;
     int c = 1;
 
-    if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
+    if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y) {
         c = WPE_ESC;
-    else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y) {
         e_ed_zoom (window);
-    else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y) {
         e_eck_mouse (window, 1);
-    else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y) {
         e_eck_mouse (window, 2);
-    else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+    } else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y) {
         e_eck_mouse (window, 3);
-    else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+    } else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y) {
         e_eck_mouse (window, 4);
-    else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x)
+    } else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x) {
         e_eck_mouse (window, 0);
-    else
+    } else {
         c = 0;
+    }
     while (e_mshit () != 0)
         ;
     return (c);
@@ -171,117 +180,114 @@ WpeMngMouseInFileManager (we_window_t * window)
     FLBFFR *file_buffer = (FLBFFR *) window->buffer;
     int i, c = 0, by = 4;
 
-    if (e_mouse.y == 0)
+    if (e_mouse.y == 0) {
         return (AltBl);
-    else if (e_mouse.y == MAXSLNS - 1)
+    } else if (e_mouse.y == MAXSLNS - 1) {
         return (e_m3_mouse ());
-    else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
-             || e_mouse.y < window->a.y || e_mouse.y > window->e.y)
-    {
-        for (i = control->mxedt; i > 0; i--)
-        {
+    } else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
+               || e_mouse.y < window->a.y || e_mouse.y > window->e.y) {
+        for (i = control->mxedt; i > 0; i--) {
             if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x
-                    && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
-            {
+                    && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y) {
                 while (e_mshit () != 0);
                 return (control->edt[i] <
                         10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
             }
         }
-    }
-    else if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y) {
         c = WPE_ESC;
-    else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y) {
         e_ed_zoom (window);
-    else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y) {
         e_eck_mouse (window, 1);
-    else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y) {
         e_eck_mouse (window, 2);
-    else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+    } else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y) {
         e_eck_mouse (window, 3);
-    else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+    } else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y) {
         e_eck_mouse (window, 4);
-    else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x)
+    } else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x) {
         e_eck_mouse (window, 0);
-    else
-    {
-        if (num_lines_on_screen(window) <= 17)
+    } else {
+        if (num_lines_on_screen(window) <= 17) {
             by = -1;
-        else if (file_buffer->sw != 0 || num_lines_on_screen(window) <= 19)
+        } else if (file_buffer->sw != 0 || num_lines_on_screen(window) <= 19) {
             by = 2;
-
-        if (num_lines_on_screen(window) > 17)
-        {
-            if (e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 3
-                    && e_mouse.x <= window->a.x + 10)
-                c = WPE_ESC;
-            else if (e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 13
-                     && e_mouse.x <= window->a.x + 24)
-                c = AltC;
-            else if (file_buffer->sw == 1 && num_cols_on_screen(window) >= 34
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
-                     && e_mouse.x <= window->a.x + 32)
-                c = AltR;
-            else if (file_buffer->sw == 2 && num_cols_on_screen(window) >= 35
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
-                     && e_mouse.x <= window->a.x + 33)
-                c = AltW;
-            else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 34
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
-                     && e_mouse.x <= window->a.x + 32)
-                c = AltS;
-            else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 48
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 35
-                     && e_mouse.x <= window->a.x + 46)
-                c = AltY;
-            else if (file_buffer->sw == 3 && num_cols_on_screen(window) >= 37
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
-                     && e_mouse.x <= window->a.x + 35)
-                c = AltE;
-            else if (file_buffer->sw == 5 && num_cols_on_screen(window) >= 33
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
-                     && e_mouse.x <= window->a.x + 31)
-                c = AltA;
-            else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 35
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
-                     && e_mouse.x <= window->a.x + 33)
-                c = AltK;
-            else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 49
-                     && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 36
-                     && e_mouse.x <= window->a.x + 47)
-                c = AltA;
         }
-        if (file_buffer->sw == 0 && num_lines_on_screen(window) > 19)
-        {
-            if (e_mouse.y == window->e.y - 2 && e_mouse.x >= window->a.x + 3
-                    && e_mouse.x <= window->a.x + 8)
-                c = AltM;
-            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 21 &&
-                     e_mouse.x >= window->a.x + 12 && e_mouse.x <= window->a.x + 19)
+
+        if (num_lines_on_screen(window) > 17) {
+            if (e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 3
+                    && e_mouse.x <= window->a.x + 10) {
+                c = WPE_ESC;
+            } else if (e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 13
+                       && e_mouse.x <= window->a.x + 24) {
+                c = AltC;
+            } else if (file_buffer->sw == 1 && num_cols_on_screen(window) >= 34
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                       && e_mouse.x <= window->a.x + 32) {
                 c = AltR;
-            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 30 &&
-                     e_mouse.x >= window->a.x + 23 && e_mouse.x <= window->a.x + 28)
-                c = AltL;
-            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 39 &&
-                     e_mouse.x >= window->a.x + 32 && e_mouse.x <= window->a.x + 37)
-                c = AltO;
-            else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 48 &&
-                     e_mouse.x >= window->a.x + 41 && e_mouse.x <= window->a.x + 46)
+            } else if (file_buffer->sw == 2 && num_cols_on_screen(window) >= 35
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                       && e_mouse.x <= window->a.x + 33) {
+                c = AltW;
+            } else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 34
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                       && e_mouse.x <= window->a.x + 32) {
+                c = AltS;
+            } else if (file_buffer->sw == 4 && num_cols_on_screen(window) >= 48
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 35
+                       && e_mouse.x <= window->a.x + 46) {
+                c = AltY;
+            } else if (file_buffer->sw == 3 && num_cols_on_screen(window) >= 37
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                       && e_mouse.x <= window->a.x + 35) {
                 c = AltE;
+            } else if (file_buffer->sw == 5 && num_cols_on_screen(window) >= 33
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                       && e_mouse.x <= window->a.x + 31) {
+                c = AltA;
+            } else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 35
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 27
+                       && e_mouse.x <= window->a.x + 33) {
+                c = AltK;
+            } else if (file_buffer->sw == 0 && num_cols_on_screen(window) >= 49
+                       && e_mouse.y == window->e.y - by && e_mouse.x >= window->a.x + 36
+                       && e_mouse.x <= window->a.x + 47) {
+                c = AltA;
+            }
+        }
+        if (file_buffer->sw == 0 && num_lines_on_screen(window) > 19) {
+            if (e_mouse.y == window->e.y - 2 && e_mouse.x >= window->a.x + 3
+                    && e_mouse.x <= window->a.x + 8) {
+                c = AltM;
+            } else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 21 &&
+                       e_mouse.x >= window->a.x + 12 && e_mouse.x <= window->a.x + 19) {
+                c = AltR;
+            } else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 30 &&
+                       e_mouse.x >= window->a.x + 23 && e_mouse.x <= window->a.x + 28) {
+                c = AltL;
+            } else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 39 &&
+                       e_mouse.x >= window->a.x + 32 && e_mouse.x <= window->a.x + 37) {
+                c = AltO;
+            } else if (e_mouse.y == window->e.y - 2 && num_cols_on_screen(window) >= 48 &&
+                       e_mouse.x >= window->a.x + 41 && e_mouse.x <= window->a.x + 46) {
+                c = AltE;
+            }
         }
 
         if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + file_buffer->xfa
-                && e_mouse.x <= window->a.x + file_buffer->xfa + file_buffer->xfd)
+                && e_mouse.x <= window->a.x + file_buffer->xfa + file_buffer->xfd) {
             c = AltN;
-        else if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + file_buffer->xda
-                 && e_mouse.x <= window->a.x + file_buffer->xda + file_buffer->xdd)
+        } else if (e_mouse.y == window->a.y + 3 && e_mouse.x >= window->a.x + file_buffer->xda
+                   && e_mouse.x <= window->a.x + file_buffer->xda + file_buffer->xdd) {
             c = AltD;
-        else if (e_mouse.y >= file_buffer->fw->ya && e_mouse.y <= file_buffer->fw->ye
-                 && e_mouse.x >= file_buffer->fw->xa && e_mouse.x <= file_buffer->fw->xe)
+        } else if (e_mouse.y >= file_buffer->fw->ya && e_mouse.y <= file_buffer->fw->ye
+                   && e_mouse.x >= file_buffer->fw->xa && e_mouse.x <= file_buffer->fw->xe) {
             c = AltF;
-        else if (e_mouse.y >= file_buffer->dw->ya && e_mouse.y <= file_buffer->dw->ye
-                 && e_mouse.x >= file_buffer->dw->xa && e_mouse.x <= file_buffer->dw->xe)
+        } else if (e_mouse.y >= file_buffer->dw->ya && e_mouse.y <= file_buffer->dw->ye
+                   && e_mouse.x >= file_buffer->dw->xa && e_mouse.x <= file_buffer->dw->xe) {
             c = AltT;
+        }
     }
     while (e_mshit () != 0);
     return (c);
@@ -297,30 +303,32 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * window)
     char tmp[256];
 
     if (e_mouse.x >= window->a.x && e_mouse.x <= window->e.x
-            && e_mouse.y >= window->a.y && e_mouse.y <= window->e.y)
+            && e_mouse.y >= window->a.y && e_mouse.y <= window->e.y) {
         return (0);
-    for (i = control->mxedt - 1; i > 0; i--)
-    {
-        if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x
-                && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
-            break;
     }
-    if (i <= 0)
+    for (i = control->mxedt - 1; i > 0; i--) {
+        if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x
+                && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y) {
+            break;
+        }
+    }
+    if (i <= 0) {
         return (0);
-    if (sw)
-    {
+    }
+    if (sw) {
         if (control->window[i]->dirct[strlen (control->window[i]->dirct) - 1] == DIRC)
             sprintf (tmp, "%s%s", control->window[i]->dirct,
                      file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files]);
         else
             sprintf (tmp, "%s/%s", control->window[i]->dirct,
                      file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files]);
-        if (k == -2)
+        if (k == -2) {
             e_copy (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
-        else if (k == -4)
+        } else if (k == -4) {
             e_link (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
-        else
+        } else {
             e_rename (file_buffer->dd->name[file_buffer->dw->nf - file_buffer->cd->nr_files], tmp, window);
+        }
         freedf (file_buffer->cd);
         freedf (file_buffer->dw->df);
         freedf (file_buffer->dd);
@@ -331,19 +339,19 @@ WpeMouseInFileDirList (int k, int sw, we_window_t * window)
         file_buffer->dw->ia = file_buffer->dw->ja = 0;
         e_pr_file_window (file_buffer->dw, 0, 1, window->colorset->ft.fg_bg_color, window->colorset->fz.fg_bg_color,
                           window->colorset->frft.fg_bg_color);
-    }
-    else
-    {
-        if (control->window[i]->dirct[strlen (control->window[i]->dirct) - 1] == DIRC)
+    } else {
+        if (control->window[i]->dirct[strlen (control->window[i]->dirct) - 1] == DIRC) {
             sprintf (tmp, "%s%s", control->window[i]->dirct, file_buffer->df->name[file_buffer->fw->nf]);
-        else
+        } else {
             sprintf (tmp, "%s/%s", control->window[i]->dirct, file_buffer->df->name[file_buffer->fw->nf]);
-        if (k == -2)
+        }
+        if (k == -2) {
             e_copy (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
-        else if (k == -4)
+        } else if (k == -4) {
             e_link (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
-        else
+        } else {
             e_rename (file_buffer->df->name[file_buffer->fw->nf], tmp, window);
+        }
         freedf (file_buffer->df);
         freedf (file_buffer->fw->df);
         file_buffer->df =
@@ -364,8 +372,9 @@ e_gt_btstr (int x, int y, int n, char *buffer)
 {
     int i;
 
-    for (i = 0; i < n; i++)
+    for (i = 0; i < n; i++) {
         buffer[i] = e_gt_byte (2 * x + i, y);
+    }
     return (buffer);
 }
 
@@ -374,8 +383,9 @@ e_pt_btstr (int x, int y, int n, char *buffer)
 {
     int i;
 
-    for (i = 0; i < n; i++)
+    for (i = 0; i < n; i++) {
         e_pt_byte (2 * x + i, y, buffer[i]);
+    }
     return (buffer);
 }
 
@@ -388,24 +398,18 @@ FLWND *fw;
     extern struct mouse e_mouse;
     int MLEN, i, c, xa, ya, xn, yn, xdif;
     char *file, *bgrd;
-    if (e_mouse.x == fw->xe && e_mouse.y >= fw->ya && e_mouse.y < fw->ye)
-    {
+    if (e_mouse.x == fw->xe && e_mouse.y >= fw->ya && e_mouse.y < fw->ye) {
         fw->nf = e_lst_mouse (fw->xe, fw->ya, fw->ye - fw->ya, 0,
                               fw->df->nr_files, fw->nf);
         return (0);
-    }
-    else if (e_mouse.y == fw->ye && e_mouse.x >= fw->xa && e_mouse.x < fw->xe)
-    {
+    } else if (e_mouse.y == fw->ye && e_mouse.x >= fw->xa && e_mouse.x < fw->xe) {
         fw->ja = e_lst_mouse (fw->xa, fw->ye, fw->xe - fw->xa, 1,
                               strlen (*(fw->df->name + fw->nf)), fw->ja);
         return (0);
-    }
-    else if (e_mouse.y >= fw->ya && e_mouse.y < fw->ye &&
-             e_mouse.x >= fw->xa && e_mouse.x < fw->xe)
-    {
+    } else if (e_mouse.y >= fw->ya && e_mouse.y < fw->ye &&
+               e_mouse.x >= fw->xa && e_mouse.x < fw->xe) {
         if (fw->nf == e_mouse.y - fw->ya + fw->ia
-                && e_mouse.y - fw->ya + fw->ia < fw->df->nr_files)
-        {
+                && e_mouse.y - fw->ya + fw->ia < fw->df->nr_files) {
             /*  if(k == -2) {  while (e_mshit() != 0);  return(AltU);  }
                else if(k == -4) {  while (e_mshit() != 0);  return(AltM);  }
                else   */
@@ -413,18 +417,17 @@ FLWND *fw;
                 xa = e_mouse.x;
                 ya = e_mouse.y;
                 xdif = e_mouse.x - fw->xa;
-                if (fw->srcha >= 0)
+                if (fw->srcha >= 0) {
                     c = fw->srcha;
-                else
-                {
+                } else {
                     for (c = 0; *(fw->df->name[fw->nf] + c)
                             && (*(fw->df->name[fw->nf] + c) <= 32
-                                || *(fw->df->name[fw->nf] + c) >= 127); c++)
-                    {
+                                || *(fw->df->name[fw->nf] + c) >= 127); c++) {
                         ;
                     }
-                    if (!WpeIsXwin ())
+                    if (!WpeIsXwin ()) {
                         c += 3;
+                    }
                 }
                 for (MLEN = 1; *(fw->df->name[fw->nf] + c + MLEN)
                         && *(fw->df->name[fw->nf] + c + MLEN) != ' '; MLEN++);
@@ -432,17 +435,13 @@ FLWND *fw;
                 file = malloc (MLEN * sizeof (char));
                 bgrd = malloc (MLEN * sizeof (char));
                 while (e_mshit () != 0)
-                    if (sw && (e_mouse.x != xa || e_mouse.y != ya))
-                    {
+                    if (sw && (e_mouse.x != xa || e_mouse.y != ya)) {
                         xn = e_mouse.x;
                         yn = e_mouse.y;
-                        if (fw->srcha < 0)
-                        {
+                        if (fw->srcha < 0) {
                             FLBFFR *file_buffer = (FLBFFR *) fw->window->buffer;
-                            if (file_buffer->cd->nr_files > fw->nf)
-                            {
-                                while (e_mshit () != 0)
-                                {
+                            if (file_buffer->cd->nr_files > fw->nf) {
+                                while (e_mshit () != 0) {
                                     ;
                                 }
                                 free (file);
@@ -452,18 +451,17 @@ FLWND *fw;
                             for (c = 0; *(fw->df->name[fw->nf] + c)
                                     && (*(fw->df->name[fw->nf] + c) <= 32
                                         || *(fw->df->name[fw->nf] + c) >= 127); c++);
-                            if (!WpeIsXwin ())
+                            if (!WpeIsXwin ()) {
                                 c += 3;
+                            }
                             xdif -= (c + 1);
                         }
-                        for (i = 0; i < MLEN / 2; i++)
-                        {
+                        for (i = 0; i < MLEN / 2; i++) {
                             file[2 * i] = *(fw->df->name[fw->nf] + c + i);
                             file[2 * i + 1] = fw->window->colorset->fz.fg_bg_color;
                         }
                         e_gt_btstr (e_mouse.x - xdif, e_mouse.y, MLEN, bgrd);
-                        while (e_mshit () != 0)
-                        {
+                        while (e_mshit () != 0) {
                             e_pt_btstr (xn - xdif, yn, MLEN, bgrd);
                             xn = e_mouse.x;
                             yn = e_mouse.y;
@@ -478,26 +476,24 @@ FLWND *fw;
                     }
                 free (file);
                 free (bgrd);
-                if (sw && k == -2)
+                if (sw && k == -2) {
                     return (AltU);
-                else if (sw && k == -4)
+                } else if (sw && k == -4) {
                     return (AltM);
-                else
+                } else {
                     return (WPE_CR);
+                }
             }
-        }
-        else
-        {
-            while (e_mshit () != 0)
-            {
+        } else {
+            while (e_mshit () != 0) {
                 ;
             }
             fw->nf = e_mouse.y - fw->ya + fw->ia;
             return (0);
         }
-    }
-    else
+    } else {
         return (MBKEY);
+    }
 }
 
 /*   mouse slider bar control */
@@ -514,39 +510,39 @@ int nf;
     int g[4];			/*  = { 1, 0, 0, 0 };  */
     int inew, iold, nret, frb = e_gt_col (x, y);
     double d;
-    if (n < 2)
+    if (n < 2) {
         return (nf);
+    }
     d = ((double) max) / ((double) (n - 2));
     g[0] = 1;
-    if (sw == 0)
-    {
-        if (e_mouse.x != x)
+    if (sw == 0) {
+        if (e_mouse.x != x) {
             return (nf);
-        if (e_mouse.y < y || e_mouse.y >= y + n)
+        }
+        if (e_mouse.y < y || e_mouse.y >= y + n) {
             return (nf);
-        if (e_mouse.y == y)
+        }
+        if (e_mouse.y == y) {
             nret = (nf < 1) ? nf : nf - 1;
-        else if (e_mouse.y == y + n - 1)
+        } else if (e_mouse.y == y + n - 1) {
             nret = (nf >= max - 1) ? nf : nf + 1;
-        else
-        {
+        } else {
             nret = (int) ((e_mouse.y - y - 1) * d);
-            if (e_gt_char (e_mouse.x, e_mouse.y) == MCA)
-            {
+            if (e_gt_char (e_mouse.x, e_mouse.y) == MCA) {
                 iold = e_mouse.y;
 #ifdef NEWSTYLE
                 e_make_xrect_abs (x, iold, x, iold, 1);
                 e_u_refresh ();
 #endif
                 fk_mouse (g);
-                for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3)
-                {
-                    if ((inew = g[3] / 8) < y + 1)
+                for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3) {
+                    if ((inew = g[3] / 8) < y + 1) {
                         inew = y + 1;
-                    if (inew > y + n - 2)
+                    }
+                    if (inew > y + n - 2) {
                         inew = y + n - 2;
-                    if (iold != inew)
-                    {
+                    }
+                    if (iold != inew) {
                         g[0] = 2;
                         fk_mouse (g);
                         e_pr_char (x, iold, MCI, frb);
@@ -564,54 +560,49 @@ int nf;
                 g[0] = 2;
                 fk_mouse (g);
                 e_pr_char (x, inew, MCI, frb);
-                if (inew - y < 2)
+                if (inew - y < 2) {
                     nret = 0;
-                else if (inew - y > n - 3)
+                } else if (inew - y > n - 3) {
                     nret = max - 1;
-                else
+                } else {
                     nret = (int) ((inew - y - 0.5) * d);
-            }
-            else if (nf < nret)
-            {
+                }
+            } else if (nf < nret) {
                 nret = (nf + n > max) ? max : nf + n - 1;
                 while (e_mshit () != 0);
-            }
-            else
-            {
+            } else {
                 nret = (nf - n < 0) ? 0 : nf - n + 1;
                 while (e_mshit () != 0);
             }
         }
-    }
-    else
-    {
-        if (e_mouse.y != y)
+    } else {
+        if (e_mouse.y != y) {
             return (nf);
-        if (e_mouse.x < x || e_mouse.x >= x + n)
+        }
+        if (e_mouse.x < x || e_mouse.x >= x + n) {
             return (nf);
-        if (e_mouse.x == x)
+        }
+        if (e_mouse.x == x) {
             nret = (nf < 1) ? nf : nf - 1;
-        else if (e_mouse.x == x + n - 1)
+        } else if (e_mouse.x == x + n - 1) {
             nret = (nf >= max - 1) ? nf : nf + 1;
-        else
-        {
+        } else {
             nret = (int) ((e_mouse.x - x - 1) * d);
-            if (e_gt_char (e_mouse.x, e_mouse.y) == MCA)
-            {
+            if (e_gt_char (e_mouse.x, e_mouse.y) == MCA) {
                 iold = e_mouse.x;
 #ifdef NEWSTYLE
                 e_make_xrect_abs (iold, y, iold, y, 1);
                 e_u_refresh ();
 #endif
                 fk_mouse (g);
-                for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3)
-                {
-                    if ((inew = g[2] / 8) < x + 1)
+                for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3) {
+                    if ((inew = g[2] / 8) < x + 1) {
                         inew = x + 1;
-                    if (inew > x + n - 2)
+                    }
+                    if (inew > x + n - 2) {
                         inew = x + n - 2;
-                    if (iold != inew)
-                    {
+                    }
+                    if (iold != inew) {
                         g[0] = 2;
                         fk_mouse (g);
                         e_pr_char (iold, y, MCI, frb);
@@ -629,20 +620,17 @@ int nf;
                 g[0] = 2;
                 fk_mouse (g);
                 e_pr_char (inew, y, MCI, frb);
-                if (inew - y < 2)
+                if (inew - y < 2) {
                     nret = 0;
-                else if (inew - y > n - 3)
+                } else if (inew - y > n - 3) {
                     nret = max - 1;
-                else
+                } else {
                     nret = (int) ((inew - y - 0.5) * d);
-            }
-            else if (nf < nret)
-            {
+                }
+            } else if (nf < nret) {
                 nret = (nf + n > max) ? max : nf + n - 1;
                 while (e_mshit () != 0);
-            }
-            else
-            {
+            } else {
                 nret = (nf - n < 0) ? 0 : nf - n + 1;
                 while (e_mshit () != 0);
             }
@@ -668,83 +656,85 @@ e_eck_mouse (we_window_t * window, int sw)
     xold = g[2] / 8;
     yold = g[3] / 8;
     xa = xold - window->a.x;
-    if (window->dtmd == DTMD_FILEDROPDOWN)
+    if (window->dtmd == DTMD_FILEDROPDOWN) {
         xmin = 15;
-    else if (!DTMD_ISTEXT (window->dtmd))
+    } else if (!DTMD_ISTEXT (window->dtmd)) {
         ymin = 9;
-    while (g[1] != 0)
-    {
+    }
+    while (g[1] != 0) {
         x = g[2] / 8;
         y = g[3] / 8;
-        if (y < 1)
+        if (y < 1) {
             y = 1;
-        else if (y > MAXSLNS - 2)
+        } else if (y > MAXSLNS - 2) {
             y = MAXSLNS - 2;
-        if (x < 0)
+        }
+        if (x < 0) {
             x = 0;
-        else if (x > MAXSCOL - 1)
+        } else if (x > MAXSCOL - 1) {
             x = MAXSCOL - 1;
-        if (xold != x || yold != y)
-        {
+        }
+        if (xold != x || yold != y) {
             xold = x;
             yold = y;
-            if (sw == 0)
-            {
+            if (sw == 0) {
                 x -= xa;
-                if (x < 0)
+                if (x < 0) {
                     x = 0;
-                else if (x + num_cols_on_screen(window) > MAXSCOL - 1)
+                } else if (x + num_cols_on_screen(window) > MAXSCOL - 1) {
                     x = MAXSCOL - window->e.x + window->a.x - 1;
-                if (window->e.y + y - window->a.y > MAXSLNS - 2)
+                }
+                if (window->e.y + y - window->a.y > MAXSLNS - 2) {
                     y = MAXSLNS - window->e.y + window->a.y - 2;
+                }
                 window->e.x = num_cols_on_screen(window) + x;
                 window->a.x = x;
                 window->e.y = window->e.y + y - window->a.y;
                 window->a.y = y;
-            }
-            else if (sw == 1)
-            {
-                if (x > window->e.x - xmin)
+            } else if (sw == 1) {
+                if (x > window->e.x - xmin) {
                     x = window->e.x - xmin;
-                if (y > window->e.y - ymin)
+                }
+                if (y > window->e.y - ymin) {
                     y = window->e.y - ymin;
+                }
                 window->a.x = x;
                 window->a.y = y;
-            }
-            else if (sw == 2)
-            {
-                if (x < window->a.x + xmin)
+            } else if (sw == 2) {
+                if (x < window->a.x + xmin) {
                     x = window->a.x + xmin;
-                if (y > window->e.y - ymin)
+                }
+                if (y > window->e.y - ymin) {
                     y = window->e.y - ymin;
+                }
                 window->e.x = x;
                 window->a.y = y;
-            }
-            else if (sw == 3)
-            {
-                if (x < window->a.x + xmin)
+            } else if (sw == 3) {
+                if (x < window->a.x + xmin) {
                     x = window->a.x + xmin;
-                if (y < window->a.y + ymin)
+                }
+                if (y < window->a.y + ymin) {
                     y = window->a.y + ymin;
+                }
                 window->e.x = x;
                 window->e.y = y;
-            }
-            else if (sw == 4)
-            {
-                if (x > window->e.x - xmin)
+            } else if (sw == 4) {
+                if (x > window->e.x - xmin) {
                     x = window->e.x - xmin;
-                if (y < window->a.y + ymin)
+                }
+                if (y < window->a.y + ymin) {
                     y = window->a.y + ymin;
+                }
                 window->a.x = x;
                 window->e.y = y;
             }
             g[0] = 2;
             fk_mouse (g);
             window->view = e_ed_kst (window, window->view, 0);
-            if (window->view == NULL)
+            if (window->view == NULL) {
                 e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
-            if (window->dtmd == DTMD_FILEDROPDOWN)
-            {
+            }
+            if (window->dtmd == DTMD_FILEDROPDOWN) {
                 FLWND *fw = (FLWND *) window->buffer;
                 fw->xa = window->a.x + 1;
                 fw->xe = window->e.x;
@@ -761,8 +751,9 @@ e_eck_mouse (we_window_t * window, int sw)
         fk_mouse (g);
     }
     if ((memcmp (&fa, &window->a, sizeof (we_point_t))) ||
-            (memcmp (&fe, &window->e, sizeof (we_point_t))))
+            (memcmp (&fe, &window->e, sizeof (we_point_t)))) {
         window->zoom = 0;
+    }
     e_ed_rahmen (window, 1);
 }
 
@@ -774,156 +765,132 @@ e_edt_mouse (int c, we_window_t * window)
     extern struct mouse e_mouse;
     we_control_t *control = window->edit_control;
 
-    if (e_mouse.y == 0)
+    if (e_mouse.y == 0) {
         return (e_m1_mouse ());
-    else if (e_mouse.y == MAXSLNS - 1)
+    } else if (e_mouse.y == MAXSLNS - 1) {
         return (e_m3_mouse ());
-    else if (e_mouse.x >= window->a.x && e_mouse.x <= window->e.x &&
-             e_mouse.y >= window->a.y && e_mouse.y <= window->e.y)
-    {
-        if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
+    } else if (e_mouse.x >= window->a.x && e_mouse.x <= window->e.x &&
+               e_mouse.y >= window->a.y && e_mouse.y <= window->e.y) {
+        if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y) {
             ret = window->edit_control->edopt & ED_CUA_STYLE ? CF4 : AF3;
-        else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+        } else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y) {
             e_ed_zoom (window);
-        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+        } else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y) {
             e_eck_mouse (window, 1);
-        else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+        } else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y) {
             e_eck_mouse (window, 2);
-        else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+        } else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y) {
             e_eck_mouse (window, 3);
-        else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+        } else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y) {
             e_eck_mouse (window, 4);
-        else if (e_mouse.y == window->a.y)
+        } else if (e_mouse.y == window->a.y) {
             e_eck_mouse (window, 0);
-        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 2)
+        } else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 2) {
             ret = window->edit_control->edopt & ED_CUA_STYLE ? AF3 : F4;
-        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 4)
+        } else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 4) {
             ret = window->edit_control->edopt & ED_CUA_STYLE ? CF3 : AF4;
-        else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 6)
+        } else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y + 6) {
             ret = window->edit_control->edopt & ED_CUA_STYLE ? F3 : CF4;
-        else if (window->ins != 8 && e_mouse.x == window->a.x && e_mouse.y == window->a.y + 8)
+        } else if (window->ins != 8 && e_mouse.x == window->a.x && e_mouse.y == window->a.y + 8) {
             ret = window->edit_control->edopt & ED_CUA_STYLE ? AF2 : F2;
-        else if (e_mouse.y == window->e.y && e_mouse.x > window->a.x + 4 &&
-                 e_mouse.x < window->a.x + 14)
+        } else if (e_mouse.y == window->e.y && e_mouse.x > window->a.x + 4 &&
+                   e_mouse.x < window->a.x + 14) {
             ret = AltG;
-        else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 15 && window->ins != 8)
-        {
-            if (window->ins & 1)
+        } else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 15 && window->ins != 8) {
+            if (window->ins & 1) {
                 window->ins &= ~1;
-            else
+            } else {
                 window->ins |= 1;
+            }
             e_pr_filetype (window);
-        }
-        else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 16 && window->ins != 8)
-        {
-            if (window->ins & 2)
+        } else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 16 && window->ins != 8) {
+            if (window->ins & 2) {
                 window->ins &= ~2;
-            else
+            } else {
                 window->ins |= 2;
+            }
             e_pr_filetype (window);
-        }
-        else if (e_mouse.x > window->a.x && e_mouse.x < window->e.x &&
-                 e_mouse.y > window->a.y && e_mouse.y < window->e.y)
-        {
-            if (c < -1)
+        } else if (e_mouse.x > window->a.x && e_mouse.x < window->e.x &&
+                   e_mouse.y > window->a.y && e_mouse.y < window->e.y) {
+            if (c < -1) {
                 ret = e_ccp_mouse (c, window);
-            else if (window->dtmd == DTMD_HELP && window->ins == 8 &&
-                     window->buffer->cursor.y ==
-                     e_mouse.y - window->a.y + num_lines_off_screen_top(window) - 1
-                     && ((i = window->buffer->cursor.x) == e_mouse_cursor (window->buffer, window->screen, window)))
+            } else if (window->dtmd == DTMD_HELP && window->ins == 8 &&
+                       window->buffer->cursor.y ==
+                       e_mouse.y - window->a.y + num_lines_off_screen_top(window) - 1
+                       && ((i = window->buffer->cursor.x) == e_mouse_cursor (window->buffer, window->screen, window))) {
                 ret = WPE_CR;
-            else
+            } else
 #ifdef PROG
 #ifdef DEBUGGER
             {
                 if (WpeIsProg () && (!strcmp (window->datnam, "Watches") ||
                                      !strcmp (window->datnam, "Messages") ||
-                                     !strcmp (window->datnam, "Stack")))
+                                     !strcmp (window->datnam, "Stack"))) {
                     ret = e_d_car_mouse (window);
-                else
+                } else {
                     e_cur_mouse (window);
+                }
             }
 #else
             {
-                if (WpeIsProg () && !strcmp (window->datnam, "Messages"))
+                if (WpeIsProg () && !strcmp (window->datnam, "Messages")) {
                     ret = e_d_car_mouse (window);
-                else
+                } else {
                     e_cur_mouse (window);
+                }
             }
 #endif
 #else
                 e_cur_mouse (window);
 #endif
-        }
-        else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y + 1)
-        {
+        } else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y + 1) {
             /*changed the while()... to a do...while();  :Mark L */
-            do
-            {
+            do {
                 window->buffer->cursor.y = window->buffer->cursor.y > 0 ? window->buffer->cursor.y - 1 : 0;
                 window->buffer->cursor.x = e_chr_sp (window->buffer->clsv, window->buffer, window);
                 e_cursor (window, 1);
                 e_u_refresh ();
-            }
-            while (e_mshit ());
-        }
-        else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y - 1)
-        {
+            } while (e_mshit ());
+        } else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y - 1) {
             /*changed the while()... to a do...while();  :Mark L */
-            do
-            {
+            do {
                 window->buffer->cursor.y = window->buffer->cursor.y < window->buffer->mxlines - 1 ?
                                            window->buffer->cursor.y + 1 : window->buffer->mxlines - 1;
                 window->buffer->cursor.x = e_chr_sp (window->buffer->clsv, window->buffer, window);
                 e_cursor (window, 1);
                 e_u_refresh ();
-            }
-            while (e_mshit ());
-        }
-        else if (e_mouse.x == window->e.x &&
-                 e_mouse.y > window->a.y + 1 && e_mouse.y < window->e.y - 1)
-        {
+            } while (e_mshit ());
+        } else if (e_mouse.x == window->e.x &&
+                   e_mouse.y > window->a.y + 1 && e_mouse.y < window->e.y - 1) {
             window->buffer->cursor.y = e_lst_mouse (window->e.x, window->a.y + 1, window->e.y - window->a.y - 1, 0,
                                                     window->buffer->mxlines, window->buffer->cursor.y);
             e_cursor (window, 1);
             e_u_refresh ();
-        }
-        else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 19)
-        {
-            while (e_mshit ())
-            {
+        } else if (e_mouse.y == window->e.y && e_mouse.x == window->a.x + 19) {
+            while (e_mshit ()) {
                 window->buffer->cursor.x = window->buffer->cursor.x > 0 ? window->buffer->cursor.x - 1 : 0;
                 e_cursor (window, 1);
                 e_u_refresh ();
             }
-        }
-        else if (e_mouse.y == window->e.y && e_mouse.x == window->e.x - 2)
-        {
-            while (e_mshit ())
-            {
+        } else if (e_mouse.y == window->e.y && e_mouse.x == window->e.x - 2) {
+            while (e_mshit ()) {
                 window->buffer->cursor.x = window->buffer->cursor.x < window->buffer->buflines[window->buffer->cursor.y].len ?
                                            window->buffer->cursor.x + 1 : window->buffer->buflines[window->buffer->cursor.y].len;
                 e_cursor (window, 1);
                 e_u_refresh ();
             }
-        }
-        else if (e_mouse.y == window->e.y &&
-                 e_mouse.x > window->a.x + 19 && e_mouse.x < window->e.x - 2)
-        {
+        } else if (e_mouse.y == window->e.y &&
+                   e_mouse.x > window->a.x + 19 && e_mouse.x < window->e.x - 2) {
             window->buffer->cursor.x =
                 e_lst_mouse (window->a.x + 19, window->e.y, window->e.x - window->a.x - 20, 1,
                              window->buffer->mx.x, num_cols_off_screen_left(window));
             e_cursor (window, 1);
             e_u_refresh ();
         }
-    }
-    else
-    {
-        for (i = control->mxedt; i > 0; i--)
-        {
+    } else {
+        for (i = control->mxedt; i > 0; i--) {
             if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x &&
-                    e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
-            {
+                    e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y) {
                 ret =
                     control->edt[i] < 10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i];
                 break;
@@ -942,10 +909,11 @@ e_mouse_cursor (we_buffer_t * buffer, we_screen_t * s, we_window_t * window)
 
     buffer->cursor.x = e_mouse.x - window->a.x + s->c.x - 1;
     buffer->cursor.y = e_mouse.y - window->a.y + s->c.y - 1;
-    if (buffer->cursor.y < 0)
+    if (buffer->cursor.y < 0) {
         buffer->cursor.y = 0;
-    else if (buffer->cursor.y >= buffer->mxlines)
+    } else if (buffer->cursor.y >= buffer->mxlines) {
         buffer->cursor.y = buffer->mxlines - 1;
+    }
     return (buffer->cursor.x = e_chr_sp (buffer->cursor.x, buffer, window));
 }
 
@@ -958,18 +926,15 @@ e_ccp_mouse (int c, we_window_t * window)
 
     while (e_mshit () != 0)
         ;
-    if (c == -2)
-    {
+    if (c == -2) {
         e_mouse_cursor (buffer, s, window);
         return ((u_bioskey () & 8) ? AltEin : ShiftEin);
-    }
-    else if (c == -4)
-    {
+    } else if (c == -4) {
         return ((u_bioskey () & 3) ? ShiftDel
                 : ((u_bioskey () & 8) ? AltDel : CEINFG));
-    }
-    else
+    } else {
         return (0);
+    }
 }
 
 /*       Mouse cursor in edit window control   */
@@ -983,18 +948,13 @@ we_window_t *window;
     bs.x = buffer->cursor.x;
     bs.y = buffer->cursor.y;
     e_mouse_cursor (buffer, s, window);
-    if ((u_bioskey () & 3) == 0)
-    {
-        if (buffer->cursor.x == bs.x && buffer->cursor.y == bs.y && window->dtmd != DTMD_HELP)
-        {
+    if ((u_bioskey () & 3) == 0) {
+        if (buffer->cursor.x == bs.x && buffer->cursor.y == bs.y && window->dtmd != DTMD_HELP) {
             if (s->mark_begin.y == buffer->cursor.y && s->mark_end.y == buffer->cursor.y
-                    && s->mark_begin.x <= buffer->cursor.x && s->mark_end.x > buffer->cursor.x)
-            {
+                    && s->mark_begin.x <= buffer->cursor.x && s->mark_end.x > buffer->cursor.x) {
                 s->mark_begin.x = 0;
                 s->mark_end.x = buffer->buflines[buffer->cursor.y].len;
-            }
-            else
-            {
+            } else {
                 s->mark_begin.y = s->mark_end.y = buffer->cursor.y;
                 for (s->mark_begin.x = buffer->cursor.x; s->mark_begin.x > 0
                         && isalnum1 (buffer->buflines[buffer->cursor.y].s[s->mark_begin.x - 1]);
@@ -1008,35 +968,26 @@ we_window_t *window;
         }
         s->ks.x = buffer->cursor.x;
         s->ks.y = buffer->cursor.y;
-    }
-    else
-    {
+    } else {
         if (s->mark_end.y < buffer->cursor.y
-                || (s->mark_end.y == buffer->cursor.y && s->mark_end.x <= buffer->cursor.x))
-        {
+                || (s->mark_end.y == buffer->cursor.y && s->mark_end.x <= buffer->cursor.x)) {
             s->mark_end.x = buffer->cursor.x;
             s->mark_end.y = buffer->cursor.y;
             s->ks.x = s->mark_begin.x;
             s->ks.y = s->mark_begin.y;
-        }
-        else if (s->mark_begin.y > buffer->cursor.y
-                 || (s->mark_begin.y == buffer->cursor.y && s->mark_begin.x >= buffer->cursor.x))
-        {
+        } else if (s->mark_begin.y > buffer->cursor.y
+                   || (s->mark_begin.y == buffer->cursor.y && s->mark_begin.x >= buffer->cursor.x)) {
             s->mark_begin.x = buffer->cursor.x;
             s->mark_begin.y = buffer->cursor.y;
             s->ks.x = s->mark_end.x;
             s->ks.y = s->mark_end.y;
-        }
-        else if (s->mark_end.y < bs.y
-                 || (s->mark_end.y == bs.y && s->mark_end.x <= bs.x))
-        {
+        } else if (s->mark_end.y < bs.y
+                   || (s->mark_end.y == bs.y && s->mark_end.x <= bs.x)) {
             s->mark_begin.x = buffer->cursor.x;
             s->mark_begin.y = buffer->cursor.y;
             s->ks.x = s->mark_end.x;
             s->ks.y = s->mark_end.y;
-        }
-        else
-        {
+        } else {
             s->mark_end.x = buffer->cursor.x;
             s->mark_end.y = buffer->cursor.y;
             s->ks.x = s->mark_begin.x;
@@ -1044,26 +995,22 @@ we_window_t *window;
         }
     }
     WpeMouseChangeShape (WpeSelectionShape);
-    while (e_mshit () != 0)
-    {
+    while (e_mshit () != 0) {
         bs.x = buffer->cursor.x;
         bs.y = buffer->cursor.y;
         e_mouse_cursor (buffer, s, window);
-        if (buffer->cursor.x < 0)
+        if (buffer->cursor.x < 0) {
             buffer->cursor.x = 0;
-        else if (buffer->cursor.x > buffer->buflines[buffer->cursor.y].len)
+        } else if (buffer->cursor.x > buffer->buflines[buffer->cursor.y].len) {
             buffer->cursor.x = buffer->buflines[buffer->cursor.y].len;
-        if (buffer->cursor.x != bs.x || buffer->cursor.y != bs.y)
-        {
-            if (s->ks.y < buffer->cursor.y || (s->ks.y == buffer->cursor.y && s->ks.x <= buffer->cursor.x))
-            {
+        }
+        if (buffer->cursor.x != bs.x || buffer->cursor.y != bs.y) {
+            if (s->ks.y < buffer->cursor.y || (s->ks.y == buffer->cursor.y && s->ks.x <= buffer->cursor.x)) {
                 s->mark_end.x = buffer->cursor.x;
                 s->mark_end.y = buffer->cursor.y;
                 s->mark_begin.x = s->ks.x;
                 s->mark_begin.y = s->ks.y;
-            }
-            else
-            {
+            } else {
                 s->mark_begin.x = buffer->cursor.x;
                 s->mark_begin.y = buffer->cursor.y;
                 s->mark_end.x = s->ks.x;
@@ -1089,13 +1036,15 @@ int md;
     UNUSED (md);
     extern struct mouse e_mouse;
     if (e_mouse.x < xa - 2 || e_mouse.x > xa + 25
-            || e_mouse.y < ya - 1 || e_mouse.y > ya + 18)
+            || e_mouse.y < ya - 1 || e_mouse.y > ya + 18) {
         return (WPE_CR);
+    }
     if (e_mouse.x >= xa && e_mouse.x < xa + 24
-            && e_mouse.y > ya && e_mouse.y < ya + 17)
+            && e_mouse.y > ya && e_mouse.y < ya + 17) {
         return (1000 + (e_mouse.y - ya - 1) * 16 + (e_mouse.x - xa) / 3);
-    else
+    } else {
         return (0);
+    }
 }
 
 int
@@ -1105,29 +1054,33 @@ int ya;
 int md;
 {
     extern struct mouse e_mouse;
-    if (e_mouse.y == 0 || e_mouse.y == MAXSLNS - 1)
+    if (e_mouse.y == 0 || e_mouse.y == MAXSLNS - 1) {
         return (WPE_ESC);
-    if (e_mouse.y == 1 && e_mouse.x == 3)
+    }
+    if (e_mouse.y == 1 && e_mouse.x == 3) {
         return (WPE_ESC);
+    }
     if (e_mouse.x >= xa - 30 && e_mouse.x <= xa - 3
-            && e_mouse.y >= ya && e_mouse.y <= ya + 19)
+            && e_mouse.y >= ya && e_mouse.y <= ya + 19) {
         return (WPE_CR);
-    if (e_mouse.x >= 1 && e_mouse.x <= 33 && e_mouse.y >= 2 && e_mouse.y <= 21)
-    {
-        if (md == 1)
+    }
+    if (e_mouse.x >= 1 && e_mouse.x <= 33 && e_mouse.y >= 2 && e_mouse.y <= 21) {
+        if (md == 1) {
             return (e_opt_bs_mouse_1 ());
-        else if (md == 2)
+        } else if (md == 2) {
             return (e_opt_bs_mouse_2 ());
-        else if (md == 3)
+        } else if (md == 3) {
             return (e_opt_bs_mouse_3 ());
-        else
+        } else {
             return (e_opt_bs_mouse ());
+        }
     }
     if (e_mouse.x > xa && e_mouse.x < xa + 12
-            && e_mouse.y > ya && e_mouse.y < ya + 20)
+            && e_mouse.y > ya && e_mouse.y < ya + 20) {
         return (374 + e_mouse.y - ya);
-    else
+    } else {
         return (0);
+    }
 }
 
 int
@@ -1135,27 +1088,28 @@ e_opt_bs_mouse_1 ()
 {
     extern struct mouse e_mouse;	/*  return = sw + 375;  */
     int sw = 0;
-    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 2 || e_mouse.x > 33)
+    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 2 || e_mouse.x > 33) {
         return (0);
-    else if (e_mouse.y == 2 && e_mouse.x == 6)
+    } else if (e_mouse.y == 2 && e_mouse.x == 6) {
         sw = 1;
-    else if (e_mouse.y == 2 && e_mouse.x >= 17 && e_mouse.x <= 28)
+    } else if (e_mouse.y == 2 && e_mouse.x >= 17 && e_mouse.x <= 28) {
         sw = 3;
-    else if (e_mouse.y == 21 && e_mouse.x >= 5 && e_mouse.x <= 10)
+    } else if (e_mouse.y == 21 && e_mouse.x >= 5 && e_mouse.x <= 10) {
         sw = 1;
-    else if (e_mouse.y == 2 || e_mouse.y == 21)
+    } else if (e_mouse.y == 2 || e_mouse.y == 21) {
         sw = 2;
-    else if ((e_mouse.y == 3 || e_mouse.y == 5)
-             && e_mouse.x >= 18 && e_mouse.x <= 27)
+    } else if ((e_mouse.y == 3 || e_mouse.y == 5)
+               && e_mouse.x >= 18 && e_mouse.x <= 27) {
         sw = 0;
-    else if (e_mouse.y == 4 && (e_mouse.x == 18 || e_mouse.x == 27))
+    } else if (e_mouse.y == 4 && (e_mouse.x == 18 || e_mouse.x == 27)) {
         sw = 0;
-    else if (e_mouse.y == 4 && e_mouse.x == 20)
+    } else if (e_mouse.y == 4 && e_mouse.x == 20) {
         sw = 1;
-    else if (e_mouse.y == 4 && e_mouse.x > 18 && e_mouse.x < 27)
+    } else if (e_mouse.y == 4 && e_mouse.x > 18 && e_mouse.x < 27) {
         sw = 2;
-    else
+    } else {
         sw = 4;
+    }
     return (sw + 375);
 }
 
@@ -1164,45 +1118,46 @@ e_opt_bs_mouse_2 ()
 {
     extern struct mouse e_mouse;	/*  return = sw + 375;  */
     int sw = 0;
-    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 1 || e_mouse.x > 32)
+    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 1 || e_mouse.x > 32) {
         return (0);
-    else if (e_mouse.y == 2 && e_mouse.x == 4)
+    } else if (e_mouse.y == 2 && e_mouse.x == 4) {
         sw = 1;
-    else if (e_mouse.y == 2 || e_mouse.y == 21 ||
-             e_mouse.x == 1 || e_mouse.x == 32)
+    } else if (e_mouse.y == 2 || e_mouse.y == 21 ||
+               e_mouse.x == 1 || e_mouse.x == 32) {
         sw = 0;
-    else if (e_mouse.y == 4 && e_mouse.x == 5)
+    } else if (e_mouse.y == 4 && e_mouse.x == 5) {
         sw = 3;
-    else if (e_mouse.y == 5 && e_mouse.x >= 5 && e_mouse.x <= 24)
+    } else if (e_mouse.y == 5 && e_mouse.x >= 5 && e_mouse.x <= 24) {
         sw = 5;
-    else if (e_mouse.y == 7 && e_mouse.x == 5)
+    } else if (e_mouse.y == 7 && e_mouse.x == 5) {
         sw = 3;
-    else if (e_mouse.y == 8 && e_mouse.x >= 5 && e_mouse.x <= 24)
+    } else if (e_mouse.y == 8 && e_mouse.x >= 5 && e_mouse.x <= 24) {
         sw = 4;
-    else if (e_mouse.y == 10 && e_mouse.x == 5)
+    } else if (e_mouse.y == 10 && e_mouse.x == 5) {
         sw = 3;
-    else if (e_mouse.y == 11 && e_mouse.x >= 5 && e_mouse.x <= 20)
+    } else if (e_mouse.y == 11 && e_mouse.x >= 5 && e_mouse.x <= 20) {
         sw = 7;
-    else if (e_mouse.y == 12 && e_mouse.x >= 5 && e_mouse.x <= 20)
+    } else if (e_mouse.y == 12 && e_mouse.x >= 5 && e_mouse.x <= 20) {
         sw = 8;
-    else if (e_mouse.y == 13 && e_mouse.x >= 5 && e_mouse.x <= 20)
+    } else if (e_mouse.y == 13 && e_mouse.x >= 5 && e_mouse.x <= 20) {
         sw = 6;
-    else if (e_mouse.y == 15 && e_mouse.x == 5)
+    } else if (e_mouse.y == 15 && e_mouse.x == 5) {
         sw = 3;
-    else if (e_mouse.y == 16 && e_mouse.x >= 5 && e_mouse.x <= 24)
+    } else if (e_mouse.y == 16 && e_mouse.x >= 5 && e_mouse.x <= 24) {
         sw = 11;
-    else if (e_mouse.y == 17 && e_mouse.x == 10)
+    } else if (e_mouse.y == 17 && e_mouse.x == 10) {
         sw = 10;
-    else if (e_mouse.y == 17 && e_mouse.x >= 5 && e_mouse.x <= 24)
+    } else if (e_mouse.y == 17 && e_mouse.x >= 5 && e_mouse.x <= 24) {
         sw = 9;
-    else if (e_mouse.y == 19 && e_mouse.x == 7)
+    } else if (e_mouse.y == 19 && e_mouse.x == 7) {
         sw = 13;
-    else if (e_mouse.y == 19 && e_mouse.x >= 6 && e_mouse.x <= 13)
+    } else if (e_mouse.y == 19 && e_mouse.x >= 6 && e_mouse.x <= 13) {
         sw = 12;
-    else if (e_mouse.y == 19 && e_mouse.x >= 19 && e_mouse.x <= 26)
+    } else if (e_mouse.y == 19 && e_mouse.x >= 19 && e_mouse.x <= 26) {
         sw = 14;
-    else
+    } else {
         sw = 2;
+    }
     return (sw + 375);
 }
 
@@ -1211,16 +1166,17 @@ e_opt_bs_mouse_3 ()
 {
     extern struct mouse e_mouse;	/*  return = sw + 375;  */
     int sw = 0;
-    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 1 || e_mouse.x > 32)
+    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 1 || e_mouse.x > 32) {
         return (0);
-    else if (e_mouse.y == 5)
+    } else if (e_mouse.y == 5) {
         sw = 3;
-    else if (e_mouse.y == 9)
+    } else if (e_mouse.y == 9) {
         sw = 1;
-    else if (e_mouse.y == 11)
+    } else if (e_mouse.y == 11) {
         sw = 2;
-    else if (e_mouse.y == 13)
+    } else if (e_mouse.y == 13) {
         sw = 4;
+    }
     return (sw + 375);
 }
 
@@ -1229,33 +1185,34 @@ e_opt_bs_mouse ()
 {
     extern struct mouse e_mouse;
     int sw = 0;
-    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 1 || e_mouse.x > 32)
+    if (e_mouse.y < 2 || e_mouse.y > 21 || e_mouse.x < 1 || e_mouse.x > 32) {
         return (0);
-    else if (e_mouse.y == 2 && (e_mouse.x == 4 || e_mouse.x == 29))
+    } else if (e_mouse.y == 2 && (e_mouse.x == 4 || e_mouse.x == 29)) {
         sw = 1;
-    else if (e_mouse.x == 32 && e_mouse.y > 2 && e_mouse.y < 21)
+    } else if (e_mouse.x == 32 && e_mouse.y > 2 && e_mouse.y < 21) {
         sw = 5;
-    else if (e_mouse.y == 21 && e_mouse.x > 20 && e_mouse.y < 32)
+    } else if (e_mouse.y == 21 && e_mouse.x > 20 && e_mouse.y < 32) {
         sw = 5;
-    else if (e_mouse.y == 2 || e_mouse.y == 21 ||
-             e_mouse.x == 1 || e_mouse.x == 32)
+    } else if (e_mouse.y == 2 || e_mouse.y == 21 ||
+               e_mouse.x == 1 || e_mouse.x == 32) {
         sw = 0;
-    else if (e_mouse.y == 6 && e_mouse.x >= 4 && e_mouse.x <= 30)
+    } else if (e_mouse.y == 6 && e_mouse.x >= 4 && e_mouse.x <= 30) {
         sw = 3;
-    else if (e_mouse.y == 7 && e_mouse.x >= 14 && e_mouse.x <= 21)
+    } else if (e_mouse.y == 7 && e_mouse.x >= 14 && e_mouse.x <= 21) {
         sw = 4;
-    else if (e_mouse.y == 10 && e_mouse.x >= 4 && e_mouse.x <= 16)
+    } else if (e_mouse.y == 10 && e_mouse.x >= 4 && e_mouse.x <= 16) {
         sw = 6;
-    else if (e_mouse.y == 11 && e_mouse.x >= 15 && e_mouse.x <= 20)
+    } else if (e_mouse.y == 11 && e_mouse.x >= 15 && e_mouse.x <= 20) {
         sw = 8;
-    else if (e_mouse.y == 13 && e_mouse.x >= 4 && e_mouse.x <= 17)
+    } else if (e_mouse.y == 13 && e_mouse.x >= 4 && e_mouse.x <= 17) {
         sw = 7;
-    else if (e_mouse.y == 16 && e_mouse.x >= 4 && e_mouse.x <= 25)
+    } else if (e_mouse.y == 16 && e_mouse.x >= 4 && e_mouse.x <= 25) {
         sw = 9;
-    else if (e_mouse.y == 17 && e_mouse.x >= 4 && e_mouse.x <= 23)
+    } else if (e_mouse.y == 17 && e_mouse.x >= 4 && e_mouse.x <= 23) {
         sw = 10;
-    else
+    } else {
         sw = 2;
+    }
     return (sw + 375);
 }
 
@@ -1267,58 +1224,56 @@ we_window_t *window;
     FLWND *fw = (FLWND *) window->buffer;
     we_control_t *control = window->edit_control;
     int i, c = 0;
-    if (e_mouse.y == 0)
+    if (e_mouse.y == 0) {
         return (AltBl);
-    else if (e_mouse.y == MAXSLNS - 1)
+    } else if (e_mouse.y == MAXSLNS - 1) {
         return (e_m3_mouse ());
-    else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
-             || e_mouse.y < window->a.y || e_mouse.y > window->e.y)
-    {
-        for (i = control->mxedt; i > 0; i--)
-        {
+    } else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
+               || e_mouse.y < window->a.y || e_mouse.y > window->e.y) {
+        for (i = control->mxedt; i > 0; i--) {
             if (e_mouse.x >= control->window[i]->a.x && e_mouse.x <= control->window[i]->e.x
                     && e_mouse.y >= control->window[i]->a.y && e_mouse.y <= control->window[i]->e.y)
                 return (control->edt[i] <
                         10 ? Alt1 - 1 + control->edt[i] : 1014 + control->edt[i]);
         }
-    }
-    else if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->a.x + 3 && e_mouse.y == window->a.y) {
         c = WPE_ESC;
-    else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->e.x - 3 && e_mouse.y == window->a.y) {
         e_ed_zoom (window);
-    else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->a.x && e_mouse.y == window->a.y) {
         e_eck_mouse (window, 1);
-    else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y)
+    } else if (e_mouse.x == window->e.x && e_mouse.y == window->a.y) {
         e_eck_mouse (window, 2);
-    else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y)
+    } else if (e_mouse.x == window->e.x && e_mouse.y == window->e.y) {
         e_eck_mouse (window, 3);
-    else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y)
+    } else if (e_mouse.x == window->a.x && e_mouse.y == window->e.y) {
         e_eck_mouse (window, 4);
-    else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x)
+    } else if (e_mouse.y == window->a.y && e_mouse.x > window->a.x && e_mouse.x < window->e.x) {
         e_eck_mouse (window, 0);
-    else if (e_mouse.y >= fw->ya && e_mouse.y <= fw->ye &&
-             e_mouse.x >= fw->xa && e_mouse.x <= fw->xe)
+    } else if (e_mouse.y >= fw->ya && e_mouse.y <= fw->ye &&
+               e_mouse.x >= fw->xa && e_mouse.x <= fw->xe) {
         c = AltF;
-    else if (e_mouse.y == window->e.y - 2 && e_mouse.x >= window->e.x - 9
-             && e_mouse.x <= window->e.x - 3)
+    } else if (e_mouse.y == window->e.y - 2 && e_mouse.x >= window->e.x - 9
+               && e_mouse.x <= window->e.x - 3) {
         c = WPE_ESC;
-    else if ((window->ins < 4 || window->ins == 7) && e_mouse.y == window->e.y - 4
-             && e_mouse.x >= window->e.x - 9 && e_mouse.x <= window->e.x - 3)
+    } else if ((window->ins < 4 || window->ins == 7) && e_mouse.y == window->e.y - 4
+               && e_mouse.x >= window->e.x - 9 && e_mouse.x <= window->e.x - 3) {
         c = AltS;
-    else if (window->ins > 3 && e_mouse.y == window->e.y - 8 && e_mouse.x >= window->e.x - 9
-             && e_mouse.x <= window->e.x - 3)
+    } else if (window->ins > 3 && e_mouse.y == window->e.y - 8 && e_mouse.x >= window->e.x - 9
+               && e_mouse.x <= window->e.x - 3) {
         c = AltA;
-    else if (window->ins > 3 && e_mouse.y == window->e.y - 6 && e_mouse.x >= window->e.x - 9
-             && e_mouse.x <= window->e.x - 3)
+    } else if (window->ins > 3 && e_mouse.y == window->e.y - 6 && e_mouse.x >= window->e.x - 9
+               && e_mouse.x <= window->e.x - 3) {
         c = AltE;
-    else if (window->ins > 3 && e_mouse.y == window->e.y - 4 && e_mouse.x >= window->e.x - 9
-             && e_mouse.x <= window->e.x - 3)
+    } else if (window->ins > 3 && e_mouse.y == window->e.y - 4 && e_mouse.x >= window->e.x - 9
+               && e_mouse.x <= window->e.x - 3) {
         c = AltD;
-    else if (window->ins == 4 && e_mouse.y == window->e.y - 10 && e_mouse.x >= window->e.x - 9
-             && e_mouse.x <= window->e.x - 3)
+    } else if (window->ins == 4 && e_mouse.y == window->e.y - 10 && e_mouse.x >= window->e.x - 9
+               && e_mouse.x <= window->e.x - 3) {
         c = AltO;
-    else
+    } else {
         c = AltF;
+    }
     while (e_mshit () != 0);
     return (c);
 }
@@ -1332,10 +1287,11 @@ W_OPTSTR *o;
     we_view_t *view;
     e_std_window (o->xa, o->ya, o->xe, o->ye, o->name, 0, o->frt, o->frs);
 #ifndef NEWSTYLE
-    if (!WpeIsXwin ())
+    if (!WpeIsXwin ()) {
         view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
-    else
+    } else {
         view = e_open_view (o->xa, o->ya, o->xe - 2, o->ye - 1, 0, 2);
+    }
 #else
     view = e_open_view (o->xa, o->ya, o->xe, o->ye, 0, 2);
 #endif
@@ -1345,29 +1301,31 @@ W_OPTSTR *o;
     xold = g[2] / 8;
     yold = g[3] / 8;
     xa = xold - o->xa;
-    while (g[1] != 0)
-    {
+    while (g[1] != 0) {
         x = g[2] / 8;
         y = g[3] / 8;
-        if (y < 1)
+        if (y < 1) {
             y = 1;
-        else if (y > MAXSLNS - 2)
+        } else if (y > MAXSLNS - 2) {
             y = MAXSLNS - 2;
-        if (x < 0)
+        }
+        if (x < 0) {
             x = 0;
-        else if (x > MAXSCOL - 1)
+        } else if (x > MAXSCOL - 1) {
             x = MAXSCOL - 1;
-        if (xold != x || yold != y)
-        {
+        }
+        if (xold != x || yold != y) {
             xold = x;
             yold = y;
             x -= xa;
-            if (x < 0)
+            if (x < 0) {
                 x = 0;
-            else if (x + o->xe - o->xa > MAXSCOL - 1)
+            } else if (x + o->xe - o->xa > MAXSCOL - 1) {
                 x = MAXSCOL - o->xe + o->xa - 1;
-            if (o->ye + y - o->ya > MAXSLNS - 2)
+            }
+            if (o->ye + y - o->ya > MAXSLNS - 2) {
                 y = MAXSLNS - o->ye + o->ya - 2;
+            }
             o->xe = o->xe - o->xa + x;
             o->xa = x;
             o->ye = o->ye + y - o->ya;
@@ -1376,8 +1334,9 @@ W_OPTSTR *o;
             fk_mouse (g);
             o->view =
                 e_change_pic (o->xa, o->ya, o->xe, o->ye, o->view, 1, o->frt);
-            if (o->view == NULL)
+            if (o->view == NULL) {
                 e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, o->window->colorset);
+            }
             g[0] = 1;
             fk_mouse (g);
             view->a.x = o->xa;
@@ -1404,32 +1363,27 @@ e_opt_mouse (W_OPTSTR * o)
     int c;
 
     if (e_mouse.y < o->ya || e_mouse.y >= o->ye ||
-            e_mouse.x <= o->xa || e_mouse.x >= o->xe)
+            e_mouse.x <= o->xa || e_mouse.x >= o->xe) {
         return (-1);
-    else if (e_mouse.y == o->ya)
-    {
-        if (e_mouse.x == o->xa + 3)
-        {
-            while (e_mshit ())
-            {
+    } else if (e_mouse.y == o->ya) {
+        if (e_mouse.x == o->xa + 3) {
+            while (e_mshit ()) {
                 ;
             }
             return (WPE_ESC);
-        }
-        else
-        {
+        } else {
             e_opt_eck_mouse (o);
             return (-1);
         }
     }
-    while (e_mshit ())
-    {
+    while (e_mshit ()) {
         ;
     }
-    if ((c = e_get_opt_sw (0, e_mouse.x, e_mouse.y, o)))
+    if ((c = e_get_opt_sw (0, e_mouse.x, e_mouse.y, o))) {
         return (c);
-    else
+    } else {
         return (-1);
+    }
 }
 
 #endif // #if MOUSE

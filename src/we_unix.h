@@ -11,8 +11,7 @@
 #include "we_mouse.h"
 #include "we_opt.h"
 
-typedef enum wpeMouseShape
-{
+typedef enum wpeMouseShape {
     WpeEditingShape,
     WpeDebuggingShape,
     WpeWorkingShape,

@@ -24,8 +24,9 @@ e_num_kst (char *s, int num, int max, we_window_t * window, int n, int sw)
     char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
     W_OPTSTR *o = e_init_opt_kst (window);
 
-    if (!o || !tmp)
+    if (!o || !tmp) {
         return (-1);
+    }
     o->xa = 20;
     o->ya = 4;
     o->xe = 52;
@@ -39,8 +40,9 @@ e_num_kst (char *s, int num, int max, we_window_t * window, int n, int sw)
     e_add_bttstr (6, 4, 1, AltO, " Ok ", NULL, o);
     e_add_bttstr (21, 4, -1, WPE_ESC, "Cancel", NULL, o);
     ret = e_opt_kst (o);
-    if (ret != WPE_ESC)
+    if (ret != WPE_ESC) {
         num = o->nstr[0]->num;
+    }
     freeostr (o);
     return (num);
 }

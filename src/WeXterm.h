@@ -24,8 +24,7 @@ extern "C"
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
   New Types
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-typedef struct wpeXStruct
-{
+typedef struct wpeXStruct {
     Display *display;
     int screen;
     Window window;

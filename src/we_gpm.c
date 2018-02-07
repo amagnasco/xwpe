@@ -27,15 +27,13 @@ WpeGpmMouseInit (void)
     c.minMod = 0;
     c.maxMod = ~0;
     ret = Gpm_Open (&c, 0);
-    if (ret == -2)
-    {
+    if (ret == -2) {
         /* Xterms returns mouse information through stdin which xwpe currently
            doesn't support */
         Gpm_Close ();
         return (-1);
     }
-    if (ret == -1)
-    {
+    if (ret == -1) {
         return (-1);
     }
     gpm_handler = WpeGpmHandler;
@@ -49,8 +47,7 @@ WpeGpmHandler (Gpm_Event * ep, void *data)
     extern struct mouse e_mouse;
 
     GPM_DRAWPOINTER (ep);
-    if (ep->buttons & 7)
-    {
+    if (ep->buttons & 7) {
         e_mouse.x = ep->x;
         e_mouse.y = ep->y;
         e_mouse.k = ep->buttons;
@@ -65,8 +62,9 @@ WpeGpmMouse (int *g)
 {
     Gpm_Event e;
 
-    while (Gpm_GetSnapshot (&e) == 0)
+    while (Gpm_GetSnapshot (&e) == 0) {
         Gpm_GetEvent (&e);
+    }
     g[1] = g[0] = e.buttons;
     g[2] = e.x * 8;
     g[3] = e.y * 8;
