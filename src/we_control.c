@@ -60,7 +60,9 @@ int fk__cursor = 0;
 WOPT *eblst, *fblst, *mblst, *dblst, *xblst, *wblst, *rblst;
 WOPT *ablst, *sblst, *hblst, *gblst, *oblst;
 
+/* e_hlp is a global field, accessed by other files as well. */
 char *e_hlp;
+
 WOPT *blst;
 int nblst = 7;
 
