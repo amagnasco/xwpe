@@ -50,7 +50,8 @@ e_m1_mouse ()
     } else if (e_mouse.y != 0) {
         c = WPE_ESC;
     } else {
-        for (n = 1; n < MENOPT; n++)
+        int nr_opts = nr_of_menu_options();
+        for (n = 1; n < nr_opts; n++)
             if (e_mouse.x < opt[n].x - e_mn_men) {
                 break;
             }

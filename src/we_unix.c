@@ -233,7 +233,7 @@ e_ini_unix (int *argc, char **argv)
         opt[5].x = 38;
         opt[5].s = 'R';
         opt[5].as = AltR;
-        MENOPT = 10;
+        set_nr_of_menu_options(10);
         e_mn_men = 2;
 #else
         opt[0].x = 2, opt[1].x = 6, opt[2].x = 12;
@@ -263,7 +263,7 @@ e_ini_unix (int *argc, char **argv)
         opt[5].x = 34;
         opt[5].s = 'R';
         opt[5].as = AltR;
-        MENOPT = 11;
+        set_nr_of_menu_options(11);
         e_mn_men = 1;
 #endif
     }

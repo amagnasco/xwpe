@@ -805,7 +805,7 @@ e_tst_fkt (int c, we_control_t * e)
         return (0);
     }
 
-    for (i = 0; i < MENOPT; i++)
+    for (i = 0; i < nr_of_menu_options(); i++)
         if (c == opt[i].as) {
             WpeHandleMainmenu (i, window);
         }
