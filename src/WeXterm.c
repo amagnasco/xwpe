@@ -254,8 +254,10 @@ WpeXGeometryGet (XrmDatabase xresdb, XrmQuark * name_list,
         size_hints->flags |= PPosition;
     }
     /* Old variables used since not converted yet */
-    MAXSCOL = size_hints->width / WpeXInfo.font_width;
-    MAXSLNS = size_hints->height / WpeXInfo.font_height;
+    int cols = size_hints->width / WpeXInfo.font_width;
+    set_max_screen_cols(cols);
+    int lns = size_hints->height / WpeXInfo.font_height;
+    set_max_screen_lines(lns);
     return;
 }
 

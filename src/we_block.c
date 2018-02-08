@@ -173,7 +173,7 @@ e_show_clipboard (we_window_t * window)
         for (i = control->mxedt - 1; i > 0; i--);
         if (i < 1) {
             window->a = e_set_pnt (0, 1);
-            window->e = e_set_pnt (MAXSCOL - 1, 2 * MAXSLNS / 3);
+            window->e = e_set_pnt (max_screen_cols() - 1, 2 * max_screen_lines() / 3);
         } else {
             window->a = e_set_pnt (control->window[i]->a.x + 1, control->window[i]->a.y + 1);
             window->e = e_set_pnt (control->window[i]->e.x, control->window[i]->e.y);
@@ -183,7 +183,7 @@ e_show_clipboard (we_window_t * window)
     {
         if (control->mxedt < 2) {
             window->a = e_set_pnt (0, 1);
-            window->e = e_set_pnt (MAXSCOL - 1, MAXSLNS - 2);
+            window->e = e_set_pnt (max_screen_cols() - 1, max_screen_lines() - 2);
         } else {
             window->a =
                 e_set_pnt (control->window[control->mxedt - 1]->a.x + 1,

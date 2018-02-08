@@ -606,9 +606,9 @@ e_show_error (int n, we_window_t * window)
     } else if (filename != window->datnam) {
         free (filename);
     }
-    e_pr_str_wsd (1, MAXSLNS - 1, err_li[n].text, window->colorset->mt.fg_bg_color, -1, 0,
-                  window->colorset->mt.fg_bg_color, 1, MAXSCOL - 2);
-    /*   e_pr_nstr(2, MAXSLNS - 1, MAXSCOL-2, err_li[n].text,
+    e_pr_str_wsd (1, max_screen_lines() - 1, err_li[n].text, window->colorset->mt.fg_bg_color, -1, 0,
+                  window->colorset->mt.fg_bg_color, 1, max_screen_cols() - 2);
+    /*   e_pr_nstr(2, max_screen_lines() - 1, max_screen_cols()-2, err_li[n].text,
                                                     window->colorset->mt.fg_bg_color, window->colorset->mt.fg_bg_color); */
     buffer = control->window[control->mxedt]->buffer;
     buffer->cursor.y = err_li[n].line > buffer->mxlines ? buffer->mxlines - 1 : err_li[n].line - 1;
@@ -1613,7 +1613,7 @@ e_system (char *estr, we_control_t * control)
     g[0] = 2;
     fk_mouse (g);
 #endif
-    outp = e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, control->colorset->ws, 1);
+    outp = e_open_view (0, 0, max_screen_cols() - 1, max_screen_lines() - 1, control->colorset->ws, 1);
     fk_u_locate (0, 0);
     fk_u_cursor (1);
     e_u_s_sys_ini ();

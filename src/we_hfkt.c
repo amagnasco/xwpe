@@ -121,10 +121,10 @@ e_pr_uul (we_colorset_t * fb)
     extern int nblst;
     int i;
 
-    e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fg_bg_color);
-    for (i = 0; i < nblst && blst[i].x < MAXSCOL; ++i)
-        e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fg_bg_color,
+    e_blk (max_screen_cols(), 0, max_screen_lines() - 1, fb->mt.fg_bg_color);
+    for (i = 0; i < nblst && blst[i].x < max_screen_cols(); ++i)
+        e_pr_str_scan (blst[i].x + 1, max_screen_lines() - 1, blst[i].t, fb->mt.fg_bg_color,
                        blst[i].s, blst[i].n, fb->ms.fg_bg_color, blst[i].x,
-                       i == nblst - 1 ? MAXSCOL - 1 : blst[i + 1].x - 1);
+                       i == nblst - 1 ? max_screen_cols() - 1 : blst[i + 1].x - 1);
     return (i);
 }

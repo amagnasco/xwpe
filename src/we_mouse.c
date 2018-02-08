@@ -45,7 +45,7 @@ e_m1_mouse ()
     extern int e_mn_men;
     int c, n;
 
-    if (e_mouse.y == MAXSLNS - 1) {
+    if (e_mouse.y == max_screen_lines() - 1) {
         c = e_m3_mouse ();
     } else if (e_mouse.y != 0) {
         c = WPE_ESC;
@@ -67,7 +67,7 @@ e_m2_mouse (int xa, int ya, int xe, int ye, OPTK * fopt)
     extern struct mouse e_mouse;
     int c;
 
-    if (e_mouse.y == MAXSLNS) {
+    if (e_mouse.y == max_screen_lines()) {
         c = e_m3_mouse ();
     } else if (e_mouse.y == 0) {
         return (e_m1_mouse ());
@@ -91,7 +91,7 @@ e_m3_mouse ()
     extern int nblst;
     int i;
 
-    if (e_mouse.y != MAXSLNS - 1) {
+    if (e_mouse.y != max_screen_lines() - 1) {
         return (WPE_ESC);
     }
     while (e_mshit ())
@@ -183,7 +183,7 @@ WpeMngMouseInFileManager (we_window_t * window)
 
     if (e_mouse.y == 0) {
         return (AltBl);
-    } else if (e_mouse.y == MAXSLNS - 1) {
+    } else if (e_mouse.y == max_screen_lines() - 1) {
         return (e_m3_mouse ());
     } else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
                || e_mouse.y < window->a.y || e_mouse.y > window->e.y) {
@@ -667,13 +667,13 @@ e_eck_mouse (we_window_t * window, int sw)
         y = g[3] / 8;
         if (y < 1) {
             y = 1;
-        } else if (y > MAXSLNS - 2) {
-            y = MAXSLNS - 2;
+        } else if (y > max_screen_lines() - 2) {
+            y = max_screen_lines() - 2;
         }
         if (x < 0) {
             x = 0;
-        } else if (x > MAXSCOL - 1) {
-            x = MAXSCOL - 1;
+        } else if (x > max_screen_cols() - 1) {
+            x = max_screen_cols() - 1;
         }
         if (xold != x || yold != y) {
             xold = x;
@@ -682,11 +682,11 @@ e_eck_mouse (we_window_t * window, int sw)
                 x -= xa;
                 if (x < 0) {
                     x = 0;
-                } else if (x + num_cols_on_screen(window) > MAXSCOL - 1) {
-                    x = MAXSCOL - window->e.x + window->a.x - 1;
+                } else if (x + num_cols_on_screen(window) > max_screen_cols() - 1) {
+                    x = max_screen_cols() - window->e.x + window->a.x - 1;
                 }
-                if (window->e.y + y - window->a.y > MAXSLNS - 2) {
-                    y = MAXSLNS - window->e.y + window->a.y - 2;
+                if (window->e.y + y - window->a.y > max_screen_lines() - 2) {
+                    y = max_screen_lines() - window->e.y + window->a.y - 2;
                 }
                 window->e.x = num_cols_on_screen(window) + x;
                 window->a.x = x;
@@ -768,7 +768,7 @@ e_edt_mouse (int c, we_window_t * window)
 
     if (e_mouse.y == 0) {
         return (e_m1_mouse ());
-    } else if (e_mouse.y == MAXSLNS - 1) {
+    } else if (e_mouse.y == max_screen_lines() - 1) {
         return (e_m3_mouse ());
     } else if (e_mouse.x >= window->a.x && e_mouse.x <= window->e.x &&
                e_mouse.y >= window->a.y && e_mouse.y <= window->e.y) {
@@ -1055,7 +1055,7 @@ int ya;
 int md;
 {
     extern struct mouse e_mouse;
-    if (e_mouse.y == 0 || e_mouse.y == MAXSLNS - 1) {
+    if (e_mouse.y == 0 || e_mouse.y == max_screen_lines() - 1) {
         return (WPE_ESC);
     }
     if (e_mouse.y == 1 && e_mouse.x == 3) {
@@ -1227,7 +1227,7 @@ we_window_t *window;
     int i, c = 0;
     if (e_mouse.y == 0) {
         return (AltBl);
-    } else if (e_mouse.y == MAXSLNS - 1) {
+    } else if (e_mouse.y == max_screen_lines() - 1) {
         return (e_m3_mouse ());
     } else if (e_mouse.x < window->a.x || e_mouse.x > window->e.x
                || e_mouse.y < window->a.y || e_mouse.y > window->e.y) {
@@ -1307,13 +1307,13 @@ W_OPTSTR *o;
         y = g[3] / 8;
         if (y < 1) {
             y = 1;
-        } else if (y > MAXSLNS - 2) {
-            y = MAXSLNS - 2;
+        } else if (y > max_screen_lines() - 2) {
+            y = max_screen_lines() - 2;
         }
         if (x < 0) {
             x = 0;
-        } else if (x > MAXSCOL - 1) {
-            x = MAXSCOL - 1;
+        } else if (x > max_screen_cols() - 1) {
+            x = max_screen_cols() - 1;
         }
         if (xold != x || yold != y) {
             xold = x;
@@ -1321,11 +1321,11 @@ W_OPTSTR *o;
             x -= xa;
             if (x < 0) {
                 x = 0;
-            } else if (x + o->xe - o->xa > MAXSCOL - 1) {
-                x = MAXSCOL - o->xe + o->xa - 1;
+            } else if (x + o->xe - o->xa > max_screen_cols() - 1) {
+                x = max_screen_cols() - o->xe + o->xa - 1;
             }
-            if (o->ye + y - o->ya > MAXSLNS - 2) {
-                y = MAXSLNS - o->ye + o->ya - 2;
+            if (o->ye + y - o->ya > max_screen_lines() - 2) {
+                y = max_screen_lines() - o->ye + o->ya - 2;
             }
             o->xe = o->xe - o->xa + x;
             o->xa = x;

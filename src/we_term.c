@@ -60,9 +60,6 @@ int e_t_deb_out (we_window_t * window);
 int e_s_sys_end ();
 int e_s_sys_ini ();
 
-extern int MAXSLNS;
-extern int MAXSCOL;
-
 /** global field also used in we_xterm.c */
 char *global_screen = NULL;
 /** global field also used in we_xterm.c */
@@ -83,10 +80,6 @@ int cur_x = -1;
 int cur_y = -1;
 /** global field also used in we_xterm.c */
 char *ctree[5];
-/** global field for screen maximum number of lines */
-int MAXSLNS = 24;
-/** global field for screen maximum number of columns */
-int MAXSCOL = 80;
 
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 static char *key_f[KEYFN], *key_key;
@@ -153,6 +146,61 @@ char *tgoto ();
 #define term_move(x,y) move(y, x)
 #define term_refresh() refresh()
 #endif
+
+static int data_max_screen_lines = 80;
+static int data_max_screen_cols = 24;
+
+
+/**
+ * Returns the maximum number of screen lines available.
+ *
+ * \returns maximum number of screen lines available.
+ *
+ */
+int max_screen_lines()
+{
+    return data_max_screen_lines;
+}
+/**
+ * Sets the new maximum number of screen lines available. if the provided
+ * value is zero or less, nothing is set and the old value remains.
+ *
+ * \param max_lines maximum number of lines.
+ * \returns the maximum number of lines.
+ *
+ */
+int set_max_screen_lines(const int max_lines)
+{
+    if (max_lines > 0) {
+        data_max_screen_lines = max_lines;
+    }
+    return data_max_screen_lines;
+}
+/**
+ * Returns the maximum number of screen columns.
+ *
+ * \returns the maximum number of screen columns.
+ *
+ */
+int max_screen_cols()
+{
+    return data_max_screen_cols;
+}
+/**
+ * Sets the new maximum number of columns available. if the provided
+ * value is zero or less, nothing is set and the old value remains.
+ *
+ * \param max_cols maximum number of columns.
+ * \returns the maximum number of columns.
+ *
+ */
+int set_max_screen_cols(const int max_cols)
+{
+    if (max_cols > 0) {
+        data_max_screen_cols = max_cols;
+    }
+    return data_max_screen_cols;
+}
 
 int
 WpeDllInit (int *argc, char **argv)
@@ -268,8 +316,8 @@ e_ini_size ()
     if (global_alt_screen) {
         free (global_alt_screen);
     }
-    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
-    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
+    global_screen = malloc (2 * max_screen_cols() * max_screen_lines());
+    global_alt_screen = malloc (2 * max_screen_cols() * max_screen_lines());
 #ifdef NEWSTYLE
     if (extbyte) {
         free (extbyte);
@@ -277,8 +325,8 @@ e_ini_size ()
     if (altextbyte) {
         free (altextbyte);
     }
-    extbyte = malloc (MAXSCOL * MAXSLNS);
-    altextbyte = malloc (MAXSCOL * MAXSLNS);
+    extbyte = malloc (max_screen_cols() * max_screen_lines());
+    altextbyte = malloc (max_screen_cols() * max_screen_lines());
     if (!global_screen || !global_alt_screen || !extbyte || !altextbyte) {
         return (-1);
     }
@@ -325,7 +373,7 @@ e_abs_refr ()
 {
     int i;
 
-    for (i = 0; i < 2 * MAXSCOL * MAXSLNS; i++) {
+    for (i = 0; i < 2 * max_screen_cols() * max_screen_lines(); i++) {
         global_alt_screen[i] = 0;
     }
     return (0);
@@ -642,10 +690,10 @@ e_t_initscr ()
     }
 #endif
     e_begscr ();
-    global_screen = malloc (2 * MAXSCOL * MAXSLNS);
-    global_alt_screen = malloc (2 * MAXSCOL * MAXSLNS);
+    global_screen = malloc (2 * max_screen_cols() * max_screen_lines());
+    global_alt_screen = malloc (2 * max_screen_cols() * max_screen_lines());
 #if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
-    extbyte = malloc (MAXSCOL * MAXSLNS);
+    extbyte = malloc (max_screen_cols() * max_screen_lines());
 #endif
     e_abs_refr ();
     if (init_cursor ()) {
@@ -686,10 +734,10 @@ e_begscr ()
 //#ifndef TERMCAP
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
     if ((lns = tigetnum ("lines")) > 0) {
-        MAXSLNS = lns;
+        set_max_screen_lines(lns);
     }
     if ((cols = tigetnum ("cols")) > 0) {
-        MAXSCOL = cols;
+        set_max_screen_cols(cols);
     }
 #else
     if ((tc_screen = getenv ("TERM")) == NULL) {
@@ -699,10 +747,10 @@ e_begscr ()
         e_exitm ("Unknown terminal type!", 1);
     }
     if ((lns = tgetnum ("li")) > 0) {
-        MAXSLNS = lns;
+        set_max_screen_lines(lns);
     }
     if ((cols = tgetnum ("co")) > 0) {
-        MAXSCOL = cols;
+        set_max_screen_cols(cols);
     }
 #endif
     return (0);
@@ -869,19 +917,19 @@ e_t_refresh ()
 {
     int x = cur_x, y = cur_y, i, j, c;
     fk_t_cursor (0);
-    for (i = 0; i < MAXSLNS; i++)
-        for (j = 0; j < MAXSCOL; j++) {
-            if (i == MAXSLNS - 1 && j == MAXSCOL - 1) {
+    for (i = 0; i < max_screen_lines(); i++)
+        for (j = 0; j < max_screen_cols(); j++) {
+            if (i == max_screen_lines() - 1 && j == max_screen_cols() - 1) {
                 break;
             }
-            if (*(global_screen + 2 * MAXSCOL * i + 2 * j) !=
-                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j)
-                    || *(global_screen + 2 * MAXSCOL * i + 2 * j + 1) !=
-                    *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1)) {
+            if (*(global_screen + 2 * max_screen_cols() * i + 2 * j) !=
+                    *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j)
+                    || *(global_screen + 2 * max_screen_cols() * i + 2 * j + 1) !=
+                    *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j + 1)) {
                 if (cur_x != j || cur_y != i) {
                     term_move (j, i);
                 }
-                if (cur_x < MAXSCOL) {
+                if (cur_x < max_screen_cols()) {
                     cur_x = j + 1;
                     cur_y = i;
                 } else {
@@ -907,10 +955,10 @@ e_t_refresh ()
                     fputc (c, stdout);
                 }
 #endif
-                *(global_alt_screen + 2 * MAXSCOL * i + 2 * j) =
-                    *(global_screen + 2 * MAXSCOL * i + 2 * j);
-                *(global_alt_screen + 2 * MAXSCOL * i + 2 * j + 1) =
-                    *(global_screen + 2 * MAXSCOL * i + 2 * j + 1);
+                *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j) =
+                    *(global_screen + 2 * max_screen_cols() * i + 2 * j);
+                *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j + 1) =
+                    *(global_screen + 2 * max_screen_cols() * i + 2 * j + 1);
             }
         }
     fk_t_cursor (1);
@@ -1525,8 +1573,8 @@ e_t_d_switch_out (int sw)
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
         e_putp (att_no);
 #endif
-        for (i = 0; i < MAXSLNS; i++)
-            for (j = 0; j < MAXSCOL; j++) {
+        for (i = 0; i < max_screen_lines(); i++)
+            for (j = 0; j < max_screen_cols(); j++) {
                 e_d_putchar (' ');
             }
         term_move (0, 0);

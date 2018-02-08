@@ -28,8 +28,6 @@
 extern char *global_screen;
 extern char *global_alt_screen;
 
-extern int MAXSLNS, MAXSCOL;
-
 #if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
 extern char *extbyte;
 extern char *altextbyte;
@@ -43,5 +41,9 @@ extern char *ctree[5];
 
 int e_abs_refr(void);
 int e_ini_size(void);
+int max_screen_lines();
+int set_max_screen_lines(const int max_lines);
+int max_screen_cols();
+int set_max_screen_cols(const int max_cols);
 
 #endif

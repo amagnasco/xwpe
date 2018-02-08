@@ -22,8 +22,8 @@ e_cls (int frb, int chr)
 {
     int i, j;
 
-    for (j = 0; j < MAXSLNS; j++)
-        for (i = 0; i < MAXSCOL; i++) {
+    for (j = 0; j < max_screen_lines(); j++)
+        for (i = 0; i < max_screen_cols(); i++) {
             e_pr_char (i, j, chr, frb);
         }
 }
@@ -35,7 +35,7 @@ e_puts (char *s, int xa, int ya, int frb)
 {
     int i;
 
-    if (xa >= MAXSCOL || ya > MAXSLNS) {
+    if (xa >= max_screen_cols() || ya > max_screen_lines()) {
         return (-1);
     }
     for (i = 0; s[i] != '\0' && i < 2000; i++) {
@@ -79,7 +79,7 @@ e_pr_str (int x, int y, char *str, int col, int b2, int n2, int col2,
         i++;
         e_pr_char (x + i, y, SCR, col3);
         for (; i >= 0; i--) {
-            e_pr_char (x + i + MAXSCOL, y, SCD, col3);
+            e_pr_char (x + i + max_screen_cols(), y, SCD, col3);
         }
     }
 #endif

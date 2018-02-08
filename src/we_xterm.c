@@ -297,7 +297,7 @@ fk_show_cursor ()
     if (!cur_on) {
         return (0);
     }
-    x = 2 * old_cursor_x + 2 * MAXSCOL * old_cursor_y;
+    x = 2 * old_cursor_x + 2 * max_screen_cols() * old_cursor_y;
     if (x > 0) {
         XSetForeground (WpeXInfo.display, WpeXInfo.gc,
                         WpeXInfo.colors[global_screen[x + 1] % 16]);
@@ -314,7 +314,7 @@ fk_show_cursor ()
 #endif
 #endif
     }
-    x = 2 * cur_x + 2 * MAXSCOL * cur_y;
+    x = 2 * cur_x + 2 * max_screen_cols() * cur_y;
 
     XSetForeground (WpeXInfo.display, WpeXInfo.gc,
                     WpeXInfo.colors[global_screen[x + 1] / 16]);
@@ -378,9 +378,9 @@ e_x_refresh ()
 #endif
     int i, j, x, y, cur_tmp = cur_on;
     fk_u_cursor (0);
-    for (i = 0; i < MAXSLNS; i++)
-        for (j = 0; j < MAXSCOL; j++) {
-            y = j + MAXSCOL * i;
+    for (i = 0; i < max_screen_lines(); i++)
+        for (j = 0; j < max_screen_cols(); j++) {
+            y = j + max_screen_cols() * i;
             x = 2 * y;
 #ifdef NEWSTYLE
             if (global_screen[x] != global_alt_screen[x] || global_screen[x + 1] != global_alt_screen[x + 1]
@@ -494,10 +494,12 @@ e_x_change (we_view_t * view)
             size_hints.height =
                 (report.xconfigure.height / WpeXInfo.font_height) *
                 WpeXInfo.font_height;
-            if (size_hints.width != MAXSCOL * WpeXInfo.font_width
-                    || size_hints.height != MAXSLNS * WpeXInfo.font_height) {
-                MAXSCOL = size_hints.width / WpeXInfo.font_width;
-                MAXSLNS = size_hints.height / WpeXInfo.font_height;
+            if (size_hints.width != max_screen_cols() * WpeXInfo.font_width
+                    || size_hints.height != max_screen_lines() * WpeXInfo.font_height) {
+                int cols = size_hints.width / WpeXInfo.font_width;
+                set_max_screen_cols(cols);
+                int lns = size_hints.height / WpeXInfo.font_height;
+                set_max_screen_lines(lns);
                 e_x_repaint_desk (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
@@ -586,10 +588,12 @@ e_x_getch ()
             size_hints.height =
                 (report.xconfigure.height / WpeXInfo.font_height) *
                 WpeXInfo.font_height;
-            if (size_hints.width != MAXSCOL * WpeXInfo.font_width
-                    || size_hints.height != MAXSLNS * WpeXInfo.font_height) {
-                MAXSCOL = size_hints.width / WpeXInfo.font_width;
-                MAXSLNS = size_hints.height / WpeXInfo.font_height;
+            if (size_hints.width != max_screen_cols() * WpeXInfo.font_width
+                    || size_hints.height != max_screen_lines() * WpeXInfo.font_height) {
+                int cols = size_hints.width / WpeXInfo.font_width;
+                set_max_screen_cols(cols);
+                int lns = size_hints.height / WpeXInfo.font_height;
+                set_max_screen_lines(lns);
                 e_x_repaint_desk (global_editor_control->window[global_editor_control->mxedt]);
             }
             break;
@@ -983,11 +987,11 @@ e_x_repaint_desk (we_window_t * window)
         free (control->window[i]->view);
     }
     for (i = 0; i <= control->mxedt; i++) {
-        if (control->window[i]->e.x >= MAXSCOL) {
-            control->window[i]->e.x = MAXSCOL - 1;
+        if (control->window[i]->e.x >= max_screen_cols()) {
+            control->window[i]->e.x = max_screen_cols() - 1;
         }
-        if (control->window[i]->e.y >= MAXSLNS - 1) {
-            control->window[i]->e.y = MAXSLNS - 2;
+        if (control->window[i]->e.y >= max_screen_lines() - 1) {
+            control->window[i]->e.y = max_screen_lines() - 2;
         }
         if (control->window[i]->e.x - control->window[i]->a.x < 26) {
             control->window[i]->a.x = control->window[i]->e.x - 26;

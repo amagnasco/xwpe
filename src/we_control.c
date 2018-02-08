@@ -474,7 +474,7 @@ e_ini_desk (we_control_t * control)
         oblst = oblst_o;
     }
     e_cls (control->colorset->df.fg_bg_color, control->colorset->dc);
-    e_blk (MAXSCOL, 0, 0, control->colorset->mt.fg_bg_color);
+    e_blk (max_screen_cols(), 0, 0, control->colorset->mt.fg_bg_color);
 
     /* put out the main menu */
     const int MAX = nr_of_menu_options();
@@ -482,7 +482,7 @@ e_ini_desk (we_control_t * control)
         e_pr_str_wsd (opt[i].x, 0, opt[i].t, control->colorset->mt.fg_bg_color, 0, 1, control->colorset->ms.fg_bg_color,
                       (i == 0 ? 0 : opt[i].x - e_mn_men),
                       (i ==
-                       MAX - 1) ? MAXSCOL - 1 : opt[i + 1].x - e_mn_men - 1);
+                       MAX - 1) ? max_screen_cols() - 1 : opt[i + 1].x - e_mn_men - 1);
     }
 
     e_pr_uul (control->colorset);

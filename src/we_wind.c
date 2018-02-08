@@ -39,38 +39,38 @@ extern int col_num_on_screen_right(we_window_t *window);
 
 void e_pr_char(int x, int y, int c, int color)
 {
-    *(global_screen + 2*MAXSCOL*y + 2 * x) = c;
-    *(global_screen + 2*MAXSCOL*y + 2 * x + 1) = color;
+    *(global_screen + 2*max_screen_cols()*y + 2 * x) = c;
+    *(global_screen + 2*max_screen_cols()*y + 2 * x + 1) = color;
 #ifdef NEWSTYLE
-    *(extbyte + MAXSCOL * y + x) = 0;
+    *(extbyte + max_screen_cols() * y + x) = 0;
 #endif
 }
 
 #if !defined NEWSTYLE
 static void e_pt_col(int x, int y, int c)
 {
-    *(global_screen + 2*MAXSCOL*y + 2 * x + 1) = c;
+    *(global_screen + 2*max_screen_cols()*y + 2 * x + 1) = c;
 }
 #endif
 
 char e_gt_char(int x, int y)
 {
-    return *(global_screen + 2 * MAXSCOL * y + 2 * x);
+    return *(global_screen + 2 * max_screen_cols() * y + 2 * x);
 }
 
 char e_gt_col(int x, int y)
 {
-    return *(global_screen + 2 * MAXSCOL * y + 2 * x + 1);
+    return *(global_screen + 2 * max_screen_cols() * y + 2 * x + 1);
 }
 
 char e_gt_byte(int x, int y)
 {
-    return *(global_screen + 2 * MAXSCOL * y + x);
+    return *(global_screen + 2 * max_screen_cols() * y + x);
 }
 
 void e_pt_byte(int x, int y, int c)
 {
-    *(global_screen + 2*MAXSCOL*y + x) = c;
+    *(global_screen + 2*max_screen_cols()*y + x) = c;
 }
 
 
@@ -81,7 +81,7 @@ void e_pt_byte(int x, int y, int c)
 char **
 StringToStringArray (char *str, int *maxLen, int minWidth, int *nr_lines_return)
 {
-    int i, j, k, nr_lines = 0, mxlen = 0, max = 0.8 * MAXSCOL;
+    int i, j, k, nr_lines = 0, mxlen = 0, max = 0.8 * max_screen_cols();
     char **s = malloc (sizeof (char *));
 
     for (k = 0, i = 0; str[i]; i++) {
@@ -214,9 +214,9 @@ e_message (int sw, char *str, we_window_t * window)
 
     s = StringToStringArray (str, &mxlen, 22, &nr_lines);
 
-    o->ye = MAXSLNS - 6;
+    o->ye = max_screen_lines() - 6;
     o->ya = o->ye - nr_lines - 5;
-    o->xa = (MAXSCOL - mxlen - 6) / 2;
+    o->xa = (max_screen_cols() - mxlen - 6) / 2;
     o->xe = o->xa + mxlen + 6;
 
     o->bgsw = 0;
@@ -293,8 +293,8 @@ e_open_view (int xa, int ya, int xe, int ye, int col, int sw)
         view->e.x = xe;
         view->e.y = ye;
     } else {
-        view->e.x = xe < MAXSCOL - 2 ? xe + 2 : xe < MAXSCOL - 1 ? xe + 1 : xe;
-        view->e.y = ye < MAXSLNS - 2 ? ye + 1 : ye;
+        view->e.x = xe < max_screen_cols() - 2 ? xe + 2 : xe < max_screen_cols() - 1 ? xe + 1 : xe;
+        view->e.y = ye < max_screen_lines() - 2 ? ye + 1 : ye;
     }
 #else
     view->e.x = xe;
@@ -336,15 +336,15 @@ e_open_view (int xa, int ya, int xe, int ye, int col, int sw)
 #ifndef NEWSTYLE
     if (WpeIsXwin ()) {
         if (sw != 0) {
-            if (xe < MAXSCOL - 1)
-                for (i = ya + 1; i <= ye + 1 && i < MAXSLNS - 1; i++) {
+            if (xe < max_screen_cols() - 1)
+                for (i = ya + 1; i <= ye + 1 && i < max_screen_lines() - 1; i++) {
                     e_pt_col (xe + 1, i, SHDCOL);
                 }
-            if (xe < MAXSCOL - 2)
-                for (i = ya + 1; i <= ye + 1 && i < MAXSLNS - 1; i++) {
+            if (xe < max_screen_cols() - 2)
+                for (i = ya + 1; i <= ye + 1 && i < max_screen_lines() - 1; i++) {
                     e_pt_col (xe + 2, i, SHDCOL);
                 }
-            if (ye < MAXSLNS - 2)
+            if (ye < max_screen_lines() - 2)
                 for (i = xa + 2; i <= xe; i++) {
                     e_pt_col (i, ye + 1, SHDCOL);
                 }
@@ -592,7 +592,7 @@ e_size_move (we_window_t * window)
             }
             break;
         case CRI:
-            if (xe < MAXSCOL - 1) {
+            if (xe < max_screen_cols() - 1) {
                 xa++;
                 xe++;
             }
@@ -604,7 +604,7 @@ e_size_move (we_window_t * window)
             }
             break;
         case CDO:
-            if (ye < MAXSLNS - 2) {
+            if (ye < max_screen_lines() - 2) {
                 ya++;
                 ye++;
             }
@@ -617,7 +617,7 @@ e_size_move (we_window_t * window)
             break;
         case SCRI:
         case CCRI:
-            if (xe < MAXSCOL - 1) {
+            if (xe < max_screen_cols() - 1) {
                 xe++;
             }
             break;
@@ -629,7 +629,7 @@ e_size_move (we_window_t * window)
             break;
         case SCDO:
         case BDO:
-            if (ye < MAXSLNS - 2) {
+            if (ye < max_screen_lines() - 2) {
                 ye++;
             }
             break;
@@ -707,8 +707,8 @@ e_change_pic (int xa, int ya, int xe, int ye, we_view_t * view, int sw, int frb)
             new_view->e.y = ye;
         } else {
             new_view->e.x =
-                xe < MAXSCOL - 2 ? xe + 2 : xe < MAXSCOL - 1 ? xe + 1 : xe;
-            new_view->e.y = ye < MAXSLNS - 2 ? ye + 1 : ye;
+                xe < max_screen_cols() - 2 ? xe + 2 : xe < max_screen_cols() - 1 ? xe + 1 : xe;
+            new_view->e.y = ye < max_screen_lines() - 2 ? ye + 1 : ye;
         }
 #else
         new_view->e.x = xe;
@@ -810,15 +810,15 @@ e_change_pic (int xa, int ya, int xe, int ye, we_view_t * view, int sw, int frb)
 #endif
 #ifndef NEWSTYLE
         if (WpeIsXwin ()) {
-            if (xe < MAXSCOL - 1)
-                for (i = ya + 1; i <= ye + 1 && i < MAXSLNS - 1; i++) {
+            if (xe < max_screen_cols() - 1)
+                for (i = ya + 1; i <= ye + 1 && i < max_screen_lines() - 1; i++) {
                     e_pt_col (xe + 1, i, SHDCOL);
                 }
-            if (xe < MAXSCOL - 2)
-                for (i = ya + 1; i <= ye + 1 && i < MAXSLNS - 1; i++) {
+            if (xe < max_screen_cols() - 2)
+                for (i = ya + 1; i <= ye + 1 && i < max_screen_lines() - 1; i++) {
                     e_pt_col (xe + 2, i, SHDCOL);
                 }
-            if (ye < MAXSLNS - 2)
+            if (ye < max_screen_lines() - 2)
                 for (i = xa + 2; i <= xe; i++) {
                     e_pt_col (i, ye + 1, SHDCOL);
                 }
@@ -1042,7 +1042,7 @@ e_ed_zoom (we_window_t * window)
             window->sa = e_set_pnt (window->a.x, window->a.y);
             window->se = e_set_pnt (window->e.x, window->e.y);
             window->a = e_set_pnt (0, 1);
-            window->e = e_set_pnt (MAXSCOL - 1, MAXSLNS - 2);
+            window->e = e_set_pnt (max_screen_cols() - 1, max_screen_lines() - 2);
             window->zoom = 1;
         } else {
             window->a = e_set_pnt (window->sa.x, window->sa.y);
@@ -1074,7 +1074,7 @@ e_ed_cascade (we_window_t * window)
         free (control->window[i]->view);
         control->window[i]->a = e_set_pnt (i - 1, i);
         control->window[i]->e =
-            e_set_pnt (MAXSCOL - 1 - control->mxedt + i, MAXSLNS - 2 - control->mxedt + i);
+            e_set_pnt (max_screen_cols() - 1 - control->mxedt + i, max_screen_lines() - 2 - control->mxedt + i);
     }
     ini_repaint (control);
     for (i = 1; i < control->mxedt; i++) {
@@ -1098,7 +1098,7 @@ e_ed_tile (we_window_t * window)
     int i, j, ni, nj;
     int editwin = 0;		/* number of editor windows */
     int editorwin[max_edit_windows() + 1];
-    int maxlines = MAXSLNS;
+    int maxlines = max_screen_lines();
 
     for (i = control->mxedt; i >= 1; i--) {
         if ((!(control->edopt & ED_OLD_TILE_METHOD))
@@ -1116,7 +1116,7 @@ e_ed_tile (we_window_t * window)
         return (0);
     }
     if ((!(control->edopt & ED_OLD_TILE_METHOD)) && (WpeIsProg ())) {
-        maxlines -= MAXSLNS / 3 - 1;
+        maxlines -= max_screen_lines() / 3 - 1;
     }
     for (i = control->mxedt; i >= 1; i--) {
         free (control->window[i]->view->p);
@@ -1138,19 +1138,19 @@ e_ed_tile (we_window_t * window)
         for (i = 0; i < ni; i++) {
             if (j == 0) {
                 if (i == 0) {
-                    atmp[j * ni + i].x = i * MAXSCOL / ni;
-                    etmp[j * ni + i].x = (i + 1) * MAXSCOL / ni - 1;
+                    atmp[j * ni + i].x = i * max_screen_cols() / ni;
+                    etmp[j * ni + i].x = (i + 1) * max_screen_cols() / ni - 1;
                     if (etmp[j * ni + i].x - atmp[j * ni + i].x < 26) {
                         etmp[j * ni + i].x = atmp[j * ni + i].x + 26;
                     }
                 } else {
-                    etmp[j * ni + i].x = (i + 1) * MAXSCOL / ni - 1;
+                    etmp[j * ni + i].x = (i + 1) * max_screen_cols() / ni - 1;
                     atmp[j * ni + i].x = etmp[j * ni + i - 1].x + 1;
                     if (etmp[j * ni + i].x - atmp[j * ni + i].x < 26) {
                         etmp[j * ni + i].x = atmp[j * ni + i].x + 26;
                     }
-                    if (etmp[j * ni + i].x >= MAXSCOL) {
-                        etmp[j * ni + i].x = MAXSCOL - 1;
+                    if (etmp[j * ni + i].x >= max_screen_cols()) {
+                        etmp[j * ni + i].x = max_screen_cols() - 1;
                         atmp[j * ni + i].x = etmp[j * ni + i].x - 26;
                     }
                 }
@@ -1159,7 +1159,7 @@ e_ed_tile (we_window_t * window)
                 etmp[j * ni + i].x = etmp[(j - 1) * ni + i].x;
                 /* make the last window full width */
                 if ((j * ni + i) == (editwin - 1)) {
-                    etmp[j * ni + i].x = MAXSCOL - 1;
+                    etmp[j * ni + i].x = max_screen_cols() - 1;
                 }
             }
         }
@@ -1509,8 +1509,8 @@ e_std_window (int xa, int ya, int xe, int ye, char *name, int sw, int frb,
 #else
     }
     /*
-       if(xe < MAXSCOL-1) for(i = ya+1; i <= ye; i++) e_pt_col(xe+1, i, SHDCOL);
-       if(ye < MAXSLNS-2) for(i = xa+1; i <= xe+1 && i < MAXSCOL; i++)
+       if(xe < max_screen_cols()-1) for(i = ya+1; i <= ye; i++) e_pt_col(xe+1, i, SHDCOL);
+       if(ye < max_screen_lines()-2) for(i = xa+1; i <= xe+1 && i < max_screen_cols(); i++)
     						e_pt_col(i, ye+1, SHDCOL);
     */
 #endif
@@ -1567,12 +1567,12 @@ e_sv_window (int xa, int ya, int *n, struct dirfile *df, we_window_t * window)
     if ((window = (we_window_t *) malloc (sizeof (we_window_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, control->colorset);
     }
-    if (xe > MAXSCOL - 3) {
-        xe = MAXSCOL - 3;
+    if (xe > max_screen_cols() - 3) {
+        xe = max_screen_cols() - 3;
         xa = xe - 21;
     }
-    if (ye > MAXSLNS - 3) {
-        ye = MAXSLNS - 3;
+    if (ye > max_screen_lines() - 3) {
+        ye = max_screen_lines() - 3;
         ya = ye - 6;
     }
     window->colorset = control->colorset;
@@ -1691,15 +1691,15 @@ e_mess_win (char *header, char *str, we_view_t ** view, we_window_t * window)
 
     s = StringToStringArray (str, &mxlen, strlen (header) + 8, &anz);
 
-    ya = (MAXSLNS - anz - 6) / 2;
+    ya = (max_screen_lines() - anz - 6) / 2;
     ye = ya + anz + 5;
-    xa = (MAXSCOL - mxlen - 6) / 2;
+    xa = (max_screen_cols() - mxlen - 6) / 2;
     xe = xa + mxlen + 6;
     if (ya < 2) {
         ya = 2;
     }
-    if (ye > MAXSLNS - 3) {
-        ye = MAXSLNS - 3;
+    if (ye > max_screen_lines() - 3) {
+        ye = max_screen_lines() - 3;
     }
     num = anz;
     if (num > ye - ya - 5) {
@@ -1879,7 +1879,7 @@ e_get_pic_xrect (int xa, int ya, int xe, int ye, we_view_t * view)
     for (j = ya; j <= ye; ++j)
         for (i = xa; i <= xe; ++i)
             *(view->p + ebbg + (j - ya) * (xe - xa + 1) + (i - xa)) =
-                extbyte[j * MAXSCOL + i];
+                extbyte[j * max_screen_cols() + i];
     return (i);
 }
 
@@ -1891,7 +1891,7 @@ e_put_pic_xrect (we_view_t * view)
 
     for (j = view->a.y; j <= view->e.y; ++j)
         for (i = view->a.x; i <= view->e.x; ++i)
-            extbyte[j * MAXSCOL + i] =
+            extbyte[j * max_screen_cols() + i] =
                 *(view->p + ebbg + (j - view->a.y) * (view->e.x - view->a.x + 1) +
                   (i - view->a.x));
     return (i);
@@ -1903,10 +1903,10 @@ e_make_xrect_abs (int xa, int ya, int xe, int ye, int sw)
     int j;
 
     for (j = xa; j <= xe; j++) {
-        *(extbyte + ya * MAXSCOL + j) = *(extbyte + ye * MAXSCOL + j) = 0;
+        *(extbyte + ya * max_screen_cols() + j) = *(extbyte + ye * max_screen_cols() + j) = 0;
     }
     for (j = ya; j <= ye; j++) {
-        *(extbyte + j * MAXSCOL + xa) = *(extbyte + j * MAXSCOL + xe) = 0;
+        *(extbyte + j * max_screen_cols() + xa) = *(extbyte + j * max_screen_cols() + xe) = 0;
     }
     return (e_make_xrect (xa, ya, xe, ye, sw));
 }
@@ -1929,22 +1929,22 @@ e_make_xrect (int xa, int ya, int xe, int ye, int sw)
     if (sw & 2) {
         sw = (sw & 1) ? 16 : 0;
         for (j = xa + 1; j < xe; j++) {
-            *(extbyte + ya * MAXSCOL + j) |= (sw | 4);
-            *(extbyte + ye * MAXSCOL + j) |= (sw | 1);
+            *(extbyte + ya * max_screen_cols() + j) |= (sw | 4);
+            *(extbyte + ye * max_screen_cols() + j) |= (sw | 1);
         }
         for (j = ya + 1; j < ye; j++) {
-            *(extbyte + j * MAXSCOL + xa) |= (sw | 2);
-            *(extbyte + j * MAXSCOL + xe) |= (sw | 8);
+            *(extbyte + j * max_screen_cols() + xa) |= (sw | 2);
+            *(extbyte + j * max_screen_cols() + xe) |= (sw | 8);
         }
     } else {
         sw = (sw & 1) ? 16 : 0;
         for (j = xa; j <= xe; j++) {
-            *(extbyte + ya * MAXSCOL + j) |= (sw | 1);
-            *(extbyte + ye * MAXSCOL + j) |= (sw | 4);
+            *(extbyte + ya * max_screen_cols() + j) |= (sw | 1);
+            *(extbyte + ye * max_screen_cols() + j) |= (sw | 4);
         }
         for (j = ya; j <= ye; j++) {
-            *(extbyte + j * MAXSCOL + xa) |= (sw | 8);
-            *(extbyte + j * MAXSCOL + xe) |= (sw | 2);
+            *(extbyte + j * max_screen_cols() + xa) |= (sw | 8);
+            *(extbyte + j * max_screen_cols() + xe) |= (sw | 2);
         }
     }
     return (j);

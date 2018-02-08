@@ -175,21 +175,21 @@ e_edit (we_control_t * control, char *filename)
     if (WpeIsProg ()) {
         if ((e_we_sw & 8) || !strcmp (filename, "Messages") ||
                 !strcmp (filename, "Watches")) {
-            window->a = e_set_pnt (0, 2 * MAXSLNS / 3 + 1);
-            window->e = e_set_pnt (MAXSCOL - 1, MAXSLNS - 2);
+            window->a = e_set_pnt (0, 2 * max_screen_lines() / 3 + 1);
+            window->e = e_set_pnt (max_screen_cols() - 1, max_screen_lines() - 2);
         } else if (!strcmp (filename, "Stack")) {
-            window->a = e_set_pnt (2 * MAXSCOL / 3, 1);
-            window->e = e_set_pnt (MAXSCOL - 1, 2 * MAXSLNS / 3);
+            window->a = e_set_pnt (2 * max_screen_cols() / 3, 1);
+            window->e = e_set_pnt (max_screen_cols() - 1, 2 * max_screen_lines() / 3);
         } else {
             if (i < 1) {
                 window->a = e_set_pnt (0, 1);
                 window->e =
-                    e_set_pnt (st ? 2 * MAXSCOL / 3 - 1 : MAXSCOL - 1,
-                               2 * MAXSLNS / 3);
+                    e_set_pnt (st ? 2 * max_screen_cols() / 3 - 1 : max_screen_cols() - 1,
+                               2 * max_screen_lines() / 3);
             } else {
                 window->a = e_set_pnt (control->window[i]->a.x + 1, control->window[i]->a.y + 1);
                 window->e =
-                    e_set_pnt (st ? 2 * MAXSCOL / 3 - 1 : control->window[i]->e.x,
+                    e_set_pnt (st ? 2 * max_screen_cols() / 3 - 1 : control->window[i]->e.x,
                                control->window[i]->e.y);
             }
         }
@@ -198,7 +198,7 @@ e_edit (we_control_t * control, char *filename)
     {
         if (i < 1) {
             window->a = e_set_pnt (0, 1);
-            window->e = e_set_pnt (MAXSCOL - 1, MAXSLNS - 2);
+            window->e = e_set_pnt (max_screen_cols() - 1, max_screen_lines() - 2);
         } else {
             window->a = e_set_pnt (control->window[i]->a.x + 1, control->window[i]->a.y + 1);
             window->e = e_set_pnt (control->window[i]->e.x, control->window[i]->e.y);

@@ -548,14 +548,14 @@ WpeHandleMainmenu (int n, we_window_t * window)
                           window->colorset->ms.fg_bg_color,
                           (nold == 0 ? 0 : opt[nold].x - e_mn_men),
                           (nold ==
-                           nr_of_menu_options() - 1) ? MAXSCOL - 1 : opt[nold + 1].x -
+                           nr_of_menu_options() - 1) ? max_screen_cols() - 1 : opt[nold + 1].x -
                           e_mn_men - 1);
 
             /* paint selected the option */
             e_pr_str_wsd (opt[n].x, 0, opt[n].t, window->colorset->mz.fg_bg_color, 0, 1,
                           window->colorset->mz.fg_bg_color, (n == 0 ? 0 : opt[n].x - e_mn_men),
                           (n ==
-                           nr_of_menu_options() - 1) ? MAXSCOL - 1 : opt[n + 1].x - e_mn_men -
+                           nr_of_menu_options() - 1) ? max_screen_cols() - 1 : opt[n + 1].x - e_mn_men -
                           1);
 
             /* store the selected menu option for later use */
@@ -635,7 +635,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     e_pr_str_wsd (opt[nold].x, 0, opt[nold].t, window->colorset->mt.fg_bg_color, 0, 1,
                   window->colorset->ms.fg_bg_color, (nold == 0 ? 0 : opt[nold].x - e_mn_men),
                   (nold ==
-                   nr_of_menu_options() - 1) ? MAXSCOL - 1 : opt[nold + 1].x - e_mn_men - 1);
+                   nr_of_menu_options() - 1) ? max_screen_cols() - 1 : opt[nold + 1].x - e_mn_men - 1);
 
     /* free up the submenu structure */
     for (i = 0; i < nr_of_menu_options(); i++)

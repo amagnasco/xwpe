@@ -304,14 +304,14 @@ e_refresh_area (int x, int y, int width, int height)
     char *curloc;
     int i, j;
 
-    if (width + x > MAXSCOL) {
-        width = MAXSCOL - x;
+    if (width + x > max_screen_cols()) {
+        width = max_screen_cols() - x;
     }
-    if (height + y > MAXSLNS) {
-        height = MAXSLNS - y;
+    if (height + y > max_screen_lines()) {
+        height = max_screen_lines() - y;
     }
-    curloc = global_alt_screen + ((x + (y * MAXSCOL)) * 2);
-    for (j = 0; j < height; j++, curloc += MAXSCOL * 2) {
+    curloc = global_alt_screen + ((x + (y * max_screen_cols())) * 2);
+    for (j = 0; j < height; j++, curloc += max_screen_cols() * 2) {
         for (i = 0; i < width; i++) {
             curloc[i * 2] = 0;
             curloc[i * 2 + 1] = 0;

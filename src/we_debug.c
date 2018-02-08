@@ -49,7 +49,7 @@
 int e_d_delbreak (we_window_t * window);
 int e_d_error (char *s);
 
-#define MAXOUT  2 * MAXSCOL * MAXSLNS
+#define MAXOUT  2 * max_screen_cols() * max_screen_lines()
 
 char *e_debugger, *e_deb_swtch = NULL, *e_d_save_schirm;
 int e_d_swtch = 0, rfildes[2], ofildes, e_d_pid = 0;
@@ -604,7 +604,7 @@ e_d_quit_basic (we_window_t * window)
             e_g_sys_end ();
         } else {
             e_u_d_switch_out (1);
-            fk_u_locate (MAXSCOL, MAXSLNS);
+            fk_u_locate (max_screen_cols(), max_screen_lines());
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
             e_putp ("\r\n");
             e_putp (att_no);
@@ -2843,7 +2843,7 @@ e_d_goto_break (char *file, int line, we_window_t * window)
                 !strcmp (control->window[i]->dirct, ftmp.dirct)) {
             /*  for(j = 0; j <= control->mxedt; j++)
                if(!strcmp(control->window[j]->datnam, "Stack"))
-               {  if(control->window[i]->e.x > 2*MAXSCOL/3-1) control->window[i]->e.x = 2*MAXSCOL/3-1;
+               {  if(control->window[i]->e.x > 2*max_screen_cols()/3-1) control->window[i]->e.x = 2*max_screen_cols()/3-1;
                break;
                }  */
             e_switch_window (control->edt[i], control->window[control->mxedt]);
@@ -2868,7 +2868,7 @@ e_d_goto_break (char *file, int line, we_window_t * window)
     s = control->window[control->mxedt]->screen;
     s->da.y = buffer->cursor.y = line - 1;
     s->da.x = buffer->cursor.x = 0;
-    s->de.x = MAXSCOL;
+    s->de.x = max_screen_cols();
     e_write_screen (window, 1);
     e_cursor (window, 1);
     return (0);

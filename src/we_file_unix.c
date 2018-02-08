@@ -1082,7 +1082,7 @@ WpeHandleFileManager (we_control_t * control)
                 }
                 if (!WpeIsXwin ()) {
                     outp =
-                        e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, window->colorset->ws,
+                        e_open_view (0, 0, max_screen_cols() - 1, max_screen_lines() - 1, window->colorset->ws,
                                      1);
                     fk_u_locate (0, 0);
                     fk_u_cursor (1);
@@ -3010,7 +3010,7 @@ WpeShell (we_window_t * window)
     int g[4];
 
     if (!WpeIsXwin ()) {
-        outp = e_open_view (0, 0, MAXSCOL - 1, MAXSLNS - 1, window->colorset->ws, 1);
+        outp = e_open_view (0, 0, max_screen_cols() - 1, max_screen_lines() - 1, window->colorset->ws, 1);
         fk_u_locate (0, 0);
         fk_u_cursor (1);
 #if  MOUSE

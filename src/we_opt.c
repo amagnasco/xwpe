@@ -1587,7 +1587,7 @@ e_opt_move (W_OPTSTR * o)
             }
             break;
         case CRI:
-            if (xe < MAXSCOL - 1) {
+            if (xe < max_screen_cols() - 1) {
                 xa++;
                 xe++;
             }
@@ -1599,7 +1599,7 @@ e_opt_move (W_OPTSTR * o)
             }
             break;
         case CDO:
-            if (ye < MAXSLNS - 2) {
+            if (ye < max_screen_lines() - 2) {
                 ya++;
                 ye++;
             }
