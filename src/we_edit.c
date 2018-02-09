@@ -347,7 +347,7 @@ e_edit (we_control_t * control, char *filename)
                 window->ins = 8;
             }
         }
-#endif
+#endif // PROG
     } else {
         e_new_line (0, window->buffer);
         *(window->buffer->buflines[0].s) = WPE_WR;
@@ -378,8 +378,8 @@ e_edit (we_control_t * control, char *filename)
             /*  e_ins_nchar(window->buffer, window->s, "No Watches", 0, 0, 10);*/
         }
     }
-#endif
-#endif
+#endif // DEBUGGER
+#endif // PROG
     if (window->c_sw) {
         window->c_sw = e_sc_txt (window->c_sw, window->buffer);
     }

@@ -970,7 +970,7 @@ e_x_repaint_desk (we_window_t * window)
     }
     old_cursor_x = cur_x;
     old_cursor_y = cur_y;
-    e_ini_size ();
+    e_alloc_global_screen ();
     if (control->mxedt < 1) {
         e_cls (window->colorset->df.fg_bg_color, window->colorset->dc);
         e_ini_desk (window->edit_control);

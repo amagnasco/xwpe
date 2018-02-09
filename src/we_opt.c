@@ -177,7 +177,7 @@ e_repaint_desk (we_window_t * window)
         }
         old_cursor_x = cur_x;
         old_cursor_y = cur_y;
-        e_ini_size();
+        e_alloc_global_screen();
     }
 #endif
     if (control->mxedt < 1) {

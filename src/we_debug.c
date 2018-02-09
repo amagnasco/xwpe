@@ -1233,7 +1233,7 @@ e_brk_schirm (we_window_t * window)
 }
 
 /*******************************************/
-/***  reinitialize breakpoints from prj  ***/
+/**  reinitialize breakpoints from prj  ***/
 int
 e_d_reinit_brks (we_window_t * window, char *prj)
 {

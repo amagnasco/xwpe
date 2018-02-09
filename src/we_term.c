@@ -308,7 +308,7 @@ init_key (char *key)
 
 
 int
-e_ini_size ()
+e_alloc_global_screen ()
 {
     if (global_screen) {
         free (global_screen);

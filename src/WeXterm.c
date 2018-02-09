@@ -481,7 +481,7 @@ WpeXInit (int *argc, char **argv)
        what it does */
     old_cursor_x = cur_x;
     old_cursor_y = cur_y;
-    if (e_ini_size()) {
+    if (e_alloc_global_screen()) {
         *argc = -1;
         return;
     }

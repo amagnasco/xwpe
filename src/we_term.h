@@ -40,7 +40,7 @@ extern int cur_y;
 extern char *ctree[5];
 
 int e_abs_refr(void);
-int e_ini_size(void);
+int e_alloc_global_screen(void);
 int max_screen_lines();
 int set_max_screen_lines(const int max_lines);
 int max_screen_cols();
