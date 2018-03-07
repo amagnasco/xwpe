@@ -10,6 +10,7 @@
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "we_unix.h"
 #include "we_gpm.h"
@@ -30,16 +31,12 @@
 
 #include<signal.h>
 #define KEYFN 42
-#define NSPCHR 13
 
 #ifndef XWPE_DLL
 #define WpeDllInit WpeTermInit
 #endif
 
-char *init_key (char *key);
 char *init_kkey (char *key);
-int init_cursor (void);
-int e_begscr (void);
 void e_endwin (void);
 int fk_t_cursor (int x);
 int fk_t_putchar (int c);
@@ -49,7 +46,6 @@ int e_t_sys_ini (void);
 int e_t_sys_end (void);
 int e_t_getch (void);
 int e_find_key (int c, int j, int sw);
-void e_exitm (char *s, int n);
 int fk_t_locate (int x, int y);
 int fk_t_mouse (int *g);
 int e_t_initscr (void);
@@ -61,20 +57,6 @@ int e_s_sys_end ();
 int e_s_sys_ini ();
 
 /** global field also used in we_xterm.c */
-char *global_screen = NULL;
-/** global field also used in we_xterm.c */
-char *global_alt_screen = NULL;
-/** global field also used in we_xterm.c and we_wind.c */
-#if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
-char *extbyte = NULL;
-char *altextbyte = NULL;
-#endif
-
-/** global field also used in we_debug.c */
-char *att_no;
-/** global field also used in we_control.c */
-int col_num = 0;
-/** global field also used in we_xterm.c */
 int cur_x = -1;
 /** global field also used in we_xterm.c */
 int cur_y = -1;
@@ -85,44 +67,12 @@ char *ctree[5];
 static char *key_f[KEYFN], *key_key;
 #endif
 
-static char *cur_rc;
-static char cur_attr;
-
-static char *att_so;
-static char *att_ul;
-static char *att_rv;
-static char *att_bl;
-static char *att_dm;
-static char *att_bo;
-
-static char *ratt_no;
-static char *ratt_so;
-static char *ratt_ul;
-static char *ratt_rv;
-static char *ratt_bl;
-static char *ratt_dm;
-static char *ratt_bo;
-
-static char *beg_scr;
-static char *swt_scr;
-static char *sav_cur;
-static char *res_cur;
-
-static char *col_fg;
-static char *col_bg;
-
 static char *spc_st;
-static char *spc_in;
-static char *spc_bg;
-static char *spc_nd;
 
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-static chtype sp_chr[NSPCHR];
-#else
-static char *sp_chr[NSPCHR];
-#endif
+extern struct termios otermio;
+extern struct termios ntermio; //s
+extern struct termios ttermio;
 
-extern struct termios otermio, ntermio, ttermio;
 #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 char area[315];
 char *ap = area;
@@ -133,8 +83,8 @@ int tgetnum ();
 char *tgoto ();
 #define tigetstr(k) tgetstr(k, &ap)
 
-#define term_move(x,y) e_putp(tgoto(cur_rc, x, y))
-#define term_refresh() fflush(stdout)
+//#define term_move(x,y) e_putp(tgoto(cur_rc, x, y)) --> transformed to function
+//#define term_refresh() fflush(stdout) --> transformed to function
 #else
 /* Because term.h defines "buttons" it messes up we_gpm.c if in edit.h */
 #include <term.h>
@@ -143,64 +93,9 @@ char *tgoto ();
 #define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
 #define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
 
-#define term_move(x,y) move(y, x)
-#define term_refresh() refresh()
+//#define term_move(x,y) move(y, x) --> transformed to function
+//#define term_refresh() refresh() --> transformed to function
 #endif
-
-static int data_max_screen_lines = 80;
-static int data_max_screen_cols = 24;
-
-
-/**
- * Returns the maximum number of screen lines available.
- *
- * \returns maximum number of screen lines available.
- *
- */
-int max_screen_lines()
-{
-    return data_max_screen_lines;
-}
-/**
- * Sets the new maximum number of screen lines available. if the provided
- * value is zero or less, nothing is set and the old value remains.
- *
- * \param max_lines maximum number of lines.
- * \returns the maximum number of lines.
- *
- */
-int set_max_screen_lines(const int max_lines)
-{
-    if (max_lines > 0) {
-        data_max_screen_lines = max_lines;
-    }
-    return data_max_screen_lines;
-}
-/**
- * Returns the maximum number of screen columns.
- *
- * \returns the maximum number of screen columns.
- *
- */
-int max_screen_cols()
-{
-    return data_max_screen_cols;
-}
-/**
- * Sets the new maximum number of columns available. if the provided
- * value is zero or less, nothing is set and the old value remains.
- *
- * \param max_cols maximum number of columns.
- * \returns the maximum number of columns.
- *
- */
-int set_max_screen_cols(const int max_cols)
-{
-    if (max_cols > 0) {
-        data_max_screen_cols = max_cols;
-    }
-    return data_max_screen_cols;
-}
 
 int
 WpeDllInit (int *argc, char **argv)
@@ -236,13 +131,13 @@ WpeDllInit (int *argc, char **argv)
     u_bioskey = WpeZeroFunction;
 #endif
     e_t_initscr ();
-    if (col_num > 0) {
-        e_pr_u_col_kasten = e_pr_x_col_kasten;
+    if (is_x_term()) {
+        e_pr_u_colorsets = e_pr_x_colorsets;
         e_frb_u_menue = e_frb_x_menue;
         e_s_u_clr = e_s_x_clr;
         e_n_u_clr = e_n_x_clr;
     } else {
-        e_pr_u_col_kasten = e_pr_t_col_kasten;
+        e_pr_u_colorsets = e_pr_t_colorsets;
         e_frb_u_menue = e_frb_t_menue;
         e_s_u_clr = e_s_t_clr;
         e_n_u_clr = e_n_t_clr;
@@ -291,53 +186,6 @@ ctree[4] = "|__";
     return 0;
 }
 
-char *
-init_key (char *key)
-{
-    char *tmp, *keystr;
-
-    tmp = (char *) tigetstr (key);
-    if (tmp == NULL || tmp == ((char *) -1)) {
-        return (NULL);
-    } else {
-        keystr = malloc (strlen (tmp) + 1);
-        strcpy (keystr, tmp);
-    }
-    return (keystr);
-}
-
-
-int
-e_alloc_global_screen ()
-{
-    if (global_screen) {
-        free (global_screen);
-    }
-    if (global_alt_screen) {
-        free (global_alt_screen);
-    }
-    global_screen = malloc (2 * max_screen_cols() * max_screen_lines());
-    global_alt_screen = malloc (2 * max_screen_cols() * max_screen_lines());
-#ifdef NEWSTYLE
-    if (extbyte) {
-        free (extbyte);
-    }
-    if (altextbyte) {
-        free (altextbyte);
-    }
-    extbyte = malloc (max_screen_cols() * max_screen_lines());
-    altextbyte = malloc (max_screen_cols() * max_screen_lines());
-    if (!global_screen || !global_alt_screen || !extbyte || !altextbyte) {
-        return (-1);
-    }
-#else
-    if (!global_screen || !global_alt_screen) {
-        return (-1);
-    }
-#endif
-    return (0);
-}
-
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
 char *
 init_kkey (char *key)
@@ -367,407 +215,30 @@ init_kkey (char *key)
 }
 #endif
 
-
-int
-e_abs_refr ()
-{
-    int i;
-
-    for (i = 0; i < 2 * max_screen_cols() * max_screen_lines(); i++) {
-        global_alt_screen[i] = 0;
-    }
-    return (0);
-}
-
-
 char *
 init_spchr (char c)
 {
     int i;
     char *pt = NULL;
 
-    if (!spc_st || !spc_bg || !spc_nd) {
+    if (!graphics_charset_pairs() || !start_alt_charset() || !end_alt_charset()) {
         return (NULL);
     }
     for (i = 0; spc_st[i] && spc_st[i + 1] && spc_st[i] != c; i += 2)
         ;
     if (spc_st[i] && spc_st[i + 1]) {
-        pt = malloc ((strlen (spc_bg) + strlen (spc_nd) + 2) * sizeof (char));
+        pt = malloc ((strlen (start_alt_charset()) + strlen (end_alt_charset()) + 2)
+                     * sizeof (char));
         if (pt) {
-            sprintf (pt, "%s%c%s", spc_bg, spc_st[i + 1], spc_nd);
+            sprintf (pt, "%s%c%s", start_alt_charset(), spc_st[i + 1], end_alt_charset());
         }
     }
     return (pt);
 }
 
-int
-init_cursor ()
-{
-//#ifndef TERMCAP
-#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-    if (!(cur_rc = init_key ("cup"))) {
-        return (-1);
-    }
-    if ((col_fg = init_key ("setaf")) && (col_bg = init_key ("setab"))) {
-        /* terminfo 10.2.x color code */
-        if ((col_num = tigetnum ("colors")) < 0) {
-            col_num = 8;
-        }
-    } else if ((col_fg = init_key ("setf")) && (col_bg = init_key ("setb"))) {
-        /* Older terminfo color code */
-        if ((col_num = tigetnum ("colors")) < 0) {
-            col_num = 8;
-        }
-    } else {
-        /* No colors */
-        if (col_fg) {
-            free (col_fg);
-            col_fg = NULL;
-        }
-        if (col_bg) {
-            free (col_bg);
-            col_bg = NULL;
-        }
-    }
+int svflgs;
 
-    spc_st = init_key ("acsc");
-    spc_in = init_key ("enacs");
-    spc_bg = init_key ("smacs");
-    spc_nd = init_key ("rmacs");
-    att_no = init_key ("sgr0");
-    att_so = init_key ("smso");
-    att_ul = init_key ("smul");
-    att_rv = init_key ("rev");
-    att_bl = init_key ("blink");
-    att_dm = init_key ("dim");
-    att_bo = init_key ("bold");
-    ratt_no = init_key ("sgr0");
-    ratt_so = init_key ("rmso");
-    ratt_ul = init_key ("rmul");
-    ratt_rv = init_key ("sgr0");
-    ratt_bl = init_key ("sgr0");
-    ratt_dm = init_key ("sgr0");
-    ratt_bo = init_key ("sgr0");
-    beg_scr = init_key ("smcup");
-    swt_scr = init_key ("rmcup");
-    sav_cur = init_key ("sc");
-    res_cur = init_key ("rc");
-
-//#ifndef NCURSES
-#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-    key_f[0] = init_kkey ("kf1");
-    key_f[1] = init_kkey ("kf2");
-    key_f[2] = init_kkey ("kf3");
-    key_f[3] = init_kkey ("kf4");
-    key_f[4] = init_kkey ("kf5");
-    key_f[5] = init_kkey ("kf6");
-    key_f[6] = init_kkey ("kf7");
-    key_f[7] = init_kkey ("kf8");
-    key_f[8] = init_kkey ("kf9");
-    key_f[9] = init_kkey ("kf10");
-    key_f[10] = init_kkey ("kcuu1");
-    key_f[11] = init_kkey ("kcud1");
-    key_f[12] = init_kkey ("kcub1");
-    key_f[13] = init_kkey ("kcuf1");
-    key_f[14] = init_kkey ("kich1");
-    key_f[15] = init_kkey ("khome");
-    key_f[16] = init_kkey ("kpp");
-    if (!(key_f[17] = init_kkey ("kdch1"))) {
-        key_f[17] = "\177";
-    }
-    key_f[18] = init_kkey ("kend");
-    key_f[19] = init_kkey ("knp");
-    key_f[20] = init_kkey ("kbs");
-    key_f[21] = init_kkey ("khlp");
-    key_f[22] = init_kkey ("kll");
-    key_f[23] = init_kkey ("kf17");
-    key_f[24] = init_kkey ("kf18");
-    key_f[25] = init_kkey ("kf19");
-    key_f[26] = init_kkey ("kf20");
-    key_f[27] = init_kkey ("kf21");
-    key_f[28] = init_kkey ("kf22");
-    key_f[29] = init_kkey ("kf23");
-    key_f[30] = init_kkey ("kf24");
-    key_f[31] = init_kkey ("kf25");
-    key_f[32] = init_kkey ("kf26");
-    key_f[33] = init_kkey ("kPRV");
-    key_f[34] = init_kkey ("kNXT");
-    key_f[35] = init_kkey ("kLFT");
-    key_f[36] = init_kkey ("kRIT");
-    key_f[37] = init_kkey ("kHOM");
-    key_f[38] = init_kkey ("kri");
-    key_f[39] = init_kkey ("kEND");
-    key_f[40] = init_kkey ("kind");
-    key_f[41] = init_kkey ("kext");
-#endif
-
-#else // #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-
-    if (!(cur_rc = init_key ("cm"))) {
-        return (-1);
-    }
-    if ((col_fg = init_key ("Sf")) && (col_bg = init_key ("Sb"))) {
-        if ((col_num = tgetnum ("Co")) < 0) {
-            col_num = 8;
-        }
-    } else {
-        if (col_fg) {
-            free (col_fg);
-            col_fg = NULL;
-        }
-        if (col_bg) {
-            free (col_bg);
-            col_bg = NULL;
-        }
-    }
-    spc_st = init_key ("ac");
-    spc_in = init_key ("eA");
-    spc_bg = init_key ("as");
-    spc_nd = init_key ("ae");
-    att_no = init_key ("me");
-    att_so = init_key ("so");
-    att_ul = init_key ("us");
-    att_rv = init_key ("mr");
-    att_bl = init_key ("mb");
-    att_dm = init_key ("mh");
-    att_bo = init_key ("md");
-    ratt_no = init_key ("me");
-    ratt_so = init_key ("se");
-    ratt_ul = init_key ("ue");
-    ratt_rv = init_key ("me");
-    ratt_bl = init_key ("me");
-    ratt_dm = init_key ("me");
-    ratt_bo = init_key ("me");
-    beg_scr = init_key ("ti");
-    swt_scr = init_key ("te");
-    sav_cur = init_key ("sc");
-    res_cur = init_key ("rc");
-
-    key_f[0] = init_kkey ("k1");
-    key_f[1] = init_kkey ("k2");
-    key_f[2] = init_kkey ("k3");
-    key_f[3] = init_kkey ("k4");
-    key_f[4] = init_kkey ("k5");
-    key_f[5] = init_kkey ("k6");
-    key_f[6] = init_kkey ("k7");
-    key_f[7] = init_kkey ("k8");
-    key_f[8] = init_kkey ("k9");
-    key_f[9] = init_kkey ("k;");
-    key_f[10] = init_kkey ("ku");
-    key_f[11] = init_kkey ("kd");
-    key_f[12] = init_kkey ("kl");
-    key_f[13] = init_kkey ("kr");
-    key_f[14] = init_kkey ("kI");
-    key_f[15] = init_kkey ("kh");
-    key_f[16] = init_kkey ("kP");
-    key_f[17] = init_kkey ("kD");
-    key_f[18] = init_kkey ("@7");
-    key_f[19] = init_kkey ("kN");
-    key_f[20] = init_kkey ("kb");
-    key_f[21] = init_kkey ("%1");
-    key_f[22] = init_kkey ("kH");
-    key_f[23] = init_kkey ("F7");
-    key_f[24] = init_kkey ("F8");
-    key_f[25] = init_kkey ("F9");
-    key_f[26] = init_kkey ("FA");
-    key_f[27] = init_kkey ("FB");
-    key_f[28] = init_kkey ("FC");
-    key_f[29] = init_kkey ("FD");
-    key_f[30] = init_kkey ("FE");
-    key_f[31] = init_kkey ("FF");
-    key_f[32] = init_kkey ("FG");
-    key_f[33] = init_kkey ("%e");
-    key_f[34] = init_kkey ("%c");
-    key_f[35] = init_kkey ("#4");
-    key_f[36] = init_kkey ("%i");
-    key_f[37] = init_kkey ("#2");
-    key_f[38] = init_kkey ("kR");
-    key_f[39] = init_kkey ("*7");
-    key_f[40] = init_kkey ("kF");
-    key_f[41] = init_kkey ("@1");
-#endif
-//#ifdef NCURSES
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-    sp_chr[0] = 0;
-    sp_chr[1] = ACS_ULCORNER;
-    sp_chr[2] = ACS_URCORNER;
-    sp_chr[3] = ACS_LLCORNER;
-    sp_chr[4] = ACS_LRCORNER;
-    sp_chr[5] = ACS_HLINE;
-    sp_chr[6] = ACS_VLINE;
-    sp_chr[7] = ACS_S9;
-    sp_chr[8] = ACS_VLINE;
-    sp_chr[9] = ACS_VLINE;
-    sp_chr[10] = ACS_S9;
-    sp_chr[11] = ACS_DIAMOND;
-    sp_chr[12] = ' ';
-#else // #else #ifdef NCURSES (i.e. FALSE)
-    sp_chr[0] = "";
-    if (!(sp_chr[1] = init_spchr ('l'))) {
-        sp_chr[1] = "+";
-    }
-    if (!(sp_chr[2] = init_spchr ('k'))) {
-        sp_chr[2] = "+";
-    }
-    if (!(sp_chr[3] = init_spchr ('m'))) {
-        sp_chr[3] = "+";
-    }
-    if (!(sp_chr[4] = init_spchr ('j'))) {
-        sp_chr[4] = "+";
-    }
-    if (!(sp_chr[5] = init_spchr ('q'))) {
-        sp_chr[5] = "-";
-    }
-    if (!(sp_chr[6] = init_spchr ('x'))) {
-        sp_chr[6] = "|";
-    }
-    if (!(sp_chr[7] = init_spchr ('w'))) {
-        sp_chr[7] = "_";
-    }
-    if (!(sp_chr[8] = init_spchr ('t'))) {
-        sp_chr[8] = "|";
-    }
-    if (!(sp_chr[9] = init_spchr ('m'))) {
-        sp_chr[9] = "|";
-    }
-    if (!(sp_chr[10] = init_spchr ('q'))) {
-        sp_chr[10] = "_";
-    }
-    if (!(sp_chr[11] = init_spchr ('`'))) {
-        sp_chr[11] = "#";
-    }
-    if (!(sp_chr[12] = init_spchr ('a'))) {
-        sp_chr[12] = " ";
-    }
-#endif
-    return (0);
-}
-
-int
-e_t_initscr ()
-{
-    int ret, i, k;
-#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-    WINDOW *stdscr;
-#endif
-
-    ret = tcgetattr (STDOUT_FILENO, &otermio);	/* save old settings */
-    if (ret) {
-        int errno_save = errno;	// save errno before it is overwritten
-        const int max_desc = 1024;
-        char err_desc[max_desc];
-        strerror_r (errno_save, err_desc, max_desc);
-        printf
-        ("Error in Terminal Initialisation Code nr %d with description: %s\n",
-         errno_save, err_desc);
-        printf ("c_iflag = %o, c_oflag = %o, c_cflag = %o,\n", otermio.c_iflag,
-                otermio.c_oflag, otermio.c_cflag);
-        printf
-        ("c_lflag = %o, c_line = %o, c_cc = {\"\\%o\\%o\\%o\\%o\\%o\\%o\\%o\\%o\"}\n",
-         otermio.c_lflag, otermio.c_line, otermio.c_cc[0], otermio.c_cc[1],
-         otermio.c_cc[2], otermio.c_cc[3], otermio.c_cc[4], otermio.c_cc[5],
-         otermio.c_cc[6], otermio.c_cc[7]);
-        e_exit (1);
-    }
-#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-    if ((stdscr = initscr ()) == (WINDOW *) ERR) {
-        exit (27);
-    }
-    cbreak ();
-    noecho ();
-    nonl ();
-    intrflush (stdscr, FALSE);
-    keypad (stdscr, TRUE);
-    if (has_colors ()) {
-        start_color ();
-        for (i = 0; i < COLORS; i++) {
-            for (k = 0; k < COLORS; k++) {
-                if (i != 0 || k != 0) {
-                    init_pair (i * 8 + k, k, i);
-                }
-            }
-        }
-    }
-#endif
-    e_begscr ();
-    global_screen = malloc (2 * max_screen_cols() * max_screen_lines());
-    global_alt_screen = malloc (2 * max_screen_cols() * max_screen_lines());
-#if !defined(NO_XWINDOWS) && defined(NEWSTYLE)
-    extbyte = malloc (max_screen_cols() * max_screen_lines());
-#endif
-    e_abs_refr ();
-    if (init_cursor ()) {
-        printf ("Terminal Not in the right mode\n");
-        e_exit (1);
-    }
-    tcgetattr (STDIN_FILENO, &ntermio);
-    ntermio.c_iflag = 0;		/* setup new settings */
-    ntermio.c_oflag = 0;
-    ntermio.c_lflag = 0;
-    ntermio.c_cc[VMIN] = 1;
-    ntermio.c_cc[VTIME] = 0;
-    /**
-     * VSWTCH is not supported by linux or defined in POSIX. It is used in some
-     * System V systems. I suspect the following conditional code was incorporated to
-     * initialize that specific special character.
-     */
-#ifdef VSWTCH
-    ntermio.c_cc[VSWTCH] = 0;
-#endif
-    tcsetattr (STDIN_FILENO, TCSADRAIN, &ntermio);
-#if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-    if (spc_in) {
-        e_putp (spc_in);
-    }
-#endif
-    return (0);
-}
-
-int svflgs, kbdflgs;
-
-int
-e_begscr ()
-{
-    int cols, lns;
-
-    kbdflgs = fcntl (0, F_GETFL, 0);
-//#ifndef TERMCAP
-#if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
-    if ((lns = tigetnum ("lines")) > 0) {
-        set_max_screen_lines(lns);
-    }
-    if ((cols = tigetnum ("cols")) > 0) {
-        set_max_screen_cols(cols);
-    }
-#else
-    if ((tc_screen = getenv ("TERM")) == NULL) {
-        e_exitm ("Environment variable TERM not defined!", 1);
-    }
-    if ((tgetent (tcbuf, tc_screen)) != 1) {
-        e_exitm ("Unknown terminal type!", 1);
-    }
-    if ((lns = tgetnum ("li")) > 0) {
-        set_max_screen_lines(lns);
-    }
-    if ((cols = tgetnum ("co")) > 0) {
-        set_max_screen_cols(cols);
-    }
-#endif
-    return (0);
-}
-
-#define fk_putp(p) ( p ? e_putp(p) : e_putp(att_no) )
-
-void
-e_endwin ()
-{
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-    endwin ();
-#else
-    fk_putp (ratt_bo);
-#endif
-    tcsetattr (STDIN_FILENO, TCSADRAIN, &otermio);
-}
+#define fk_putp(p) ( p ? e_putp(p) : e_putp(attr_normal()) )
 
 int
 fk_t_cursor (int x)
@@ -785,131 +256,6 @@ fk_t_putchar (int c)
 #else
     return (fputc (c, stdout));
 #endif
-}
-
-int
-fk_attrset (int a)
-{
-    if (cur_attr == a) {
-        return (0);
-    }
-//#ifdef NCURSES
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-    switch (a) {
-    case 0:
-        attrset (A_NORMAL);
-        break;
-    case 1:
-        attrset (A_STANDOUT);
-        break;
-    case 2:
-        attrset (A_UNDERLINE);
-        break;
-    case 4:
-        attrset (A_REVERSE);
-        break;
-    case 8:
-        attrset (A_BLINK);
-        break;
-    case 16:
-        attrset (A_DIM);
-        break;
-    case 32:
-        attrset (A_BOLD);
-        break;
-    }
-#else
-    switch (cur_attr) {
-    case 0:
-        fk_putp (ratt_no);
-        break;
-    case 1:
-        fk_putp (ratt_so);
-        break;
-    case 2:
-        fk_putp (ratt_ul);
-        break;
-    case 4:
-        fk_putp (ratt_rv);
-        break;
-    case 8:
-        fk_putp (ratt_bl);
-        break;
-    case 16:
-        fk_putp (ratt_dm);
-        break;
-    case 32:
-        fk_putp (ratt_bo);
-        break;
-    }
-    switch (a) {
-    case 0:
-        fk_putp (att_no);
-        break;
-    case 1:
-        fk_putp (att_so);
-        break;
-    case 2:
-        fk_putp (att_ul);
-        break;
-    case 4:
-        fk_putp (att_rv);
-        break;
-    case 8:
-        fk_putp (att_bl);
-        break;
-    case 16:
-        fk_putp (att_dm);
-        break;
-    case 32:
-        fk_putp (att_bo);
-        break;
-    }
-#endif
-    return (cur_attr = a);
-}
-
-void
-fk_colset (int c)
-{
-    int bg;
-    if (cur_attr == c) {
-        return;
-    }
-    cur_attr = c;
-    bg = c / 16;
-//#ifdef TERMCAP
-#if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
-    if ((c %= 16) >= col_num) {
-        fk_putp (att_bo);
-        e_putp (tgoto (col_fg, 0, c % col_num));
-        e_putp (tgoto (col_bg, 0, bg));
-    } else {
-        fk_putp (ratt_bo);
-        e_putp (tgoto (col_fg, 0, c));
-        e_putp (tgoto (col_bg, 0, bg));
-    }
-#else // #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
-//#ifdef NCURSES
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-    if (c & 8) {
-        attrset (A_BOLD);
-    } else {
-        attrset (A_NORMAL);
-    }
-    color_set ((bg * 8) + c % 8, NULL);
-#else // #ifdef NCURSES i.e. FALSE
-    if ((c %= 16) >= col_num) {
-        fk_putp (att_bo);
-        e_putp (tparm1 (col_fg, c % col_num));
-        e_putp (tparm1 (col_bg, bg));
-    } else {
-        fk_putp (ratt_bo);
-        e_putp (tparm1 (col_fg, c));
-        e_putp (tparm1 (col_bg, bg));
-    }
-#endif // #ifdef NCURSES i.e. FALSE
-#endif // #ifdef TERMCAP : !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 }
 
 int
@@ -937,24 +283,12 @@ e_t_refresh ()
                     cur_y = i + 1;
                 }
                 if (col_num <= 0) {
-                    fk_attrset (e_gt_col (j, i));
+                    fk_attrset (e_get_col (j, i));
                 } else {
-                    fk_colset (e_gt_col (j, i));
+                    fk_colset (e_get_col (j, i));
                 }
                 c = e_gt_char (j, i);
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-                if (c < NSPCHR) {
-                    addch (sp_chr[c]);
-                } else {
-                    addch (c);
-                }
-#else
-                if (c < NSPCHR) {
-                    e_putp (sp_chr[c]);
-                } else {
-                    fputc (c, stdout);
-                }
-#endif
+                print_char(c);
                 *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j) =
                     *(global_screen + 2 * max_screen_cols() * i + 2 * j);
                 *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j + 1) =
@@ -1472,7 +806,7 @@ int
 fk_t_locate (int x, int y)
 {
     if (col_num > 0) {
-        fk_colset (e_gt_col (cur_x, cur_y));
+        fk_colset (e_get_col (cur_x, cur_y));
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
         /* Causes problems.  Reason unknown. - Dennis */
         /*mvaddch(cur_y,cur_x,e_gt_char(cur_x, cur_y)); */
@@ -1502,17 +836,17 @@ e_t_switch_screen (int sw)
         return (0);
     }
     sav_sw = sw;
-    if (sw && beg_scr) {
+    if (sw && get_beg_scr()) {
         term_refresh ();
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
         if (sav_cur) {
             e_putp (sav_cur);
         }
-        e_putp (beg_scr);
+        e_putp (get_beg_scr());
 #endif
-    } else if (!sw && swt_scr) {
+    } else if (!sw && get_swt_scr()) {
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-        e_putp (swt_scr);
+        e_putp (get_swt_scr());
         if (res_cur) {
             e_putp (res_cur);
         }
@@ -1529,7 +863,7 @@ e_t_deb_out (we_window_t * window)
 {
 //#ifndef NCURSES
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-    if (!swt_scr || !beg_scr)
+    if (!get_swt_scr() || !get_beg_scr())
 #endif
         return (e_error ("Your terminal don\'t use begin/end cup",
                          ERROR_MSG,
@@ -1571,7 +905,7 @@ e_t_d_switch_out (int sw)
     if (sw && e_d_switch_screen (0)) {
         term_move (0, 0);
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
-        e_putp (att_no);
+        e_putp (attr_normal());
 #endif
         for (i = 0; i < max_screen_lines(); i++)
             for (j = 0; j < max_screen_cols(); j++) {
@@ -1585,16 +919,6 @@ e_t_d_switch_out (int sw)
         e_u_refresh ();
     }
     return (sw);
-}
-
-void
-e_exitm (char *s, int n)
-{
-    e_endwin ();
-    if (n != 0) {
-        printf ("\n%s\n", s);
-    }
-    exit (n);
 }
 
 int

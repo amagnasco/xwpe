@@ -13,6 +13,7 @@
 #include "messages.h"
 #include "model.h"
 #include "options.h"
+#include "we_screen.h"
 #include "we_term.h"
 #if defined HAVE_LIBNCURSES || defined HAVE_LIBCURSES
 #include "curses.h"
@@ -2133,6 +2134,7 @@ WpeGraphicalDirTree (struct dirfile *cd, struct dirfile *dd, we_control_t * cont
             strcpy (*(edf->name + i), str);
         }
 
+        // defined earlier str[256];
         for (; i < cd->nr_files + dd->nr_files; i++) {
             for (str[0] = '\0', j = 0; j < cd->nr_files - 2; j++) {
                 strcat (str, "  ");

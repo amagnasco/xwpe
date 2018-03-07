@@ -14,6 +14,7 @@
 #include "messages.h"
 #include "options.h"
 #include "model.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "we_control.h"
 #include "edit.h"
@@ -607,7 +608,7 @@ e_d_quit_basic (we_window_t * window)
             fk_u_locate (max_screen_cols(), max_screen_lines());
 #if !defined(HAVE_LIBNCURSES) && !defined(HAVE_LIBCURSES)
             e_putp ("\r\n");
-            e_putp (att_no);
+            e_putp (attr_normal());
 #endif
             e_u_d_switch_out (0);
         }

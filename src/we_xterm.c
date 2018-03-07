@@ -13,6 +13,7 @@
 #include "model.h"
 #include "we_control.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_unix.h"
 #include "WeString.h"
 #include "we_term.h"
@@ -96,7 +97,7 @@ WpeDllInit (int *argc, char **argv)
     e_s_u_clr = e_s_x_clr;
     e_n_u_clr = e_n_x_clr;
     e_frb_u_menue = e_frb_x_menue;
-    e_pr_u_col_kasten = e_pr_x_col_kasten;
+    e_pr_u_colorsets = e_pr_x_colorsets;
     fk_u_cursor = fk_x_cursor;
     fk_u_locate = fk_x_locate;
     e_u_refresh = e_x_refresh;

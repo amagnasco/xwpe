@@ -13,6 +13,7 @@
 #include "model.h"
 #include "we_control.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "we_wind.h"
 #include "we_progn.h"
@@ -58,7 +59,7 @@ char e_gt_char(int x, int y)
     return *(global_screen + 2 * max_screen_cols() * y + 2 * x);
 }
 
-char e_gt_col(int x, int y)
+char e_get_col(int x, int y)
 {
     return *(global_screen + 2 * max_screen_cols() * y + 2 * x + 1);
 }
@@ -1663,7 +1664,7 @@ e_schr_nchar_wsv (char *str, int x, int y, int n, int max, int col, int csw)
 #else
 {
 #if !defined(NO_XWINDOWS)
-    int swcol = (e_gt_col (x + max, y) / 16) * 16;
+    int swcol = (e_get_col (x + max, y) / 16) * 16;
     if (WpeIsXwin ()) {
         e_pr_char (x + max, y, SCR, swcol);
         e_pr_char (x + max, y + 1, SCD, swcol);
@@ -1914,7 +1915,7 @@ e_make_xrect_abs (int xa, int ya, int xe, int ye, int sw)
 /**
  * \fn e_make_xrect.
  *
- * This function makes a rectangle withing the functionality of XWindows.
+ * This function makes a rectangle within the functionality of XWindows.
  *
  * \todo TODO: what does this function do? why use the extbyte in stead of global_screen?
  * \todo what is the meaing of sw in this function?

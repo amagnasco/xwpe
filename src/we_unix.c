@@ -10,6 +10,7 @@
 #include "model.h"		/* exchange for D.S.  */
 #include "we_control.h"
 #include "options.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include <signal.h>
 
@@ -62,7 +63,7 @@ int (*u_bioskey) (void);
 int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * window, int md);
 we_color_t (*e_s_u_clr) (int fg_color, int bg_color);
 we_color_t (*e_n_u_clr) (int fg_bg_color);
-void (*e_pr_u_col_kasten) (int xa, int ya, int x, int y, we_window_t * window, int sw);
+void (*e_pr_u_colorsets) (int xa, int ya, int x, int y, we_window_t * window, int sw);
 int (*fk_mouse) (int g[]);
 /**
  * refresh the screen.
@@ -134,7 +135,6 @@ char MCI, MCA, RD1, RD2, RD3, RD4, RD5, RD6, WBT;
 char RE1, RE2, RE3, RE4, RE5, RE6;
 int e_mn_men = 3;
 
-struct termios otermio, ntermio, ttermio;
 void *libxwpe;
 
 we_view_t *e_X_l_pic = NULL;
@@ -883,7 +883,7 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * window, int md)
                 fb *= 2;
             }
         frb[sw] = e_n_u_clr (fb);
-        e_pr_t_col_kasten (xa, ya, fb, fb, window, 1);
+        e_pr_t_colorsets (xa, ya, fb, fb, window, 1);
         e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
         if ((c = e_u_getch ()) == -1) {
@@ -901,7 +901,7 @@ e_frb_t_menue (int sw, int xa, int ya, we_window_t * window, int md)
 
 /*   draw colors box  */
 void
-e_pr_t_col_kasten (int xa, int ya, int x, int y, we_window_t * window, int sw)
+e_pr_t_colorsets (int xa, int ya, int x, int y, we_window_t * window, int sw)
 {
     int rfrb, xe = xa + 14, ye = ya + 8;
 

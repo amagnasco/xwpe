@@ -32,6 +32,7 @@
 /* needed for the time being to call old routines */
 #include "model.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 
 

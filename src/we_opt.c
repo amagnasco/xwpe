@@ -10,6 +10,7 @@
 #include "messages.h"
 #include "options.h"
 #include "we_mouse.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "we_xterm.h"
 #include "model.h"
@@ -335,7 +336,7 @@ e_dif_colors (int sw, int xa, int ya, we_window_t * window, int md)
     }
     while (c != WPE_ESC && c > -2) {
         e_pr_dif_colors (sw, xa, ya, window, 1, md);
-        e_pr_u_col_kasten (xa - 28, ya + 1, frb[sw + bg].fg_color, frb[sw + bg].bg_color, window, 0);
+        e_pr_u_colorsets (xa - 28, ya + 1, frb[sw + bg].fg_color, frb[sw + bg].bg_color, window, 0);
         e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
         if ((c = e_u_getch ()) == -1) {
@@ -436,7 +437,7 @@ e_frb_x_menue (int sw, int xa, int ya, we_window_t * window, int md)
             x = (c - 1000) / 16;
             y = (c - 1000) % 16;
         }
-        e_pr_x_col_kasten (xa, ya, x, y, window, 1);
+        e_pr_x_colorsets (xa, ya, x, y, window, 1);
         frb[sw] = e_s_u_clr (x, y);
         e_pr_ed_beispiel (1, 2, window, sw, md);
 #if  MOUSE
@@ -455,7 +456,7 @@ e_frb_x_menue (int sw, int xa, int ya, we_window_t * window, int md)
 
 /*   draw color box  */
 void
-e_pr_x_col_kasten (int xa, int ya, int x, int y, we_window_t * window, int sw)
+e_pr_x_colorsets (int xa, int ya, int x, int y, we_window_t * window, int sw)
 {
     int i, j, rfrb, ffrb, xe = xa + 25, ye = ya + 18;
 

@@ -11,6 +11,7 @@
 #include "options.h"
 #include "model.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "we_menue.h"
 #include "we_progn.h"

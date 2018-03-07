@@ -14,6 +14,7 @@
 #include "curses.h"
 #endif
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "we_prog.h"
 #include "WeExpArr.h"

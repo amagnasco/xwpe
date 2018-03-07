@@ -29,6 +29,7 @@
 #include "messages.h"
 #include "keys.h"
 #include "we_mouse.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "options.h"
 #include "WeString.h"

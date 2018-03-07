@@ -25,7 +25,7 @@ int e_sys_info(we_window_t* window);
 int e_ad_colors(we_window_t* window);
 int e_dif_colors(int sw, int xa, int ya, we_window_t* window, int md);
 void e_pr_dif_colors(int sw, int xa, int ya, we_window_t* window, int sw2, int md);
-void e_pr_x_col_kasten(int xa, int ya, int x, int y, we_window_t* window, int sw);
+void e_pr_x_colorsets(int xa, int ya, int x, int y, we_window_t* window, int sw);
 void e_pr_ed_beispiel(int xa, int ya, we_window_t* window, int sw, int md);
 int e_opt_save(we_window_t* window);
 int e_save_opt(we_window_t* window);
@@ -57,6 +57,6 @@ int e_edt_options(we_window_t* window);
 int e_read_colors(we_window_t* window);
 int e_ad_colors_md(we_window_t* window, int md);
 int e_frb_x_menue(int sw, int xa, int ya, we_window_t* window, int md);
-void e_pr_x_col_kasten(int xa, int ya, int x, int y, we_window_t* window, int sw);
+void e_pr_x_colorsets(int xa, int ya, int x, int y, we_window_t* window, int sw);
 
 #endif

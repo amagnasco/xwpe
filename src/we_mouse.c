@@ -11,6 +11,7 @@
 #include "options.h"
 #include "model.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "we_prog.h"
 #include "we_mouse.h"
@@ -509,7 +510,7 @@ int nf;
 {
     extern struct mouse e_mouse;
     int g[4];			/*  = { 1, 0, 0, 0 };  */
-    int inew, iold, nret, frb = e_gt_col (x, y);
+    int inew, iold, nret, frb = e_get_col (x, y);
     double d;
     if (n < 2) {
         return (nf);
