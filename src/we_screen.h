@@ -33,6 +33,8 @@ const char *get_beg_scr();
 const char *get_swt_scr();
 
 _Bool is_x_term();
+int fk_t_locate(int x, int y);
+int fk_t_cursor(int x);
 int term_move(int x, int y);
 int print_char(int c);
 int term_refresh();

@@ -30,6 +30,11 @@
 #include "we_screen.h"
 #include "we_unix.h"
 
+/** global field also used in we_xterm.c */
+int cur_x = -1;
+/** global field also used in we_xterm.c */
+int cur_y = -1;
+
 /** Private functions */
 char *init_key(char *key);
 void e_exitm (char *s, int n);
@@ -768,6 +773,72 @@ fk_colset (int c)
     color_set ((bg * 8) + c % 8, NULL);
 #endif // #ifdef NCURSES
 #endif // #ifdef TERMCAP : !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
+}
+
+int
+e_t_refresh ()
+{
+    int x = cur_x, y = cur_y, i, j, c;
+    fk_t_cursor (0);
+    for (i = 0; i < max_screen_lines(); i++)
+        for (j = 0; j < max_screen_cols(); j++) {
+            if (i == max_screen_lines() - 1 && j == max_screen_cols() - 1) {
+                break;
+            }
+            if (*(global_screen + 2 * max_screen_cols() * i + 2 * j) !=
+                    *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j)
+                    || *(global_screen + 2 * max_screen_cols() * i + 2 * j + 1) !=
+                    *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j + 1)) {
+                if (cur_x != j || cur_y != i) {
+                    term_move (j, i);
+                }
+                if (cur_x < max_screen_cols()) {
+                    cur_x = j + 1;
+                    cur_y = i;
+                } else {
+                    cur_x = 0;
+                    cur_y = i + 1;
+                }
+                if (col_num <= 0) {
+                    fk_attrset (e_get_col (j, i));
+                } else {
+                    fk_colset (e_get_col (j, i));
+                }
+                c = e_gt_char (j, i);
+                print_char(c);
+                *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j) =
+                    *(global_screen + 2 * max_screen_cols() * i + 2 * j);
+                *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j + 1) =
+                    *(global_screen + 2 * max_screen_cols() * i + 2 * j + 1);
+            }
+        }
+    fk_t_cursor (1);
+    fk_t_locate (x, y);
+    term_refresh ();
+    return (0);
+}
+
+int fk_t_cursor(int x)
+{
+    return x;
+}
+
+int
+fk_t_locate (int x, int y)
+{
+    if (col_num > 0) {
+        fk_colset (e_get_col (cur_x, cur_y));
+#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
+        /* Causes problems.  Reason unknown. - Dennis */
+        /*mvaddch(cur_y,cur_x,e_gt_char(cur_x, cur_y)); */
+#else
+        fputc (e_gt_char (cur_x, cur_y), stdout);
+#endif
+    }
+    cur_x = x;
+    cur_y = y;
+    term_move (x, y);
+    return (y);
 }
 
 int term_move(int x, int y)

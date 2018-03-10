@@ -56,6 +56,8 @@ void WpeSignalChild (int sig);
 void (*WpeMouseChangeShape) (WpeMouseShape new_shape);
 void (*WpeMouseRestoreShape) (void);
 void (*WpeDisplayEnd) (void);
+
+/* Unix variables to contain text or XWindows based functions. */
 int (*fk_u_locate) (int x, int y);
 int (*fk_u_cursor) (int x);
 int (*fk_u_putchar) (int c);
@@ -64,7 +66,7 @@ int (*e_frb_u_menue) (int sw, int xa, int ya, we_window_t * window, int md);
 we_color_t (*e_s_u_clr) (int fg_color, int bg_color);
 we_color_t (*e_n_u_clr) (int fg_bg_color);
 void (*e_pr_u_colorsets) (int xa, int ya, int x, int y, we_window_t * window, int sw);
-int (*fk_mouse) (int g[]);
+int (*fk_u_mouse) (int g[]);
 /**
  * refresh the screen.
  *

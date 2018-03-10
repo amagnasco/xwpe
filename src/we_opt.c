@@ -146,12 +146,12 @@ e_clear_desk (we_window_t * window)
     }
     control->mxedt = 0;
 #if  MOUSE
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     e_ini_desk (control);
 #if  MOUSE
     g[0] = 1;
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     return (0);
 }
@@ -209,15 +209,15 @@ e_repaint_desk (we_window_t * window)
 #endif
 #if  MOUSE
     g[0] = 2;
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     end_repaint ();
     e_cursor (control->window[i], 1);
 #if  MOUSE
     g[0] = 0;
-    fk_mouse (g);
+    fk_u_mouse (g);
     g[0] = 1;
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     return (0);
 }

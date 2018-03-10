@@ -48,7 +48,7 @@ extern we_color_t (*e_s_u_clr)(int fg_color, int bg_color);
 extern we_color_t (*e_n_u_clr)(int fg_bg_color);
 extern void (*e_pr_u_colorsets)(int xa, int ya, int x,
                                  int y, we_window_t* window, int sw);
-extern int (*fk_mouse)(int g[]);
+extern int (*fk_u_mouse)(int g[]);
 extern int (*e_u_refresh)(void);
 extern int (*e_u_getch)(void);
 extern int (*e_u_sys_ini)(void);

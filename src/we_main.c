@@ -135,9 +135,9 @@ main (int argc, char **argv)
     g[0] = 4;
     g[2] = 0;
     g[3] = 0;
-    fk_mouse (g);
+    fk_u_mouse (g);
     g[0] = 1;
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     /* this error comes from reading the options file */
     if (err > 0) {

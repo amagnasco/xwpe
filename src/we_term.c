@@ -38,7 +38,6 @@
 
 char *init_kkey (char *key);
 void e_endwin (void);
-int fk_t_cursor (int x);
 int fk_t_putchar (int c);
 int fk_attrset (int a);
 int e_t_refresh (void);
@@ -46,7 +45,6 @@ int e_t_sys_ini (void);
 int e_t_sys_end (void);
 int e_t_getch (void);
 int e_find_key (int c, int j, int sw);
-int fk_t_locate (int x, int y);
 int fk_t_mouse (int *g);
 int e_t_initscr (void);
 int e_t_kbhit (void);
@@ -56,10 +54,6 @@ int e_t_deb_out (we_window_t * window);
 int e_s_sys_end ();
 int e_s_sys_ini ();
 
-/** global field also used in we_xterm.c */
-int cur_x = -1;
-/** global field also used in we_xterm.c */
-int cur_y = -1;
 /** global field also used in we_xterm.c */
 char *ctree[5];
 
@@ -118,10 +112,10 @@ WpeDllInit (int *argc, char **argv)
     fk_u_putchar = fk_t_putchar;
 #ifdef HAVE_LIBGPM
     if (WpeGpmMouseInit () == 0) {
-        fk_mouse = WpeGpmMouse;
+        fk_u_mouse = WpeGpmMouse;
     } else
 #endif
-        fk_mouse = fk_t_mouse;
+        fk_u_mouse = fk_t_mouse;
     WpeMouseChangeShape = (void (*)(WpeMouseShape)) WpeNullFunction;
     WpeMouseRestoreShape = WpeNullFunction;
     WpeDisplayEnd = e_endwin;
@@ -241,12 +235,6 @@ int svflgs;
 #define fk_putp(p) ( p ? e_putp(p) : e_putp(attr_normal()) )
 
 int
-fk_t_cursor (int x)
-{
-    return (x);
-}
-
-int
 fk_t_putchar (int c)
 {
 //#ifdef NCURSES
@@ -256,49 +244,6 @@ fk_t_putchar (int c)
 #else
     return (fputc (c, stdout));
 #endif
-}
-
-int
-e_t_refresh ()
-{
-    int x = cur_x, y = cur_y, i, j, c;
-    fk_t_cursor (0);
-    for (i = 0; i < max_screen_lines(); i++)
-        for (j = 0; j < max_screen_cols(); j++) {
-            if (i == max_screen_lines() - 1 && j == max_screen_cols() - 1) {
-                break;
-            }
-            if (*(global_screen + 2 * max_screen_cols() * i + 2 * j) !=
-                    *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j)
-                    || *(global_screen + 2 * max_screen_cols() * i + 2 * j + 1) !=
-                    *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j + 1)) {
-                if (cur_x != j || cur_y != i) {
-                    term_move (j, i);
-                }
-                if (cur_x < max_screen_cols()) {
-                    cur_x = j + 1;
-                    cur_y = i;
-                } else {
-                    cur_x = 0;
-                    cur_y = i + 1;
-                }
-                if (col_num <= 0) {
-                    fk_attrset (e_get_col (j, i));
-                } else {
-                    fk_colset (e_get_col (j, i));
-                }
-                c = e_gt_char (j, i);
-                print_char(c);
-                *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j) =
-                    *(global_screen + 2 * max_screen_cols() * i + 2 * j);
-                *(global_alt_screen + 2 * max_screen_cols() * i + 2 * j + 1) =
-                    *(global_screen + 2 * max_screen_cols() * i + 2 * j + 1);
-            }
-        }
-    fk_t_cursor (1);
-    fk_t_locate (x, y);
-    term_refresh ();
-    return (0);
 }
 
 /**
@@ -801,24 +746,6 @@ e_find_key (int c, int j, int sw)
     return (0);
 }
 #endif // #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-
-int
-fk_t_locate (int x, int y)
-{
-    if (col_num > 0) {
-        fk_colset (e_get_col (cur_x, cur_y));
-#if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
-        /* Causes problems.  Reason unknown. - Dennis */
-        /*mvaddch(cur_y,cur_x,e_gt_char(cur_x, cur_y)); */
-#else
-        fputc (e_gt_char (cur_x, cur_y), stdout);
-#endif
-    }
-    cur_x = x;
-    cur_y = y;
-    term_move (x, y);
-    return (y);
-}
 
 int
 fk_t_mouse (int *g)

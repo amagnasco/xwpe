@@ -31,7 +31,7 @@ e_mshit ()
     g[0] = 3;
     g[1] = 0;
 
-    fk_mouse (g);
+    fk_u_mouse (g);
     e_mouse.x = g[2] / 8;
     e_mouse.y = g[3] / 8;
     return (g[1]);
@@ -536,8 +536,8 @@ int nf;
                 e_make_xrect_abs (x, iold, x, iold, 1);
                 e_u_refresh ();
 #endif
-                fk_mouse (g);
-                for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3) {
+                fk_u_mouse (g);
+                for (g[1] = 1; g[1] != 0; fk_u_mouse (g), g[0] = 3) {
                     if ((inew = g[3] / 8) < y + 1) {
                         inew = y + 1;
                     }
@@ -546,7 +546,7 @@ int nf;
                     }
                     if (iold != inew) {
                         g[0] = 2;
-                        fk_mouse (g);
+                        fk_u_mouse (g);
                         e_pr_char (x, iold, MCI, frb);
                         e_pr_char (x, inew, MCA, frb);
 #ifdef NEWSTYLE
@@ -556,11 +556,11 @@ int nf;
                         e_u_refresh ();
                         iold = inew;
                         g[0] = 1;
-                        fk_mouse (g);
+                        fk_u_mouse (g);
                     };
                 }
                 g[0] = 2;
-                fk_mouse (g);
+                fk_u_mouse (g);
                 e_pr_char (x, inew, MCI, frb);
                 if (inew - y < 2) {
                     nret = 0;
@@ -596,8 +596,8 @@ int nf;
                 e_make_xrect_abs (iold, y, iold, y, 1);
                 e_u_refresh ();
 #endif
-                fk_mouse (g);
-                for (g[1] = 1; g[1] != 0; fk_mouse (g), g[0] = 3) {
+                fk_u_mouse (g);
+                for (g[1] = 1; g[1] != 0; fk_u_mouse (g), g[0] = 3) {
                     if ((inew = g[2] / 8) < x + 1) {
                         inew = x + 1;
                     }
@@ -606,7 +606,7 @@ int nf;
                     }
                     if (iold != inew) {
                         g[0] = 2;
-                        fk_mouse (g);
+                        fk_u_mouse (g);
                         e_pr_char (iold, y, MCI, frb);
                         e_pr_char (inew, y, MCA, frb);
 #ifdef NEWSTYLE
@@ -616,11 +616,11 @@ int nf;
                         e_u_refresh ();
                         iold = inew;
                         g[0] = 1;
-                        fk_mouse (g);
+                        fk_u_mouse (g);
                     };
                 }
                 g[0] = 2;
-                fk_mouse (g);
+                fk_u_mouse (g);
                 e_pr_char (inew, y, MCI, frb);
                 if (inew - y < 2) {
                     nret = 0;
@@ -654,7 +654,7 @@ e_eck_mouse (we_window_t * window, int sw)
     memcpy (&fe, &window->e, sizeof (we_point_t));
     g[0] = 3;
     g[1] = 1;
-    fk_mouse (g);
+    fk_u_mouse (g);
     xold = g[2] / 8;
     yold = g[3] / 8;
     xa = xold - window->a.x;
@@ -731,7 +731,7 @@ e_eck_mouse (we_window_t * window, int sw)
                 window->e.y = y;
             }
             g[0] = 2;
-            fk_mouse (g);
+            fk_u_mouse (g);
             window->view = e_ed_kst (window, window->view, 0);
             if (window->view == NULL) {
                 e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
@@ -744,13 +744,13 @@ e_eck_mouse (we_window_t * window, int sw)
                 fw->ye = window->e.y;
             }
             g[0] = 1;
-            fk_mouse (g);
+            fk_u_mouse (g);
             e_cursor (window, 0);
             e_write_screen (window, 0);
             e_u_refresh ();
         }
         g[0] = 3;
-        fk_mouse (g);
+        fk_u_mouse (g);
     }
     if ((memcmp (&fa, &window->a, sizeof (we_point_t))) ||
             (memcmp (&fe, &window->e, sizeof (we_point_t)))) {
@@ -1299,7 +1299,7 @@ W_OPTSTR *o;
 #endif
     g[0] = 3;
     g[1] = 1;
-    fk_mouse (g);
+    fk_u_mouse (g);
     xold = g[2] / 8;
     yold = g[3] / 8;
     xa = xold - o->xa;
@@ -1333,14 +1333,14 @@ W_OPTSTR *o;
             o->ye = o->ye + y - o->ya;
             o->ya = y;
             g[0] = 2;
-            fk_mouse (g);
+            fk_u_mouse (g);
             o->view =
                 e_change_pic (o->xa, o->ya, o->xe, o->ye, o->view, 1, o->frt);
             if (o->view == NULL) {
                 e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, o->window->colorset);
             }
             g[0] = 1;
-            fk_mouse (g);
+            fk_u_mouse (g);
             view->a.x = o->xa;
             view->a.y = o->ya;
             view->e.x = o->xe;
@@ -1348,7 +1348,7 @@ W_OPTSTR *o;
             e_close_view (view, 2);
         }
         g[0] = 3;
-        fk_mouse (g);
+        fk_u_mouse (g);
     }
     view->a.x = o->xa;
     view->a.y = o->ya;

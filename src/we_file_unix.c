@@ -1089,7 +1089,7 @@ WpeHandleFileManager (we_control_t * control)
                     fk_u_cursor (1);
 #if  MOUSE
                     g[0] = 2;
-                    fk_mouse (g);
+                    fk_u_mouse (g);
 #endif
                     e_u_sys_ini ();
                     printf (e_msg[ERR_EXEC], filen);
@@ -1112,7 +1112,7 @@ WpeHandleFileManager (we_control_t * control)
                     fk_u_cursor (0);
 #if MOUSE
                     g[0] = 1;
-                    fk_mouse (g);
+                    fk_u_mouse (g);
 #endif
                 }
                 c = cold;
@@ -3017,7 +3017,7 @@ WpeShell (we_window_t * window)
         fk_u_cursor (1);
 #if  MOUSE
         g[0] = 2;
-        fk_mouse (g);
+        fk_u_mouse (g);
 #endif
         e_u_s_sys_ini ();
     }
@@ -3028,7 +3028,7 @@ WpeShell (we_window_t * window)
         fk_u_cursor (0);
 #if  MOUSE
         g[0] = 1;
-        fk_mouse (g);
+        fk_u_mouse (g);
 #endif
     }
     return (0);

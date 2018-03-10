@@ -304,7 +304,7 @@ e_quit (we_window_t * window)
 #endif
 #if  MOUSE
     g[0] = 2;
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     e_cls (control->colorset->ws, ' ');
     fk_u_locate (0, 0);

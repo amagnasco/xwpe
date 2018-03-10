@@ -1612,7 +1612,7 @@ e_system (char *estr, we_control_t * control)
 
 #if  MOUSE
     g[0] = 2;
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     outp = e_open_view (0, 0, max_screen_cols() - 1, max_screen_lines() - 1, control->colorset->ws, 1);
     fk_u_locate (0, 0);
@@ -1629,7 +1629,7 @@ e_system (char *estr, we_control_t * control)
     fk_u_cursor (0);
 #if  MOUSE
     g[0] = 1;
-    fk_mouse (g);
+    fk_u_mouse (g);
 #endif
     return (ret);
 }

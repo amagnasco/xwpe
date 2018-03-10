@@ -107,7 +107,7 @@ WpeDllInit (int *argc, char **argv)
     e_u_sys_end = e_x_sys_end;
     e_u_system = e_x_system;
     fk_u_putchar = fk_x_putchar;
-    fk_mouse = fk_x_mouse;
+    fk_u_mouse = fk_x_mouse;
     e_u_cp_X_to_buffer = e_x_cp_X_to_buffer;
     e_u_copy_X_buffer = e_x_copy_X_buffer;
     e_u_paste_X_buffer = e_x_paste_X_buffer;
@@ -1015,13 +1015,13 @@ e_x_repaint_desk (we_window_t * window)
         e_X_l_pic = sv_pic;
     }
     g[0] = 2;
-    fk_mouse (g);
+    fk_u_mouse (g);
     end_repaint ();
     e_cursor (control->window[i], 1);
     g[0] = 0;
-    fk_mouse (g);
+    fk_u_mouse (g);
     g[0] = 1;
-    fk_mouse (g);
+    fk_u_mouse (g);
     return (0);
 }
 
