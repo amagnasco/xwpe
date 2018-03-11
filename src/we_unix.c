@@ -18,13 +18,8 @@
 #include <unistd.h>
 #endif
 
-// \todo TODO: checkout when and if we need XWPE_DLL
-#ifdef XWPE_DLL
-#include <dlfcn.h>
-#else
 int WpeXtermInit (int *argc, char **argv);
 int WpeTermInit (int *argc, char **argv);
-#endif
 
 #include <termios.h>
 #include <sys/types.h>
@@ -158,9 +153,6 @@ e_ini_unix (int *argc, char **argv)
     extern OPT opt[];
     int i, debug;
     struct sigaction act;
-#ifdef XWPE_DLL
-    int (*initfunc) (int *argc, char **argv);
-#endif
 
     setlocale (LC_ALL, "");
     u_fb = NULL;
@@ -185,23 +177,7 @@ e_ini_unix (int *argc, char **argv)
         e_we_sw |= 2;
     }
 #endif
-// \todo TODO: Checkout whether we need XWPE_DLL
-// \todo FIXME: adjusted code to read only libxwpe (common library), needs testing
-// \todo FIXME: code does not work: ld returns error (1). Is this code necessary?
-#ifdef XWPE_DLL
-    libxwpe = dlopen (LIBRARY_DIR "/libxwpe.so", RTLD_NOW);
-    if (!libxwpe) {
-        printf ("%s\n", dlerror ());
-        exit (0);
-    }
-    initfunc = dlsym (libxwpe, "WpeDllInit");
-    if (initfunc) {
-        initfunc (argc, argv);
-    } else {
-        printf ("%s\n", dlerror ());
-        exit (0);
-    }
-#else
+
 #ifndef NO_XWINDOWS
     if (WpeIsXwin ()) {
         WpeXtermInit (argc, argv);
@@ -210,7 +186,6 @@ e_ini_unix (int *argc, char **argv)
     {
         WpeTermInit (argc, argv);
     }
-#endif
     if (WpeIsProg ()) {
 #ifndef DEBUGGER
         opt[0].x = 2, opt[1].x = 7, opt[2].x = 14;

@@ -32,9 +32,7 @@
 #include<signal.h>
 #define KEYFN 42
 
-#ifndef XWPE_DLL
 #define WpeDllInit WpeTermInit
-#endif
 
 char *init_kkey (char *key);
 void e_endwin (void);

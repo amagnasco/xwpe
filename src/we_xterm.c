@@ -27,9 +27,7 @@
 #include <curses.h>
 #endif
 
-#ifndef XWPE_DLL
 #define WpeDllInit WpeXtermInit
-#endif
 
 /** global field filled in we_main.c and used in we_fl_unix.c */
 char *user_shell;
