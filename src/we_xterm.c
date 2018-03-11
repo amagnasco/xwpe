@@ -27,8 +27,6 @@
 #include <curses.h>
 #endif
 
-#define WpeDllInit WpeXtermInit
-
 /** global field filled in we_main.c and used in we_fl_unix.c */
 char *user_shell;
 
@@ -90,7 +88,7 @@ extern we_view_t *e_X_l_pic;
 extern struct mouse e_mouse;
 
 int
-WpeDllInit (int *argc, char **argv)
+WpeXtermInit (int *argc, char **argv)
 {
     e_s_u_clr = e_s_x_clr;
     e_n_u_clr = e_n_x_clr;

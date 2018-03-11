@@ -32,8 +32,6 @@
 #include<signal.h>
 #define KEYFN 42
 
-#define WpeDllInit WpeTermInit
-
 char *init_kkey (char *key);
 void e_endwin (void);
 int fk_t_putchar (int c);
@@ -90,7 +88,7 @@ char *tgoto ();
 #endif
 
 int
-WpeDllInit (int *argc, char **argv)
+WpeTermInit (int *argc, char **argv)
 {
     UNUSED (argc);
     UNUSED (argv);
