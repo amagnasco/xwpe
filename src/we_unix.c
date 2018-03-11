@@ -159,7 +159,7 @@ e_ini_unix (int *argc, char **argv)
     int i, debug;
     struct sigaction act;
 #ifdef XWPE_DLL
-    int initfunc (int *argc, char **argv);
+    int (*initfunc) (int *argc, char **argv);
 #endif
 
     setlocale (LC_ALL, "");
@@ -187,6 +187,7 @@ e_ini_unix (int *argc, char **argv)
 #endif
 // \todo TODO: Checkout whether we need XWPE_DLL
 // \todo FIXME: adjusted code to read only libxwpe (common library), needs testing
+// \todo FIXME: code does not work: ld returns error (1). Is this code necessary?
 #ifdef XWPE_DLL
     libxwpe = dlopen (LIBRARY_DIR "/libxwpe.so", RTLD_NOW);
     if (!libxwpe) {
