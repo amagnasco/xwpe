@@ -123,6 +123,8 @@ WpeCreateFileManager (int sw, we_control_t * control, char *dirct)
         }
     }
 
+    // FIXME: if j > max_edit_windows() then we have no more free window ID numbers. do something.
+
     /* change the shape of the mouse :-) */
     WpeMouseChangeShape (WpeWorkingShape);
 
@@ -1967,6 +1969,7 @@ WpeGetWastefile (char *file)
         sprintf (tmp, "%s/%s", tmp2, WASTEBASKET);
 
         /* if wastebasket dir does not exist, create it with error checking */
+        // FIXME: access checks with real user ID not with effective user ID! Fix!
         if (access (tmp, F_OK)) {
             if (mkdir (tmp, 0700)) {
                 free (tmp);
@@ -1974,6 +1977,7 @@ WpeGetWastefile (char *file)
             }
         }
         /* check for wastebasket's permissions */
+        // FIXME: access checks with real user ID not with effective user ID! Fix!
         if (access (tmp, R_OK | W_OK | X_OK)) {
             free (tmp);
             return NULL;
