@@ -1251,7 +1251,7 @@ e_info (we_window_t * window)
 /**
  * Make an Info button.
  *
- * \TODO This function assumes an unknown format.
+ * \TODO This function assumes an format unknown to current maintainer.
  *
  * Remark. Refactored name 'bg' into begin. See HBG for reference.
  * Refactored 'nd' to next data. Also suspicion.

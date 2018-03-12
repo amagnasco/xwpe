@@ -2077,6 +2077,7 @@ WpeFilenameToPathFile (char *filename, char **path, char **file)
                 filename += 3;
             }
             *path = malloc ((strlen (cur_dir) + len + 2) * sizeof (char));
+            // \todo FIXME: add error checking and handling
             strcpy (*path, cur_dir);
             strcat (*path, DIRS);
             strncat (*path, filename, len);

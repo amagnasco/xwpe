@@ -54,7 +54,6 @@ static char *start_att_bold;
 /* The attribute leave_att_normal switches all attributes off, leaving none. So the
  * conventional meaning of leave is double. It leaves all attributes and returns
  * to normal (no attributes set). So it is the same as enter attr normal.
- * TODO consider replacing leave_att_normal by start_att_normal.
  */
 static char *leave_att_normal; // attr leave normal: turn off all attributes
 static char *leave_att_standout;
@@ -372,7 +371,7 @@ e_begscr ()
     if (kbdflgs == -1) {
         int save_errno = errno;
         if (save_errno == EINVAL) {
-            // TODO show error msg: kernel does not understand F_GETFL feature.
+            // show error msg: kernel does not understand F_GETFL feature.
             e_exitm("[e_begscr] cmd F_GETFL is unknown to current linux O.S.\n", 1);
             exit(0);
         }

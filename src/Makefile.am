@@ -25,7 +25,8 @@ include_HEADERS = 	attrb.h edit.h globals.h keys.h \
 		WeLinux.h we_main.h we_menue.h we_mouse.h \
 		we_opt.h we_prog.h WeProg.h we_progn.h \
 		WeString.h WeSyntax.h we_term.h we_unix.h \
-		we_wind.h we_xterm.h WeXterm.h we_screen.h
+		we_wind.h we_xterm.h WeXterm.h we_screen.h \
+		dbg.h
 if HAVE_X11
    bin_PROGRAMS += xwpe xwe
 xwpe_SOURCES = we_main.c 

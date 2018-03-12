@@ -5,6 +5,7 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "config.h"
+#include "dbg.h"
 #include <string.h>
 #include <errno.h>
 #include "keys.h"
@@ -219,11 +220,12 @@ init_spchr (char c)
     if (spc_st[i] && spc_st[i + 1]) {
         pt = malloc ((strlen (start_alt_charset()) + strlen (end_alt_charset()) + 2)
                      * sizeof (char));
-        if (pt) {
-            sprintf (pt, "%s%c%s", start_alt_charset(), spc_st[i + 1], end_alt_charset());
-        }
+        check(pt, "Out of memory");
+        sprintf (pt, "%s%c%s", start_alt_charset(), spc_st[i + 1], end_alt_charset());
     }
     return (pt);
+error:
+    return NULL;
 }
 
 int svflgs;
@@ -244,17 +246,14 @@ fk_t_putchar (int c)
 
 /**
  * Terminal initialization.
- *
- * \todo Why does this call e_endwin()? That is ncurses way of closing a window!
  */
-
 int
 e_t_sys_ini ()
 {
     e_t_refresh ();
     tcgetattr (STDIN_FILENO, &ttermio);
     svflgs = fcntl (STDIN_FILENO, F_GETFL, 0);
-    e_endwin ();
+    e_endwin ();	// ncurses close window.
     return (0);
 }
 

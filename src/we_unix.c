@@ -95,13 +95,17 @@ int (*e_u_sys_end) (void);
  */
 int (*e_u_system) (const char *exe);
 /**
- * This function does some sort of screen switch: \todo: what does it do exactly?
+ * \todo: what does it do exactly?
+ *
+ * This function does some sort of screen switch:
  *
  * filled with e_t_d_switch_out for non-X terminal or WpeZeroFunction for X terminal.
  */
 int (*e_u_d_switch_out) (int sw);
 /**
- * This function does some sort of screen switch: \todo: what does it exactly do?
+ * \todo: what does it do exactly?
+ *
+ * This function does some sort of screen switch:
  *
  * filled with e_t_switch_screen for non-X terminal or WpeZeroFunction for X terminal.
  */
