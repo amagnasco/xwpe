@@ -36,7 +36,6 @@
 char *init_kkey (char *key);
 void e_endwin (void);
 int fk_t_putchar (int c);
-int fk_attrset (int a);
 int e_t_refresh (void);
 int e_t_sys_ini (void);
 int e_t_sys_end (void);
@@ -64,7 +63,7 @@ extern struct termios otermio;
 extern struct termios ntermio; //s
 extern struct termios ttermio;
 
-#if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
+#if !defined HAVE_LIBNCURSES
 char area[315];
 char *ap = area;
 char tcbuf[1024];
@@ -74,8 +73,6 @@ int tgetnum ();
 char *tgoto ();
 #define tigetstr(k) tgetstr(k, &ap)
 
-//#define term_move(x,y) e_putp(tgoto(cur_rc, x, y)) --> transformed to function
-//#define term_refresh() fflush(stdout) --> transformed to function
 #else
 /* Because term.h defines "buttons" it messes up we_gpm.c if in edit.h */
 #include <term.h>
@@ -84,8 +81,6 @@ char *tgoto ();
 #define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
 #define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
 
-//#define term_move(x,y) move(y, x) --> transformed to function
-//#define term_refresh() refresh() --> transformed to function
 #endif
 
 int
