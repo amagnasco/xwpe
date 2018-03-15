@@ -770,6 +770,16 @@ fk_colset (int c)
         attrset (A_NORMAL);
     }
     color_set ((bg * 8) + c % 8, NULL);
+#else
+    if ((c %= 16) >= col_num) {
+        fk_putp(att_bo);
+        e_putp(tparm1(col_fg, c % col_num));
+        e_putp(tparm1(col_bg, bg));
+    } else {
+        fk_putp(ratt_bo);
+        e_putp(tparm1(col_fg, c));
+        e_putp(tparm1(col_bg, bg));
+    }
 #endif // #ifdef NCURSES
 #endif // #ifdef TERMCAP : !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
 }
