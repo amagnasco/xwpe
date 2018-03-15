@@ -77,10 +77,6 @@ char *tgoto ();
 /* Because term.h defines "buttons" it messes up we_gpm.c if in edit.h */
 #include <term.h>
 
-/* AIX requires that tparm has 10 arguments. */
-#define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
-#define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
-
 #endif
 
 int

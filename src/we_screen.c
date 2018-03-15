@@ -30,6 +30,11 @@
 #include "we_screen.h"
 #include "we_unix.h"
 
+
+/* AIX requires that tparm has 10 arguments. */
+#define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
+#define tparm2(aa,bb,cc) tparm((aa), (bb), (cc), 0, 0, 0, 0, 0, 0, 0)
+
 /** global field also used in we_xterm.c */
 int cur_x = -1;
 /** global field also used in we_xterm.c */
@@ -853,7 +858,7 @@ fk_t_locate (int x, int y)
 int term_move(int x, int y)
 {
 #if !defined HAVE_LIBNCURSES && !defined HAVE_LIBCURSES
-    return e_putp(tgoto(cur_rc, x, y));
+    return e_putp(tgoto(cur_rc, y, x));
 #else
     return move(y,x);
 #endif
