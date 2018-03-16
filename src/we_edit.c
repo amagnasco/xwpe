@@ -251,8 +251,8 @@ e_edit (we_control_t * control, char *filename)
     window->screen->fe = e_set_pnt (0, 0);
     window->screen->colorset = window->colorset;
 #ifdef DEBUGGER
-    window->screen->brp = malloc (sizeof (int));
-    window->screen->brp[0] = 0;
+    window->screen->breakpoint = malloc (sizeof (int));
+    window->screen->breakpoint[0] = 0;
     window->screen->da.y = -1;
 #endif
     window->dirct = path;

@@ -256,7 +256,7 @@ typedef struct SCHRM {
     we_colorset_t* colorset;
 #ifdef DEBUGGER
     we_point_t da, de;
-    int* brp;
+    int* breakpoint;
 #endif
 } we_screen_t;
 

@@ -1214,19 +1214,19 @@ e_brk_schirm (we_window_t * window)
     int n;
 
     we_screen_t *s = window->screen;
-    s->brp = realloc (s->brp, sizeof (int));
-    s->brp[0] = 0;
+    s->breakpoint = realloc (s->breakpoint, sizeof (int));
+    s->breakpoint[0] = 0;
     for (i = 0; i < e_d_nbrpts; i++) {
         if (!strcmp (window->datnam, e_d_sbrpts[i])) {
-            for (n = 1; n <= (s->brp[0]); n++)
-                if (e_d_ybrpts[i] == (s->brp[n])) {
+            for (n = 1; n <= (s->breakpoint[0]); n++)
+                if (e_d_ybrpts[i] == (s->breakpoint[n])) {
                     break;
                 }
-            if (n > s->brp[0]) {
+            if (n > s->breakpoint[0]) {
                 /****  New break, not in global_screen  ****/
-                (s->brp[0])++;
-                s->brp = realloc (s->brp, (s->brp[0] + 1) * sizeof (int));
-                s->brp[s->brp[0]] = e_d_ybrpts[i] - 1;
+                (s->breakpoint[0])++;
+                s->breakpoint = realloc (s->breakpoint, (s->breakpoint[0] + 1) * sizeof (int));
+                s->breakpoint[s->breakpoint[0]] = e_d_ybrpts[i] - 1;
             }
         }
     }
@@ -1398,7 +1398,7 @@ e_remove_breakpoints (we_window_t * window)
     }
     for (i = control->mxedt; i >= 0; i--)
         if (DTMD_ISTEXT (control->window[i]->dtmd)) {
-            control->window[i]->screen->brp[0] = 0;
+            control->window[i]->screen->breakpoint[0] = 0;
         }
     e_d_nbrpts = 0;
     if (e_d_sbrpts) {
@@ -1597,13 +1597,13 @@ e_make_breakpoint (we_window_t * window, int sw)
         if (!e_check_c_file (window->datnam)) {
             return (e_error (e_p_msg[ERR_NO_CFILE], ERROR_MSG, window->colorset));
         }
-        for (i = 0; i < s->brp[0] && s->brp[i + 1] != buffer->cursor.y; i++)
+        for (i = 0; i < s->breakpoint[0] && s->breakpoint[i + 1] != buffer->cursor.y; i++)
             ;
-        if (i < s->brp[0]) {
-            for (i++; i < s->brp[0]; i++) {
-                s->brp[i] = s->brp[i + 1];
+        if (i < s->breakpoint[0]) {
+            for (i++; i < s->breakpoint[0]; i++) {
+                s->breakpoint[i] = s->breakpoint[i + 1];
             }
-            (s->brp[0])--;
+            (s->breakpoint[0])--;
             for (i = 0; i < e_d_nbrpts && (strcmp (e_d_sbrpts[i], window->datnam) ||
                                            e_d_ybrpts[i] != buffer->cursor.y + 1); i++)
                 ;
@@ -1758,9 +1758,9 @@ e_make_breakpoint (we_window_t * window, int sw)
                     }
                 }
             }
-            (s->brp[0])++;
-            s->brp = realloc (s->brp, (s->brp[0] + 1) * sizeof (int));
-            s->brp[s->brp[0]] = buffer->cursor.y;
+            (s->breakpoint[0])++;
+            s->breakpoint = realloc (s->breakpoint, (s->breakpoint[0] + 1) * sizeof (int));
+            s->breakpoint[s->breakpoint[0]] = buffer->cursor.y;
         }
     } else {
         if (e_deb_type == 0) {
@@ -2831,7 +2831,6 @@ e_d_goto_break (char *file, int line, we_window_t * window)
     int i;
     char str[120];
 
-    /*   if(global_screen != e_d_save_schirm) e_u_d_switch_out(0);  */
     e_u_d_switch_out (0);
     ftmp.edit_control = control;
     ftmp.colorset = window->colorset;

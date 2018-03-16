@@ -585,8 +585,8 @@ e_pr_c_line (int y, we_window_t * window)
         e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, k, &frb, window->c_st, n_nd, &n_bg, &mcsw,
                   &bssw, &svmsw, s);
 #ifdef DEBUGGER
-    for (j = 1; j <= s->brp[0]; j++)
-        if (s->brp[j] == y) {
+    for (j = 1; j <= s->breakpoint[0]; j++)
+        if (s->breakpoint[j] == y) {
             fsw = 1;
             break;
         }

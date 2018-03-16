@@ -1248,8 +1248,8 @@ e_pr_line (int y, we_window_t * window)
         i--;
     }
 #ifdef DEBUGGER
-    for (j = 1; j <= s->brp[0]; j++)
-        if (s->brp[j] == y) {
+    for (j = 1; j <= s->breakpoint[0]; j++)
+        if (s->breakpoint[j] == y) {
             fsw = 1;
             break;
         }
