@@ -390,7 +390,7 @@ e_edit (we_control_t * control, char *filename)
     }
     e_firstl (window, 1);
     e_zlsplt (window);
-    e_brk_schirm (window);
+    e_sync_breakpoints_to_screen (window);
     e_write_screen (window, 1);
     e_cursor (window, 1);
     return (0);

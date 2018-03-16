@@ -1208,7 +1208,7 @@ e_make_stack (we_window_t * window)
 /** resyncing global_screen - screen output with breakpoints **/
 
 int
-e_brk_schirm (we_window_t * window)
+e_sync_breakpoints_to_screen (we_window_t * window)
 {
     int i;
     int n;
@@ -1287,7 +1287,7 @@ e_d_reinit_brks (we_window_t * window, char *prj)
 
                     for (g = window->edit_control->mxedt; g > 0; g--)
                         if (!strcmp (window->edit_control->window[g]->datnam, name)) {
-                            e_brk_schirm (window->edit_control->window[g]);
+                            e_sync_breakpoints_to_screen (window->edit_control->window[g]);
                         }
                 }
             }

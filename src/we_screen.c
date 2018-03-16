@@ -10,6 +10,7 @@
 /* Copyright (C) 1993 Fred Kruse                          */
 /**********************************************************/
 #include "config.h"
+#include "model.h"
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>

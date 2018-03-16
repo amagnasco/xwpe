@@ -50,7 +50,7 @@ int e_g_sys_end(void);
 int e_test_command(char* str);
 
 /**** functions for breakpoints resyncing, reloading etc ****/
-int e_brk_schirm(we_window_t* window);
+int e_sync_breakpoints_to_screen(we_window_t* window);
 int e_brk_recalc(we_window_t* window, int start, int len);
 int e_d_reinit_brks(we_window_t* window, char* prj);
 
