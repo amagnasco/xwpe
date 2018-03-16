@@ -14,10 +14,10 @@
 #include <string.h>
 #include <errno.h>
 
-//#ifdef UNIX
+#ifdef UNIX
 #include <unistd.h>
 #include <termios.h>
-//#endif
+#endif
 
 #if defined(HAVE_LIBNCURSES) || defined(HAVE_LIBCURSES)
 #include <curses.h>
@@ -29,7 +29,6 @@
 
 #include "we_screen.h"
 #include "we_unix.h"
-
 
 /* AIX requires that tparm has 10 arguments. */
 #define tparm1(aa,bb) tparm((aa), (bb), 0, 0, 0, 0, 0, 0, 0, 0)
