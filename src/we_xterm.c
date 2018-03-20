@@ -1106,6 +1106,7 @@ e_x_paste_X_buffer (we_window_t * window)
         n = s0->mark_end.x - s0->mark_begin.x;
 #if defined SELECTION
         WpeXInfo.selection = malloc (n + 1);
+        // TODO: check malloc result
         strncpy ((char *) WpeXInfo.selection,
                  (char *) b0->buflines[s0->mark_begin.y].s + s0->mark_begin.x, n);
         WpeXInfo.selection[n] = 0;
@@ -1287,4 +1288,4 @@ void e_x_reinit_marked_area(we_screen_t *screen, we_buffer_t *buffer)
     screen->mark_end.x = buffer->buflines[buffer->mxlines - 1].len;
 }
 
-#endif
+#endif // ifndef NO_XWINDOWS

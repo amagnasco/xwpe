@@ -1204,8 +1204,8 @@ e_make_stack (we_window_t * window)
     return (0);
 }
 
-/**************************************************************/
-/** resyncing global_screen - screen output with breakpoints **/
+/**********************************************/
+/** resyncing screen output with breakpoints **/
 
 int
 e_sync_breakpoints_to_screen (we_window_t * window)
@@ -1223,7 +1223,7 @@ e_sync_breakpoints_to_screen (we_window_t * window)
                     break;
                 }
             if (n > s->breakpoint[0]) {
-                /****  New break, not in global_screen  ****/
+                /****  New breakpoint, not in global screen  ****/
                 (s->breakpoint[0])++;
                 s->breakpoint = realloc (s->breakpoint, (s->breakpoint[0] + 1) * sizeof (int));
                 s->breakpoint[s->breakpoint[0]] = e_d_ybrpts[i] - 1;
@@ -1283,7 +1283,7 @@ e_d_reinit_brks (we_window_t * window, char *prj)
                     strcpy (e_d_sbrpts[e_d_nbrpts], name);
                     e_d_nbrpts++;
 
-                    /**** needed to keep global_screen in sync ****/
+                    /**** needed to keep global screen in sync ****/
 
                     for (g = window->edit_control->mxedt; g > 0; g--)
                         if (!strcmp (window->edit_control->window[g]->datnam, name)) {

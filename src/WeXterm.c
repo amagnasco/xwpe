@@ -521,4 +521,4 @@ WpeXMouseRestoreShape ()
                    WpeXMouseCursor[WpeXInfo.shape_list[0]]);
 }
 
-#endif
+#endif // ifndef NO_XWINDOWS
