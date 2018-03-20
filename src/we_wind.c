@@ -543,7 +543,7 @@ e_write_screen (we_window_t * window, int sw)
     if (window->dtmd == DTMD_FILEMANAGER) {
         return (WpeDrawFileManager (window));
     } else if (window->dtmd == DTMD_DATA) {
-        return (e_data_schirm (window));
+        return (e_data_screen (window));
     } else if (window->dtmd == DTMD_FILEDROPDOWN)
         return (e_pr_file_window
                 ((FLWND *) window->buffer, 1, sw,

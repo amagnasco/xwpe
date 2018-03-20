@@ -25,7 +25,7 @@ struct dirfile* WpeGraphicalDirTree(struct dirfile* cd, struct dirfile* dd,
 int e_funct(we_window_t* window);
 int e_funct_in(we_window_t* window);
 int e_data_first(int sw, we_control_t* control, char* nstr);
-int e_data_schirm(we_window_t* window);
+int e_data_screen(we_window_t* window);
 
 #endif
 

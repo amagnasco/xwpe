@@ -3730,12 +3730,12 @@ e_data_first (int sw, we_control_t * control, char *nstr)
         e_ed_rahmen (control->window[control->mxedt - 1], 0);
     }
     e_firstl (window, 1);
-    e_data_schirm (window);
+    e_data_screen (window);
     return (0);
 }
 
 int
-e_data_schirm (we_window_t * window)
+e_data_screen (we_window_t * window)
 {
     int i, j;
     FLWND *fw = (FLWND *) window->buffer;

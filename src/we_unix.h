@@ -37,7 +37,7 @@ int e_frb_t_menue(int sw, int xa, int ya, we_window_t* window, int md);
 void e_pr_t_colorsets(int xa, int ya, int x, int y, we_window_t* window, int sw);
 int e_ini_unix(int* argc, char** argv);
 int e_recover(we_control_t* control);
-int e_ini_schirm(int argc, char** argv);
+int e_ini_screen(int argc, char** argv);
 
 extern int (*fk_u_locate)(int x, int y);
 extern int (*fk_u_cursor)(int x);

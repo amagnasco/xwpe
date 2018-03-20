@@ -50,9 +50,7 @@
 int e_d_delbreak (we_window_t * window);
 int e_d_error (char *s);
 
-#define MAXOUT  2 * max_screen_cols() * max_screen_lines()
-
-char *e_debugger, *e_deb_swtch = NULL, *e_d_save_schirm;
+char *e_debugger, *e_deb_swtch = NULL, *e_d_save_screen;
 int e_d_swtch = 0, rfildes[2], ofildes, e_d_pid = 0;
 int e_d_nbrpts = 0, e_d_zwtchs = 0, *e_d_ybrpts, *e_d_nrbrpts;
 
@@ -1240,7 +1238,7 @@ e_d_reinit_brks (we_window_t * window, char *prj)
 {
     int line, e, g, q, r;
     char *p, *name, *prj2;
-    /***  remove breakpoints, schirms will be synced later  ***/
+    /***  remove breakpoints, screens will be synced later  ***/
 
     e_remove_breakpoints (window);
     g = strlen (prj);
