@@ -10,6 +10,7 @@
                                        Copyright by F.Kruse       */
 
 /* includes */
+#include "dbg.h"
 #include "config.h"
 #include <string.h>
 #include <signal.h>
@@ -51,9 +52,9 @@ main (int argc, char **argv)
 
     control = e_control_new ();
     if (control == NULL) {
-        printf (" Fatal Error: Failed to create control.\n");
         return 0;
     }
+
     e_ini_unix (&argc, argv);
     e_u_switch_screen (1);
     fb = e_ini_colorset ();

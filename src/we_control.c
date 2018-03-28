@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include "dbg.h"
 #include <string.h>
 #include "messages.h"
 #include "keys.h"
@@ -321,12 +322,13 @@ int max_edit_windows()
 we_control_t *e_control_new ()
 {
     we_control_t *control = (we_control_t *) malloc (sizeof(we_control_t));
-    if (control == NULL) {
-        printf (" Fatal Error: %s\n", e_msg[ERR_LOWMEM]);
-        return NULL;
-    }
+    check_mem(control);
+
     e_control_init (control);
     return control;
+
+error:
+    return NULL;
 }
 
 void

@@ -182,14 +182,20 @@ e_ini_unix (int *argc, char **argv)
     }
 #endif
 
-#ifndef NO_XWINDOWS
-    if (WpeIsXwin ()) {
-        WpeXtermInit (argc, argv);
-    } else
-#endif
-    {
-        WpeTermInit (argc, argv);
+#ifdef NO_XWINDOWS
+    // We compile without XWindows
+    WpeTermInit(argc, argv);
+#else
+    // XWindows is installed
+    if (WpeIsXwin()) {
+        // if we are running from XWindows
+        WpeXtermInit(argc, argv);
+    } else {
+        // if we are not running from XWindows
+        WpeTermInit(argc,argv);
     }
+#endif
+
     if (WpeIsProg ()) {
 #ifndef DEBUGGER
         opt[0].x = 2, opt[1].x = 7, opt[2].x = 14;
