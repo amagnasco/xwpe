@@ -19,12 +19,12 @@
 
 int e_p_show_messages (we_window_t * window);
 int e_p_show_watches (we_window_t * window);
-int e_blck_gt_beg (we_window_t * window);
-int e_blck_gt_end (we_window_t * window);
-int e_blck_mrk_line (we_window_t * window);
-int e_blck_mrk_all (we_window_t * window);
-int e_blck_to_left (we_window_t * window);
-int e_blck_to_right (we_window_t * window);
+int e_block_gt_beg (we_window_t * window);
+int e_block_gt_end (we_window_t * window);
+int e_block_mrk_line (we_window_t * window);
+int e_block_mrk_all (we_window_t * window);
+int e_block_to_left (we_window_t * window);
+int e_block_to_right (we_window_t * window);
 int e_cl_project (we_window_t * window);
 int e_p_add_item (we_window_t * window);
 int e_p_del_item (we_window_t * window);
@@ -178,7 +178,7 @@ WpeHandleMainmenu (int n, we_window_t * window)
     mainmenu[2].menuitems[3] =
         WpeFillSubmenuItem ("Show Buffer         ^W", 0, 'S', e_show_clipboard);
     mainmenu[2].menuitems[4] =
-        WpeFillSubmenuItem ("Delete            ^Del", 0, 'D', e_blck_del);
+        WpeFillSubmenuItem ("Delete            ^Del", 0, 'D', e_block_del);
     mainmenu[2].menuitems[5] =
         WpeFillSubmenuItem ("Undo                ^U", 0, 'U', e_make_undo);
     mainmenu[2].menuitems[6] =
@@ -225,33 +225,33 @@ WpeHandleMainmenu (int n, we_window_t * window)
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     }
     mainmenu[4].menuitems[0] =
-        WpeFillSubmenuItem ("Begin Mark      ^K B", 0, 'B', e_blck_begin);
+        WpeFillSubmenuItem ("Begin Mark      ^K B", 0, 'B', e_block_begin);
     mainmenu[4].menuitems[1] =
-        WpeFillSubmenuItem ("End Mark        ^K K", 0, 'E', e_blck_end);
+        WpeFillSubmenuItem ("End Mark        ^K K", 0, 'E', e_block_end);
     mainmenu[4].menuitems[2] =
-        WpeFillSubmenuItem ("Mark WhOle      ^K X", 7, 'O', e_blck_mrk_all);
+        WpeFillSubmenuItem ("Mark WhOle      ^K X", 7, 'O', e_block_mrk_all);
     mainmenu[4].menuitems[3] =
-        WpeFillSubmenuItem ("Mark Line       ^K L", 5, 'L', e_blck_mrk_line);
+        WpeFillSubmenuItem ("Mark Line       ^K L", 5, 'L', e_block_mrk_line);
     mainmenu[4].menuitems[4] =
-        WpeFillSubmenuItem ("Goto Begin      ^K A", 0, 'G', e_blck_gt_beg);
+        WpeFillSubmenuItem ("Goto Begin      ^K A", 0, 'G', e_block_gt_beg);
     mainmenu[4].menuitems[5] =
-        WpeFillSubmenuItem ("Goto ENd        ^K Z", 6, 'N', e_blck_gt_end);
+        WpeFillSubmenuItem ("Goto ENd        ^K Z", 6, 'N', e_block_gt_end);
     mainmenu[4].menuitems[6] =
-        WpeFillSubmenuItem ("Copy            ^K C", 0, 'C', e_blck_copy);
+        WpeFillSubmenuItem ("Copy            ^K C", 0, 'C', e_block_copy);
     mainmenu[4].menuitems[7] =
-        WpeFillSubmenuItem ("Move            ^K V", 0, 'M', e_blck_move);
+        WpeFillSubmenuItem ("Move            ^K V", 0, 'M', e_block_move);
     mainmenu[4].menuitems[8] =
-        WpeFillSubmenuItem ("Delete          ^K Y", 0, 'D', e_blck_del);
+        WpeFillSubmenuItem ("Delete          ^K Y", 0, 'D', e_block_del);
     mainmenu[4].menuitems[9] =
-        WpeFillSubmenuItem ("Hide            ^K H", 0, 'H', e_blck_hide);
+        WpeFillSubmenuItem ("Hide            ^K H", 0, 'H', e_block_hide);
     mainmenu[4].menuitems[10] =
-        WpeFillSubmenuItem ("Read            ^K R", 0, 'R', e_blck_read);
+        WpeFillSubmenuItem ("Read            ^K R", 0, 'R', e_block_read);
     mainmenu[4].menuitems[11] =
-        WpeFillSubmenuItem ("Write           ^K W", 0, 'W', e_blck_write);
+        WpeFillSubmenuItem ("Write           ^K W", 0, 'W', e_block_write);
     mainmenu[4].menuitems[12] =
-        WpeFillSubmenuItem ("Move to RIght   ^K I", 9, 'I', e_blck_to_right);
+        WpeFillSubmenuItem ("Move to RIght   ^K I", 9, 'I', e_block_to_right);
     mainmenu[4].menuitems[13] =
-        WpeFillSubmenuItem ("Move to LefT    ^K U", 11, 'T', e_blck_to_left);
+        WpeFillSubmenuItem ("Move to LefT    ^K U", 11, 'T', e_block_to_left);
     mainmenu[4].menuitems[14] =
         WpeFillSubmenuItem ("ChAnge Case     ^K D", 2, 'A', e_changecase_dialog);
 #ifdef PROG

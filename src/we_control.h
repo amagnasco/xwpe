@@ -31,14 +31,6 @@
 #include "config.h"
 #include "edit.h"
 
-typedef struct CNT we_control_t;
-
-/* prototypes */
-void we_colorset_init(we_colorset_t* fb);
-we_colorset_t* e_ini_colorset();
-we_control_t *e_control_new();
-int max_edit_windows();
-
 /** Maximum number of open edit windows.
  *
  * This define is only meant for internal use. Do not
@@ -49,6 +41,7 @@ int max_edit_windows();
  * */
 #define MAX_EDIT_WINDOWS 35
 
+typedef struct CNT we_control_t;
 struct CNT {
     int major, minor, patch; /**< Version of option file. */
     int maxcol, tabn;
@@ -67,6 +60,12 @@ struct CNT {
     we_window_t* window[MAX_EDIT_WINDOWS + 1];
     char dtmd, autosv;
 };
+
+/* prototypes */
+void we_colorset_init(we_colorset_t* fb);
+we_colorset_t* e_ini_colorset();
+we_control_t *e_control_new();
+int max_edit_windows();
 
 extern char *e_hlp;
 extern WOPT *blst;

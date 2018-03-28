@@ -69,7 +69,10 @@ main (int argc, char **argv)
     }
 #ifdef HAVE_MKDTEMP
     e_tmp_dir = strdup ("/tmp/xwpe_XXXXXX");
-    if (mkdtemp (e_tmp_dir) == NULL)
+    if (mkdtemp (e_tmp_dir) == NULL) {
+        perror ("Xwpe: ");
+        return 1;
+    }
 #else
 #if defined(HAVE_TEMPNAM)
     e_tmp_dir = tempnam (NULL, "xwpe_");
@@ -78,12 +81,11 @@ main (int argc, char **argv)
     sprintf (e_tmp_dir, "/tmp/we_%u", (unsigned) getpid ());
     e_tmp_dir = realloc (e_tmp_dir, (strlen (e_tmp_dir) + 1) * sizeof (char));
 #endif
-    if ((e_tmp_dir == NULL) || (mkdir (e_tmp_dir, 0700) != 0))
-#endif
-    {
+    if ((e_tmp_dir == NULL) || (mkdir (e_tmp_dir, 0700) != 0)) {
         perror ("Xwpe: ");
         return 1;
     }
+#endif
 
     for (i = 1; i < argc; i++) {
         if (*argv[i] == '-') {

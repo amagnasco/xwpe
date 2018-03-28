@@ -826,7 +826,7 @@ e_tst_fkt (int c, we_control_t * e)
         e_show_clipboard (window);
         break;
     case CtrlDel:
-        e_blck_del (window);
+        e_block_del (window);
         break;
     case UNDO:
     case AltBS:
@@ -929,7 +929,7 @@ e_ctrl_k (we_window_t * window)
         e_write_screen (window, 1);
         break;
     case 'C':
-        e_blck_copy (window);
+        e_block_copy (window);
         break;
     case 'D':
         e_changecase_dialog (window);
@@ -938,10 +938,10 @@ e_ctrl_k (we_window_t * window)
         e_mk_beauty (1, 3, window);
         break;
     case 'H':
-        e_blck_hide (window);
+        e_block_hide (window);
         break;
     case 'I':
-        e_blck_to_right (window);
+        e_block_to_right (window);
         break;
     case 'K':
         screen->mark_end = e_set_pnt (buffer->cursor.x, buffer->cursor.y);
@@ -960,16 +960,16 @@ e_ctrl_k (we_window_t * window)
         e_write_screen (window, 1);
         break;
     case 'R':
-        e_blck_read (window);
+        e_block_read (window);
         break;
     case 'U':
-        e_blck_to_left (window);
+        e_block_to_left (window);
         break;
     case 'V':
-        e_blck_move (window);
+        e_block_move (window);
         break;
     case 'W':
-        e_blck_write (window);
+        e_block_write (window);
         break;
     case 'X':
         screen->mark_begin.x = 0;
@@ -979,7 +979,7 @@ e_ctrl_k (we_window_t * window)
         e_write_screen (window, 1);
         break;
     case 'Y':
-        e_blck_del (window);
+        e_block_del (window);
         break;
     case 'Z':
         buffer->cursor = screen->mark_end;
@@ -2582,13 +2582,13 @@ e_make_rudo (we_window_t * window, int doing_redo)
     } else if (undo->type == 'c') {
         buffer->cursor = s->mark_begin = undo->begin_block;
         s->mark_end = undo->end_block;
-        /*	e_blck_clear(buffer, s);   */
-        e_blck_del (window);
+        /*	e_block_clear(buffer, s);   */
+        e_block_del (window);
     } else if (undo->type == 'v') {
         buffer->cursor = undo->cursor_start;
         s->mark_begin = undo->begin_block;
         s->mark_end = undo->end_block;
-        e_blck_move (window);
+        e_block_move (window);
     } else if (undo->type == 'd') {
         we_buffer_t *bn = (we_buffer_t *) undo->u.pt;
         global_disable_add_undo = 1;

@@ -3278,7 +3278,7 @@ WpeGrepWindow (we_window_t * window)
     if (!o) {
         return (-1);
     }
-    if (e_blck_dup (strTemp, window)) {
+    if (e_block_dup (strTemp, window)) {
         strcpy (find->search, strTemp);
         find->sn = strlen (find->search);
     }
