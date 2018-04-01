@@ -11,8 +11,7 @@
 #include "we_mouse.h"
 #include "we_opt.h"
 
-typedef enum wpeMouseShape
-{
+typedef enum wpeMouseShape {
     WpeEditingShape,
     WpeDebuggingShape,
     WpeWorkingShape,
@@ -35,10 +34,10 @@ char* e_file_info(char* filen, char* str, int* num, int sw);
 void ini_repaint(we_control_t* control);
 void end_repaint(void);
 int e_frb_t_menue(int sw, int xa, int ya, we_window_t* window, int md);
-void e_pr_t_col_kasten(int xa, int ya, int x, int y, we_window_t* window, int sw);
+void e_pr_t_colorsets(int xa, int ya, int x, int y, we_window_t* window, int sw);
 int e_ini_unix(int* argc, char** argv);
 int e_recover(we_control_t* control);
-int e_ini_schirm(int argc, char** argv);
+int e_ini_screen(int argc, char** argv);
 
 extern int (*fk_u_locate)(int x, int y);
 extern int (*fk_u_cursor)(int x);
@@ -47,9 +46,9 @@ extern int (*u_bioskey)(void);
 extern int (*e_frb_u_menue)(int sw, int xa, int ya, we_window_t* window, int md);
 extern we_color_t (*e_s_u_clr)(int fg_color, int bg_color);
 extern we_color_t (*e_n_u_clr)(int fg_bg_color);
-extern void (*e_pr_u_col_kasten)(int xa, int ya, int x,
+extern void (*e_pr_u_colorsets)(int xa, int ya, int x,
                                  int y, we_window_t* window, int sw);
-extern int (*fk_mouse)(int g[]);
+extern int (*fk_u_mouse)(int g[]);
 extern int (*e_u_refresh)(void);
 extern int (*e_u_getch)(void);
 extern int (*e_u_sys_ini)(void);

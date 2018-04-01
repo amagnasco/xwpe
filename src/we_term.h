@@ -25,23 +25,11 @@
 #define e_putp(s) tputs((s), 1, fk_u_putchar)
 #endif
 
-extern char *global_screen;
-extern char *global_alt_screen;
-
-extern int MAXSLNS, MAXSCOL;
-
-#if defined(NEWSTYLE) && !defined(NO_XWINDOWS)
-extern char *extbyte;
-extern char *altextbyte;
-#endif
-
-extern char *att_no;
-extern int col_num;
 extern int cur_x;
 extern int cur_y;
 extern char *ctree[5];
 
 int e_abs_refr(void);
-int e_ini_size(void);
+int e_alloc_global_screen(void);
 
 #endif

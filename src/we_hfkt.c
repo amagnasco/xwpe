@@ -11,6 +11,7 @@
 #include "keys.h"
 #include "model.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "WeString.h"
 #include "we_hfkt.h"
@@ -24,8 +25,9 @@ e_num_kst (char *s, int num, int max, we_window_t * window, int n, int sw)
     char *tmp = malloc ((strlen (s) + 2) * sizeof (char));
     W_OPTSTR *o = e_init_opt_kst (window);
 
-    if (!o || !tmp)
+    if (!o || !tmp) {
         return (-1);
+    }
     o->xa = 20;
     o->ya = 4;
     o->xe = 52;
@@ -39,8 +41,9 @@ e_num_kst (char *s, int num, int max, we_window_t * window, int n, int sw)
     e_add_bttstr (6, 4, 1, AltO, " Ok ", NULL, o);
     e_add_bttstr (21, 4, -1, WPE_ESC, "Cancel", NULL, o);
     ret = e_opt_kst (o);
-    if (ret != WPE_ESC)
+    if (ret != WPE_ESC) {
         num = o->nstr[0]->num;
+    }
     freeostr (o);
     return (num);
 }
@@ -119,10 +122,10 @@ e_pr_uul (we_colorset_t * fb)
     extern int nblst;
     int i;
 
-    e_blk (MAXSCOL, 0, MAXSLNS - 1, fb->mt.fg_bg_color);
-    for (i = 0; i < nblst && blst[i].x < MAXSCOL; ++i)
-        e_pr_str_scan (blst[i].x + 1, MAXSLNS - 1, blst[i].t, fb->mt.fg_bg_color,
+    e_blk (max_screen_cols(), 0, max_screen_lines() - 1, fb->mt.fg_bg_color);
+    for (i = 0; i < nblst && blst[i].x < max_screen_cols(); ++i)
+        e_pr_str_scan (blst[i].x + 1, max_screen_lines() - 1, blst[i].t, fb->mt.fg_bg_color,
                        blst[i].s, blst[i].n, fb->ms.fg_bg_color, blst[i].x,
-                       i == nblst - 1 ? MAXSCOL - 1 : blst[i + 1].x - 1);
+                       i == nblst - 1 ? max_screen_cols() - 1 : blst[i + 1].x - 1);
     return (i);
 }

@@ -22,8 +22,7 @@
 /**
  * The FIND structure is in use for searching.
  */
-typedef struct FND
-{
+typedef struct FND {
     char search[80], replace[80];
     char file[80];		/* filename or pattern to search/open */
     char *dirct;

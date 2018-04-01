@@ -15,8 +15,7 @@ typedef time_t M_TIME;
 
 extern int e__project;
 
-struct e_s_prog
-{
+struct e_s_prog {
     char *language, *compiler, *comp_str, *libraries, *exe_name, *intstr, key;
     char** filepostfix; /* Expandable array */
     int comp_sw, x;
@@ -25,8 +24,7 @@ extern struct e_s_prog e_s_prog;
 
 int e_ini_prog(we_control_t* control);
 
-struct e_prog
-{
+struct e_prog {
     int num;
     char *arguments, *project, *exedir, *sys_include;
     struct e_s_prog** comp;

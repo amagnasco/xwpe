@@ -79,155 +79,125 @@ e_mk_col (unsigned char *str, int l, int n, int *frb,
           struct wpeSyntaxRule *cs, int n_nd, int *n_bg, int *mcsw, int *bssw,
           int *svmsw, we_screen_t * s)
 {
-    if (n < l)
-    {
-        if (n == cs->special_column)
-        {
+    if (n < l) {
+        if (n == cs->special_column) {
             int ii;
             for (ii = 0; cs->special_comment[ii] &&
                     cs->special_comment[ii] != toupper (str[n]); ii++)
                 ;
-            if (cs->special_comment[ii])
+            if (cs->special_comment[ii]) {
                 *mcsw = 7;
+            }
         }
-        if (*mcsw == 6 && (isalnum (str[n]) || str[n] == '_'))
+        if (*mcsw == 6 && (isalnum (str[n]) || str[n] == '_')) {
             *frb = FRB1;
-        else if (*mcsw == 7)
+        } else if (*mcsw == 7) {
             *frb = FRB4;
-        else if (*mcsw == 3 && (isalnum (str[n]) || str[n] == '.'))
+        } else if (*mcsw == 3 && (isalnum (str[n]) || str[n] == '.')) {
             *frb = FRB2;
-        else if (*mcsw == 5)
-        {
-            if (str[n] == cs->begin_comment[0])
-            {
+        } else if (*mcsw == 5) {
+            if (str[n] == cs->begin_comment[0]) {
                 int jj;
                 for (jj = 1; cs->begin_comment[jj] &&
                         str[n + jj] == cs->begin_comment[jj]; jj++)
                     ;
-                if (!cs->begin_comment[jj])
-                {
+                if (!cs->begin_comment[jj]) {
                     *mcsw = 4;
                     *n_bg = n + jj - 1;
                     *frb = FRB4;
                 }
             }
-            if (*mcsw == 5 && str[n] == cs->line_comment[0])
-            {
+            if (*mcsw == 5 && str[n] == cs->line_comment[0]) {
                 int jj;
                 for (jj = 1; cs->line_comment[jj] &&
                         str[n + jj] == cs->line_comment[jj]; jj++);
-                if (!cs->line_comment[jj])
-                {
+                if (!cs->line_comment[jj]) {
                     *mcsw = 7;
                     *frb = FRB4;
                 }
             }
-            if (*mcsw == 5)
+            if (*mcsw == 5) {
                 *frb = FRB3;
-        }
-        else if (*mcsw == 1)
-        {
-            if (str[n] == cs->string_constant && !*bssw)
+            }
+        } else if (*mcsw == 1) {
+            if (str[n] == cs->string_constant && !*bssw) {
                 *mcsw = 0;
+            }
             *frb = FRB2;
-        }
-        else if (*mcsw == 2)
-        {
-            if (str[n] == cs->char_constant && !*bssw)
+        } else if (*mcsw == 2) {
+            if (str[n] == cs->char_constant && !*bssw) {
                 *mcsw = 0;
+            }
             *frb = FRB2;
-        }
-        else if (*mcsw == 4)
-        {
-            if (n_nd < n - *n_bg && str[n] == cs->end_comment[n_nd])
-            {
+        } else if (*mcsw == 4) {
+            if (n_nd < n - *n_bg && str[n] == cs->end_comment[n_nd]) {
                 int jj;
                 for (jj = 1; jj <= n_nd && n - jj >= 0 &&
                         str[n - jj] == cs->end_comment[n_nd - jj]; jj++);
-                if (jj > n_nd)
+                if (jj > n_nd) {
                     *mcsw = *svmsw;
+                }
             }
             *frb = FRB4;
-        }
-        else
-        {
-            if (n >= cs->comment_column)
-            {
+        } else {
+            if (n >= cs->comment_column) {
                 *mcsw = 7;
                 *frb = FRB4;
-            }
-            else if (isdigit (str[n]))
-            {
-                if (n == 0 || (!isalnum (str[n - 1]) && str[n - 1] != '_'))
-                {
+            } else if (isdigit (str[n])) {
+                if (n == 0 || (!isalnum (str[n - 1]) && str[n - 1] != '_')) {
                     *mcsw = 3;
                     *frb = FRB2;
-                }
-                else
+                } else {
                     *frb = FRB5;
-            }
-            else if (isalpha (str[n]))
-            {
+                }
+            } else if (isalpha (str[n])) {
                 if (cs->insensitive && (n == 0 || (!isalnum (str[n - 1]) &&
-                                                   str[n - 1] != '_')))
-                {
+                                                   str[n - 1] != '_'))) {
                     int ii, jj;
                     int kk = strlen ((const char *) cs->line_comment);
                     if ((WpeStrnccmp
                             ((char *) cs->line_comment, (const char *) str + n,
                              kk) == 0) && (!isalnum (str[n + kk]))
-                            && (str[n + kk] != '_'))
-                    {
+                            && (str[n + kk] != '_')) {
                         *mcsw = 7;
                         *frb = FRB4;
-                    }
-                    else
-                    {
+                    } else {
                         for (ii = 0; cs->reserved_word[ii] &&
                                 cs->reserved_word[ii][0] < toupper (str[n]); ii++);
                         for (; cs->reserved_word[ii] &&
-                                cs->reserved_word[ii][0] == toupper (str[n]); ii++)
-                        {
+                                cs->reserved_word[ii][0] == toupper (str[n]); ii++) {
                             for (jj = 0; cs->reserved_word[ii][jj] &&
                                     cs->reserved_word[ii][jj] ==
                                     toupper (str[n + jj]); jj++);
                             if (!cs->reserved_word[ii][jj]
-                                    && !isalnum (str[n + jj]) && str[n + jj] != '_')
-                            {
+                                    && !isalnum (str[n + jj]) && str[n + jj] != '_') {
                                 *mcsw = 6;
                                 *frb = FRB1;
                                 break;
                             }
                         }
                     }
-                }
-                else if (!cs->insensitive
-                         && (n == 0
-                             || (!isalnum (str[n - 1]) && str[n - 1] != '_')))
-                {
+                } else if (!cs->insensitive
+                           && (n == 0
+                               || (!isalnum (str[n - 1]) && str[n - 1] != '_'))) {
                     int ii, jj;
                     int kk = strlen ((const char *) cs->line_comment);
                     if ((strncmp
                             ((const char *) cs->line_comment,
                              (const char *) str + n, kk) == 0)
-                            && (!isalnum (str[n + kk])) && (str[n + kk] != '_'))
-                    {
+                            && (!isalnum (str[n + kk])) && (str[n + kk] != '_')) {
                         *mcsw = 7;
                         *frb = FRB4;
-                    }
-                    else
-                    {
+                    } else {
                         for (ii = 0; cs->reserved_word[ii] &&
                                 cs->reserved_word[ii][0] < str[n]; ii++);
                         for (; cs->reserved_word[ii] &&
-                                cs->reserved_word[ii][0] == str[n]; ii++)
-                        {
+                                cs->reserved_word[ii][0] == str[n]; ii++) {
                             for (jj = 0; cs->reserved_word[ii][jj] &&
                                     cs->reserved_word[ii][jj] == str[n + jj];
                                     jj++);
                             if (!cs->reserved_word[ii][jj]
-                                    && !isalnum (str[n + jj]) && str[n + jj] != '_')
-                            {
+                                    && !isalnum (str[n + jj]) && str[n + jj] != '_') {
                                 *mcsw = 6;
                                 *frb = FRB1;
                                 break;
@@ -235,91 +205,69 @@ e_mk_col (unsigned char *str, int l, int n, int *frb,
                         }
                     }
                 }
-                if (!*mcsw)
+                if (!*mcsw) {
                     *frb = FRB5;
-            }
-            else if (isspace (str[n]))
-            {
+                }
+            } else if (isspace (str[n])) {
                 *mcsw = 0;
                 *frb = FRB5;
-            }
-            else
-            {
-                if (str[n] == cs->string_constant)
-                {
+            } else {
+                if (str[n] == cs->string_constant) {
                     *mcsw = 1;
                     *frb = FRB2;
-                }
-                else if (str[n] == cs->char_constant)
-                {
+                } else if (str[n] == cs->char_constant) {
                     *mcsw = 2;
                     *frb = FRB2;
-                }
-                else if (str[n] == cs->preproc_cmd)
-                {
+                } else if (str[n] == cs->preproc_cmd) {
                     *svmsw = *mcsw = 5;
                     *frb = FRB3;
-                }
-                else
-                {
+                } else {
                     *mcsw = 0;
-                    if (str[n] == cs->begin_comment[0])
-                    {
+                    if (str[n] == cs->begin_comment[0]) {
                         int jj;
                         for (jj = 1; cs->begin_comment[jj] &&
                                 str[n + jj] == cs->begin_comment[jj]; jj++);
-                        if (!cs->begin_comment[jj])
-                        {
+                        if (!cs->begin_comment[jj]) {
                             *mcsw = 4;
                             *n_bg = n + jj - 1;
                             *frb = FRB4;
                         }
                     }
-                    if (!*mcsw && str[n] == cs->line_comment[0])
-                    {
+                    if (!*mcsw && str[n] == cs->line_comment[0]) {
                         int jj;
                         for (jj = 1; cs->line_comment[jj] &&
                                 str[n + jj] == cs->line_comment[jj]; jj++);
-                        if (!cs->line_comment[jj])
-                        {
+                        if (!cs->line_comment[jj]) {
                             *mcsw = 7;
                             *frb = FRB4;
                         }
                     }
-                    if (cs->long_operator && !*mcsw)
-                    {
-                        if (cs->insensitive)
-                        {
+                    if (cs->long_operator && !*mcsw) {
+                        if (cs->insensitive) {
                             int ii, jj;
                             for (ii = 0; cs->long_operator[ii] &&
                                     cs->long_operator[ii][0] < str[n]; ii++);
                             for (; cs->long_operator[ii] &&
-                                    cs->long_operator[ii][0] == str[n]; ii++)
-                            {
+                                    cs->long_operator[ii][0] == str[n]; ii++) {
                                 for (jj = 0; cs->long_operator[ii][jj] &&
                                         cs->long_operator[ii][jj] ==
                                         toupper (str[n + jj]); jj++);
-                                if (!cs->long_operator[ii][jj])
-                                {
+                                if (!cs->long_operator[ii][jj]) {
                                     *mcsw = 6;
                                     *frb = FRB1;
                                     break;
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             int ii, jj;
                             for (ii = 0; cs->long_operator[ii] &&
                                     cs->long_operator[ii][0] < str[n]; ii++);
                             for (; cs->long_operator[ii] &&
-                                    cs->long_operator[ii][0] == str[n]; ii++)
-                            {
+                                    cs->long_operator[ii][0] == str[n]; ii++) {
                                 for (jj = 0; cs->long_operator[ii][jj] &&
                                         cs->long_operator[ii][jj] == str[n + jj];
                                         jj++);
-                                if (!cs->long_operator[ii][jj])
-                                {
+                                if (!cs->long_operator[ii][jj]) {
                                     *mcsw = 6;
                                     *frb = FRB1;
                                     break;
@@ -327,34 +275,34 @@ e_mk_col (unsigned char *str, int l, int n, int *frb,
                             }
                         }
                     }
-                    if (!*mcsw)
-                    {
+                    if (!*mcsw) {
                         int jj;
                         for (jj = 0; cs->single_operator[jj] &&
                                 str[n] != cs->single_operator[jj]; jj++);
-                        if (!cs->single_operator[jj])
+                        if (!cs->single_operator[jj]) {
                             *frb = FRB5;
-                        else
+                        } else {
                             *frb = FRB1;
+                        }
                     }
                 }
             }
         }
-        if (str[n] == cs->quoting_char)
+        if (str[n] == cs->quoting_char) {
             *bssw = !*bssw;
-        else
+        } else {
             *bssw = 0;
-    }
-    else
-    {
-        if ((*mcsw == 7) || (*mcsw == 4))
+        }
+    } else {
+        if ((*mcsw == 7) || (*mcsw == 4)) {
             *frb = FRB4;
-        else if ((*mcsw == 1) || (*mcsw == 2))
+        } else if ((*mcsw == 1) || (*mcsw == 2)) {
             *frb = FRB2;
-        else if (*mcsw == 5)
+        } else if (*mcsw == 5) {
             *frb = FRB3;
-        else
+        } else {
             *frb = FRB5;
+        }
     }
 }
 
@@ -367,65 +315,58 @@ e_scfbol (int n, int mcsw, unsigned char *str, WpeSyntaxRule * cs)
 
     for (i = 0; i < n && isspace (str[i]); i++)
         ;
-    if (mcsw == 5)
+    if (mcsw == 5) {
         svmsw = 5;
-    else if (mcsw == 0 && str[i] == cs->preproc_cmd)
-    {
+    } else if (mcsw == 0 && str[i] == cs->preproc_cmd) {
         svmsw = mcsw = 5;
         i++;
     }
-    for (; i < n; i++)
-    {
-        if (i == cs->special_column)
+    for (; i < n; i++) {
+        if (i == cs->special_column) {
             return (0);
-        else if (mcsw == 4)
-        {
-            if (str[i] == cs->end_comment[0])
-            {
+        } else if (mcsw == 4) {
+            if (str[i] == cs->end_comment[0]) {
                 for (j = 1;
                         cs->end_comment[j] && str[i + j] == cs->end_comment[j];
                         j++)
                     ;
-                if (!cs->end_comment[j])
-                {
+                if (!cs->end_comment[j]) {
                     i += (j - 1);
                     mcsw = svmsw;
                 }
             }
-        }
-        else if (mcsw == 1)
-        {
-            if (str[i] == cs->string_constant && !bssw)
+        } else if (mcsw == 1) {
+            if (str[i] == cs->string_constant && !bssw) {
                 mcsw = svmsw;
-        }
-        else if (str[i] == cs->string_constant && !bssw)
+            }
+        } else if (str[i] == cs->string_constant && !bssw) {
             mcsw = 1;
-        else
-        {
-            if (str[i] == cs->line_comment[0])
-            {
+        } else {
+            if (str[i] == cs->line_comment[0]) {
                 for (j = 1;
                         cs->line_comment[j] && str[i + j] == cs->line_comment[j];
                         j++)
                     ;
-                if (!cs->line_comment[j])
+                if (!cs->line_comment[j]) {
                     return (0);
+                }
             }
-            if (str[i] == cs->begin_comment[0])
-            {
+            if (str[i] == cs->begin_comment[0]) {
                 for (j = 1;
                         cs->begin_comment[j] && str[i + j] == cs->begin_comment[j];
                         j++)
                     ;
-                if (!cs->begin_comment[j])
+                if (!cs->begin_comment[j]) {
                     mcsw = 4;
+                }
                 i += (j - 1);
             }
         }
-        if (str[i] == cs->quoting_char)
+        if (str[i] == cs->quoting_char) {
             bssw = !bssw;
-        else
+        } else {
             bssw = 0;
+        }
     }
     return ((mcsw == 4 || (bssw && n > 0 && str[n - 1] == cs->continue_char) ||
              nla || cs->continue_column >= 0) ? mcsw : 0);
@@ -436,28 +377,25 @@ e_sc_all (we_window_t * window, int sw)
 {
     int i;
 
-    if (!WpeIsProg () || !WpeIsXwin ())
+    if (!WpeIsProg () || !WpeIsXwin ()) {
         return (0);
-    if (!sw)
-    {
+    }
+    if (!sw) {
         for (i = 0; i <= window->edit_control->mxedt; i++)
-            if (window->edit_control->window[i]->c_sw)
-            {
+            if (window->edit_control->window[i]->c_sw) {
                 free (window->edit_control->window[i]->c_sw);
                 window->edit_control->window[i]->c_sw = NULL;
             }
-    }
-    else
-    {
-        for (i = 0; i <= window->edit_control->mxedt; i++)
-        {
-            if (window->edit_control->window[i]->c_sw)
+    } else {
+        for (i = 0; i <= window->edit_control->mxedt; i++) {
+            if (window->edit_control->window[i]->c_sw) {
                 free (window->edit_control->window[i]->c_sw);
+            }
             e_add_synt_tl (window->edit_control->window[i]->datnam, window->edit_control->window[i]);
-            if (window->edit_control->window[i]->c_st)
-            {
-                if (window->edit_control->window[i]->c_sw)
+            if (window->edit_control->window[i]->c_st) {
+                if (window->edit_control->window[i]->c_sw) {
                     free (window->edit_control->window[i]->c_sw);
+                }
                 window->edit_control->window[i]->c_sw = e_sc_txt (NULL, window->edit_control->window[i]->buffer);
             }
         }
@@ -472,8 +410,9 @@ e_program_opt (we_window_t * window)
     int ret, sw = window->edit_control->edopt & ED_SYNTAX_HIGHLIGHT ? 1 : 0;
     W_OPTSTR *o = e_init_opt_kst (window);
 
-    if (!o)
+    if (!o) {
         return (-1);
+    }
     o->xa = 17;
     o->ya = 4;
     o->xe = 59;
@@ -496,20 +435,22 @@ e_program_opt (we_window_t * window)
     e_add_bttstr (10, 12, 1, AltO, " Ok ", NULL, o);
     e_add_bttstr (26, 12, -1, WPE_ESC, "Cancel", NULL, o);
     ret = e_opt_kst (o);
-    if (ret != WPE_ESC)
-    {
-        if (e_prog.exedir)
+    if (ret != WPE_ESC) {
+        if (e_prog.exedir) {
             free (e_prog.exedir);
+        }
         e_prog.exedir = WpeStrdup (o->wstr[0]->txt);
-        if (e_prog.sys_include)
+        if (e_prog.sys_include) {
             free (e_prog.sys_include);
+        }
         e_prog.sys_include = WpeStrdup (o->wstr[1]->txt);
         window->edit_control->edopt = (window->edit_control->edopt & ~ED_PROGRAMMING_OPTIONS) +
                                       (o->sstr[0]->num ? ED_ERRORS_STOP_AT : 0) +
                                       (o->sstr[1]->num ? ED_MESSAGES_STOP_AT : 0) +
                                       (o->sstr[2]->num ? ED_SYNTAX_HIGHLIGHT : 0);
-        if (sw != o->sstr[2]->num)
+        if (sw != o->sstr[2]->num) {
             e_sc_all (window, o->sstr[2]->num);
+        }
     }
     freeostr (o);
     return (0);
@@ -520,34 +461,31 @@ e_sc_nw_txt (int y, we_buffer_t * buffer, int sw)
 {
     int i, out;
 
-    if (sw < 0)
-    {
+    if (sw < 0) {
         out = buffer->window->c_sw[y + 1];
-        for (i = y + 1; i < buffer->mxlines; i++)
+        for (i = y + 1; i < buffer->mxlines; i++) {
             buffer->window->c_sw[i] = buffer->window->c_sw[i + 1];
-        if (out == buffer->window->c_sw[y])
+        }
+        if (out == buffer->window->c_sw[y]) {
             return (0);
-    }
-    else if (sw > 0)
-        for (i = buffer->mxlines - 1; i > y; i--)
+        }
+    } else if (sw > 0)
+        for (i = buffer->mxlines - 1; i > y; i--) {
             buffer->window->c_sw[i] = buffer->window->c_sw[i - 1];
+        }
 
-    if (buffer->window->c_st->continue_column < 0)
-    {
-        for (i = y; i < buffer->mxlines - 1; i++)
-        {
+    if (buffer->window->c_st->continue_column < 0) {
+        for (i = y; i < buffer->mxlines - 1; i++) {
             if ((out =
                         e_scfbol (buffer->buflines[i].len, buffer->window->c_sw[i], buffer->buflines[i].s,
-                                  buffer->window->c_st)) == buffer->window->c_sw[i + 1])
+                                  buffer->window->c_st)) == buffer->window->c_sw[i + 1]) {
                 break;
-            else
+            } else {
                 buffer->window->c_sw[i + 1] = out;
+            }
         }
-    }
-    else
-    {
-        if (y != 0)		/* Quick fix to continue line check - Dennis */
-        {
+    } else {
+        if (y != 0) {	/* Quick fix to continue line check - Dennis */
             buffer->window->c_sw[y] =
                 isspace (buffer->buflines[y].
                          s[buffer->window->c_st->continue_column]) ? 0 : e_scfbol (buffer->buflines[y -
@@ -561,15 +499,15 @@ e_sc_nw_txt (int y, we_buffer_t * buffer, int sw)
                                  s,
                                  buffer->window->
                                  c_st);
-            for (i = y; i < buffer->mxlines - 1; i++)
-            {
+            for (i = y; i < buffer->mxlines - 1; i++) {
                 out =
                     isspace (buffer->buflines[i + 1].s[buffer->window->c_st->continue_column]) ?  0
                     : e_scfbol (buffer->buflines[i].len, buffer-> window-> c_sw [i], buffer->buflines[i].s, buffer->window->c_st);
-                if (out == buffer->window->c_sw[i + 1])
+                if (out == buffer->window->c_sw[i + 1]) {
                     break;
-                else
+                } else {
                     buffer->window->c_sw[i + 1] = out;
+                }
             }
         }
     }
@@ -581,19 +519,16 @@ e_sc_txt (int *c_sw, we_buffer_t * buffer)
 {
     int i;
 
-    if (!c_sw)
+    if (!c_sw) {
         c_sw = malloc (buffer->mx.y * sizeof (int));
+    }
     c_sw[0] = 0;
-    if (buffer->window->c_st->continue_column < 0)
-    {
+    if (buffer->window->c_st->continue_column < 0) {
         for (i = 0; i < buffer->mxlines - 1; i++)
             c_sw[i + 1] =
                 e_scfbol (buffer->buflines[i].len, c_sw[i], buffer->buflines[i].s, buffer->window->c_st);
-    }
-    else
-    {
-        for (i = 0; i < buffer->mxlines - 1; i++)
-        {
+    } else {
+        for (i = 0; i < buffer->mxlines - 1; i++) {
             c_sw[i + 1] =
                 isspace (buffer->buflines[i + 1].
                          s[buffer->window->c_st->continue_column]) ? 0 : e_scfbol (buffer->buflines[i].len,
@@ -605,12 +540,10 @@ e_sc_txt (int *c_sw, we_buffer_t * buffer)
 
 void e_sc_txt_2 (we_window_t *window)
 {
-    if(window->c_sw)
-    {
-        if(window->screen->mark_begin.y == window->screen->mark_end.y)
+    if(window->c_sw) {
+        if(window->screen->mark_begin.y == window->screen->mark_end.y) {
             e_sc_nw_txt(window->screen->mark_end.y, window->buffer, 0);
-        else
-        {
+        } else {
             window->c_sw = realloc(window->c_sw, window->buffer->mx.y * sizeof(int));
             window->c_sw = e_sc_txt(window->c_sw, window->buffer);
         }
@@ -630,87 +563,87 @@ e_pr_c_line (int y, we_window_t * window)
     int fsw = 0;
 #endif
 
-    for (i = j = 0; j < s->c.x; j++, i++)
-    {
-        if (*(buffer->buflines[y].s + i) == WPE_TAB)
+    for (i = j = 0; j < s->c.x; j++, i++) {
+        if (*(buffer->buflines[y].s + i) == WPE_TAB) {
             j += (window->edit_control->tabn - j % window->edit_control->tabn - 1);
-#ifdef UNIX
-        else if (((unsigned char) *(buffer->buflines[y].s + i)) > 126)
-        {
-            j++;
-            if (((unsigned char) *(buffer->buflines[y].s + i)) < 128 + ' ')
-                j++;
         }
-        else if (*(buffer->buflines[y].s + i) < ' ')
+#ifdef UNIX
+        else if (((unsigned char) *(buffer->buflines[y].s + i)) > 126) {
             j++;
+            if (((unsigned char) *(buffer->buflines[y].s + i)) < 128 + ' ') {
+                j++;
+            }
+        } else if (*(buffer->buflines[y].s + i) < ' ') {
+            j++;
+        }
 #endif
     }
-    if (j > s->c.x)
+    if (j > s->c.x) {
         i--;
+    }
     for (k = 0; k < i; k++)
         e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, k, &frb, window->c_st, n_nd, &n_bg, &mcsw,
                   &bssw, &svmsw, s);
 #ifdef DEBUGGER
-    for (j = 1; j <= s->brp[0]; j++)
-        if (s->brp[j] == y)
-        {
+    for (j = 1; j <= s->breakpoint[0]; j++)
+        if (s->breakpoint[j] == y) {
             fsw = 1;
             break;
         }
     for (j = s->c.x;
-            i < buffer->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
-    {
+            i < buffer->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++) {
         e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
-        if (y == s->da.y && i >= s->da.x && i < s->de.x)
+        if (y == s->da.y && i >= s->da.x && i < s->de.x) {
             frb = s->colorset->dy.fg_bg_color;
-        else if (fsw)
+        } else if (fsw) {
             frb = s->colorset->db.fg_bg_color;
-        else if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
+        } else if (y == s->fa.y && i >= s->fa.x && i < s->fe.x) {
             frb = s->colorset->ek.fg_bg_color;
+        }
 #else
     for (j = s->c.x;
-            i < buffer->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++)
-    {
+            i < buffer->buflines[y].len && j < num_cols_on_screen_safe(window) + s->c.x - 1; i++, j++) {
         e_mk_col (buffer->buflines[y].s, buffer->buflines[y].len, i, &frb, window->c_st, n_nd, &n_bg,
                   &mcsw, &bssw, &svmsw, s);
-        if (y == s->fa.y && i >= s->fa.x && i < s->fe.x)
+        if (y == s->fa.y && i >= s->fa.x && i < s->fe.x) {
             frb = s->colorset->ek.fg_bg_color;
+        }
 #endif
         else if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                         (y == s->mark_begin.y
                                          && i >= s->mark_begin.x)))
                  || (y == s->mark_end.y && i < s->mark_end.x
                      && (y > s->mark_begin.y
-                         || (y == s->mark_begin.y && i >= s->mark_begin.x))))
+                         || (y == s->mark_begin.y && i >= s->mark_begin.x)))) {
             frb = s->colorset->ez.fg_bg_color;
+        }
         if (*(buffer->buflines[y].s + i) == WPE_TAB)
             for (k = window->edit_control->tabn - j % window->edit_control->tabn;
                     k > 1 && j < num_cols_on_screen(window) + s->c.x - 2; k--, j++)
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ',
                            frb);
 #ifdef UNIX
-        else if (!WpeIsXwin () && ((unsigned char) *(buffer->buflines[y].s + i)) > 126)
-        {
+        else if (!WpeIsXwin () && ((unsigned char) *(buffer->buflines[y].s + i)) > 126) {
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, '@',
                        frb);
-            if (++j >= num_cols_on_screen(window) + s->c.x - 1)
+            if (++j >= num_cols_on_screen(window) + s->c.x - 1) {
                 return;
+            }
             if (((unsigned char) *(buffer->buflines[y].s + i)) < 128 + ' '
-                    && j < num_cols_on_screen(window) + s->c.x - 1)
-            {
+                    && j < num_cols_on_screen(window) + s->c.x - 1) {
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            '^', frb);
-                if (++j >= num_cols_on_screen(window) + s->c.x - 1)
+                if (++j >= num_cols_on_screen(window) + s->c.x - 1) {
                     return;
+                }
             }
-        }
-        else if (*(buffer->buflines[y].s + i) < ' ')
-        {
+        } else if (*(buffer->buflines[y].s + i) < ' ') {
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, '^',
                        frb);
-            if (++j >= num_cols_on_screen(window) + s->c.x - 1)
+            if (++j >= num_cols_on_screen(window) + s->c.x - 1) {
                 return;
+            }
         }
 #endif
         if (*(buffer->buflines[y].s + i) == WPE_TAB)
@@ -718,16 +651,14 @@ e_pr_c_line (int y, we_window_t * window)
                        frb);
 #ifdef UNIX
         else if (!WpeIsXwin () && ((unsigned char) *(buffer->buflines[y].s + i)) > 126 &&
-                 j < num_cols_on_screen(window) + s->c.x - 1)
-        {
+                 j < num_cols_on_screen(window) + s->c.x - 1) {
             if (((unsigned char) *(buffer->buflines[y].s + i)) < 128 + ' ')
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            ((unsigned char) *(buffer->buflines[y].s + i)) + 'A' - 129, frb);
             else
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            ((unsigned char) *(buffer->buflines[y].s + i)) - 128, frb);
-        }
-        else if (*(buffer->buflines[y].s + i) < ' ' && j < num_cols_on_screen(window) + s->c.x - 1)
+        } else if (*(buffer->buflines[y].s + i) < ' ' && j < num_cols_on_screen(window) + s->c.x - 1)
             e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                        *(buffer->buflines[y].s + i) + 'A' - 1, frb);
 #endif
@@ -741,24 +672,20 @@ e_pr_c_line (int y, we_window_t * window)
 
     if ((i == buffer->buflines[y].len) && (window->edit_control->edopt & ED_SHOW_ENDMARKS) &&
             (DTMD_ISMARKABLE (window->dtmd))
-            && (j < num_cols_on_screen_safe(window) + s->c.x - 1))
-    {
+            && (j < num_cols_on_screen_safe(window) + s->c.x - 1)) {
         if ((y < s->mark_end.y && (y > s->mark_begin.y ||
                                    (y == s->mark_begin.y
                                     && i >= s->mark_begin.x)))
                 || (y == s->mark_end.y && i < s->mark_end.x
                     && (y > s->mark_begin.y
-                        || (y == s->mark_begin.y && i >= s->mark_begin.x))))
-        {
+                        || (y == s->mark_begin.y && i >= s->mark_begin.x)))) {
             if (*(buffer->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PWR, s->colorset->ez.fg_bg_color);
             else
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PNL, s->colorset->ez.fg_bg_color);
-        }
-        else
-        {
+        } else {
             if (*(buffer->buflines[y].s + i) == WPE_WR)
                 e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1,
                            PWR, frb);
@@ -768,8 +695,9 @@ e_pr_c_line (int y, we_window_t * window)
         }
         j++;
     }
-    for (; j < num_cols_on_screen(window) + s->c.x - 1; j++)
+    for (; j < num_cols_on_screen(window) + s->c.x - 1; j++) {
         e_pr_char (window->a.x - s->c.x + j + 1, y - s->c.y + window->a.y + 1, ' ', frb);
+    }
 }
 
 int
@@ -779,20 +707,20 @@ e_add_synt_tl (char *filename, we_window_t * window)
 
     window->c_st = NULL;
     window->c_sw = NULL;
-    if (!WpeSyntaxDef || !filename)
+    if (!WpeSyntaxDef || !filename) {
         return 0;
+    }
     filename = strrchr (filename, '.');
-    if (!filename)
+    if (!filename) {
         return 0;
-    for (i = 0; i < WpeExpArrayGetSize (WpeSyntaxDef); i++)
-    {
-        for (k = 0; k < WpeExpArrayGetSize (WpeSyntaxDef[i]->extension); k++)
-        {
-            if (!strcmp (filename, WpeSyntaxDef[i]->extension[k]))
-            {
+    }
+    for (i = 0; i < WpeExpArrayGetSize (WpeSyntaxDef); i++) {
+        for (k = 0; k < WpeExpArrayGetSize (WpeSyntaxDef[i]->extension); k++) {
+            if (!strcmp (filename, WpeSyntaxDef[i]->extension[k])) {
                 window->c_st = WpeSyntaxDef[i]->syntax_rule;
-                if (window->edit_control->edopt & ED_SYNTAX_HIGHLIGHT)
+                if (window->edit_control->edopt & ED_SYNTAX_HIGHLIGHT) {
                     window->c_sw = malloc (window->buffer->mx.y * sizeof (int));
+                }
             }
         }
     }
@@ -810,37 +738,36 @@ e_aopen (char *name, char *path, int mode)
 
     ep->buffer = NULL;
     ep->fp = NULL;
-    if (mode & 1)
-    {
+    if (mode & 1) {
         for (i = 1; i <= control->mxedt && strcmp (control->window[i]->datnam, name); i++)
             ;
-        if (i <= control->mxedt)
-        {
+        if (i <= control->mxedt) {
             ep->buffer = control->window[i]->buffer;
             ep->p.x = ep->p.y = 0;
         }
     }
-    if ((mode & 2) && !ep->buffer && !access (name, R_OK))
+    if ((mode & 2) && !ep->buffer && !access (name, R_OK)) {
         ep->fp = fopen (name, "r");
-    if ((mode & 4) && !ep->buffer && !ep->fp)
-    {
-        for (i = 0; path[i] && !ep->fp; i++)
-        {
+    }
+    if ((mode & 4) && !ep->buffer && !ep->fp) {
+        for (i = 0; path[i] && !ep->fp; i++) {
             for (j = 0; (str[j] = path[i]) && path[i] != ':'; j++, i++)
                 ;
-            if (!path[i])
+            if (!path[i]) {
                 i--;
+            }
             str[j] = '/';
             str[j + 1] = '\0';
             strcat (str, name);
-            if (!access (str, R_OK))
+            if (!access (str, R_OK)) {
                 ep->fp = fopen (str, "r");
-            if (ep->fp)
+            }
+            if (ep->fp) {
                 strcpy (name, str);
+            }
         }
     }
-    if (!ep->buffer && !ep->fp)
-    {
+    if (!ep->buffer && !ep->fp) {
         free (ep);
         return NULL;
     }
@@ -852,8 +779,9 @@ e_aclose (E_AFILE * ep)
 {
     int ret = 0;
 
-    if (ep->fp)
+    if (ep->fp) {
         ret = fclose (ep->fp);
+    }
     free (ep);
     return (ret);
 }
@@ -863,29 +791,26 @@ e_agets (char *str, int n, E_AFILE * ep)
 {
     int i, j;
 
-    if (ep->fp)
+    if (ep->fp) {
         return (fgets (str, n, ep->fp));
+    }
     if (ep->p.y >= ep->buffer->mxlines ||
-            (ep->p.y == ep->buffer->mxlines - 1 && ep->p.x > ep->buffer->buflines[ep->p.y].len))
+            (ep->p.y == ep->buffer->mxlines - 1 && ep->p.x > ep->buffer->buflines[ep->p.y].len)) {
         return (NULL);
-    for (i = 0; ep->p.y < ep->buffer->mxlines; (ep->p.y)++)
-    {
-        for (j = ep->p.x; i < n - 1 && j <= ep->buffer->buflines[ep->p.y].len; i++, j++)
+    }
+    for (i = 0; ep->p.y < ep->buffer->mxlines; (ep->p.y)++) {
+        for (j = ep->p.x; i < n - 1 && j <= ep->buffer->buflines[ep->p.y].len; i++, j++) {
             str[i] = ep->buffer->buflines[ep->p.y].s[j];
+        }
 
-        if (str[i - 1] == '\n')
-        {
+        if (str[i - 1] == '\n') {
             ep->p.x = 0;
             (ep->p.y)++;
             break;
-        }
-        else if (i == n - 1)
-        {
+        } else if (i == n - 1) {
             ep->p.x = j;
             break;
-        }
-        else
-        {
+        } else {
             ep->p.x = 0;
             (ep->p.y)++;
         }
@@ -897,29 +822,26 @@ e_agets (char *str, int n, E_AFILE * ep)
 char *
 e_sh_spl1 (char *sp, char *str, E_AFILE * fp, int *n)
 {
-    while (1)
-    {
+    while (1) {
         while (isspace (*++sp))
             ;
-        if (sp[0] == '\\')
-        {
+        if (sp[0] == '\\') {
             (*n)++;
-            if (!e_agets ((sp = str), 256, fp))
+            if (!e_agets ((sp = str), 256, fp)) {
                 return (NULL);
+            }
             --sp;
-        }
-        else if (sp[0] == '/' && sp[1] == '*')
-        {
-            while (!(sp = strstr (sp, "*/")))
-            {
+        } else if (sp[0] == '/' && sp[1] == '*') {
+            while (!(sp = strstr (sp, "*/"))) {
                 (*n)++;
-                if (!e_agets ((sp = str), 256, fp))
+                if (!e_agets ((sp = str), 256, fp)) {
                     return (NULL);
+                }
             }
             sp++;
-        }
-        else
+        } else {
             break;
+        }
     }
     return (sp);
 }
@@ -927,29 +849,26 @@ e_sh_spl1 (char *sp, char *str, E_AFILE * fp, int *n)
 char *
 e_sh_spl2 (char *sp, char *str, E_AFILE * fp, int *n)
 {
-    while (1)
-    {
+    while (1) {
         while (isspace (*++sp))
             ;
-        if (!sp[0] || sp[0] == '\n' || sp[0] == '\\')
-        {
+        if (!sp[0] || sp[0] == '\n' || sp[0] == '\\') {
             (*n)++;
-            if (!e_agets ((sp = str), 256, fp))
+            if (!e_agets ((sp = str), 256, fp)) {
                 return (NULL);
+            }
             --sp;
-        }
-        else if (sp[0] == '/' && sp[1] == '*')
-        {
-            while (!(sp = strstr (sp, "*/")))
-            {
+        } else if (sp[0] == '/' && sp[1] == '*') {
+            while (!(sp = strstr (sp, "*/"))) {
                 (*n)++;
-                if (!e_agets ((sp = str), 256, fp))
+                if (!e_agets ((sp = str), 256, fp)) {
                     return (NULL);
+                }
             }
             sp++;
-        }
-        else
+        } else {
             break;
+        }
     }
     return (sp);
 }
@@ -962,62 +881,53 @@ E_AFILE *fp;
 int *n;
 {
     int brk = 1;
-    while (*++sp != '}' || brk > 1)
-    {
-        if (!sp[0] || sp[0] == '\n')
-        {
+    while (*++sp != '}' || brk > 1) {
+        if (!sp[0] || sp[0] == '\n') {
             (*n)++;
-            if (!e_agets ((sp = str), 256, fp))
+            if (!e_agets ((sp = str), 256, fp)) {
                 return (NULL);
+            }
             if (isspace (*sp))
                 while (isspace (*++sp));
-            if (sp[0] == '#' && ispelse (sp))
-            {
-                do
-                {
+            if (sp[0] == '#' && ispelse (sp)) {
+                do {
                     (*n)++;
-                    if (!e_agets ((sp = str), 256, fp))
+                    if (!e_agets ((sp = str), 256, fp)) {
                         return (NULL);
+                    }
                     if (isspace (*sp))
                         while (isspace (*++sp));
-                }
-                while (sp[0] != '#' || !ispendif (sp));
+                } while (sp[0] != '#' || !ispendif (sp));
             }
             sp--;
-        }
-        else if (sp[0] == '/' && sp[1] == '*')
-        {
-            while (!(sp = strstr (sp, "*/")))
-            {
+        } else if (sp[0] == '/' && sp[1] == '*') {
+            while (!(sp = strstr (sp, "*/"))) {
                 (*n)++;
-                if (!e_agets ((sp = str), 256, fp))
+                if (!e_agets ((sp = str), 256, fp)) {
                     return (NULL);
+                }
             }
             sp++;
-        }
-        else if (sp[0] == '{')
+        } else if (sp[0] == '{') {
             brk++;
-        else if (sp[0] == '}')
+        } else if (sp[0] == '}') {
             brk--;
-        else if (sp[0] == '\'')
-        {
+        } else if (sp[0] == '\'') {
             int bsl = 0;
-            while (*++sp && (sp[0] != '\'' || bsl))
-            {
+            while (*++sp && (sp[0] != '\'' || bsl)) {
                 bsl = *sp == '\\' ? !bsl : 0;
             }
-            if (!*sp)
+            if (!*sp) {
                 sp--;
-        }
-        else if (sp[0] == '\"')
-        {
+            }
+        } else if (sp[0] == '\"') {
             int bsl = 0;
-            while (*++sp && (*sp != '\"' || bsl))
-            {
+            while (*++sp && (*sp != '\"' || bsl)) {
                 bsl = *sp == '\\' ? !bsl : 0;
             }
-            if (!*sp)
+            if (!*sp) {
                 sp--;
+            }
         }
     }
     return (sp);
@@ -1031,62 +941,53 @@ E_AFILE *fp;
 int *n;
 {
     int brk = 1;
-    while (*++sp != ')' || brk > 1)
-    {
-        if (!sp[0] || sp[0] == '\n')
-        {
+    while (*++sp != ')' || brk > 1) {
+        if (!sp[0] || sp[0] == '\n') {
             (*n)++;
-            if (!e_agets ((sp = str), 256, fp))
+            if (!e_agets ((sp = str), 256, fp)) {
                 return (NULL);
+            }
             if (isspace (*sp))
                 while (isspace (*++sp));
-            if (sp[0] == '#' && ispelse (sp))
-            {
-                do
-                {
+            if (sp[0] == '#' && ispelse (sp)) {
+                do {
                     (*n)++;
-                    if (!e_agets ((sp = str), 256, fp))
+                    if (!e_agets ((sp = str), 256, fp)) {
                         return (NULL);
+                    }
                     if (isspace (*sp))
                         while (isspace (*++sp));
-                }
-                while (sp[0] != '#' || !ispendif (sp));
+                } while (sp[0] != '#' || !ispendif (sp));
             }
             sp--;
-        }
-        else if (sp[0] == '/' && sp[1] == '*')
-        {
-            while (!(sp = strstr (sp, "*/")))
-            {
+        } else if (sp[0] == '/' && sp[1] == '*') {
+            while (!(sp = strstr (sp, "*/"))) {
                 (*n)++;
-                if (!e_agets ((sp = str), 256, fp))
+                if (!e_agets ((sp = str), 256, fp)) {
                     return (NULL);
+                }
             }
             sp++;
-        }
-        else if (sp[0] == '(')
+        } else if (sp[0] == '(') {
             brk++;
-        else if (sp[0] == ')')
+        } else if (sp[0] == ')') {
             brk--;
-        else if (sp[0] == '\'')
-        {
+        } else if (sp[0] == '\'') {
             int bsl = 0;
-            while (*++sp && (sp[0] != '\'' || bsl))
-            {
+            while (*++sp && (sp[0] != '\'' || bsl)) {
                 bsl = *sp == '\\' ? !bsl : 0;
             }
-            if (!*sp)
+            if (!*sp) {
                 sp--;
-        }
-        else if (sp[0] == '\"')
-        {
+            }
+        } else if (sp[0] == '\"') {
             int bsl = 0;
-            while (*++sp && (*sp != '\"' || bsl))
-            {
+            while (*++sp && (*sp != '\"' || bsl)) {
                 bsl = *sp == '\\' ? !bsl : 0;
             }
-            if (!*sp)
+            if (!*sp) {
                 sp--;
+            }
         }
     }
     return (sp);
@@ -1100,49 +1001,42 @@ E_AFILE *fp;
 int *n;
 {
     int brk = 0;
-    while ((*++sp != ',' && *sp != ';' && *sp != '(') || brk)
-    {
-        if (!sp[0] || sp[0] == '\n')
-        {
+    while ((*++sp != ',' && *sp != ';' && *sp != '(') || brk) {
+        if (!sp[0] || sp[0] == '\n') {
             (*n)++;
-            if (!e_agets ((sp = str), 256, fp))
+            if (!e_agets ((sp = str), 256, fp)) {
                 return (NULL);
+            }
             --sp;
-        }
-        else if (sp[0] == '/' && sp[1] == '*')
-        {
-            while (!(sp = strstr (sp, "*/")))
-            {
+        } else if (sp[0] == '/' && sp[1] == '*') {
+            while (!(sp = strstr (sp, "*/"))) {
                 (*n)++;
-                if (!e_agets ((sp = str), 256, fp))
+                if (!e_agets ((sp = str), 256, fp)) {
                     return (NULL);
+                }
             }
             sp++;
-        }
-        else if (sp[0] == '\"')
-        {
+        } else if (sp[0] == '\"') {
             int bsl = 0;
-            while (*++sp && (sp[0] != '\"' || bsl))
-            {
+            while (*++sp && (sp[0] != '\"' || bsl)) {
                 bsl = *sp == '\\' ? !bsl : 0;
             }
-            if (!*sp)
+            if (!*sp) {
                 sp--;
-        }
-        else if (sp[0] == '\'')
-        {
+            }
+        } else if (sp[0] == '\'') {
             int bsl = 0;
-            while (*++sp && (sp[0] != '\'' || bsl))
-            {
+            while (*++sp && (sp[0] != '\'' || bsl)) {
                 bsl = *sp == '\\' ? !bsl : 0;
             }
-            if (!*sp)
+            if (!*sp) {
                 sp--;
-        }
-        else if (sp[0] == '{')
+            }
+        } else if (sp[0] == '{') {
             brk++;
-        else if (sp[0] == '}')
+        } else if (sp[0] == '}') {
             brk--;
+        }
     }
     return (sp);
 }
@@ -1150,8 +1044,7 @@ int *n;
 struct dirfile *
 e_c_add_df (char *str, struct dirfile *df)
 {
-    if (df == NULL)
-    {
+    if (df == NULL) {
         df = malloc (sizeof (struct dirfile));
         df->nr_files = 0;
         df->name = malloc (sizeof (char *));
@@ -1180,490 +1073,436 @@ int *first;
     char *sp = NULL, str[256], *w, word[256];
     int i, n, com = 0, ret = 1;
     int len = strlen (name);
-    if (*df)
-    {
+    if (*df) {
         for (i = 0; i < (*df)->nr_files; i++)
-            if (!strcmp ((*df)->name[i], startfile))
+            if (!strcmp ((*df)->name[i], startfile)) {
                 return (-2);
+            }
     }
     *df = e_c_add_df (startfile, *df);
-    if (!fp)
+    if (!fp) {
         fp = e_aopen (startfile, e_prog.sys_include, mode);
-    if (!fp)
+    }
+    if (!fp) {
         return (-1);
-    for (n = 0; com == 2 || e_agets ((sp = str), 256, fp); n++)
-    {
-        if (com)
-        {
-            if (com == 1 && !(sp = strstr (sp, "*/")))
+    }
+    for (n = 0; com == 2 || e_agets ((sp = str), 256, fp); n++) {
+        if (com) {
+            if (com == 1 && !(sp = strstr (sp, "*/"))) {
                 continue;
-            else
+            } else {
                 com = 0;
+            }
         }
-        if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n)))
+        if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n))) {
             goto b_end;
-        if (sp[0] == '/' && sp[1] == '*')
-        {
-            if (!(sp = strstr (sp, "*/")))
+        }
+        if (sp[0] == '/' && sp[1] == '*') {
+            if (!(sp = strstr (sp, "*/"))) {
                 com = 1;
-            else
-            {
+            } else {
                 n--;
                 com = 2;
                 sp += 2;
             }
             continue;
-        }
-        else if (*sp == '#')
-        {
-            if (!(sp = e_sh_spl1 (sp, str, fp, &n)))
+        } else if (*sp == '#') {
+            if (!(sp = e_sh_spl1 (sp, str, fp, &n))) {
                 goto b_end;
-            if (!strncmp (sp, "define", 6))
-            {
-                while (isalpha (*++sp))
-                {
+            }
+            if (!strncmp (sp, "define", 6)) {
+                while (isalpha (*++sp)) {
                     ;
                 }
-                if (isspace (*sp) && !(sp = e_sh_spl1 (sp, str, fp, &n)))
+                if (isspace (*sp) && !(sp = e_sh_spl1 (sp, str, fp, &n))) {
                     goto b_end;
-                if (!strncmp (sp, name, len) && !isalnum1 (sp[len]))
-                {
-                    if (*first)
-                    {
+                }
+                if (!strncmp (sp, name, len) && !isalnum1 (sp[len])) {
+                    if (*first) {
                         e_aclose (fp);
                         strcpy (file, startfile);
                         *num = n;
                         *xn = ((int) (sp - str)) + len;
                         return (0);
-                    }
-                    else if (n == nold && !strcmp (startfile, oldfile))
+                    } else if (n == nold && !strcmp (startfile, oldfile)) {
                         *first = 1;
+                    }
                 }
             }
 #ifndef TESTSDEF
-            else if (!strncmp (sp, "include", 7))
-            {
-                while (isalpha (*++sp))
-                {
+            else if (!strncmp (sp, "include", 7)) {
+                while (isalpha (*++sp)) {
                     ;
                 }
-                if (isspace (*sp) && !(sp = e_sh_spl1 (sp, str, fp, &n)))
+                if (isspace (*sp) && !(sp = e_sh_spl1 (sp, str, fp, &n))) {
                     goto b_end;
+                }
                 for (i = 1; (word[i - 1] = sp[i])
                         && sp[i] != '\"' && sp[i] != '>'; i++);
                 word[i - 1] = '\0';
                 if (!e_find_def (name, word, sp[i] == '>' ? 4 : 7,
-                                 file, num, xn, nold, oldfile, df, first))
-                {
+                                 file, num, xn, nold, oldfile, df, first)) {
                     e_aclose (fp);
                     return (0);
                 }
             }
 #endif
-            while (sp[i = (strlen (sp) - 1)] != '\n' || sp[i - 1] == '\\')
-            {
+            while (sp[i = (strlen (sp) - 1)] != '\n' || sp[i - 1] == '\\') {
                 n++;
-                if (!e_agets ((sp = str), 256, fp))
+                if (!e_agets ((sp = str), 256, fp)) {
                     goto b_end;
+                }
             }
-        }
-        else if (*sp == '{')
-        {
-            if (!(sp = e_sh_spl3 (sp, str, fp, &n)))
+        } else if (*sp == '{') {
+            if (!(sp = e_sh_spl3 (sp, str, fp, &n))) {
                 goto b_end;
+            }
             sp++;
             com = 2;
             n--;
-        }
-        else if (!strncmp (sp, "extern", 6))
+        } else if (!strncmp (sp, "extern", 6)) {
             continue;
-        else if (!strncmp (sp, "typedef", 7))
-        {
-            while (!isspace (*++sp))
-            {
+        } else if (!strncmp (sp, "typedef", 7)) {
+            while (!isspace (*++sp)) {
                 ;
             }
-            if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+            if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                 goto b_end;
+            }
             if (!strncmp (sp, "struct", 6) || !strncmp (sp, "class", 5) ||
-                    !strncmp (sp, "union", 5))
-            {
-                while (!isspace (*++sp))
-                {
+                    !strncmp (sp, "union", 5)) {
+                while (!isspace (*++sp)) {
                     ;
                 }
-                if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                     goto b_end;
-                if (*sp == ';')
-                {
+                }
+                if (*sp == ';') {
                     sp++;
                     com = 2;
                     n--;
                     continue;
                 }
-                if (!strncmp (sp, name, len) && !isalnum1 (sp[len]))
-                {
-                    while (!isspace (*++sp))
-                    {
+                if (!strncmp (sp, name, len) && !isalnum1 (sp[len])) {
+                    while (!isspace (*++sp)) {
                         ;
                     }
-                    if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                    if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                         goto b_end;
-                    if (*sp == '{')
-                    {
-                        if (*first)
-                        {
+                    }
+                    if (*sp == '{') {
+                        if (*first) {
                             e_aclose (fp);
                             strcpy (file, startfile);
                             *num = n;
                             *xn = (int) (sp - str);
                             return (0);
-                        }
-                        else if (n == nold && !strcmp (startfile, oldfile))
+                        } else if (n == nold && !strcmp (startfile, oldfile)) {
                             *first = 1;
+                        }
                     }
                 }
             }
-            while (1)
-            {
-                if (isalpha1 (*sp))
-                {
-                    for (w = word; isalnum1 (*w = *sp); w++, sp++)
-                    {
+            while (1) {
+                if (isalpha1 (*sp)) {
+                    for (w = word; isalnum1 (*w = *sp); w++, sp++) {
                         ;
                     }
                     *w = '\0';
-                    if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n)))
+                    if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n))) {
                         goto b_end;
-                    if (*sp == ';')
-                    {
-                        if (!strncmp (word, name, len))
-                        {
-                            if (*first)
-                            {
+                    }
+                    if (*sp == ';') {
+                        if (!strncmp (word, name, len)) {
+                            if (*first) {
                                 e_aclose (fp);
                                 strcpy (file, startfile);
                                 *num = n;
                                 *xn = (int) (sp - str);
                                 return (0);
-                            }
-                            else if (n == nold && !strcmp (startfile, oldfile))
+                            } else if (n == nold && !strcmp (startfile, oldfile)) {
                                 *first = 1;
+                            }
                         }
                         sp++;
                         com = 2;
                         n--;
                         break;
                     }
-                }
-                else if (*sp == '{')
-                {
-                    if (!(sp = e_sh_spl3 (sp, str, fp, &n)))
+                } else if (*sp == '{') {
+                    if (!(sp = e_sh_spl3 (sp, str, fp, &n))) {
                         goto b_end;
-                    if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                    }
+                    if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                         goto b_end;
-                    if (*sp == ';')
-                    {
+                    }
+                    if (*sp == ';') {
                         sp++;
                         com = 2;
                         n--;
                         break;
                     }
-                }
-                else if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                } else if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                     goto b_end;
+                }
             }
-        }
-        else if (!strncmp (sp, "struct", 6) || !strncmp (sp, "class", 5) ||
-                 !strncmp (sp, "union", 5))
-        {
-            while (!isspace (*++sp))
-            {
+        } else if (!strncmp (sp, "struct", 6) || !strncmp (sp, "class", 5) ||
+                   !strncmp (sp, "union", 5)) {
+            while (!isspace (*++sp)) {
                 ;
             }
-            if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+            if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                 goto b_end;
-            if (*sp == ';')
-            {
+            }
+            if (*sp == ';') {
                 sp++;
                 com = 2;
                 n--;
                 continue;
             }
-            if (!strncmp (sp, name, len) && !isalnum1 (sp[len]))
-            {
-                while (!isspace (*++sp))
-                {
+            if (!strncmp (sp, name, len) && !isalnum1 (sp[len])) {
+                while (!isspace (*++sp)) {
                     ;
                 }
-                if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                     goto b_end;
-                if (*sp == '{')
-                {
-                    if (*first)
-                    {
+                }
+                if (*sp == '{') {
+                    if (*first) {
                         e_aclose (fp);
                         strcpy (file, startfile);
                         *num = n;
                         *xn = (int) (sp - str);
                         return (0);
-                    }
-                    else if (n == nold && !strcmp (startfile, oldfile))
+                    } else if (n == nold && !strcmp (startfile, oldfile)) {
                         *first = 1;
+                    }
                 }
-            }
-            else if (*sp != '{')
-            {
-                while (!isspace (*++sp))
-                {
+            } else if (*sp != '{') {
+                while (!isspace (*++sp)) {
                     ;
                 }
-                if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                     goto b_end;
+                }
             }
-            if (*sp == ';')
-            {
+            if (*sp == ';') {
                 sp++;
                 com = 2;
                 n--;
                 continue;
             }
-            if (*sp == '{')
-            {
-                if (!(sp = e_sh_spl3 (sp, str, fp, &n)))
+            if (*sp == '{') {
+                if (!(sp = e_sh_spl3 (sp, str, fp, &n))) {
                     goto b_end;
-                if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                }
+                if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                     goto b_end;
-                if (*sp == ';')
-                {
+                }
+                if (*sp == ';') {
                     sp++;
                     com = 2;
                     n--;
                     continue;
                 }
             }
-            while (1)
-            {
-                while (*sp == '*')
+            while (1) {
+                while (*sp == '*') {
                     sp++;
-                if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n)))
+                }
+                if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n))) {
                     goto b_end;
-                if (!strncmp (sp, name, len) && !isalnum1 (sp[len]))
-                {
-                    while (isalnum1 (*sp))
+                }
+                if (!strncmp (sp, name, len) && !isalnum1 (sp[len])) {
+                    while (isalnum1 (*sp)) {
                         sp++;
-                    if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n)))
+                    }
+                    if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n))) {
                         goto b_end;
+                    }
                     if ((*sp == ';' || *sp == ',' || *sp == '='
-                            || *sp == '[' || *sp == ')'))
-                    {
-                        if (*first)
-                        {
+                            || *sp == '[' || *sp == ')')) {
+                        if (*first) {
                             e_aclose (fp);
                             strcpy (file, startfile);
                             *num = n;
                             *xn = (int) (sp - str);
                             return (0);
-                        }
-                        else if (n == nold && !strcmp (startfile, oldfile))
-                        {
+                        } else if (n == nold && !strcmp (startfile, oldfile)) {
                             *first = 1;
-                            if (*sp == ';')
-                            {
+                            if (*sp == ';') {
                                 sp++;
                                 com = 2;
                                 n--;
                                 break;
                             }
                         }
-                    }
-                    else if (*sp == '(')
-                    {
-                        if (!(sp = e_sh_spl5 (sp, str, fp, &n)))
+                    } else if (*sp == '(') {
+                        if (!(sp = e_sh_spl5 (sp, str, fp, &n))) {
                             goto b_end;
-                        if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                        }
+                        if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                             goto b_end;
-                        if (*sp == '{')
-                        {
-                            if (*first)
-                            {
+                        }
+                        if (*sp == '{') {
+                            if (*first) {
                                 e_aclose (fp);
                                 strcpy (file, startfile);
                                 *num = n;
                                 *xn = (int) (sp - str);
                                 return (0);
-                            }
-                            else if (n == nold && !strcmp (startfile, oldfile))
-                            {
+                            } else if (n == nold && !strcmp (startfile, oldfile)) {
                                 *first = 1;
                                 break;
                             }
-                        }
-                        else
+                        } else {
                             break;
+                        }
                     }
-                }
-                else if (*sp == '(')
+                } else if (*sp == '(') {
                     sp++;
-                else if (*sp == '*')
-                {
-                    while (*sp == '*')
+                } else if (*sp == '*') {
+                    while (*sp == '*') {
                         sp++;
+                    }
                     continue;
-                }
-                else if (*sp == ';')
-                {
+                } else if (*sp == ';') {
                     sp++;
                     com = 2;
                     n--;
                     break;
-                }
-                else if (*sp == '{')
-                {
-                    if (!(sp = e_sh_spl3 (sp, str, fp, &n)))
+                } else if (*sp == '{') {
+                    if (!(sp = e_sh_spl3 (sp, str, fp, &n))) {
                         goto b_end;
+                    }
                     sp++;
                     com = 2;
                     n--;
                     break;
-                }
-                else
-                {
-                    if (!(sp = e_sh_spl4 (sp, str, fp, &n)))
+                } else {
+                    if (!(sp = e_sh_spl4 (sp, str, fp, &n))) {
                         goto b_end;
-                    if (*sp == '(')
+                    }
+                    if (*sp == '(') {
                         break;
-                    else if (*sp == ';')
-                    {
+                    } else if (*sp == ';') {
                         sp++;
                         com = 2;
                         n--;
                         break;
                     }
-                    if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                    if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                         goto b_end;
+                    }
                 }
-                if (*sp == ';')
-                {
+                if (*sp == ';') {
                     sp++;
                     com = 2;
                     n--;
                     break;
                 }
             }
-        }
-        else if (isalnum1 (*sp))
-        {
-            while (isalnum1 (*sp))
+        } else if (isalnum1 (*sp)) {
+            while (isalnum1 (*sp)) {
                 sp++;
-            while (1)
-            {
-                while (*sp == '*')
+            }
+            while (1) {
+                while (*sp == '*') {
                     sp++;
-                if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n)))
+                }
+                if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n))) {
                     goto b_end;
-                if (!strncmp (sp, name, len) && !isalnum1 (sp[len]))
-                {
-                    while (isalnum1 (*sp))
+                }
+                if (!strncmp (sp, name, len) && !isalnum1 (sp[len])) {
+                    while (isalnum1 (*sp)) {
                         sp++;
-                    if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n)))
+                    }
+                    if (isspace (*sp) && !(sp = e_sh_spl2 (sp, str, fp, &n))) {
                         goto b_end;
+                    }
                     if (*sp == ';' || *sp == ',' || *sp == '='
-                            || *sp == '[' || *sp == ')')
-                    {
-                        if (*first)
-                        {
+                            || *sp == '[' || *sp == ')') {
+                        if (*first) {
                             e_aclose (fp);
                             strcpy (file, startfile);
                             *num = n;
                             *xn = (int) (sp - str);
                             return (0);
-                        }
-                        else if (n == nold && !strcmp (startfile, oldfile))
-                        {
+                        } else if (n == nold && !strcmp (startfile, oldfile)) {
                             *first = 1;
                             break;
                         }
-                    }
-                    else if (*sp == '(')
-                    {
-                        if (!(sp = e_sh_spl5 (sp, str, fp, &n)))
+                    } else if (*sp == '(') {
+                        if (!(sp = e_sh_spl5 (sp, str, fp, &n))) {
                             goto b_end;
-                        if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                        }
+                        if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                             goto b_end;
-                        if (*sp == '{')
-                        {
-                            if (*first)
-                            {
+                        }
+                        if (*sp == '{') {
+                            if (*first) {
                                 e_aclose (fp);
                                 strcpy (file, startfile);
                                 *num = n;
                                 *xn = (int) (sp - str);
                                 return (0);
-                            }
-                            else if (n == nold && !strcmp (startfile, oldfile))
-                            {
+                            } else if (n == nold && !strcmp (startfile, oldfile)) {
                                 *first = 1;
                                 break;
                             }
-                        }
-                        else
+                        } else {
                             break;
+                        }
                     }
-                }
-                else if (*sp == '(')
+                } else if (*sp == '(') {
                     sp++;
-                else if (*sp == '*')
-                {
-                    while (*sp == '*')
+                } else if (*sp == '*') {
+                    while (*sp == '*') {
                         sp++;
+                    }
                     continue;
-                }
-                else if (*sp == ';')
-                {
+                } else if (*sp == ';') {
                     sp++;
                     com = 2;
                     n--;
                     break;
-                }
-                else if (*sp == '{')
-                {
-                    if (!(sp = e_sh_spl3 (sp, str, fp, &n)))
+                } else if (*sp == '{') {
+                    if (!(sp = e_sh_spl3 (sp, str, fp, &n))) {
                         goto b_end;
+                    }
                     sp++;
                     com = 2;
                     n--;
                     break;
-                }
-                else
-                {
-                    if (!(sp = e_sh_spl4 (sp, str, fp, &n)))
+                } else {
+                    if (!(sp = e_sh_spl4 (sp, str, fp, &n))) {
                         goto b_end;
-                    if (*sp == '(')
-                    {
-                        if (!(sp = e_sh_spl5 (sp, str, fp, &n)))
+                    }
+                    if (*sp == '(') {
+                        if (!(sp = e_sh_spl5 (sp, str, fp, &n))) {
                             goto b_end;
-                        if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                        }
+                        if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                             goto b_end;
-                        if (*sp == '{' && !(sp = e_sh_spl3 (sp, str, fp, &n)))
+                        }
+                        if (*sp == '{' && !(sp = e_sh_spl3 (sp, str, fp, &n))) {
                             goto b_end;
+                        }
+                        sp++;
+                        com = 2;
+                        n--;
+                        break;
+                    } else if (*sp == ';') {
                         sp++;
                         com = 2;
                         n--;
                         break;
                     }
-                    else if (*sp == ';')
-                    {
-                        sp++;
-                        com = 2;
-                        n--;
-                        break;
-                    }
-                    if (!(sp = e_sh_spl2 (sp, str, fp, &n)))
+                    if (!(sp = e_sh_spl2 (sp, str, fp, &n))) {
                         goto b_end;
+                    }
                 }
-                if (*sp == ';')
-                {
+                if (*sp == ';') {
                     sp++;
                     com = 2;
                     n--;
@@ -1685,88 +1524,83 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     struct dirfile *df, *fdf = NULL;
 
 #ifndef TESTSDEF
-    if (!access (e_prog.project, F_OK))
-    {
+    if (!access (e_prog.project, F_OK)) {
         WpeMouseChangeShape (WpeWorkingShape);
-        if (e_read_var (window))
+        if (e_read_var (window)) {
             ret = -1;
-        else
-        {
+        } else {
             df = e_p_get_var ("FILES");
-            if (!df)
-            {
-                e_error (e_p_msg[ERR_NOTHING], 0, window->colorset);
+            if (!df) {
+                e_error (e_p_msg[ERR_NOTHING], ERROR_MSG, window->colorset);
                 WpeMouseRestoreShape ();
                 return (-1);
             }
-            for (i = 0, ret = 1; i < df->nr_files && ret; i++)
-            {
+            for (i = 0, ret = 1; i < df->nr_files && ret; i++) {
                 strcpy (str, df->name[i]);
                 ret = e_find_def (name, str, 7, file, &num, &x, oldn,
                                   *oldname, &fdf, &first);
             }
             freedf (df);
         }
-    }
-    else
+    } else
 #endif
     {
-        if (!DTMD_ISTEXT (window->dtmd))
+        if (!DTMD_ISTEXT (window->dtmd)) {
             return (-1);
+        }
         WpeMouseChangeShape (WpeWorkingShape);
         strcpy (str, window->datnam);
         ret = e_find_def (name, str, 7, file, &num, &x, oldn,
                           *oldname, &fdf, &first);
     }
     freedf (fdf);
-    if (ret)
-    {
+    if (ret) {
         sprintf (str, "%s not found!", name);
-        e_error (str, 0, window->colorset);
+        e_error (str, ERROR_MSG, window->colorset);
         WpeMouseRestoreShape ();
         return (-1);
     }
-    if (*oldname)
+    if (*oldname) {
         free (*oldname);
+    }
     *oldname = malloc ((strlen (file) + 1) * sizeof (char));
     strcpy (*oldname, file);
     for (i = strlen (file) - 1; i >= 0 && file[i] != '/'; i--)
         ;
-    for (j = window->edit_control->mxedt; j > 0; j--)
-    {
-        if (i < 0)
+    for (j = window->edit_control->mxedt; j > 0; j--) {
+        if (i < 0) {
             filename = window->edit_control->window[j]->datnam;
-        else
+        } else {
             filename = e_mkfilename (window->edit_control->window[j]->dirct, window->edit_control->window[j]->datnam);
-        if (!strcmp (filename, file))
+        }
+        if (!strcmp (filename, file)) {
             break;
+        }
     }
-    if (j > 0)
+    if (j > 0) {
         e_switch_window (window->edit_control->edt[j], window->edit_control->window[window->edit_control->mxedt]);
-    else
+    } else {
         e_edit (window->edit_control, file);
+    }
     window = window->edit_control->window[window->edit_control->mxedt];
-    for (i = num, j = x + 1 - (len = strlen (name)); i >= 0;)
-    {
+    for (i = num, j = x + 1 - (len = strlen (name)); i >= 0;) {
         for (len = strlen (name);
                 j >= 0 && strncmp (name, (const char *) window->buffer->buflines[i].s + j, len);
                 j--)
             ;
-        if (j < 0 && i >= 0)
-        {
+        if (j < 0 && i >= 0) {
             i--;
             j = window->buffer->buflines[i].len - len + 1;
-        }
-        else
+        } else {
             break;
+        }
     }
-    if (i >= 0)
-    {
+    if (i >= 0) {
         num = i;
         x = j;
-    }
-    else
+    } else {
         len = 0;
+    }
     window->screen->fa.y = window->screen->fe.y = window->buffer->cursor.y = num;
     window->screen->fe.x = window->buffer->cursor.x = x + len;
     window->screen->fa.x = x;
@@ -1777,12 +1611,10 @@ e_show_nm_f (char *name, we_window_t * window, int oldn, char **oldname)
     return (num);
 }
 
-struct
-{
+struct {
     int num;
     char *str, *file;
-} sh_df =
-{
+} sh_df = {
     -1, NULL, NULL
 };
 
@@ -1791,18 +1623,18 @@ e_sh_def (we_window_t * window)
 {
     char str[80];
 
-    if (window->edit_control->shdf && window->edit_control->shdf->nr_files > 0)
+    if (window->edit_control->shdf && window->edit_control->shdf->nr_files > 0) {
         strcpy (str, window->edit_control->shdf->name[0]);
-    else
+    } else {
         str[0] = '\0';
-    if (e_add_arguments (str, "Show Definition", window, 0, AltB, &window->edit_control->shdf))
-    {
-        if (sh_df.str)
+    }
+    if (e_add_arguments (str, "Show Definition", window, 0, AltB, &window->edit_control->shdf)) {
+        if (sh_df.str) {
             free (sh_df.str);
+        }
         sh_df.str = malloc ((strlen (str) + 1) * sizeof (char));
         strcpy (sh_df.str, str);
-        if (sh_df.file)
-        {
+        if (sh_df.file) {
             free (sh_df.file);
             sh_df.file = NULL;
         }
@@ -1815,8 +1647,7 @@ e_sh_def (we_window_t * window)
 int
 e_sh_nxt_def (we_window_t * window)
 {
-    if (sh_df.num >= 0 && sh_df.str && sh_df.file)
-    {
+    if (sh_df.num >= 0 && sh_df.str && sh_df.file) {
         sh_df.num = e_show_nm_f (sh_df.str, window, sh_df.num, &sh_df.file);
     }
     return (0);
@@ -1828,142 +1659,111 @@ e_nxt_brk (we_window_t * window)
     int c = window->buffer->buflines[window->buffer->cursor.y].s[window->buffer->cursor.x];
     int i, j, ob, cb, bsp, brk, nif;
 
-    if (c == '{' || c == '(' || c == '[')
-    {
-        if (c == '{')
-        {
+    if (c == '{' || c == '(' || c == '[') {
+        if (c == '{') {
             ob = '{';
             cb = '}';
-        }
-        else if (c == '(')
-        {
+        } else if (c == '(') {
             ob = '(';
             cb = ')';
-        }
-        else
-        {
+        } else {
             ob = '[';
             cb = ']';
         }
         for (brk = 1, i = window->buffer->cursor.y; i < window->buffer->mxlines; i++)
-            for (j = i == window->buffer->cursor.y ? window->buffer->cursor.x + 1 : 0; j < window->buffer->buflines[i].len; j++)
-            {
-                if (window->buffer->buflines[i].s[j] == '\"')
-                {
+            for (j = i == window->buffer->cursor.y ? window->buffer->cursor.x + 1 : 0; j < window->buffer->buflines[i].len; j++) {
+                if (window->buffer->buflines[i].s[j] == '\"') {
                     for (bsp = 0, j++;
                             j < window->buffer->buflines[i].len && (window->buffer->buflines[i].s[j] != '\"' || bsp);
-                            j++)
-                    {
-                        if (window->buffer->buflines[i].s[j] == '\\')
+                            j++) {
+                        if (window->buffer->buflines[i].s[j] == '\\') {
                             bsp = !bsp;
-                        else
+                        } else {
                             bsp = 0;
+                        }
                         if (j == window->buffer->buflines[i].len - 1 && bsp
-                                && i < window->buffer->mxlines - 1)
-                        {
+                                && i < window->buffer->mxlines - 1) {
                             i++;
                             j = -1;
                             bsp = 0;
                         }
                     }
-                }
-                else if (window->buffer->buflines[i].s[j] == '\'')
-                {
+                } else if (window->buffer->buflines[i].s[j] == '\'') {
                     for (bsp = 0, j++;
                             j < window->buffer->buflines[i].len && (window->buffer->buflines[i].s[j] != '\'' || bsp);
-                            j++)
-                    {
-                        if (window->buffer->buflines[i].s[j] == '\\')
+                            j++) {
+                        if (window->buffer->buflines[i].s[j] == '\\') {
                             bsp = !bsp;
-                        else
+                        } else {
                             bsp = 0;
+                        }
                         if (j == window->buffer->buflines[i].len - 1 && bsp
-                                && i < window->buffer->mxlines - 1)
-                        {
+                                && i < window->buffer->mxlines - 1) {
                             i++;
                             j = -1;
                             bsp = 0;
                         }
                     }
-                }
-                else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j + 1] == '*')
-                {
+                } else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j + 1] == '*') {
                     for (j += 2;
                             window->buffer->buflines[i].s[j] != '*' || window->buffer->buflines[i].s[j + 1] != '/';
-                            j++)
-                    {
-                        if (j >= window->buffer->buflines[i].len - 1)
-                        {
-                            if (i < window->buffer->mxlines - 1)
-                            {
+                            j++) {
+                        if (j >= window->buffer->buflines[i].len - 1) {
+                            if (i < window->buffer->mxlines - 1) {
                                 i++;
                                 j = -1;
-                            }
-                            else
+                            } else {
                                 break;
+                            }
                         }
                     }
-                }
-                else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j + 1] == '/')
+                } else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j + 1] == '/') {
                     break;
-                else if (window->buffer->buflines[i].s[j] == '#'
-                         && (!strncmp ((const char *) window->buffer->buflines[i].s, "#else", 5)
-                             || !strncmp ((const char *) window->buffer->buflines[i].s, "#elif",
-                                          5)))
-                {
-                    for (nif = 1, i++; i < window->buffer->mxlines - 1; i++)
-                    {
+                } else if (window->buffer->buflines[i].s[j] == '#'
+                           && (!strncmp ((const char *) window->buffer->buflines[i].s, "#else", 5)
+                               || !strncmp ((const char *) window->buffer->buflines[i].s, "#elif",
+                                            5))) {
+                    for (nif = 1, i++; i < window->buffer->mxlines - 1; i++) {
                         for (j = 0; isspace (window->buffer->buflines[i].s[j]); j++)
                             ;
                         if (!strncmp
-                                ((const char *) window->buffer->buflines[i].s + j, "#endif", 6))
+                                ((const char *) window->buffer->buflines[i].s + j, "#endif", 6)) {
                             nif--;
-                        else if (!strncmp
-                                 ((const char *) window->buffer->buflines[i].s + j, "#if", 3))
+                        } else if (!strncmp
+                                   ((const char *) window->buffer->buflines[i].s + j, "#if", 3)) {
                             nif++;
-                        if (!nif)
+                        }
+                        if (!nif) {
                             break;
+                        }
                     }
                     continue;
-                }
-                else if (window->buffer->buflines[i].s[j] == ob)
+                } else if (window->buffer->buflines[i].s[j] == ob) {
                     brk++;
-                else if (window->buffer->buflines[i].s[j] == cb)
-                {
+                } else if (window->buffer->buflines[i].s[j] == cb) {
                     brk--;
-                    if (!brk)
-                    {
+                    if (!brk) {
                         window->buffer->cursor.y = i;
                         window->buffer->cursor.x = j;
                         return (0);
                     }
                 }
             }
-    }
-    else
-    {
-        if (c == '}')
-        {
+    } else {
+        if (c == '}') {
             ob = '{';
             cb = '}';
-        }
-        else if (c == ')')
-        {
+        } else if (c == ')') {
             ob = '(';
             cb = ')';
-        }
-        else if (c == ']')
-        {
+        } else if (c == ']') {
             ob = '[';
             cb = ']';
-        }
-        else
-        {
+        } else {
             ob = 0;
             cb = 0;
         }
-        for (brk = -1, i = window->buffer->cursor.y; i >= 0; i--)
-        {
+        for (brk = -1, i = window->buffer->cursor.y; i >= 0; i--) {
             if (i == window->buffer->cursor.y)
                 for (j = 0;
                         j < window->buffer->cursor.x && (window->buffer->buflines[i].s[j] != '/'
@@ -1974,130 +1774,108 @@ e_nxt_brk (we_window_t * window)
                         j < window->buffer->buflines[i].len && (window->buffer->buflines[i].s[j] != '/'
                                 || window->buffer->buflines[i].s[j + 1] != '/'); j++)
                     ;
-            for (j--; j >= 0; j--)
-            {
-                if (window->buffer->buflines[i].s[j] == '\"')
-                {
-                    for (j--; j >= 0; j--)
-                    {
-                        if (window->buffer->buflines[i].s[j] == '\"')
-                        {
+            for (j--; j >= 0; j--) {
+                if (window->buffer->buflines[i].s[j] == '\"') {
+                    for (j--; j >= 0; j--) {
+                        if (window->buffer->buflines[i].s[j] == '\"') {
                             for (bsp = 0, j--;
-                                    j >= 0 && window->buffer->buflines[i].s[j] == '\\'; j--)
+                                    j >= 0 && window->buffer->buflines[i].s[j] == '\\'; j--) {
                                 bsp = !bsp;
+                            }
                             j++;
-                            if (!bsp)
+                            if (!bsp) {
                                 break;
+                            }
                         }
                         if (j == 0 && i > 0
-                                && window->buffer->buflines[i - 1].s[window->buffer->buflines[i - 1].len] == '\\')
-                        {
+                                && window->buffer->buflines[i - 1].s[window->buffer->buflines[i - 1].len] == '\\') {
                             i--;
                             j = window->buffer->buflines[i].len;
                         }
                     }
-                }
-                else if (window->buffer->buflines[i].s[j] == '\'')
-                {
-                    for (j--; j >= 0; j--)
-                    {
-                        if (window->buffer->buflines[i].s[j] == '\'')
-                        {
+                } else if (window->buffer->buflines[i].s[j] == '\'') {
+                    for (j--; j >= 0; j--) {
+                        if (window->buffer->buflines[i].s[j] == '\'') {
                             for (bsp = 0, j--;
-                                    j >= 0 && window->buffer->buflines[i].s[j] == '\\'; j--)
+                                    j >= 0 && window->buffer->buflines[i].s[j] == '\\'; j--) {
                                 bsp = !bsp;
+                            }
                             j++;
-                            if (!bsp)
+                            if (!bsp) {
                                 break;
+                            }
                         }
                         if (j == 0 && i > 0
-                                && window->buffer->buflines[i - 1].s[window->buffer->buflines[i - 1].len] == '\\')
-                        {
+                                && window->buffer->buflines[i - 1].s[window->buffer->buflines[i - 1].len] == '\\') {
                             i--;
                             j = window->buffer->buflines[i].len;
                         }
                     }
-                }
-                else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j - 1] == '*')
-                {
+                } else if (window->buffer->buflines[i].s[j] == '/' && window->buffer->buflines[i].s[j - 1] == '*') {
                     for (j -= 2;
                             window->buffer->buflines[i].s[j] != '*' || window->buffer->buflines[i].s[j - 1] != '/';
-                            j--)
-                    {
-                        if (j <= 0)
-                        {
-                            if (i > 0)
-                            {
+                            j--) {
+                        if (j <= 0) {
+                            if (i > 0) {
                                 i--;
                                 j = window->buffer->buflines[i].len;
-                            }
-                            else
+                            } else {
                                 break;
+                            }
                         }
                     }
-                }
-                else if (window->buffer->buflines[i].s[j] == '#'
-                         && (!strncmp ((const char *) window->buffer->buflines[i].s, "#else", 5)
-                             || !strncmp ((const char *) window->buffer->buflines[i].s, "#elif",
-                                          5)))
-                {
-                    for (nif = 1, i--; i > 0; i--)
-                    {
+                } else if (window->buffer->buflines[i].s[j] == '#'
+                           && (!strncmp ((const char *) window->buffer->buflines[i].s, "#else", 5)
+                               || !strncmp ((const char *) window->buffer->buflines[i].s, "#elif",
+                                            5))) {
+                    for (nif = 1, i--; i > 0; i--) {
                         for (j = 0; isspace (window->buffer->buflines[i].s[j]); j++)
                             ;
                         if (!strncmp
-                                ((const char *) window->buffer->buflines[i].s + j, "#endif", 6))
+                                ((const char *) window->buffer->buflines[i].s + j, "#endif", 6)) {
                             nif++;
-                        else if (!strncmp
-                                 ((const char *) window->buffer->buflines[i].s + j, "#if", 3))
+                        } else if (!strncmp
+                                   ((const char *) window->buffer->buflines[i].s + j, "#if", 3)) {
                             nif--;
-                        if (!nif)
+                        }
+                        if (!nif) {
                             break;
+                        }
                     }
                     continue;
-                }
-                else if (!ob)
-                {
+                } else if (!ob) {
                     if (window->buffer->buflines[i].s[j] == '{' || window->buffer->buflines[i].s[j] == '('
-                            || window->buffer->buflines[i].s[j] == '[')
-                    {
+                            || window->buffer->buflines[i].s[j] == '[') {
                         brk++;
-                        if (!brk)
-                        {
+                        if (!brk) {
                             window->buffer->cursor.y = i;
                             window->buffer->cursor.x = j;
                             return (0);
                         }
-                    }
-                    else if (window->buffer->buflines[i].s[j] == '}' || window->buffer->buflines[i].s[j] == ')'
-                             || window->buffer->buflines[i].s[j] == ']')
+                    } else if (window->buffer->buflines[i].s[j] == '}' || window->buffer->buflines[i].s[j] == ')'
+                               || window->buffer->buflines[i].s[j] == ']') {
                         brk--;
-                    else if (i == 0 && j == 0)
-                    {
+                    } else if (i == 0 && j == 0) {
                         window->buffer->cursor.y = i;
                         window->buffer->cursor.x = j;
                         return (0);
                     }
-                }
-                else
-                {
-                    if (window->buffer->buflines[i].s[j] == ob)
-                    {
+                } else {
+                    if (window->buffer->buflines[i].s[j] == ob) {
                         brk++;
-                        if (!brk)
-                        {
+                        if (!brk) {
                             window->buffer->cursor.y = i;
                             window->buffer->cursor.x = j;
                             return (0);
                         }
-                    }
-                    else if (window->buffer->buflines[i].s[j] == cb)
+                    } else if (window->buffer->buflines[i].s[j] == cb) {
                         brk--;
+                    }
                 }
             }
         }
     }
-    return (e_error ("No Matching Bracket!", 0, window->edit_control->colorset));
+    return (e_error ("No Matching Bracket!", ERROR_MSG, window->edit_control->colorset));
 }
 
 char *
@@ -2105,18 +1883,21 @@ e_mbt_mk_sp (char *str, int n, int sw, int *m)
 {
     int k;
 
-    if (!sw)
+    if (!sw) {
         *m = n;
-    else
+    } else {
         *m = n / sw + n % sw;
+    }
     str = realloc (str, (*m + 1) * sizeof (char));
-    if (!sw)
+    if (!sw) {
         k = 0;
-    else
-        for (k = 0; k < n / sw; k++)
+    } else
+        for (k = 0; k < n / sw; k++) {
             str[k] = '\t';
-    for (; k < *m; k++)
+        }
+    for (; k < *m; k++) {
         str[k] = ' ';
+    }
     str[*m] = '\0';
     return (str);
 }
@@ -2127,16 +1908,16 @@ e_mbt_str (we_buffer_t * buffer, int *ii, int *jj, unsigned char c, int n, int s
 {
     int i = *ii, j = *jj + 1, bsp;
 
-    if (*cmnd != 2)
+    if (*cmnd != 2) {
         *cmnd = 0;
-    for (bsp = 0; j < buffer->buflines[i].len && (buffer->buflines[i].s[j] != c || bsp); j++)
-    {
-        if (buffer->buflines[i].s[j] == '\\')
+    }
+    for (bsp = 0; j < buffer->buflines[i].len && (buffer->buflines[i].s[j] != c || bsp); j++) {
+        if (buffer->buflines[i].s[j] == '\\') {
             bsp = !bsp;
-        else
+        } else {
             bsp = 0;
-        if (j == buffer->buflines[i].len - 1 && bsp && i < buffer->mxlines - 1)
-        {
+        }
+        if (j == buffer->buflines[i].len - 1 && bsp && i < buffer->mxlines - 1) {
             char *str = malloc (1);
             int m;
 
@@ -2144,10 +1925,10 @@ e_mbt_str (we_buffer_t * buffer, int *ii, int *jj, unsigned char c, int n, int s
             bsp = 0;
             for (j = 0, m = buffer->buflines[i].len; j < m && isspace (buffer->buflines[i].s[j]); j++)
                 ;
-            if (j > 0)
+            if (j > 0) {
                 e_del_nchar (buffer, buffer->window->screen, 0, i, j);
-            if (j < m)
-            {
+            }
+            if (j < m) {
                 str = e_mbt_mk_sp (str, n + buffer->control->autoindent, sw, &m);
                 e_ins_nchar (buffer, buffer->window->screen, (unsigned char *) str, 0, i, m);
             }
@@ -2165,12 +1946,9 @@ e_mbt_cnd (we_buffer_t * buffer, int *ii, int *jj, int n, int sw, int *cmnd)
 {
     int i = *ii, j = *jj + 2;
 
-    for (; buffer->buflines[i].s[j] != '*' || buffer->buflines[i].s[j + 1] != '/'; j++)
-    {
-        if (j >= buffer->buflines[i].len - 1)
-        {
-            if (i < buffer->mxlines - 1)
-            {
+    for (; buffer->buflines[i].s[j] != '*' || buffer->buflines[i].s[j + 1] != '/'; j++) {
+        if (j >= buffer->buflines[i].len - 1) {
+            if (i < buffer->mxlines - 1) {
                 char *str = malloc (1);
                 int m;
 
@@ -2178,20 +1956,21 @@ e_mbt_cnd (we_buffer_t * buffer, int *ii, int *jj, int n, int sw, int *cmnd)
                 for (j = 0, m = buffer->buflines[i].len; j < m && isspace (buffer->buflines[i].s[j]);
                         j++)
                     ;
-                if (j > 0)
+                if (j > 0) {
                     e_del_nchar (buffer, buffer->window->screen, 0, i, j);
-                if (j < m && (buffer->buflines[i].s[0] != '*' || buffer->buflines[i].s[1] != '/'))
-                {
+                }
+                if (j < m && (buffer->buflines[i].s[0] != '*' || buffer->buflines[i].s[1] != '/')) {
                     str = e_mbt_mk_sp (str, n + buffer->control->autoindent, sw, &m);
                     e_ins_nchar (buffer, buffer->window->screen, (unsigned char *) str, 0, i, m);
                 }
                 j = -1;
                 free (str);
-                if (*cmnd == 2)
+                if (*cmnd == 2) {
                     *cmnd = 1;
-            }
-            else
+                }
+            } else {
                 break;
+            }
         }
     }
     *ii = i;
@@ -2217,8 +1996,7 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
 
     for (i = window->edit_control->mxedt; i > 0 && !DTMD_ISTEXT (window->edit_control->window[i]->dtmd); i--)
         ;
-    if (i <= 0)
-    {
+    if (i <= 0) {
         free (tstr);
         free (bstr);
         free (nvek);
@@ -2240,58 +2018,55 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
     sa = s->mark_begin;
     se = s->mark_end;
     sb = buffer->cursor;
-    if (sw & 1)
-    {
-        if (sw & 2)
+    if (sw & 1) {
+        if (sw & 2) {
             bg = i = buffer->cursor.x == 0 ? buffer->cursor.y : buffer->cursor.y + 1;
-        else
+        } else {
             bg = i = s->mark_begin.x == 0 ? s->mark_begin.y : s->mark_begin.y + 1;
+        }
         nd = s->mark_end.x == 0 ? s->mark_end.y : s->mark_end.y + 1;
-        if (nd > buffer->mxlines)
+        if (nd > buffer->mxlines) {
             nd = buffer->mxlines;
-    }
-    else
-    {
-        if (sw & 2)
+        }
+    } else {
+        if (sw & 2) {
             bg = i = buffer->cursor.x == 0 ? buffer->cursor.y : buffer->cursor.y + 1;
-        else
+        } else {
             bg = i = 0;
+        }
         nd = buffer->mxlines;
     }
-    if (s->mark_begin.y < 0 || (s->mark_begin.y == 0 && s->mark_begin.x <= 0))
+    if (s->mark_begin.y < 0 || (s->mark_begin.y == 0 && s->mark_begin.x <= 0)) {
         n = 0;
-    else
-    {
-        for (n = j = 0; j < buffer->buflines[i].len && isspace (buffer->buflines[i].s[j]); j++)
-        {
-            if (buffer->buflines[i].s[j] == ' ')
+    } else {
+        for (n = j = 0; j < buffer->buflines[i].len && isspace (buffer->buflines[i].s[j]); j++) {
+            if (buffer->buflines[i].s[j] == ' ') {
                 n++;
-            else if (buffer->buflines[i].s[j] == '\t')
+            } else if (buffer->buflines[i].s[j] == '\t') {
                 n += window->edit_control->tabn - (n % window->edit_control->tabn);
+            }
         }
     }
     tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
-    for (k = 0; k < ndif; k++)
+    for (k = 0; k < ndif; k++) {
         bstr[k] = ' ';
+    }
     bstr[ndif] = '\0';
     nvek[0] = n;
-    for (cm_sv = 1, cmnd = 1, brk = 0; i < nd; i++)
-    {
+    for (cm_sv = 1, cmnd = 1, brk = 0; i < nd; i++) {
         for (j = 0; j < buffer->buflines[i].len && isspace (buffer->buflines[i].s[j]); j++)
             ;
-        if (i > bg)
-        {
+        if (i > bg) {
             for (k = buffer->buflines[i - 1].len - 1;
                     k >= 0 && isspace (buffer->buflines[i - 1].s[k]); k--);
-            if (k >= 0)
+            if (k >= 0) {
                 e_del_nchar (buffer, s, k + 1, i - 1, buffer->buflines[i - 1].len - 1 - k);
+            }
             e_del_nchar (buffer, s, 0, i, j);
             if (buffer->buflines[i].len > 0 && buffer->buflines[i].s[0] != '#' &&
-                    (buffer->buflines[i].s[0] != '/' || buffer->buflines[i].s[1] != '*'))
-            {
+                    (buffer->buflines[i].s[0] != '/' || buffer->buflines[i].s[1] != '*')) {
                 if ((cmnd == 0 && (!cm_sv || buffer->buflines[i].s[0] != '{')) ||
-                        (cmnd == 2 && buffer->buflines[i - 1].s[k] == '\\'))
-                {
+                        (cmnd == 2 && buffer->buflines[i - 1].s[k] == '\\')) {
                     tstr =
                         e_mbt_mk_sp (tstr,
                                      !cmnd ? n +
@@ -2301,74 +2076,61 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     j = m;
                     tstr =
                         e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
-                }
-                else
-                {
+                } else {
                     e_ins_nchar (buffer, s, (unsigned char *) tstr, 0, i, m);
                     j = m;
-                    if (cmnd == 0)
+                    if (cmnd == 0) {
                         cmnd = 1;
+                    }
                 }
             }
         }
-        if (cmnd == 0)
+        if (cmnd == 0) {
             cm_sv = cbrk ? 1 : 0;
-        else
+        } else {
             cm_sv = cmnd;
-        for (cmnd = 1; j < buffer->buflines[i].len; j++)
-        {
-            if (buffer->buflines[i].s[j] == '\"')
+        }
+        for (cmnd = 1; j < buffer->buflines[i].len; j++) {
+            if (buffer->buflines[i].s[j] == '\"') {
                 e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->edit_control->tabn, &cmnd);
-            else if (window->buffer->buflines[i].s[j] == '\'')
+            } else if (window->buffer->buflines[i].s[j] == '\'') {
                 e_mbt_str (buffer, &i, &j, '\'', n, (sw & 4) ? 0 : window->edit_control->tabn, &cmnd);
-            else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '*')
+            } else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '*') {
                 e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->edit_control->tabn, &cmnd);
-            else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
+            } else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/') {
                 break;
-            else if (buffer->buflines[i].s[j] == ';')
-            {
+            } else if (buffer->buflines[i].s[j] == ';') {
                 cmnd = cbrk ? 0 : 1;
                 nstrct = 0;
-            }
-            else if (buffer->buflines[i].s[j] == '#' &&
-                     (!strncmp ((const char *) buffer->buflines[i].s, "#if", 3)
-                      || !strncmp ((const char *) buffer->buflines[i].s, "#ifdef", 6)))
-            {
+            } else if (buffer->buflines[i].s[j] == '#' &&
+                       (!strncmp ((const char *) buffer->buflines[i].s, "#if", 3)
+                        || !strncmp ((const char *) buffer->buflines[i].s, "#ifdef", 6))) {
                 nif++;
                 ifvekb = realloc (ifvekb, (nif + 1) * sizeof (int));
                 ifvekr = realloc (ifvekr, (nif + 1) * sizeof (int));
                 ifvekb[nif] = brk;
                 ifvekr[nif] = cbrk;
                 cmnd = 2;
-            }
-            else if (buffer->buflines[i].s[j] == '#' && nif > 0
-                     && (!strncmp ((const char *) buffer->buflines[i].s, "#else", 5)
-                         || !strncmp ((const char *) buffer->buflines[i].s, "#elif", 5)))
-            {
+            } else if (buffer->buflines[i].s[j] == '#' && nif > 0
+                       && (!strncmp ((const char *) buffer->buflines[i].s, "#else", 5)
+                           || !strncmp ((const char *) buffer->buflines[i].s, "#elif", 5))) {
                 brk = ifvekb[nif];
                 cbrk = ifvekr[nif];
                 n = nvek[brk];
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 cmnd = 2;
-            }
-            else if (buffer->buflines[i].s[j] == '#'
-                     && (!strncmp ((const char *) buffer->buflines[i].s, "#endif", 6)))
-            {
+            } else if (buffer->buflines[i].s[j] == '#'
+                       && (!strncmp ((const char *) buffer->buflines[i].s, "#endif", 6))) {
                 nif--;
                 cmnd = 2;
-            }
-            else if (buffer->buflines[i].s[j] == '#')
-            {
+            } else if (buffer->buflines[i].s[j] == '#') {
                 cmnd = 2;
-                for (j++; j < buffer->buflines[i].len; j++)
-                {
+                for (j++; j < buffer->buflines[i].len; j++) {
                     if (j == buffer->buflines[i].len - 1 && i < buffer->mxlines - 1
-                            && buffer->buflines[i].s[j] == '\\')
-                    {
+                            && buffer->buflines[i].s[j] == '\\') {
                         i++;
                         j = 0;
-                    }
-                    else if (buffer->buflines[i].s[j] == '\"')
+                    } else if (buffer->buflines[i].s[j] == '\"')
                         e_mbt_str (buffer, &i, &j, '\"', n, (sw & 4) ? 0 : window->edit_control->tabn,
                                    &cmnd);
                     else if (window->buffer->buflines[i].s[j] == '\'')
@@ -2377,26 +2139,22 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '*')
                         e_mbt_cnd (buffer, &i, &j, n, (sw & 4) ? 0 : window->edit_control->tabn,
                                    &cmnd);
-                    else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
+                    else if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/') {
                         break;
+                    }
                 }
-                if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/')
+                if (buffer->buflines[i].s[j] == '/' && buffer->buflines[i].s[j + 1] == '/') {
                     break;
-            }
-            else if (buffer->buflines[i].s[j] == '(')
-            {
+                }
+            } else if (buffer->buflines[i].s[j] == '(') {
                 nstrct = 0;
                 cmnd = 0;
                 cbrk++;
-            }
-            else if (buffer->buflines[i].s[j] == ')')
-            {
+            } else if (buffer->buflines[i].s[j] == ')') {
                 nstrct = 0;
                 cmnd = 0;
                 cbrk--;
-            }
-            else if (buffer->buflines[i].s[j] == '{')
-            {
+            } else if (buffer->buflines[i].s[j] == '{') {
                 brk++;
                 cmnd = 1;
                 for (k = j + 1; k < buffer->buflines[i].len && isspace (buffer->buflines[i].s[k]);
@@ -2404,21 +2162,19 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 if (k < buffer->buflines[i].len
                         && (buffer->buflines[i].s[k] != '/'
                             || (buffer->buflines[i].s[k + 1] != '*'
-                                && buffer->buflines[i].s[k + 1] != '/')))
-                {
+                                && buffer->buflines[i].s[k + 1] != '/'))) {
                     e_del_nchar (buffer, s, j + 1, i, k - j - 1);
                     e_ins_nchar (buffer, s, (unsigned char *) bstr, j + 1, i,
                                  ndif - 1);
                 }
-                if (nstrct == 1)
-                {
-                    if (k >= buffer->buflines[i].len)
+                if (nstrct == 1) {
+                    if (k >= buffer->buflines[i].len) {
                         n = nvek[brk - 1];
-                    else
-                    {
+                    } else {
                         for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
-                        if (k >= 0)
+                        if (k >= 0) {
                             nstrct++;
+                        }
                     }
                     nstrct++;
                     nic++;
@@ -2426,35 +2182,29 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                     vkcs = realloc (vkcs, (nic + 1) * sizeof (int));
                     vkcs[nic] = 0;
                     vkcb[nic] = brk - 1;
-                }
-                else
-                {
-                    for (n = k = 0; k < j; k++)
-                    {
-                        if (buffer->buflines[i].s[k] == '\t')
+                } else {
+                    for (n = k = 0; k < j; k++) {
+                        if (buffer->buflines[i].s[k] == '\t') {
                             n += window->edit_control->tabn - (n % window->edit_control->tabn);
-                        else
+                        } else {
                             n++;
+                        }
                     }
                 }
                 n += ndif;
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 nvek = realloc (nvek, (brk + 1) * sizeof (int));
                 nvek[brk] = n;
-            }
-            else if (window->buffer->buflines[i].s[j] == '}')
-            {
+            } else if (window->buffer->buflines[i].s[j] == '}') {
                 brk--;
                 cmnd = 1;
                 nstrct = 0;
-                if (nic > 0 && vkcb[nic] == brk - 1)
-                {
+                if (nic > 0 && vkcb[nic] == brk - 1) {
                     n = nvek[brk];
                     nic--;
                     brk--;
                 }
-                if (brk < 0)
-                {
+                if (brk < 0) {
                     free (tstr);
                     free (bstr);
                     free (nvek);
@@ -2473,102 +2223,87 @@ e_mk_beauty (int sw, int ndif, we_window_t * window)
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
                 e_del_nchar (buffer, s, k + 1, i, j - 1 - k);
-                if (k > 0)
-                {
+                if (k > 0) {
                     e_ins_nchar (buffer, s, (unsigned char *) bstr, k + 1, i,
                                  ndif - 1);
                     j = k + ndif + 1;
-                }
-                else
-                {
+                } else {
                     e_ins_nchar (buffer, s, (unsigned char *) tstr, k + 1, i, m);
                     j = k + m + 2;
                 }
                 n = nvek[brk];
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
-            }
-            else if (((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
-                      (iscase ((const char *) buffer->buflines[i].s + j)
-                       || isstatus ((const char *) buffer->buflines[i].s + j)))
-                     || (nstrct > 1 && isalnum1 (buffer->buflines[i].s[j])))
-            {
-                if (vkcs[nic])
-                {
+            } else if (((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
+                        (iscase ((const char *) buffer->buflines[i].s + j)
+                         || isstatus ((const char *) buffer->buflines[i].s + j)))
+                       || (nstrct > 1 && isalnum1 (buffer->buflines[i].s[j]))) {
+                if (vkcs[nic]) {
                     n = nvek[vkcb[nic] + 1];
                     tstr =
                         e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                     for (k = j - 1; k >= 0 && isspace (buffer->buflines[i].s[k]); k--);
                     e_del_nchar (buffer, s, k + 1, i, j - 1 - k);
-                    if (k > 0)
-                    {
+                    if (k > 0) {
                         e_ins_nchar (buffer, s, (unsigned char *) bstr, k + 1, i,
                                      ndif - 1);
                         j = k + ndif + 1;
-                    }
-                    else
-                    {
+                    } else {
                         e_ins_nchar (buffer, s, (unsigned char *) tstr, k + 1, i, m);
                         j = k + m + 2;
                     }
-                }
-                else
-                {
+                } else {
                     brk++;
                     vkcs[nic] = 1;
                 }
-                if (nstrct < 2 || isstatus ((const char *) buffer->buflines[i].s + j))
-                {
+                if (nstrct < 2 || isstatus ((const char *) buffer->buflines[i].s + j)) {
                     for (j++; j < buffer->buflines[i].len && buffer->buflines[i].s[j] != ':'; j++);
                     for (k = j + 1; k < buffer->buflines[i].len && isspace (buffer->buflines[i].s[k]);
                             k++);
                     if (k < buffer->buflines[i].len
                             && (buffer->buflines[i].s[k] != '/'
                                 || (buffer->buflines[i].s[k + 1] != '*'
-                                    && buffer->buflines[i].s[k + 1] != '/')))
-                    {
+                                    && buffer->buflines[i].s[k + 1] != '/'))) {
                         e_del_nchar (buffer, s, j + 1, i, k - j - 1);
                         e_ins_nchar (buffer, s, (unsigned char *) bstr, j + 1, i,
                                      ndif - 1);
-                        for (n = k = 0; k < j; k++)
-                        {
-                            if (buffer->buflines[i].s[k] == '\t')
+                        for (n = k = 0; k < j; k++) {
+                            if (buffer->buflines[i].s[k] == '\t') {
                                 n += window->edit_control->tabn - (n % window->edit_control->tabn);
-                            else
+                            } else {
                                 n++;
+                            }
                         }
                     }
-                }
-                else if (nstrct == 2)
+                } else if (nstrct == 2) {
                     e_ins_nchar (buffer, s, (unsigned char *) bstr, j, i, ndif);
-                else
+                } else {
                     j--;
+                }
                 n += ndif;
                 tstr = e_mbt_mk_sp (tstr, n, (sw & 4) ? 0 : window->edit_control->tabn, &m);
                 nvek = realloc (nvek, (brk + 1) * sizeof (int));
                 nvek[brk] = n;
                 cmnd = 3;
                 nstrct = 0;
-            }
-            else if ((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
-                     (!strncmp ((const char *) buffer->buflines[i].s + j, "switch", 6)
-                      && !isalnum1 (buffer->buflines[i].s[j + 6])))
-            {
+            } else if ((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
+                       (!strncmp ((const char *) buffer->buflines[i].s + j, "switch", 6)
+                        && !isalnum1 (buffer->buflines[i].s[j + 6]))) {
                 nic++;
                 vkcb = realloc (vkcb, (nic + 1) * sizeof (int));
                 vkcs = realloc (vkcs, (nic + 1) * sizeof (int));
                 vkcs[nic] = 0;
                 vkcb[nic] = brk;
-            }
-            else if ((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
-                     ((!strncmp ((const char *) buffer->buflines[i].s + j, "class", 5)
-                       && !isalnum1 (buffer->buflines[i].s[j + 5]))
-                      || (!strncmp ((const char *) buffer->buflines[i].s + j, "struct", 6)
-                          && !isalnum1 (buffer->buflines[i].s[j + 6]))))
+            } else if ((j == 0 || !isalnum1 (buffer->buflines[i].s[j - 1])) &&
+                       ((!strncmp ((const char *) buffer->buflines[i].s + j, "class", 5)
+                         && !isalnum1 (buffer->buflines[i].s[j + 5]))
+                        || (!strncmp ((const char *) buffer->buflines[i].s + j, "struct", 6)
+                            && !isalnum1 (buffer->buflines[i].s[j + 6])))) {
                 nstrct = 1;
-            else if (cmnd == 1 && !isspace (window->buffer->buflines[i].s[j]))
+            } else if (cmnd == 1 && !isspace (window->buffer->buflines[i].s[j])) {
                 cmnd = 0;
-            else if (cmnd == 3 && window->buffer->buflines[i].s[j] == ':')
+            } else if (cmnd == 3 && window->buffer->buflines[i].s[j] == ':') {
                 cmnd = 1;
+            }
         }
     }
     free (nvek);
@@ -2593,8 +2328,9 @@ e_p_beautify (we_window_t * window)
     int ret;
     W_OPTSTR *o = e_init_opt_kst (window);
 
-    if (!o)
+    if (!o) {
         return (-1);
+    }
     o->xa = 21;
     o->ya = 3;
     o->xe = 52;
@@ -2615,8 +2351,7 @@ e_p_beautify (we_window_t * window)
     e_add_bttstr (7, 14, 1, AltO, " Ok ", NULL, o);
     e_add_bttstr (18, 14, -1, WPE_ESC, "Cancel", NULL, o);
     ret = e_opt_kst (o);
-    if (ret != WPE_ESC)
-    {
+    if (ret != WPE_ESC) {
         b_sw =
             o->pstr[0]->num + (o->pstr[1]->num << 1) + (o->sstr[0]->num << 2);
         window->edit_control->autoindent = o->nstr[0]->num;

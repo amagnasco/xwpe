@@ -7,8 +7,7 @@
 #include "globals.h"
 #include "we_wind.h"
 
-typedef struct
-{
+typedef struct {
     FILE* fp;
     we_buffer_t* buffer;
     we_point_t p;

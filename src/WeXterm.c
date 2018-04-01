@@ -32,6 +32,7 @@
 /* needed for the time being to call old routines */
 #include "model.h"
 #include "edit.h"
+#include "we_screen.h"
 #include "we_term.h"
 
 
@@ -50,8 +51,7 @@
 WpeXStruct WpeXInfo;
 
 /* Standard colors (after initialization pointers may not be valid) */
-static char *WpeXColorNames[16] =
-{
+static char *WpeXColorNames[16] = {
     "Black",
     "Red3",
     "Forest Green",
@@ -73,8 +73,7 @@ static char *WpeXColorNames[16] =
 #define OPTION_TABLE_SIZE 7
 
 /* Translation table for command line option to X resources */
-static XrmOptionDescRec WpeXOptionTable[OPTION_TABLE_SIZE] =
-{
+static XrmOptionDescRec WpeXOptionTable[OPTION_TABLE_SIZE] = {
     {"-display", ".display", XrmoptionSepArg, (XPointer) NULL},
     {"-fn", ".font", XrmoptionSepArg, (XPointer) NULL},
     {"-font", ".font", XrmoptionSepArg, (XPointer) NULL},
@@ -106,24 +105,20 @@ WpeXFontGet (XrmDatabase xresdb, XrmQuark * name_list, XrmQuark * class_list)
 
     name_list[1] = XrmStringToQuark ("font");
     class_list[1] = XrmStringToQuark ("Font");
-    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval))
-    {
+    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval)) {
         font_name = (char *) xval.addr;
     }
-    if ((WpeXInfo.font = XLoadQueryFont (WpeXInfo.display, font_name)) == NULL)
-    {
+    if ((WpeXInfo.font = XLoadQueryFont (WpeXInfo.display, font_name)) == NULL) {
         fprintf (stderr, "Xwpe: unable to open font \"%s\", exiting ...\n",
                  font_name);
         exit (-1);
     }
-    if (WpeXInfo.font->max_bounds.width != WpeXInfo.font->min_bounds.width)
-    {
+    if (WpeXInfo.font->max_bounds.width != WpeXInfo.font->min_bounds.width) {
         fprintf (stderr, "Xwpe: Font \"%s\" not fixed width using default\n",
                  font_name);
         font_name = "8x13";
         if ((WpeXInfo.font =
-                    XLoadQueryFont (WpeXInfo.display, font_name)) == NULL)
-        {
+                    XLoadQueryFont (WpeXInfo.display, font_name)) == NULL) {
             fprintf (stderr, "Xwpe: unable to open font \"%s\", exiting ...\n",
                      font_name);
             exit (-1);
@@ -160,19 +155,16 @@ WpeXColorGet (XrmDatabase xresdb, XrmQuark * name_list, XrmQuark * class_list)
     memset (color_class, 0, 8);
     strcpy (color_name, "color");
     strcpy (color_class, "Color");
-    for (loop = 0; loop < 16; loop++)
-    {
+    for (loop = 0; loop < 16; loop++) {
         /* color names start at 1 not 0 */
         color_name[5] = color_class[5] = (loop < 9) ? loop + '1' : '1';
-        if (loop > 8)
-        {
+        if (loop > 8) {
             color_name[6] = color_class[6] = loop - 9 + '0';
         }
         name_list[1] = XrmStringToQuark (color_name);
         class_list[1] = XrmStringToQuark (color_name);
         if (XrmQGetResource
-                (xresdb, name_list, class_list, &return_value, &xval))
-        {
+                (xresdb, name_list, class_list, &return_value, &xval)) {
             WpeXColorNames[loop] = (char *) xval.addr;
         }
     }
@@ -181,8 +173,7 @@ WpeXColorGet (XrmDatabase xresdb, XrmQuark * name_list, XrmQuark * class_list)
     depth = DisplayPlanes (WpeXInfo.display, WpeXInfo.screen);
     visual = DefaultVisual (WpeXInfo.display, WpeXInfo.screen);
 
-    if (depth == 1)
-    {
+    if (depth == 1) {
         /* Old code */
         /* Error message for depth of one removed */
         e_X_sw_color ();
@@ -193,10 +184,8 @@ WpeXColorGet (XrmDatabase xresdb, XrmQuark * name_list, XrmQuark * class_list)
     /* Check for private colormap option */
     name_list[1] = XrmStringToQuark ("pcmap");
     class_list[1] = XrmStringToQuark ("Pcmap");
-    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval))
-    {
-        if (WpeStrccmp ((char *) xval.addr, "on") == 0)
-        {
+    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval)) {
+        if (WpeStrccmp ((char *) xval.addr, "on") == 0) {
             xscreen = DefaultScreenOfDisplay (WpeXInfo.display);
             cmap = XCreateColormap (WpeXInfo.display,
                                     RootWindowOfScreen (xscreen), visual,
@@ -204,18 +193,15 @@ WpeXColorGet (XrmDatabase xresdb, XrmQuark * name_list, XrmQuark * class_list)
             XSetWindowColormap (WpeXInfo.display, WpeXInfo.window, cmap);
         }
     }
-    for (loop = 0; loop < 16; loop++)
-    {
+    for (loop = 0; loop < 16; loop++) {
         if (!XParseColor
-                (WpeXInfo.display, cmap, WpeXColorNames[loop], &exact_def))
-        {
+                (WpeXInfo.display, cmap, WpeXColorNames[loop], &exact_def)) {
             /* Should try a default color then bail if need be */
             fprintf (stderr, "xwpe: unable to find color \"%s\", exiting ...\n",
                      WpeXColorNames[loop]);
             exit (1);
         }
-        if (!XAllocColor (WpeXInfo.display, cmap, &exact_def))
-        {
+        if (!XAllocColor (WpeXInfo.display, cmap, &exact_def)) {
             /* Should try to find closest color */
             fprintf (stderr, "Xwpe: all colorcells allocated, exiting ...\n");
             exit (1);
@@ -251,8 +237,7 @@ WpeXGeometryGet (XrmDatabase xresdb, XrmQuark * name_list,
     size_hints->base_width = size_hints->base_height = 0;
     name_list[1] = XrmStringToQuark ("geometry");
     class_list[1] = XrmStringToQuark ("Geometry");
-    if (!XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval))
-    {
+    if (!XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval)) {
         xval.addr = NULL;
     }
     size_hints->x = size_hints->y = 0;
@@ -266,13 +251,14 @@ WpeXGeometryGet (XrmDatabase xresdb, XrmQuark * name_list,
     if (XWMGeometry (WpeXInfo.display, WpeXInfo.screen, (char *) xval.addr,
                      geom_str, 4, size_hints, &size_hints->x, &size_hints->y,
                      &size_hints->width, &size_hints->height, &grav) &
-            (XValue | YValue))
-    {
+            (XValue | YValue)) {
         size_hints->flags |= PPosition;
     }
     /* Old variables used since not converted yet */
-    MAXSCOL = size_hints->width / WpeXInfo.font_width;
-    MAXSLNS = size_hints->height / WpeXInfo.font_height;
+    int cols = size_hints->width / WpeXInfo.font_width;
+    set_max_screen_cols(cols);
+    int lns = size_hints->height / WpeXInfo.font_height;
+    set_max_screen_lines(lns);
     return;
 }
 
@@ -295,12 +281,9 @@ WpeXOptionsGet (XrmDatabase xresdb, XrmQuark * name_list,
     WpeXInfo.altmask = DEFAULT_ALTMASK;
     name_list[1] = XrmStringToQuark ("altMask");
     class_list[1] = XrmStringToQuark ("AltMask");
-    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval))
-    {
-        if (WpeStrnccmp ((char *) xval.addr, "mod", 3) == 0)
-        {
-            switch (xval.addr[4] - '0')
-            {
+    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval)) {
+        if (WpeStrnccmp ((char *) xval.addr, "mod", 3) == 0) {
+            switch (xval.addr[4] - '0') {
             case 1:
                 WpeXInfo.altmask = Mod1Mask;
                 break;
@@ -324,10 +307,8 @@ WpeXOptionsGet (XrmDatabase xresdb, XrmQuark * name_list,
     *iconic = NormalState;
     name_list[1] = XrmStringToQuark ("iconic");
     class_list[1] = XrmStringToQuark ("Iconic");
-    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval))
-    {
-        if (WpeStrccmp ((char *) xval.addr, "on") == 0)
-        {
+    if (XrmQGetResource (xresdb, name_list, class_list, &return_value, &xval)) {
+        if (WpeStrccmp ((char *) xval.addr, "on") == 0) {
             *iconic = IconicState;
         }
     }
@@ -344,14 +325,12 @@ WpeXDefaults ()
     char *s, *home_env;
 
     s = XResourceManagerString (WpeXInfo.display);
-    if (s)
-    {
+    if (s) {
         return XrmGetStringDatabase (s);
     }
     /* The password file should be checked if HOME isn't set but not done yet. */
     home_env = getenv ("HOME");
-    if (home_env)
-    {
+    if (home_env) {
         XrmDatabase tmpdb;
 
         s = malloc (strlen (home_env) + 12);
@@ -408,13 +387,10 @@ WpeXInit (int *argc, char **argv)
     char *display_name;
 
     XrmInitialize ();
-    if (WpeIsProg ())
-    {
+    if (WpeIsProg ()) {
         window_name = "Window Programming Environment";
         class_hint.res_name = "xwpe";
-    }
-    else
-    {
+    } else {
         window_name = "Window Editor";
         class_hint.res_name = "xwe";
     }
@@ -426,16 +402,12 @@ WpeXInit (int *argc, char **argv)
     /* The second class quark is set to "display" since it doesn't matter */
     name_list[1] = class_list[1] = XrmStringToQuark ("display");
     name_list[2] = class_list[2] = NULLQUARK;
-    if (XrmQGetResource (xres, name_list, class_list, &return_value, &xval))
-    {
+    if (XrmQGetResource (xres, name_list, class_list, &return_value, &xval)) {
         display_name = (char *) xval.addr;
-    }
-    else
-    {
+    } else {
         display_name = NULL;
     }
-    if ((WpeXInfo.display = XOpenDisplay (display_name)) == NULL)
-    {
+    if ((WpeXInfo.display = XOpenDisplay (display_name)) == NULL) {
         fprintf (stderr, "Xwpe: unable to open display \"%s\", exiting ...\n",
                  XDisplayName (display_name));
         exit (-1);
@@ -471,17 +443,16 @@ WpeXInit (int *argc, char **argv)
                   StructureNotifyMask);
 
     if (!XGetWMProtocols
-            (WpeXInfo.display, WpeXInfo.window, &atom_list, &atom_num))
-    {
+            (WpeXInfo.display, WpeXInfo.window, &atom_list, &atom_num)) {
         atom_num = 0;
     }
     new_atom_list = malloc ((atom_num + 1) * sizeof (Atom));
-    if (atom_list != NULL)
-    {
+    if (atom_list != NULL) {
         memcpy (new_atom_list, atom_list, atom_num * sizeof (Atom));
     }
-    if (atom_num)
+    if (atom_num) {
         XFree (atom_list);
+    }
     new_atom_list[atom_num] = WpeXInfo.delete_atom =
                                   XInternAtom (WpeXInfo.display, "WM_DELETE_WINDOW", False);
     WpeXInfo.protocol_atom =
@@ -499,8 +470,7 @@ WpeXInit (int *argc, char **argv)
 
     XMapWindow (WpeXInfo.display, WpeXInfo.window);
 
-    for (cursor_num = WpeEditingShape; cursor_num < WpeLastShape; cursor_num++)
-    {
+    for (cursor_num = WpeEditingShape; cursor_num < WpeLastShape; cursor_num++) {
         WpeXMouseCursor[cursor_num] =
             XCreateFontCursor (WpeXInfo.display, WpeXMouseDefault[cursor_num]);
     }
@@ -512,8 +482,7 @@ WpeXInit (int *argc, char **argv)
        what it does */
     old_cursor_x = cur_x;
     old_cursor_y = cur_y;
-    if (e_ini_size())
-    {
+    if (e_alloc_global_screen()) {
         *argc = -1;
         return;
     }
@@ -552,4 +521,4 @@ WpeXMouseRestoreShape ()
                    WpeXMouseCursor[WpeXInfo.shape_list[0]]);
 }
 
-#endif
+#endif // ifndef NO_XWINDOWS

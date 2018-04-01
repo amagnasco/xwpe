@@ -25,17 +25,20 @@
  */
 
 #include "config.h"
+#include "dbg.h"
 #include <string.h>
 #include "messages.h"
 #include "keys.h"
 #include "we_mouse.h"
+#include "we_screen.h"
 #include "we_term.h"
 #include "options.h"
 #include "WeString.h"
 #include "we_prog.h"
 #include "WeProg.h"
-#include "we_fl_fkt.h"
+#include "we_file_fkt.h"
 #include "we_control.h"
+#include "we_menue.h"
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -43,6 +46,9 @@
 #include <unistd.h>
 #include "attrb.h"
 #endif
+
+/* prototype for internal functions (not exported) */
+void e_control_init(we_control_t * control);
 
 /* externals */
 extern char *e_tmp_dir;
@@ -57,7 +63,9 @@ int fk__cursor = 0;
 WOPT *eblst, *fblst, *mblst, *dblst, *xblst, *wblst, *rblst;
 WOPT *ablst, *sblst, *hblst, *gblst, *oblst;
 
+/* e_hlp is a global field, accessed by other files as well. */
 char *e_hlp;
+
 WOPT *blst;
 int nblst = 7;
 
@@ -301,9 +309,36 @@ WOPT oblst_u[] = { {"F1 Help", 0, 0, 2, F1},
     {"Alt-F4 Quit", 63, 0, 6, AF4}
 };
 
-void
-ECNT_Init (we_control_t * control)
+/**
+ * Returns the maximum number of open edit windows.
+ */
+int max_edit_windows()
 {
+    return MAX_EDIT_WINDOWS;
+}
+/**
+ * Returns an initialized control struct.
+ */
+we_control_t *e_control_new ()
+{
+    we_control_t *control = (we_control_t *) malloc (sizeof(we_control_t));
+    check_mem(control);
+
+    e_control_init (control);
+    return control;
+
+error:
+    return NULL;
+}
+
+void
+e_control_init (we_control_t * control)
+{
+    /** The number of columns used for the initial control
+     *
+     * */
+    const int MAXCOLUM = 120;
+
     control->mxedt = -1;
     control->curedt = 0;
     control->edt[0] = 0;
@@ -321,7 +356,9 @@ ECNT_Init (we_control_t * control)
     control->find.sn = 0;
     control->find.rn = 0;
 
-    control->sdf = control->rdf = control->fdf = control->ddf = control->wdf = control->hdf = control->shdf = NULL;
+    control->sdf = control->rdf = control->fdf
+                                  = control->ddf = control->wdf
+                                          = control->hdf = control->shdf = NULL;
 
     /*   standard adjustments    */
     control->dtmd = DTMD_NORMAL;
@@ -344,66 +381,63 @@ e_switch_blst (we_control_t * control)
     int i;
     we_window_t *window;
 
-    if (control->edopt & ED_CUA_STYLE)
-    {
-        for (i = 0; i <= control->mxedt; i++)
-        {
+    if (control->edopt & ED_CUA_STYLE) {
+        for (i = 0; i <= control->mxedt; i++) {
             window = control->window[i];
-            if (window->blst == eblst_o)
+            if (window->blst == eblst_o) {
                 window->blst = eblst_u;
-            else if (window->blst == fblst_o)
+            } else if (window->blst == fblst_o) {
                 window->blst = fblst_u;
-            else if (window->blst == mblst_o)
+            } else if (window->blst == mblst_o) {
                 window->blst = mblst_u;
-            else if (window->blst == dblst_o)
+            } else if (window->blst == dblst_o) {
                 window->blst = dblst_u;
-            else if (window->blst == xblst_o)
+            } else if (window->blst == xblst_o) {
                 window->blst = xblst_u;
-            else if (window->blst == wblst_o)
+            } else if (window->blst == wblst_o) {
                 window->blst = wblst_u;
-            else if (window->blst == rblst_o)
+            } else if (window->blst == rblst_o) {
                 window->blst = rblst_u;
-            else if (window->blst == ablst_o)
+            } else if (window->blst == ablst_o) {
                 window->blst = ablst_u;
-            else if (window->blst == sblst_o)
+            } else if (window->blst == sblst_o) {
                 window->blst = sblst_u;
-            else if (window->blst == hblst_o)
+            } else if (window->blst == hblst_o) {
                 window->blst = hblst_u;
-            else if (window->blst == gblst_o)
+            } else if (window->blst == gblst_o) {
                 window->blst = gblst_u;
-            else if (window->blst == oblst_o)
+            } else if (window->blst == oblst_o) {
                 window->blst = oblst_u;
+            }
         }
-    }
-    else
-    {
-        for (i = 0; i <= control->mxedt; i++)
-        {
+    } else {
+        for (i = 0; i <= control->mxedt; i++) {
             window = control->window[i];
-            if (window->blst == eblst_u)
+            if (window->blst == eblst_u) {
                 window->blst = eblst_o;
-            else if (window->blst == fblst_u)
+            } else if (window->blst == fblst_u) {
                 window->blst = fblst_o;
-            else if (window->blst == mblst_u)
+            } else if (window->blst == mblst_u) {
                 window->blst = mblst_o;
-            else if (window->blst == dblst_u)
+            } else if (window->blst == dblst_u) {
                 window->blst = dblst_o;
-            else if (window->blst == xblst_u)
+            } else if (window->blst == xblst_u) {
                 window->blst = xblst_o;
-            else if (window->blst == wblst_u)
+            } else if (window->blst == wblst_u) {
                 window->blst = wblst_o;
-            else if (window->blst == rblst_u)
+            } else if (window->blst == rblst_u) {
                 window->blst = rblst_o;
-            else if (window->blst == ablst_u)
+            } else if (window->blst == ablst_u) {
                 window->blst = ablst_o;
-            else if (window->blst == sblst_u)
+            } else if (window->blst == sblst_u) {
                 window->blst = sblst_o;
-            else if (window->blst == hblst_u)
+            } else if (window->blst == hblst_u) {
                 window->blst = hblst_o;
-            else if (window->blst == gblst_u)
+            } else if (window->blst == gblst_u) {
                 window->blst = gblst_o;
-            else if (window->blst == oblst_u)
+            } else if (window->blst == oblst_u) {
                 window->blst = oblst_o;
+            }
         }
     }
     return (0);
@@ -415,8 +449,7 @@ e_ini_desk (we_control_t * control)
     extern int e_mn_men;
     int i;
 
-    if (control->edopt & ED_CUA_STYLE)
-    {
+    if (control->edopt & ED_CUA_STYLE) {
         eblst = eblst_u;
         fblst = fblst_u;
         mblst = mblst_u;
@@ -429,9 +462,7 @@ e_ini_desk (we_control_t * control)
         hblst = hblst_u;
         gblst = gblst_u;
         oblst = oblst_u;
-    }
-    else
-    {
+    } else {
         eblst = eblst_o;
         fblst = fblst_o;
         mblst = mblst_o;
@@ -446,22 +477,22 @@ e_ini_desk (we_control_t * control)
         oblst = oblst_o;
     }
     e_cls (control->colorset->df.fg_bg_color, control->colorset->dc);
-    e_blk (MAXSCOL, 0, 0, control->colorset->mt.fg_bg_color);
+    e_blk (max_screen_cols(), 0, 0, control->colorset->mt.fg_bg_color);
 
     /* put out the main menu */
-    for (i = 0; i < MENOPT; ++i)
-    {
+    const int MAX = nr_of_menu_options();
+    for (i = 0; i < MAX; ++i) {
         e_pr_str_wsd (opt[i].x, 0, opt[i].t, control->colorset->mt.fg_bg_color, 0, 1, control->colorset->ms.fg_bg_color,
                       (i == 0 ? 0 : opt[i].x - e_mn_men),
                       (i ==
-                       MENOPT - 1) ? MAXSCOL - 1 : opt[i + 1].x - e_mn_men - 1);
+                       MAX - 1) ? max_screen_cols() - 1 : opt[i + 1].x - e_mn_men - 1);
     }
 
     e_pr_uul (control->colorset);
 }
 
 void
-we_colorset_Init (we_colorset_t * fb)
+we_colorset_init (we_colorset_t * fb)
 {
     fb->er = e_s_x_clr (15, 4);	/*  Editor Frames         */
     fb->et = e_s_x_clr (11, 4);	/*  Editor Text           */
@@ -505,25 +536,21 @@ we_colorset_Init (we_colorset_t * fb)
 }
 
 we_colorset_t *
-e_ini_farbe ()
+e_ini_colorset ()
 {
-    if (WpeIsXwin ())
-    {
-        if (!x_fb)
+    if (WpeIsXwin ()) {
+        if (!x_fb) {
             x_fb = malloc (sizeof (we_colorset_t));
-        we_colorset_Init (x_fb);
-        return x_fb;
-    }
-    else
-    {
-        if (!u_fb)
-            u_fb = malloc (sizeof (we_colorset_t));
-        if (col_num)
-        {
-            we_colorset_Init (u_fb);
         }
-        else
-        {
+        we_colorset_init (x_fb);
+        return x_fb;
+    } else {
+        if (!u_fb) {
+            u_fb = malloc (sizeof (we_colorset_t));
+        }
+        if (col_num) {
+            we_colorset_init (u_fb);
+        } else {
             u_fb->er = e_n_t_clr (0);
             u_fb->et = e_n_t_clr (0);
             u_fb->ez = e_n_t_clr (A_REVERSE);
@@ -571,8 +598,7 @@ e_ini_farbe ()
 void
 e_free_find (FIND * find)
 {
-    if (find->dirct)
-    {
+    if (find->dirct) {
         free (find->dirct);
         find->dirct = NULL;
     }

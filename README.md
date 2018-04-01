@@ -72,6 +72,12 @@ don't have X11, only wpe/we will be installed.
 Should you want to check the result, do a `make check`. This will execute the 
 testprograms running from the framework `check`.
 
+## Style ##
+
+For code formatting we use astyle with a the options '--style=allman --style=1tbs'.
+The 1tbs (means one true bracket style) makes the code compact and easier to read for me.
+For all other stuff we use the allman defaults.
+
 ## Documentation ##
 
 The original documentation is mostly part of the program in the form of info

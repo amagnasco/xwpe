@@ -93,7 +93,7 @@ if test -z "$PDFLATEX"; then
    AC_MSG_WARN([Doxygen needs pdflatex program, it is part of TeX http://www.tug.org/texlive/acquire-netinstall.html])
 fi
 
-# for we_fl_unix.c
+# for we_file_unix.c
 if man -s 1 ls > /dev/null 2> /dev/null; then
  AC_DEFINE([MAN_S_OPT], [], [Is using man -s option possible?])
 fi

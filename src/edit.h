@@ -22,22 +22,6 @@
 #include "unixmakr.h"
 #endif
 
-/** Maximum number of editting windows */
-#define MAXEDT 35
-
-/**
- *  \brief The number of lines used to allocation of new buffer or window or
- *  for incrementing the number of lines to an already allocated buffer or window.
- */
-#define MAXLINES 10
-/** The number of columns used for the initial control
- *
- *  This is only used in the function ECNT_Init in we_control.c
- *  \todo: check how important this define is and whether it should be in we_control.h
- *
- * */
-#define MAXCOLUM 120
-
 /**
  * \brief WPE_NOBACKUP is a number to determine not to make a backup.
  *
@@ -70,8 +54,7 @@
 /** test to determine: is this window markable? */
 #define DTMD_ISMARKABLE(x) (x > DTMD_HELP) /* Means end marks can be shown */
 
-struct dirfile
-{
+struct dirfile {
     /** The number of elements in the list */
     int nr_files;
     /** The file names in the directory */
@@ -82,8 +65,7 @@ struct dirfile
  * \brief The x and y coordinates in a window or on a screen.
  *
  */
-typedef struct we_point_struct
-{
+typedef struct we_point_struct {
     int x; /**< The offset of the column on the window or screen starting from zero. */
     int y; /**< The offset of the row on the window or screen starting from zero. */
 } we_point_t;
@@ -92,8 +74,7 @@ typedef struct we_point_struct
 /**
  * \brief defines textcolor, foreground and background color
  */
-typedef struct we_color_struct
-{
+typedef struct we_color_struct {
     /** The foreground color */
     int fg_color;
     /** The background color */
@@ -105,8 +86,7 @@ typedef struct we_color_struct
 /**
  * Defines a view with start and endpoint
  */
-typedef struct view_struct
-{
+typedef struct view_struct {
     char* p;
     /** The starting point of the view */
     we_point_t a;
@@ -121,8 +101,7 @@ typedef struct view_struct
  * and some syntax coloring.
  *
  */
-typedef struct we_colorset_struct
-{
+typedef struct we_colorset_struct {
     we_color_t er;   /**< editor window border and text */
     we_color_t es;   /**< special signs (maximize/kill) on editor window border */
     we_color_t et;   /**< normal text in editor window */
@@ -187,8 +166,7 @@ typedef struct we_colorset_struct
  *
  *
  */
-typedef struct we_undo_struct
-{
+typedef struct we_undo_struct {
     int type;
     we_point_t cursor_start; /**< the start (x, y) cursor position */
     /**
@@ -210,8 +188,7 @@ typedef struct we_undo_struct
      *  'v' mark block end
      */
     we_point_t end_block;
-    union
-    {
+    union {
         /**
          * 'p' one character
          *
@@ -240,17 +217,15 @@ typedef struct we_undo_struct
  *
  *
  */
-typedef struct STR
-{
+typedef struct STR {
     unsigned char* s;
     int len;       /* Length of string not counting '\n' at the end */
     size_t nrc;
     /*int size; */ /* Memory allocated for the string */
-} STRING;
+} we_string_t;
 
-typedef struct BFF
-{
-    STRING* buflines;         /**< buflines[i] is the i-th line of the buffer */
+typedef struct we_buffer_struct {
+    we_string_t* buflines;         /**< buflines[i] is the i-th line of the buffer */
     we_point_t cursor;        /**< cursor coordinates in window (at least in some contexts) */
     we_point_t mx;            /**< maximum column and line */
     int mxlines;              /**< number of lines */
@@ -263,8 +238,7 @@ typedef struct BFF
     we_colorset_t* colorset;  /**< pointer to a colorset struct */
 } we_buffer_t;
 
-typedef struct SCHRM
-{
+typedef struct we_screen_struct {
     we_point_t mark_begin;
     we_point_t mark_end;
     we_point_t ks;
@@ -282,42 +256,37 @@ typedef struct SCHRM
     we_colorset_t* colorset;
 #ifdef DEBUGGER
     we_point_t da, de;
-    int* brp;
+    int* breakpoint;
 #endif
 } we_screen_t;
 
-typedef struct OPTION
-{
+typedef struct OPTION {
     char* t;
     int x;
     int s;
     int as;
 } OPT;
 
-typedef struct WOPTION
-{
+typedef struct WOPTION {
     char* t;
     int x, s, n, as;
 } WOPT;
 
-typedef struct OPTKAST
-{
+typedef struct OPTKAST {
     char* t;
     int x;
     char o;
     int (*fkt)(struct we_window_struct*);
 } OPTK;
 
-typedef struct
-{
+typedef struct {
     int position;
     int width;
     int no_of_items;
     OPTK* menuitems;
 } MENU;
 
-typedef struct we_window_struct
-{
+typedef struct we_window_struct {
     we_point_t a;              /**< start corner of the box */
     we_point_t e;              /**< other corner of the box */
     we_point_t sa;
@@ -343,29 +312,8 @@ typedef struct we_window_struct
     FIND find;
 } we_window_t;
 
-typedef struct CNT
-{
-    int major, minor, patch; /**< Version of option file. */
-    int maxcol, tabn;
-    int maxchg, numundo;
-    int flopt, edopt;
-    int mxedt;		 /**< max number of editing windows */
-    int curedt;		 /**< currently active window */
-    int edt[MAXEDT + 1]; /**< 1 <= window IDs <= MAXEDT, arbitrary order */
-    int autoindent;
-    char* print_cmd;
-    char* dirct; /**< current directory */
-    char *optfile, *tabs;
-    struct dirfile *sdf, *rdf, *fdf, *ddf, *wdf, *hdf, *shdf;
-    FIND find;
-    we_colorset_t* colorset;
-    we_window_t* window[MAXEDT + 1];
-    char dtmd, autosv;
-} we_control_t;
-
 /* structure for the windows in the file manager ??? */
-typedef struct fl_wnd
-{
+typedef struct fl_wnd {
     int xa, ya; /**< its own box corner ??? */
     int xe, ye;
     int ia, ja;
@@ -378,8 +326,7 @@ typedef struct fl_wnd
     we_window_t* window;     /**< the window itself */
 } FLWND;
 
-typedef struct FLBFF
-{
+typedef struct FLBFF {
     struct dirfile* cd; /**< current directory */
     struct dirfile* dd; /**< list of directories in the current dir. */
     struct dirfile* df; /**< list of files in the current dir. */
@@ -390,53 +337,45 @@ typedef struct FLBFF
     int xfa, xfd, xda, xdd;
 } FLBFFR;
 
-typedef struct
-{
+typedef struct {
     int x, y;
     char* txt;
 } W_O_TXTSTR;
 
-typedef struct
-{
+typedef struct {
     int xt, yt, xw, yw, nw, wmx, nc, sw;
     char* header;
     char* txt;
     struct dirfile** df;
 } W_O_WRSTR;
 
-typedef struct
-{
+typedef struct {
     int xt, yt, xw, yw, nw, wmx, nc, num, sw;
     char* header;
 } W_O_NUMSTR;
 
-typedef struct
-{
+typedef struct {
     int x, y, nc, sw, num;
     char* header;
 } W_O_SSWSTR;
 
-typedef struct
-{
+typedef struct {
     int x, y, nc, sw;
     char* header;
 } W_O_SPSWSTR;
 
-typedef struct
-{
+typedef struct {
     int num, np;
     W_O_SPSWSTR** ps;
 } W_O_PSWSTR;
 
-typedef struct
-{
+typedef struct {
     int x, y, nc, sw;
     char* header;
     int (*fkt)(we_window_t* window);
 } W_O_BTTSTR;
 
-typedef struct
-{
+typedef struct {
     int xa, ya;			/**< Upperleft corner */
     int xe, ye;			/**< Lowerright corner */
     int bgsw;
@@ -463,12 +402,6 @@ typedef struct
     W_O_NUMSTR** nstr;
     we_window_t* window;
 } W_OPTSTR;
-
-typedef struct wpeOptionSection
-{
-    char* section;
-    int (*function)(we_control_t* control, char* section, char* option, char* value);
-} WpeOptionSection;
 
 #ifdef UNIX
 

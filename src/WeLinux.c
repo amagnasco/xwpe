@@ -20,8 +20,8 @@
       Bit  Information
        3   Alt key
        2   Control key
-       1   Left shift
-       0   Right shift
+       1   Left shift or Right shift
+       0   No shift, alt or control was pressed
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 int
 WpeLinuxBioskey (void)
@@ -29,20 +29,16 @@ WpeLinuxBioskey (void)
     char c = 6;
     int status = 0;
 
-    if (ioctl (STDIN_FILENO, TIOCLINUX, &c) == 0)
-    {
-        if (c & 0x01)
-        {
+    if (ioctl (STDIN_FILENO, TIOCLINUX, &c) == 0) {
+        if (c & 0x01) {
             /* Right or left shift is pressed */
             status |= 0x03;
         }
-        if (c & 0x04)
-        {
+        if (c & 0x04) {
             /* Control key is pressed */
             status |= 0x04;
         }
-        if (c & 0x0A)
-        {
+        if (c & 0x0A) {
             /* Alt key is pressed */
             status |= 0x08;
         }
