@@ -224,7 +224,7 @@ typedef struct STR {
     /*int size; */ /* Memory allocated for the string */
 } we_string_t;
 
-typedef struct BFF {
+typedef struct we_buffer_struct {
     we_string_t* buflines;         /**< buflines[i] is the i-th line of the buffer */
     we_point_t cursor;        /**< cursor coordinates in window (at least in some contexts) */
     we_point_t mx;            /**< maximum column and line */
@@ -238,7 +238,7 @@ typedef struct BFF {
     we_colorset_t* colorset;  /**< pointer to a colorset struct */
 } we_buffer_t;
 
-typedef struct SCHRM {
+typedef struct we_screen_struct {
     we_point_t mark_begin;
     we_point_t mark_end;
     we_point_t ks;

@@ -20,8 +20,8 @@
       Bit  Information
        3   Alt key
        2   Control key
-       1   Left shift
-       0   Right shift
+       1   Left shift or Right shift
+       0   No shift, alt or control was pressed
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 int
 WpeLinuxBioskey (void)
