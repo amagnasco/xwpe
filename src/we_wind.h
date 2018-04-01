@@ -27,6 +27,7 @@ enum msg_type_t { INFO_MSG=-1, ERROR_MSG=0, SERIOUS_ERROR_MSG=1, FATAL_ERROR_MSG
 /*            |                                   */
 /*            |  there's lots more in this struct */
 /*            |                                   */
+
 /**
  * These functions replace the macros names like NUM_COLS_ON_SCREEN etc.
  * to remove the dependency on variable naming. These macros only worked if
