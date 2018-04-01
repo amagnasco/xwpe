@@ -154,7 +154,7 @@ e_edit (we_control_t * control, char *filename)
     if ((window->screen = (we_screen_t *) malloc (sizeof (we_screen_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     }
-    if ((window->buffer->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL) {
+    if ((window->buffer->buflines = (we_string_t *) malloc (MAXLINES * sizeof (we_string_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     }
 #ifdef PROG
@@ -1938,7 +1938,7 @@ e_new_line (int yd, we_buffer_t * buffer)
 
     if (buffer->mxlines > buffer->mx.y - 2) {
         buffer->mx.y += MAXLINES;
-        if ((buffer->buflines = realloc (buffer->buflines, buffer->mx.y * sizeof (STRING))) == NULL) {
+        if ((buffer->buflines = realloc (buffer->buflines, buffer->mx.y * sizeof (we_string_t))) == NULL) {
             e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, buffer->colorset);
         }
         if (buffer->window->c_sw) {
@@ -2433,7 +2433,7 @@ e_process_undo_d_block_delete (we_buffer_t * buffer, we_undo_t *next)
     we_window_t *fn = malloc (sizeof (we_window_t));
     we_window_t *window = buffer->control->window[buffer->control->mxedt];
 
-    bn->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING));
+    bn->buflines = (we_string_t *) malloc (MAXLINES * sizeof (we_string_t));
     if (bn == NULL || sn == 0 || bn->buflines == NULL) {
         return (e_error (e_msg[ERR_LOWMEM], ERROR_MSG, buffer->colorset));
     }

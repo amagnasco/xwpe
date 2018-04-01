@@ -222,10 +222,10 @@ typedef struct STR {
     int len;       /* Length of string not counting '\n' at the end */
     size_t nrc;
     /*int size; */ /* Memory allocated for the string */
-} STRING;
+} we_string_t;
 
 typedef struct BFF {
-    STRING* buflines;         /**< buflines[i] is the i-th line of the buffer */
+    we_string_t* buflines;         /**< buflines[i] is the i-th line of the buffer */
     we_point_t cursor;        /**< cursor coordinates in window (at least in some contexts) */
     we_point_t mx;            /**< maximum column and line */
     int mxlines;              /**< number of lines */

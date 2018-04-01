@@ -864,7 +864,7 @@ e_read_help (char *str, we_window_t * window, int sw)
     if ((window->buffer = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     }
-    if ((window->buffer->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL) {
+    if ((window->buffer->buflines = (we_string_t *) malloc (MAXLINES * sizeof (we_string_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     }
     window->buffer->window = window;
@@ -1528,7 +1528,7 @@ e_read_info (char *str, we_window_t * window, char *file)
     if ((window->buffer = (we_buffer_t *) malloc (sizeof (we_buffer_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     }
-    if ((window->buffer->buflines = (STRING *) malloc (MAXLINES * sizeof (STRING))) == NULL) {
+    if ((window->buffer->buflines = (we_string_t *) malloc (MAXLINES * sizeof (we_string_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, window->colorset);
     }
     window->buffer->window = window;

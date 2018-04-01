@@ -334,7 +334,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
     int n = s->mark_end.y - s->mark_begin.y - 1;
     int kax = s->mark_begin.x, kay = s->mark_begin.y, kex =
                                          s->mark_end.x, key = s->mark_end.y;
-    STRING *str, *tmp;
+    we_string_t *str, *tmp;
     unsigned char *cstr;
 
     if (key < kay || (kay == key && kex <= kax)) {
@@ -424,7 +424,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
 
     while (bz->mxlines + n > bz->mx.y - 2) {
         bz->mx.y += MAXLINES;
-        if ((tmp = realloc (bz->buflines, bz->mx.y * sizeof (STRING))) == NULL) {
+        if ((tmp = realloc (bz->buflines, bz->mx.y * sizeof (we_string_t))) == NULL) {
             e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, bz->colorset);
         } else {
             bz->buflines = tmp;
@@ -433,7 +433,7 @@ e_move_block (int x, int y, we_buffer_t * bv, we_buffer_t * bz, we_window_t * wi
             bz->window->c_sw = realloc (bz->window->c_sw, bz->mx.y * sizeof (int));
         }
     }
-    if ((str = malloc ((n + 2) * sizeof (STRING))) == NULL) {
+    if ((str = malloc ((n + 2) * sizeof (we_string_t))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], ERROR_MSG, bz->colorset);
         return;
     }
@@ -544,7 +544,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
     int kax = s_src->mark_begin.x, kay = s_src->mark_begin.y, kex =
             s_src->mark_end.x, key = s_src->mark_end.y;
     int kse = key, ksa = kay;
-    STRING **str, *tmp;
+    we_string_t **str, *tmp;
     unsigned char *cstr;
 
     if (key < kay || (kay == key && kex <= kax)) {
@@ -585,7 +585,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
         buffer_dst->mx.y += MAXLINES;
         if ((tmp =
                     realloc (buffer_dst->buflines,
-                             buffer_dst->mx.y * sizeof (STRING))) == NULL) {
+                             buffer_dst->mx.y * sizeof (we_string_t))) == NULL) {
             e_error (e_msg[ERR_LOWMEM], SERIOUS_ERROR_MSG, buffer_dst->colorset);
         } else {
             buffer_dst->buflines = tmp;
@@ -594,7 +594,7 @@ e_copy_block (int x, int y, we_buffer_t * buffer_src, we_buffer_t * buffer_dst,
             buffer_dst->window->c_sw =
                 realloc (buffer_dst->window->c_sw, buffer_dst->mx.y * sizeof (int));
     }
-    if ((str = malloc ((n + 2) * sizeof (STRING *))) == NULL) {
+    if ((str = malloc ((n + 2) * sizeof (we_string_t *))) == NULL) {
         e_error (e_msg[ERR_LOWMEM], ERROR_MSG, buffer_dst->colorset);
         free (cstr);
         return;
