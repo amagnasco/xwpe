@@ -5,18 +5,20 @@
 /* GNU General Public License, see the file COPYING.      */
 
 #include "config.h"
+#include "model.h"
+
+// The rest of this program is hidden behind a define from model.h
+#if  MOUSE
+
 #include <string.h>
 #include "keys.h"
 #include "messages.h"
 #include "options.h"
-#include "model.h"
 #include "edit.h"
 #include "we_screen.h"
 #include "we_term.h"
 #include "we_prog.h"
 #include "we_mouse.h"
-
-#if  MOUSE
 
 #include "utils.h"
 
